@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar System Quiz</title>
+<meta name="subject" content="Science">
+<meta name="topic" content="Solar System">
+<meta name="template" content="quiz">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #0B1026; color: #E8E6F0; min-height: 100vh; padding: 1.5rem; }
+  .quiz { max-width: 500px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+  .subtitle { color: #8B87A0; margin-bottom: 2rem; font-size: 0.9rem; }
+  .progress { height: 4px; background: #1E1B3A; border-radius: 99px; margin-bottom: 2rem; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #6C5CE7, #A78BFA); border-radius: 99px; transition: width 0.4s ease; }
+  .question { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.4; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option { padding: 0.9rem 1rem; background: #161336; border: 1.5px solid #2A2650; border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; }
+  .option:hover { border-color: #6C5CE7; background: #1C1845; }
+  .option.correct { border-color: #22C55E; background: #0D2818; }
+  .option.wrong { border-color: #EF4444; background: #2D0F0F; }
+  .option.disabled { pointer-events: none; opacity: 0.6; }
+  .option.disabled.correct { opacity: 1; }
+  .feedback { margin-top: 1rem; padding: 0.8rem 1rem; border-radius: 10px; font-size: 0.9rem; line-height: 1.5; display: none; }
+  .feedback.show { display: block; }
+  .feedback.right { background: #0D2818; border: 1px solid #22C55E; }
+  .feedback.wrong-fb { background: #2D0F0F; border: 1px solid #EF4444; }
+  .next-btn { margin-top: 1.5rem; width: 100%; padding: 0.8rem; background: #6C5CE7; color: white; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: none; transition: background 0.2s; }
+  .next-btn:hover { background: #5B4BD5; }
+  .next-btn.show { display: block; }
+  .result { text-align: center; padding: 3rem 1rem; }
+  .result .score { font-size: 3rem; font-weight: 700; background: linear-gradient(135deg, #6C5CE7, #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .result p { color: #8B87A0; margin-top: 0.5rem; }
+  .restart { margin-top: 1.5rem; padding: 0.7rem 2rem; background: #6C5CE7; color: white; border: none; border-radius: 10px; font-size: 0.95rem; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="quiz" id="app"></div>
+<script>
+const QUESTIONS = [
+  { q: "Which planet is closest to the Sun?", opts: ["Venus","Mercury","Mars","Earth"], answer: 1, info: "Mercury orbits at an average distance of just 58 million km from the Sun." },
+  { q: "What is the largest planet in our solar system?", opts: ["Saturn","Neptune","Jupiter","Uranus"], answer: 2, info: "Jupiter's mass is more than twice that of all other planets combined." },
+  { q: "Which planet is known as the Red Planet?", opts: ["Mars","Venus","Jupiter","Mercury"], answer: 0, info: "Mars appears red because of iron oxide (rust) on its surface." },
+  { q: "How many moons does Earth have?", opts: ["0","1","2","3"], answer: 1, info: "Earth has one natural satellite — the Moon, which is about 384,400 km away." },
+  { q: "Which planet has the most prominent ring system?", opts: ["Jupiter","Uranus","Neptune","Saturn"], answer: 3, info: "Saturn's rings are made mostly of ice particles, rocky debris, and dust." },
+  { q: "What is the hottest planet in our solar system?", opts: ["Mercury","Venus","Mars","Jupiter"], answer: 1, info: "Venus is hottest (~465°C) due to its thick CO₂ atmosphere trapping heat." },
+];
+
+let current = 0, score = 0;
+
+function render() {
+  const app = document.getElementById('app');
+  if (current >= QUESTIONS.length) {
+    app.innerHTML = `<div class="result"><div class="score">${score}/${QUESTIONS.length}</div><p>Quiz complete!</p><button class="restart" onclick="restart()">Try Again</button></div>`;
+    return;
+  }
+  const q = QUESTIONS[current];
+  app.innerHTML = `
+    <h1>Solar System</h1><p class="subtitle">Question ${current+1} of ${QUESTIONS.length}</p>
+    <div class="progress"><div class="progress-fill" style="width:${(current/QUESTIONS.length)*100}%"></div></div>
+    <div class="question">${q.q}</div>
+    <div class="options">${q.opts.map((o,i)=>`<div class="option" onclick="pick(${i})" data-i="${i}">${o}</div>`).join('')}</div>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn" id="next" onclick="next()">Next →</button>`;
+}
+
+function pick(i) {
+  const q = QUESTIONS[current], fb = document.getElementById('fb');
+  document.querySelectorAll('.option').forEach((el,idx) => {
+    el.classList.add('disabled');
+    if (idx === q.answer) el.classList.add('correct');
+    else if (idx === i) el.classList.add('wrong');
+  });
+  if (i === q.answer) { score++; fb.className = 'feedback show right'; fb.textContent = '✓ Correct! ' + q.info; }
+  else { fb.className = 'feedback show wrong-fb'; fb.textContent = '✗ ' + q.info; }
+  document.getElementById('next').classList.add('show');
+}
+
+function next() { current++; render(); }
+function restart() { current = 0; score = 0; render(); }
+render();
+</script>
+</body>
+</html>

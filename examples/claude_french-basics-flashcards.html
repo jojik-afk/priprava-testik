@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>French Basics — Flashcards</title>
+<meta name="subject" content="Languages">
+<meta name="topic" content="French Vocabulary">
+<meta name="template" content="flashcards">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #FDF8F4; color: #2D2A24; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; }
+  .counter { font-size: 0.85rem; color: #9A9080; margin-bottom: 1rem; }
+  .card-wrapper { perspective: 1000px; width: 100%; max-width: 360px; aspect-ratio: 3/2; cursor: pointer; }
+  .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s ease; border-radius: 16px; }
+  .card.flipped { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; }
+  .front { background: white; border: 2px solid #E8E3DA; }
+  .back { background: #2D2A24; color: #FDF8F4; transform: rotateY(180deg); }
+  .word { font-size: 2rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .hint { font-size: 0.9rem; color: #9A9080; }
+  .back .word { color: #F5A623; }
+  .back .hint { color: #A09A90; }
+  .tap { font-size: 0.78rem; color: #C0B8A8; position: absolute; bottom: 1rem; }
+  .controls { display: flex; gap: 1rem; margin-top: 1.5rem; }
+  .btn { padding: 0.6rem 1.5rem; border-radius: 99px; border: 1.5px solid #E8E3DA; background: white; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+  .btn:hover { border-color: #2D2A24; }
+  .btn.know { background: #E8F7EE; border-color: #B4DFC4; color: #2E6E45; }
+  .btn.again { background: #FFF0E8; border-color: #F5CDB0; color: #A05A20; }
+  .done { text-align: center; }
+  .done h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .done p { color: #9A9080; margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const CARDS = [
+  { fr: "Bonjour", en: "Hello / Good morning", ex: "Bonjour, comment allez-vous ?" },
+  { fr: "Merci", en: "Thank you", ex: "Merci beaucoup !" },
+  { fr: "S'il vous plaît", en: "Please (formal)", ex: "Un café, s'il vous plaît." },
+  { fr: "Au revoir", en: "Goodbye", ex: "Au revoir, à demain !" },
+  { fr: "Excusez-moi", en: "Excuse me", ex: "Excusez-moi, où est la gare ?" },
+  { fr: "Je ne comprends pas", en: "I don't understand", ex: "Désolé, je ne comprends pas." },
+  { fr: "Comment ça va ?", en: "How are you?", ex: "Salut ! Comment ça va ?" },
+  { fr: "Oui / Non", en: "Yes / No", ex: "Oui, je suis prêt." },
+];
+
+let deck = [...CARDS], idx = 0, known = 0, flipped = false;
+
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function render() {
+  const app = document.getElementById('app');
+  if (idx >= deck.length) {
+    app.innerHTML = `<div class="done"><h2>Round done!</h2><p>You knew ${known} of ${deck.length} cards.</p><button class="btn" onclick="restart()">Start Over</button></div>`;
+    return;
+  }
+  const c = deck[idx]; flipped = false;
+  app.innerHTML = `
+    <div class="counter">${idx + 1} / ${deck.length}</div>
+    <div class="card-wrapper" onclick="flip()">
+      <div class="card" id="card">
+        <div class="face front"><div class="word">${c.fr}</div><div class="hint">French → English</div><div class="tap">tap to flip</div></div>
+        <div class="face back"><div class="word">${c.en}</div><div class="hint" style="margin-top:0.5rem;font-style:italic">"${c.ex}"</div></div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn again" onclick="again()">Again</button>
+      <button class="btn know" onclick="gotIt()">Got it ✓</button>
+    </div>`;
+}
+
+function flip() { flipped = !flipped; document.getElementById('card').classList.toggle('flipped', flipped); }
+function gotIt() { known++; idx++; render(); }
+function again() { idx++; render(); }
+function restart() { shuffle(deck); idx = 0; known = 0; render(); }
+
+shuffle(deck);
+render();
+</script>
+</body>
+</html>

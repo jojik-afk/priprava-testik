@@ -1,0 +1,26 @@
+[
+  {
+    "title": "French Basics — Flashcards",
+    "subject": "Languages",
+    "topic": "French Vocabulary",
+    "template": "flashcards",
+    "date": "2026-02-01",
+    "file": "artifacts/french-basics-flashcards.html"
+  },
+  {
+    "title": "Solving Linear Equations",
+    "subject": "Math",
+    "topic": "Linear Equations",
+    "template": "practice",
+    "date": "2026-02-01",
+    "file": "artifacts/linear-equations-practice.html"
+  },
+  {
+    "title": "Solar System Quiz",
+    "subject": "Science",
+    "topic": "Solar System",
+    "template": "quiz",
+    "date": "2026-02-01",
+    "file": "artifacts/solar-system-quiz.html"
+  }
+]
