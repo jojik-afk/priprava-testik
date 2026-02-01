@@ -1,26 +1,26 @@
 [
   {
-    "title": "French Basics — Flashcards",
-    "subject": "Languages",
-    "topic": "French Vocabulary",
-    "template": "flashcards",
-    "date": "2026-02-01",
-    "file": "artifacts/french-basics-flashcards.html"
-  },
-  {
-    "title": "Solving Linear Equations",
+    "title": "Linear Equations Practice",
     "subject": "Math",
-    "topic": "Linear Equations",
+    "topic": "Algebra",
     "template": "practice",
     "date": "2026-02-01",
-    "file": "artifacts/linear-equations-practice.html"
+    "file": "artifacts/linear-equations.html"
   },
   {
-    "title": "Solar System Quiz",
+    "title": "Stavová rovnice - Kompletní průvodce",
     "subject": "Science",
-    "topic": "Solar System",
-    "template": "quiz",
+    "topic": "Thermodynamics",
+    "template": "practice",
     "date": "2026-02-01",
-    "file": "artifacts/solar-system-quiz.html"
+    "file": "artifacts/stavova_rovnice_kompletni.html"
+  },
+  {
+    "title": "Teorie psychického vývoje - Interaktivní příprava na test",
+    "subject": "Science",
+    "topic": "Psychology",
+    "template": "mixed",
+    "date": "2026-02-01",
+    "file": "artifacts/teorie_psychickeho_vyvoje.html"
   }
 ]

@@ -23,13 +23,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Rebuild manifest
-        run: python3 scripts/build_manifest.py
+      - name: Build artifacts
+        run: python3 scripts/build.py
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

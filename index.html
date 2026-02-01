@@ -245,45 +245,167 @@
     border: none;
   }
 
-  .viewer-back {
+  /* ── Navigation Stripe ── */
+  .nav-stripe {
     position: fixed;
-    bottom: 1.25rem;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 0;
+    left: 0;
+    right: 0;
     z-index: 101;
     display: none;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.55rem 1.2rem;
-    background: var(--text);
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: rgba(45, 42, 36, 0.95);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 0.85rem;
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .nav-stripe.active {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nav-stripe-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .nav-stripe-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.75rem;
+    background: rgba(255,255,255,0.1);
     color: white;
     border: none;
-    border-radius: 99px;
+    border-radius: 6px;
     font-family: inherit;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-    transition: all 0.2s;
-    opacity: 0;
-    animation: fadeUp 0.3s 0.4s ease forwards;
+    transition: background 0.2s;
   }
 
-  .viewer-back.active { display: flex; }
-
-  .viewer-back:hover {
+  .nav-stripe-btn:hover {
     background: var(--accent);
-    transform: translateX(-50%) scale(1.04);
   }
 
-  .viewer-back svg {
-    width: 16px;
-    height: 16px;
+  .nav-stripe-btn svg {
+    width: 14px;
+    height: 14px;
   }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .nav-stripe-title {
+    font-weight: 500;
+    opacity: 0.9;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav-stripe-right {
+    position: relative;
+  }
+
+  /* ── Artifact Selector Popup ── */
+  .artifact-popup {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 0.5rem;
+    width: 320px;
+    max-height: 400px;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+  }
+
+  .artifact-popup.active {
+    display: flex;
+  }
+
+  .artifact-popup-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  .artifact-popup-list {
+    overflow-y: auto;
+    max-height: 340px;
+  }
+
+  .artifact-popup-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .artifact-popup-item:last-child {
+    border-bottom: none;
+  }
+
+  .artifact-popup-item:hover {
+    background: var(--bg);
+  }
+
+  .artifact-popup-item.current {
+    background: var(--accent-light);
+  }
+
+  .artifact-popup-item .icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .artifact-popup-item .info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .artifact-popup-item .title {
+    font-weight: 500;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .artifact-popup-item .meta {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 500px) {
+    .nav-stripe-title { display: none; }
+    .artifact-popup { width: calc(100vw - 2rem); right: -0.5rem; }
   }
 
   /* ── Subject Colors ── */
@@ -324,10 +446,25 @@
 <div id="viewer">
   <iframe id="artifact-frame" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" loading="lazy"></iframe>
 </div>
-<button class="viewer-back" id="back-btn" onclick="closeViewer()">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-  Back
-</button>
+<div class="nav-stripe" id="nav-stripe">
+  <div class="nav-stripe-left">
+    <button class="nav-stripe-btn" onclick="closeViewer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Home
+    </button>
+    <span class="nav-stripe-title" id="current-title"></span>
+  </div>
+  <div class="nav-stripe-right">
+    <button class="nav-stripe-btn" id="browse-btn" onclick="togglePopup()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Browse
+    </button>
+    <div class="artifact-popup" id="artifact-popup">
+      <div class="artifact-popup-header">All Artifacts</div>
+      <div class="artifact-popup-list" id="popup-list"></div>
+    </div>
+  </div>
+</div>
 
 <script>
   const SUBJECT_ICONS = {
@@ -337,6 +474,7 @@
 
   let manifest = [];
   let activeSubject = null;
+  let currentFile = null;
 
   async function init() {
     try {
@@ -356,10 +494,29 @@
     renderCards();
     document.getElementById('search').addEventListener('input', renderCards);
 
-    // Handle browser back button
-    window.addEventListener('popstate', (e) => {
-      if (!e.state || !e.state.viewing) closeViewer(true);
+    // Handle hash-based routing for shareable URLs
+    window.addEventListener('hashchange', handleHash);
+    handleHash();
+
+    // Close popup when clicking outside
+    document.addEventListener('click', (e) => {
+      const popup = document.getElementById('artifact-popup');
+      const browseBtn = document.getElementById('browse-btn');
+      if (popup.classList.contains('active') &&
+          !popup.contains(e.target) &&
+          !browseBtn.contains(e.target)) {
+        popup.classList.remove('active');
+      }
     });
+  }
+
+  function handleHash() {
+    const hash = window.location.hash.slice(1); // Remove #
+    if (hash && hash.startsWith('artifacts/')) {
+      openViewer(hash, true);
+    } else if (!hash && currentFile) {
+      closeViewer(true);
+    }
   }
 
   function buildFilters() {
@@ -440,26 +597,72 @@
     }).join('');
   }
 
-  function openViewer(file) {
-    history.pushState({ viewing: true }, '');
+  function openViewer(file, fromHash = false) {
+    currentFile = file;
+
+    // Update URL hash for shareable link
+    if (!fromHash) {
+      window.location.hash = file;
+      return; // hashchange will call openViewer again with fromHash=true
+    }
+
     document.getElementById('artifact-frame').src = file;
     document.getElementById('viewer').classList.add('active');
-    document.getElementById('back-btn').classList.add('active');
+    document.getElementById('nav-stripe').classList.add('active');
     document.getElementById('catalogue').classList.add('hidden');
-    // Reset animation
-    const btn = document.getElementById('back-btn');
-    btn.style.animation = 'none';
-    btn.offsetHeight; // trigger reflow
-    btn.style.animation = '';
+
+    // Update current title in nav stripe
+    const item = manifest.find(m => m.file === file);
+    document.getElementById('current-title').textContent = item ? item.title : '';
+
+    // Populate popup list
+    renderPopupList();
   }
 
-  function closeViewer(fromPopstate) {
+  function closeViewer(fromHash = false) {
+    currentFile = null;
     document.getElementById('viewer').classList.remove('active');
-    document.getElementById('back-btn').classList.remove('active');
+    document.getElementById('nav-stripe').classList.remove('active');
+    document.getElementById('artifact-popup').classList.remove('active');
     document.getElementById('catalogue').classList.remove('hidden');
+
     // Defer src clear so we don't flash
     setTimeout(() => { document.getElementById('artifact-frame').src = ''; }, 300);
-    if (!fromPopstate && history.state && history.state.viewing) history.back();
+
+    // Clear hash
+    if (!fromHash && window.location.hash) {
+      history.pushState('', '', window.location.pathname);
+    }
+  }
+
+  function togglePopup() {
+    document.getElementById('artifact-popup').classList.toggle('active');
+  }
+
+  function renderPopupList() {
+    const container = document.getElementById('popup-list');
+    container.innerHTML = manifest.map(item => {
+      const subjectKey = item.subject.toLowerCase().replace(/[^a-z]/g, '');
+      const iconClass = SUBJECT_ICONS[subjectKey] ? subjectKey : 'default';
+      const icon = SUBJECT_ICONS[subjectKey] || SUBJECT_ICONS.default;
+      const isCurrent = item.file === currentFile;
+
+      return `
+        <div class="artifact-popup-item${isCurrent ? ' current' : ''}" onclick="switchArtifact('${item.file}')">
+          <div class="icon subject-${iconClass}">${icon}</div>
+          <div class="info">
+            <div class="title">${escHtml(item.title)}</div>
+            <div class="meta">${escHtml(item.subject)}${item.topic ? ' · ' + escHtml(item.topic) : ''}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function switchArtifact(file) {
+    document.getElementById('artifact-popup').classList.remove('active');
+    if (file !== currentFile) {
+      openViewer(file);
+    }
   }
 
   function formatDate(d) {

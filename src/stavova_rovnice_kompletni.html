@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stavová rovnice - Kompletní průvodce</title>
+    <meta name="subject" content="Science">
+    <meta name="topic" content="Thermodynamics">
+    <meta name="template" content="practice">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a2332;
+            color: #e8eaf0;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #1a2332;
+            padding: 40px 20px 30px 20px;
+            text-align: center;
+            border-bottom: 2px solid #f39c12;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: #f39c12;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #9ca3af;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            background: #1a2332;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            padding: 12px 25px;
+            background: transparent;
+            border: 2px solid #374151;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-tab:hover {
+            border-color: #f39c12;
+            color: #f39c12;
+        }
+
+        .nav-tab.active {
+            background: #f39c12;
+            border-color: #f39c12;
+            color: #1a2332;
+        }
+
+        .content {
+            padding: 40px 20px;
+            min-height: 500px;
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .section-title {
+            color: #f39c12;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            color: #f39c12;
+            font-size: 1.8em;
+            margin: 40px 0 20px 0;
+            font-weight: 600;
+        }
+
+        .info-card {
+            background: #242d3e;
+            border-left: 4px solid #3b82f6;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .info-card.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .info-card.success {
+            border-left-color: #10b981;
+        }
+
+        .info-card.danger {
+            border-left-color: #ef4444;
+        }
+
+        .info-card.purple {
+            border-left-color: #8b5cf6;
+        }
+
+        .info-card h3 {
+            color: #f39c12;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-card p, .info-card li {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #d1d5db;
+            margin-bottom: 10px;
+        }
+
+        .info-card ul {
+            margin-left: 25px;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
+            border: 2px solid #f39c12;
+            padding: 30px;
+            margin: 25px 0;
+            border-radius: 12px;
+            font-size: 1.5em;
+            text-align: center;
+            font-weight: bold;
+            color: #f39c12;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .key-concepts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .concept-card {
+            background: #242d3e;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .concept-card:nth-child(1) { border-left-color: #ef4444; }
+        .concept-card:nth-child(2) { border-left-color: #3b82f6; }
+        .concept-card:nth-child(3) { border-left-color: #f59e0b; }
+        .concept-card:nth-child(4) { border-left-color: #10b981; }
+        .concept-card:nth-child(5) { border-left-color: #8b5cf6; }
+        .concept-card:nth-child(6) { border-left-color: #ec4899; }
+
+        .concept-card h3 {
+            color: #f39c12;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+
+        .concept-card p {
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+
+        .example-card {
+            background: #242d3e;
+            border: 2px solid #374151;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .example-card:hover {
+            border-color: #f39c12;
+        }
+
+        .example-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .example-title {
+            font-size: 1.5em;
+            color: #f39c12;
+            font-weight: 600;
+        }
+
+        .toggle-button {
+            background: #374151;
+            color: #e8eaf0;
+            border: 2px solid #4b5563;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background: #f39c12;
+            border-color: #f39c12;
+            color: #1a2332;
+        }
+
+        .example-zadani {
+            background: #1a2332;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 1.1em;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .example-solution {
+            margin-top: 20px;
+            padding: 25px;
+            background: #2d3748;
+            border-radius: 10px;
+            border: 2px solid #f39c12;
+            display: none;
+        }
+
+        .example-solution.visible {
+            display: block;
+        }
+
+        .solution-step {
+            margin: 15px 0;
+            padding: 20px;
+            background: #1a2332;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+
+        .solution-step h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #10b981;
+        }
+
+        .result-box h3 {
+            color: #d1fae5;
+            margin-bottom: 10px;
+        }
+
+        .result-box p {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #d1fae5;
+            margin: 10px 0;
+        }
+
+        .practice-problem {
+            background: #242d3e;
+            border: 2px solid #374151;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .practice-problem h3 {
+            color: #f39c12;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .input-group {
+            margin: 25px 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        .input-group input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            font-size: 1.1em;
+            background: #1a2332;
+            border: 2px solid #374151;
+            border-radius: 8px;
+            color: #e8eaf0;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+        }
+
+        .submit-button {
+            background: #f39c12;
+            color: #1a2332;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submit-button:hover:not(:disabled) {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .submit-button:disabled {
+            background: #4b5563;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            display: none;
+            border-left: 4px solid;
+        }
+
+        .feedback.visible {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #065f46;
+            color: #d1fae5;
+            border-left-color: #10b981;
+        }
+
+        .feedback.incorrect {
+            background: #7f1d1d;
+            color: #fecaca;
+            border-left-color: #ef4444;
+        }
+
+        .next-button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .next-button:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .formula-card {
+            background: #242d3e;
+            border: 2px solid #374151;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .formula-card:nth-child(9n+1) { border-left-color: #ef4444; }
+        .formula-card:nth-child(9n+2) { border-left-color: #f59e0b; }
+        .formula-card:nth-child(9n+3) { border-left-color: #10b981; }
+        .formula-card:nth-child(9n+4) { border-left-color: #3b82f6; }
+        .formula-card:nth-child(9n+5) { border-left-color: #8b5cf6; }
+        .formula-card:nth-child(9n+6) { border-left-color: #ec4899; }
+        .formula-card:nth-child(9n+7) { border-left-color: #06b6d4; }
+        .formula-card:nth-child(9n+8) { border-left-color: #84cc16; }
+        .formula-card:nth-child(9n+9) { border-left-color: #f97316; }
+
+        .formula-card:hover {
+            transform: translateY(-5px);
+            border-color: #f39c12;
+        }
+
+        .formula-card h3 {
+            color: #f39c12;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .formula-card .main-formula {
+            background: #1a2332;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #f39c12;
+            border: 2px solid #374151;
+        }
+
+        .formula-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .formula-card li {
+            padding: 10px 0;
+            border-bottom: 1px solid #374151;
+            color: #d1d5db;
+        }
+
+        .formula-card li:last-child {
+            border-bottom: none;
+        }
+
+        .progress-indicator {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.3em;
+            color: #f39c12;
+            font-weight: 600;
+            padding: 15px;
+            background: #242d3e;
+            border-radius: 8px;
+        }
+
+        ol {
+            margin-left: 30px;
+            color: #d1d5db;
+        }
+
+        ol li {
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #242d3e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #f39c12;
+            color: #1a2332;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #374151;
+            color: #d1d5db;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #2d3748;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                width: 100%;
+            }
+
+            .formula-grid, .key-concepts, .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>Stavová rovnice</h1>
+            <p>Interaktivní průvodce ideálním plynem</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="theory">TEORIE</button>
+            <button class="nav-tab" data-tab="examples">ŘEŠENÉ PŘÍKLADY</button>
+            <button class="nav-tab" data-tab="practice">PROCVIČOVÁNÍ</button>
+            <button class="nav-tab" data-tab="mistakes">ČASTÉ CHYBY</button>
+            <button class="nav-tab" data-tab="formulas">VZORCE</button>
+        </div>
+
+        <!-- TEORIE TAB -->
+        <div id="theory" class="content active">
+            <h2 class="section-title">Úvod do molekulové fyziky</h2>
+
+            <div class="info-card">
+                <h3>Co je to plyn?</h3>
+                <p>
+                    Plyn je skupenství látky, ve kterém jsou molekuly od sebe velmi daleko (v porovnání s jejich velikostí) 
+                    a pohybují se chaoticky všemi směry vysokými rychlostmi (řádově stovky m/s).
+                </p>
+                <p>
+                    <strong>Zajímavost:</strong> Ve vzduchu při normálních podmínkách zaujímají molekuly pouhé 1% prostoru, 
+                    zbylých 99% je prázdný prostor!
+                </p>
+            </div>
+
+            <h3 class="section-subtitle">Ideální plyn - základní předpoklady</h3>
+
+            <div class="info-card warning">
+                <h3>Model ideálního plynu</h3>
+                <p>Abychom mohli plyn matematicky popsat, zavádíme zjednodušený model - <strong>ideální plyn</strong>:</p>
+                <ol>
+                    <li><strong>Zanedbatelné rozměry molekul:</strong> Molekuly považujeme za hmotné body (jejich velikost je zanedbatelná vzhledem ke vzdálenostem mezi nimi)</li>
+                    <li><strong>Žádné mezimolekulární síly:</strong> Molekuly na sebe silově nepůsobí, kromě okamžiku srážky</li>
+                    <li><strong>Dokonale pružné srážky:</strong> Při srážkách molekul se neztrácí energie (nepřemění se na teplo)</li>
+                </ol>
+                <p style="margin-top: 15px;">
+                    <strong>Důležité:</strong> Reálné plyny se chovají jako ideální při <strong>nízkých tlacích</strong> a 
+                    <strong>vysokých teplotách</strong>. Při normálních podmínkách (0°C, 10⁵ Pa) je tento model dostatečně přesný.
+                </p>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 50px;">Stavová rovnice - základní vztah</h2>
+
+            <div class="info-card">
+                <h3>Co popisuje stavová rovnice?</h3>
+                <p>
+                    Stavová rovnice vyjadřuje vztah mezi <strong>čtyřmi základními veličinami</strong>, které určují stav plynu:
+                </p>
+            </div>
+
+            <div class="key-concepts">
+                <div class="concept-card">
+                    <h3>Tlak (p)</h3>
+                    <p><strong>Co to je:</strong> Síla, kterou molekuly působí kolmo na stěny nádoby</p>
+                    <p><strong>Jak vzniká:</strong> Nárazy molekul na stěny</p>
+                    <p><strong>Jednotka:</strong> Pascal (Pa) = N/m²</p>
+                    <p><strong>Typické hodnoty:</strong><br>
+                    • Atmosférický: 10⁵ Pa = 100 kPa<br>
+                    • Pneumatiky: 200-250 kPa<br>
+                    • Potápění 10m: 200 kPa</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Objem (V)</h3>
+                    <p><strong>Co to je:</strong> Prostor, který plyn zaujímá</p>
+                    <p><strong>Jak funguje:</strong> Plyn vyplňuje celý dostupný prostor</p>
+                    <p><strong>Jednotka:</strong> m³ (krychlový metr)</p>
+                    <p><strong>Převody:</strong><br>
+                    • 1 litr = 0,001 m³<br>
+                    • 1 dm³ = 0,001 m³<br>
+                    • 1000 litrů = 1 m³</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Teplota (T)</h3>
+                    <p><strong>Co to je:</strong> Míra průměrné kinetické energie molekul</p>
+                    <p><strong>Jak funguje:</strong> Vyšší teplota = rychlejší pohyb molekul</p>
+                    <p><strong>Jednotka:</strong> Kelvin (K)</p>
+                    <p><strong>Převod:</strong><br>
+                    T[K] = t[°C] + 273<br>
+                    • 0°C = 273 K<br>
+                    • 20°C = 293 K<br>
+                    • 100°C = 373 K</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Množství látky (n)</h3>
+                    <p><strong>Co to je:</strong> Počet molů plynu</p>
+                    <p><strong>Vzorec:</strong> n = m/M</p>
+                    <p><strong>Jednotka:</strong> mol</p>
+                    <p><strong>Souvislost:</strong><br>
+                    • 1 mol = 6,02×10²³ molekul<br>
+                    • m = hmotnost [g]<br>
+                    • M = molární hmotnost [g/mol]</p>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">Základní stavová rovnice</h3>
+
+            <div class="formula-box">
+                p · V = n · R · T
+            </div>
+
+            <div class="info-card success">
+                <h3>Vysvětlení vzorce</h3>
+                <p><strong>R = 8,314 J/(mol·K)</strong> je <strong>molární plynová konstanta</strong></p>
+                <p>Tato konstanta vyjadřuje, jak silně reaguje plyn na změny teploty a tlaku. Je to univerzální konstanta stejná pro všechny ideální plyny!</p>
+                <p style="margin-top: 15px;"><strong>Fyzikální význam:</strong> Stavová rovnice říká, že součin tlaku a objemu je přímo úměrný teplotě a množství látky.</p>
+            </div>
+
+            <div class="info-card purple">
+                <h3>Alternativní tvar stavové rovnice</h3>
+                <div class="formula-box">
+                    p · V = N · k · T
+                </div>
+                <p><strong>N</strong> = počet molekul (ne molů!)</p>
+                <p><strong>k = 1,38×10⁻²³ J/K</strong> = Boltzmannova konstanta</p>
+                <p>Tento tvar se používá, když pracujeme s počtem molekul místo molů.</p>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 50px;">Typy dějů s ideálním plynem</h2>
+
+            <div class="info-card">
+                <h3>Obecný přístup</h3>
+                <p>
+                    Při různých procesech s plynem může zůstávat jedna ze stavových veličin konstantní. 
+                    Podle toho, která veličina se nemění, rozlišujeme tři základní typy dějů:
+                </p>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="info-card" style="border-left-color: #3b82f6;">
+                    <h3>1. IZOTERMICKÝ DĚJ</h3>
+                    <p><strong>T = konstanta (teplota se nemění)</strong></p>
+                    
+                    <div class="formula-box" style="font-size: 1.3em;">
+                        p₁ · V₁ = p₂ · V₂
+                    </div>
+                    
+                    <p><strong>Co se děje na molekulární úrovni:</strong></p>
+                    <ul>
+                        <li>Molekuly se pohybují stále stejně rychle</li>
+                        <li>Při zvětšení objemu se molekuly rozprostřou → méně nárazů na stěny → nižší tlak</li>
+                        <li>Při zmenšení objemu se molekuly stlačí → více nárazů → vyšší tlak</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Praktické příklady:</strong></p>
+                    <ul>
+                        <li>Bublina vzduchu stoupající z hloubky (pomalu, aby se vyrovnala teplota s okolím)</li>
+                        <li>Spojení dvou nádob s plynem</li>
+                        <li>Natlakování pneumatiky (pokud ignorujeme zahřátí)</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Grafická závislost:</strong></p>
+                    <p>V grafu p-V tvoří hyperbolu (křivku)</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Důležité vztahy:</strong></p>
+                    <p>• Je-li V₂ = 2V₁, pak p₂ = p₁/2</p>
+                    <p>• Je-li V₂ = V₁/3, pak p₂ = 3p₁</p>
+                </div>
+
+                <div class="info-card" style="border-left-color: #ef4444;">
+                    <h3>2. IZOCHORICKÝ DĚJ</h3>
+                    <p><strong>V = konstanta (objem se nemění)</strong></p>
+                    
+                    <div class="formula-box" style="font-size: 1.3em;">
+                        p₁ / T₁ = p₂ / T₂
+                    </div>
+                    
+                    <p><strong>Co se děje na molekulární úrovni:</strong></p>
+                    <ul>
+                        <li>Prostor zůstává stejný, molekuly nemají kam uniknout</li>
+                        <li>Při zahřátí se molekuly pohybují rychleji → silnější nárazy → vyšší tlak</li>
+                        <li>Při ochlazení se molekuly pohybují pomaleji → slabší nárazy → nižší tlak</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Praktické příklady:</strong></p>
+                    <ul>
+                        <li>Zahřívání plynu v uzavřené pevné nádobě</li>
+                        <li>Aerosol v horkém prostředí (nebezpečí výbuchu!)</li>
+                        <li>Tlak v pneumatikách při změně teploty</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Grafická závislost:</strong></p>
+                    <p>V grafu p-T tvoří přímku procházející počátkem</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Důležité vztahy:</strong></p>
+                    <p>• Je-li T₂ = 2T₁, pak p₂ = 2p₁</p>
+                    <p>• Při zahřátí z 0°C (273K) na 100°C (373K) vzroste tlak o 37%</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Energetické vztahy:</strong></p>
+                    <p>• W = 0 (žádná práce, objem se nemění)</p>
+                    <p>• Q = ΔU (veškeré teplo jde na zvýšení vnitřní energie)</p>
+                    <p>• ΔU = n·Cᵥ·ΔT</p>
+                </div>
+
+                <div class="info-card" style="border-left-color: #f59e0b;">
+                    <h3>3. IZOBARICKÝ DĚJ</h3>
+                    <p><strong>p = konstanta (tlak se nemění)</strong></p>
+                    
+                    <div class="formula-box" style="font-size: 1.3em;">
+                        V₁ / T₁ = V₂ / T₂
+                    </div>
+                    
+                    <p><strong>Co se děje na molekulární úrovni:</strong></p>
+                    <ul>
+                        <li>Tlak musí zůstat stejný (např. atmosférický tlak)</li>
+                        <li>Při zahřátí se molekuly pohybují rychleji, aby tlak nezrostl, musí se objem zvětšit</li>
+                        <li>Při ochlazení se molekuly pohybují pomaleji, objem se zmenší</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Praktické příklady:</strong></p>
+                    <ul>
+                        <li>Ohřívání vzduchu v balónu (stoupá nahoru)</li>
+                        <li>Plyn v otevřené nádobě nebo s pohyblivým pístem</li>
+                        <li>Horkovzdušný balón</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Grafická závislost:</strong></p>
+                    <p>V grafu V-T tvoří přímku procházející počátkem</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Důležité vztahy:</strong></p>
+                    <p>• Je-li T₂ = 2T₁, pak V₂ = 2V₁</p>
+                    <p>• Při zahřátí z 0°C na 100°C se objem zvětší o 37%</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Energetické vztahy:</strong></p>
+                    <p>• W = p·ΔV (plyn koná práci při rozpínání)</p>
+                    <p>• Q = n·Cₚ·ΔT</p>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">Porovnání dějů - rychlý přehled</h3>
+
+            <table>
+                <tr>
+                    <th>Typ děje</th>
+                    <th>Co je konstantní</th>
+                    <th>Vzorec</th>
+                    <th>Příklad</th>
+                </tr>
+                <tr>
+                    <td><strong>Izotermický</strong></td>
+                    <td>Teplota (T)</td>
+                    <td>p₁V₁ = p₂V₂</td>
+                    <td>Bublina stoupá, spojení nádob</td>
+                </tr>
+                <tr>
+                    <td><strong>Izochorický</strong></td>
+                    <td>Objem (V)</td>
+                    <td>p₁/T₁ = p₂/T₂</td>
+                    <td>Zahřívání v pevné nádobě</td>
+                </tr>
+                <tr>
+                    <td><strong>Izobarický</strong></td>
+                    <td>Tlak (p)</td>
+                    <td>V₁/T₁ = V₂/T₂</td>
+                    <td>Plyn v otevřené nádobě</td>
+                </tr>
+            </table>
+
+            <h2 class="section-title" style="margin-top: 50px;">Hydrostatický tlak</h2>
+
+            <div class="info-card" style="border-left-color: #10b981;">
+                <h3>Tlak v kapalinách - proč je důležitý?</h3>
+                <p>
+                    Když je plyn pod vodou (například bublina), působí na něj nejen atmosférický tlak, 
+                    ale i tlak vody nad ním. Tento dodatečný tlak nazýváme <strong>hydrostatický tlak</strong>.
+                </p>
+                
+                <div class="formula-box" style="margin-top: 20px;">
+                    p = p₀ + ρ · g · h
+                </div>
+                
+                <p style="margin-top: 20px;"><strong>Význam jednotlivých veličin:</strong></p>
+                <ul>
+                    <li><strong>p</strong> = celkový tlak v hloubce h [Pa]</li>
+                    <li><strong>p₀</strong> = atmosférický tlak na hladině ≈ 10⁵ Pa = 100 kPa</li>
+                    <li><strong>ρ</strong> (ró) = hustota kapaliny = 1000 kg/m³ (pro vodu)</li>
+                    <li><strong>g</strong> = tíhové zrychlení = 10 m/s²</li>
+                    <li><strong>h</strong> = hloubka pod hladinou [m]</li>
+                </ul>
+                
+                <p style="margin-top: 20px;"><strong>Praktický výpočet:</strong></p>
+                <p>ρ·g·h = 1000 · 10 · h = 10 000·h Pa = 10·h kPa</p>
+                <p style="color: #10b981; font-weight: bold;">💡 Praktické pravidlo: Každých 10 metrů hloubky přidá 100 kPa (1 atmosféru)!</p>
+                
+                <p style="margin-top: 20px;"><strong>Příklady:</strong></p>
+                <ul>
+                    <li>Hloubka 10 m: p = 100 + 100 = 200 kPa (dvojnásobek atmosférického)</li>
+                    <li>Hloubka 20 m: p = 100 + 200 = 300 kPa (trojnásobek)</li>
+                    <li>Hloubka 50 m: p = 100 + 500 = 600 kPa (šestinásobek)</li>
+                </ul>
+                
+                <p style="margin-top: 20px;"><strong>Fyzikální vysvětlení:</strong></p>
+                <p>
+                    Tlak vzniká tíhou vodního sloupce nad daným bodem. Čím hlouběji jsme, tím větší sloupec vody 
+                    je nad námi a tím větší je tlak. Proto se bublina vzduchu zvětšuje, když stoupá k hladině - 
+                    tlak klesá, takže plyn se může rozpínat.
+                </p>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 50px;">Postup řešení úloh - krok za krokem</h2>
+
+            <div class="info-card">
+                <h3>Univerzální postup pro jakoukoliv úlohu</h3>
+                <ol style="font-size: 1.1em; line-height: 2;">
+                    <li>
+                        <strong>KROK 1: Urči typ děje</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Co v zadání zůstává konstantní? (T, V, nebo p?)</li>
+                            <li>Je nádoba uzavřená? → pravděpodobně izochorický</li>
+                            <li>Je nádoba otevřená? → pravděpodobně izobarický</li>
+                            <li>Mění se všechny veličiny? → použij obecnou stavovou rovnici</li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;">
+                        <strong>KROK 2: Převeď všechny jednotky na SI</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Teplota: °C → K (přičti 273)</li>
+                            <li>Objem: l → m³ (vyděl 1000)</li>
+                            <li>Tlak: kPa → Pa (vynásob 1000), MPa → Pa (vynásob 1 000 000)</li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;">
+                        <strong>KROK 3: Zapiš si DÁNO</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Vypiš všechny známé veličiny se správnými jednotkami</li>
+                            <li>Označ co hledáš (např. p₂ = ?)</li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;">
+                        <strong>KROK 4: Napiš stavovou rovnici pro oba stavy</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Stav 1 (počáteční): p₁·V₁ = n₁·R·T₁</li>
+                            <li>Stav 2 (konečný): p₂·V₂ = n₂·R·T₂</li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;">
+                        <strong>KROK 5: Použij příslušný vzorec</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Izotermický: p₁V₁ = p₂V₂</li>
+                            <li>Izochorický: p₁/T₁ = p₂/T₂</li>
+                            <li>Izobarický: V₁/T₁ = V₂/T₂</li>
+                            <li>Obecný: (p₁V₁)/T₁ = (p₂V₂)/T₂</li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;">
+                        <strong>KROK 6: Dosaď čísla a vypočítej</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Vyjádři hledanou veličinu</li>
+                            <li>Dosaď známé hodnoty</li>
+                            <li>Vypočítej výsledek</li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;">
+                        <strong>KROK 7: Zkontroluj výsledek</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Dává výsledek fyzikální smysl?</li>
+                            <li>Jsou jednotky správně?</li>
+                            <li>Je výsledek v rozumném rozmezí?</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="info-card danger">
+                <h3>⚠️ Nejčastější chyby při řešení</h3>
+                <ul>
+                    <li><strong>Zapomínání převést °C na K</strong> - toto je NEJČASTĚJŠÍ chyba!</li>
+                    <li><strong>Nepřevádění litrů na m³</strong> - 1 l = 0,001 m³, NE 0,01!</li>
+                    <li><strong>Špatné určení typu děje</strong> - pozor na otevřené vs. uzavřené nádoby</li>
+                    <li><strong>Zapomínání na hydrostatický tlak</strong> - pod vodou musíš přičíst ρgh!</li>
+                    <li><strong>Chyby v počítání s jednotkami</strong> - kontroluj jednotky po celou dobu výpočtu</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- EXAMPLES TAB -->
+        <div id="examples" class="content">
+            <h2 class="section-title">Řešené příklady - kompletní řešení</h2>
+            <p style="font-size: 1.2em; margin-bottom: 30px; color: #9ca3af;">
+                Klikni na příklad pro zobrazení/skrytí detailního řešení
+            </p>
+            
+            <!-- PŘÍKLAD 1 -->
+            <div class="example-card">
+                <div class="example-header">
+                    <div class="example-title">Příklad 1: Únik plynu z nádoby (izochorický děj)</div>
+                    <button class="toggle-button">▶ Zobrazit řešení</button>
+                </div>
+                
+                <div class="example-zadani">
+                    <strong>ZADÁNÍ:</strong> V nádobě je plyn o teplotě 27°C a tlaku 4 MPa. Jaký bude jeho tlak, jestliže z nádoby vypustíme poloviční množství plynu a jeho teplota při tom poklesne o 15°C?
+                </div>
+
+                <div class="example-solution">
+                    <h3 style="color: #f39c12; margin-bottom: 15px;">DÁNO:</h3>
+                    <ul style="list-style: none; padding: 0; color: #d1d5db;">
+                        <li>• T₁ = 27°C = 27 + 273 = 300 K</li>
+                        <li>• p₁ = 4 MPa = 4 × 10⁶ Pa</li>
+                        <li>• n₂ = n₁/2 (z nádoby vypustíme polovinu)</li>
+                        <li>• ΔT = -15°C → T₂ = 27 - 15 = 12°C = 12 + 273 = 285 K</li>
+                        <li>• V = konst. (objem nádoby se nemění)</li>
+                        <li><strong>• p₂ = ? (hledáme)</strong></li>
+                    </ul>
+
+                    <h3 style="color: #f39c12; margin: 25px 0 15px 0;">ŘEŠENÍ:</h3>
+                    
+                    <div class="solution-step">
+                        <h4>Krok 1: Určení typu děje a analýza situace</h4>
+                        <p>• Nádoba je uzavřená, takže <strong>objem je konstantní (V = konst.)</strong></p>
+                        <p>• Jedná se tedy o <strong>izochorický děj</strong></p>
+                        <p>• POZOR: Mění se i množství plynu (n), takže nemůžeme použít jednoduchý vzorec p₁/T₁ = p₂/T₂</p>
+                        <p>• Musíme použít <strong>obecnou stavovou rovnici</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 2: Stavová rovnice pro oba stavy</h4>
+                        <p><strong>Stav 1 (počáteční):</strong></p>
+                        <p>p₁ · V = n₁ · R · T₁</p>
+                        <p style="margin-top: 15px;"><strong>Stav 2 (konečný):</strong></p>
+                        <p>p₂ · V = n₂ · R · T₂</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 3: Vydělíme rovnice</h4>
+                        <p>Když vydělíme druhou rovnici první, dostaneme:</p>
+                        <p style="margin-top: 10px;">
+                            <strong>(p₂ · V) / (p₁ · V) = (n₂ · R · T₂) / (n₁ · R · T₁)</strong>
+                        </p>
+                        <p style="margin-top: 10px;">Objem V a konstanta R se vykrátí:</p>
+                        <p style="margin-top: 10px;">
+                            <strong>p₂ / p₁ = (n₂ / n₁) · (T₂ / T₁)</strong>
+                        </p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 4: Vyjádření hledané veličiny</h4>
+                        <p>p₂ = p₁ · (n₂ / n₁) · (T₂ / T₁)</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 5: Dosazení číselných hodnot</h4>
+                        <p>p₂ = 4 MPa · (1/2) · (285 K / 300 K)</p>
+                        <p style="margin-top: 10px;">p₂ = 4 · 0,5 · 0,95</p>
+                        <p style="margin-top: 10px;">p₂ = 1,9 MPa</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 6: Kontrola výsledku</h4>
+                        <p><strong>✓ Dává to smysl?</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>• Množství plynu se snížilo na polovinu → tlak by měl klesnout přibližně na polovinu</li>
+                            <li>• Teplota klesla o 5% (z 300 K na 285 K) → tlak klesne o dalších ~5%</li>
+                            <li>• Celkem: 4 MPa → 2 MPa (polovina) → 1,9 MPa (o 5% méně)</li>
+                            <li>• <strong>Výsledek dává perfektní smysl! ✓</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="result-box">
+                        <h3>✅ VÝSLEDEK:</h3>
+                        <p>p₂ = 1,9 MPa</p>
+                        <p style="font-size: 1em; font-weight: normal; margin-top: 15px;">
+                            <strong>Fyzikální interpretace:</strong> Tlak klesl přibližně na polovinu původní hodnoty, 
+                            protože unikla polovina molekul (méně nárazů na stěny) a navíc se teplota snížila 
+                            (molekuly se pohybují pomaleji → ještě méně intenzivní nárazy).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PŘÍKLAD 2 -->
+            <div class="example-card">
+                <div class="example-header">
+                    <div class="example-title">Příklad 2: Únik z otevřené nádoby (izobarický děj)</div>
+                    <button class="toggle-button">▶ Zobrazit řešení</button>
+                </div>
+                
+                <div class="example-zadani">
+                    <strong>ZADÁNÍ:</strong> Plyn o hmotnosti 100 g se v otevřené nádobě zahřál z 0°C na 100°C. Určete hmotnost plynu, který z nádoby unikl.
+                </div>
+
+                <div class="example-solution">
+                    <h3 style="color: #f39c12; margin-bottom: 15px;">DÁNO:</h3>
+                    <ul style="list-style: none; padding: 0; color: #d1d5db;">
+                        <li>• m₁ = 100 g (počáteční hmotnost)</li>
+                        <li>• T₁ = 0°C = 273 K</li>
+                        <li>• T₂ = 100°C = 373 K</li>
+                        <li>• p = konst. (otevřená nádoba → atmosférický tlak)</li>
+                        <li>• V = konst. (objem nádoby se nemění)</li>
+                        <li><strong>• Δm = m₁ - m₂ = ? (kolik uniklo)</strong></li>
+                    </ul>
+
+                    <h3 style="color: #f39c12; margin: 25px 0 15px 0;">ŘEŠENÍ:</h3>
+                    
+                    <div class="solution-step">
+                        <h4>Krok 1: Určení typu děje a fyzikální analýza</h4>
+                        <p><strong>Klíčové pozorování:</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>• Nádoba je <strong>otevřená</strong> → tlak musí zůstat atmosférický (p = konst.)</li>
+                            <li>• Objem nádoby je pevně daný (V = konst.)</li>
+                            <li>• Teplota roste → molekuly by měly zvýšit tlak</li>
+                            <li>• Aby tlak zůstal konstantní, musí část plynu <strong>uniknout</strong></li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Fyzikální vysvětlení:</strong></p>
+                        <p>Když zahříváme plyn v otevřené nádobě, molekuly se začnou pohybovat rychleji. 
+                        To by mělo zvýšit tlak, ale protože je nádoba otevřená, tlak musí zůstat stejný jako atmosférický. 
+                        Proto část molekul musí uniknout ven, aby se tlak nevyšší.</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 2: Stavová rovnice pro oba stavy</h4>
+                        <p>Protože p a V jsou konstantní:</p>
+                        <p style="margin-top: 10px;"><strong>Stav 1:</strong> p·V = n₁·R·T₁</p>
+                        <p style="margin-top: 10px;"><strong>Stav 2:</strong> p·V = n₂·R·T₂</p>
+                        <p style="margin-top: 10px;">Z toho plyne: <strong>n₁·T₁ = n₂·T₂</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 3: Vztah mezi hmotností a látkovým množstvím</h4>
+                        <p>Látkové množství: n = m/M (kde M je molární hmotnost)</p>
+                        <p style="margin-top: 10px;">Dosadíme do rovnice:</p>
+                        <p style="margin-top: 10px;"><strong>(m₁/M)·T₁ = (m₂/M)·T₂</strong></p>
+                        <p style="margin-top: 10px;">M se vykrátí: <strong>m₁·T₁ = m₂·T₂</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 4: Výpočet konečné hmotnosti</h4>
+                        <p>m₂ = m₁ · (T₁/T₂)</p>
+                        <p style="margin-top: 10px;">m₂ = 100 g · (273 K / 373 K)</p>
+                        <p style="margin-top: 10px;">m₂ = 100 · 0,732</p>
+                        <p style="margin-top: 10px;"><strong>m₂ = 73,2 g</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 5: Výpočet hmotnosti, která unikla</h4>
+                        <p>Δm = m₁ - m₂</p>
+                        <p style="margin-top: 10px;">Δm = 100 g - 73,2 g</p>
+                        <p style="margin-top: 10px;"><strong>Δm = 26,8 g ≈ 27 g</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 6: Kontrola a interpretace</h4>
+                        <p><strong>✓ Dává to smysl?</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>• Teplota vzrostla z 273 K na 373 K, tj. o 37%</li>
+                            <li>• Proto hmotnost klesla na 73% původní hodnoty</li>
+                            <li>• Uniklo 27% původní hmotnosti</li>
+                            <li>• <strong>To dává perfektní smysl! ✓</strong></li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Alternativní pohled:</strong></p>
+                        <p>Teplota vzrostla 1,37×, proto aby tlak zůstal stejný, musela hmotnost klesnout 1,37× 
+                        (tedy zůstat jen 73% původní hodnoty).</p>
+                    </div>
+
+                    <div class="result-box">
+                        <h3>✅ VÝSLEDEK:</h3>
+                        <p>Δm = 27 g</p>
+                        <p style="font-size: 1em; font-weight: normal; margin-top: 15px;">
+                            <strong>Fyzikální interpretace:</strong> Z nádoby uniklo přibližně 27% původního plynu, 
+                            protože při zahřívání v otevřené nádobě (konstantní tlak a objem) musí část molekul 
+                            uniknout, aby se kompenzovalo zvýšení kinetické energie zbylých molekul.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PŘÍKLAD 3 -->
+            <div class="example-card">
+                <div class="example-header">
+                    <div class="example-title">Příklad 3: Změna vnitřní energie (izochorický děj)</div>
+                    <button class="toggle-button">▶ Zobrazit řešení</button>
+                </div>
+                
+                <div class="example-zadani">
+                    <strong>ZADÁNÍ:</strong> V nádobě o objemu 3 l je plyn při teplotě 290 K a tlaku 10⁵ Pa. Molekuly jsou jednoatomové. Určete změnu vnitřní energie a teplo, když plyn při stálém objemu zahřejeme o 100 K.
+                </div>
+
+                <div class="example-solution">
+                    <h3 style="color: #f39c12; margin-bottom: 15px;">DÁNO:</h3>
+                    <ul style="list-style: none; padding: 0; color: #d1d5db;">
+                        <li>• V = 3 l = 0,003 m³</li>
+                        <li>• T₁ = 290 K</li>
+                        <li>• p = 10⁵ Pa</li>
+                        <li>• ΔT = 100 K (zvýšení teploty)</li>
+                        <li>• Jednoatomový plyn</li>
+                        <li><strong>• ΔU = ? (změna vnitřní energie)</strong></li>
+                        <li><strong>• Q = ? (teplo)</strong></li>
+                    </ul>
+
+                    <h3 style="color: #f39c12; margin: 25px 0 15px 0;">ŘEŠENÍ:</h3>
+                    
+                    <div class="solution-step">
+                        <h4>Krok 1: Určení typu děje</h4>
+                        <p>• Objem je konstantní (V = konst.) → <strong>izochorický děj</strong></p>
+                        <p>• Při izochorickém ději: W = 0 (žádná práce, protože se objem nemění)</p>
+                        <p>• Z 1. termodynamického zákona: Q = ΔU + W → Q = ΔU (veškeré teplo jde na vnitřní energii)</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 2: Výpočet látkového množství</h4>
+                        <p>Ze stavové rovnice: p·V = n·R·T</p>
+                        <p style="margin-top: 10px;">n = (p·V) / (R·T)</p>
+                        <p style="margin-top: 10px;">n = (10⁵ Pa · 0,003 m³) / (8,314 J/(mol·K) · 290 K)</p>
+                        <p style="margin-top: 10px;">n = 300 / 2411,06</p>
+                        <p style="margin-top: 10px;"><strong>n = 0,124 mol</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 3: Určení molární tepelné kapacity</h4>
+                        <p><strong>Pro jednoatomový plyn platí:</strong></p>
+                        <p style="margin-top: 10px;">Cᵥ = (3/2)·R</p>
+                        <p style="margin-top: 10px;">Cᵥ = (3/2)·8,314 J/(mol·K)</p>
+                        <p style="margin-top: 10px;"><strong>Cᵥ = 12,471 J/(mol·K)</strong></p>
+                        <p style="margin-top: 15px;"><strong>Poznámka:</strong> Číslo 3/2 plyne z toho, že jednoatomová molekula 
+                        má 3 stupně volnosti pohybu (x, y, z směr).</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 4: Výpočet změny vnitřní energie</h4>
+                        <p>ΔU = n·Cᵥ·ΔT</p>
+                        <p style="margin-top: 10px;">ΔU = 0,124 mol · 12,471 J/(mol·K) · 100 K</p>
+                        <p style="margin-top: 10px;">ΔU = 154,6 J</p>
+                        <p style="margin-top: 10px;"><strong>ΔU ≈ 0,16 kJ</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 5: Výpočet tepla</h4>
+                        <p>Při izochorickém ději platí:</p>
+                        <p style="margin-top: 10px;"><strong>Q = ΔU = 0,16 kJ</strong></p>
+                        <p style="margin-top: 15px;"><strong>Fyzikální význam:</strong> Veškeré dodané teplo se přemění 
+                        na zvýšení vnitřní energie plynu (rychlejší pohyb molekul), protože plyn nekoná žádnou práci 
+                        (objem se nemění).</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 6: Kontrola a interpretace</h4>
+                        <p><strong>✓ Dává to smysl?</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>• Máme malé množství plynu (0,124 mol)</li>
+                            <li>• Zvýšili jsme teplotu o 100 K (což je dost)</li>
+                            <li>• Energie 0,16 kJ je rozumná hodnota pro tento případ</li>
+                            <li>• <strong>Výsledek dává smysl! ✓</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="result-box">
+                        <h3>✅ VÝSLEDEK:</h3>
+                        <p>ΔU = Q = 0,16 kJ</p>
+                        <p style="font-size: 1em; font-weight: normal; margin-top: 15px;">
+                            <strong>Fyzikální interpretace:</strong> Při izochorickém zahřívání veškeré dodané teplo 
+                            zvyšuje kinetickou energii molekul (vnitřní energii). Žádná energie se neutratí za práci, 
+                            protože plyn se nerozpíná.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PŘÍKLAD 4 -->
+            <div class="example-card">
+                <div class="example-header">
+                    <div class="example-title">Příklad 4: Spojení nádob (izotermický děj)</div>
+                    <button class="toggle-button">▶ Zobrazit řešení</button>
+                </div>
+                
+                <div class="example-zadani">
+                    <strong>ZADÁNÍ:</strong> Nádoba o objemu 10 l s tlakem 10⁵ Pa se spojí trubicí s nádobou o objemu 5 l, ve které je vakuum. Určete výsledný tlak při stálé teplotě.
+                </div>
+
+                <div class="example-solution">
+                    <h3 style="color: #f39c12; margin-bottom: 15px;">DÁNO:</h3>
+                    <ul style="list-style: none; padding: 0; color: #d1d5db;">
+                        <li>• V₁ = 10 l = 0,01 m³ (objem první nádoby)</li>
+                        <li>• p₁ = 10⁵ Pa (tlak v první nádobě)</li>
+                        <li>• V₂ = 5 l = 0,005 m³ (objem druhé nádoby)</li>
+                        <li>• p₂ᵥₐₖ = 0 Pa (ve druhé nádobě je vakuum)</li>
+                        <li>• T = konst. (teplota konstantní)</li>
+                        <li><strong>• p_výsledný = ? (hledáme)</strong></li>
+                    </ul>
+
+                    <h3 style="color: #f39c12; margin: 25px 0 15px 0;">ŘEŠENÍ:</h3>
+                    
+                    <div class="solution-step">
+                        <h4>Krok 1: Určení typu děje a analýza situace</h4>
+                        <p><strong>Co se stane fyzikálně?</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>• Teplota je konstantní → <strong>izotermický děj</strong></li>
+                            <li>• Plyn z první nádoby se rozpíná do druhé nádoby</li>
+                            <li>• Celkový objem se zvětší z 10 l na 15 l</li>
+                            <li>• Množství molekul zůstává stejné (žádný plyn neunikne)</li>
+                            <li>• Tlak musí klesnout (molekuly mají více místa)</li>
+                        </ul>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 2: Použití vztahu pro izotermický děj</h4>
+                        <p>Pro izotermický děj platí: <strong>p₁·V₁ = p₂·V₂</strong></p>
+                        <p style="margin-top: 15px;">V našem případě:</p>
+                        <p style="margin-top: 10px;">• <strong>Stav 1:</strong> plyn v objemu V₁ = 10 l při tlaku p₁ = 10⁵ Pa</p>
+                        <p style="margin-top: 10px;">• <strong>Stav 2:</strong> tentýž plyn v celkovém objemu V_celk = V₁ + V₂ = 15 l při tlaku p_výsl</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 3: Sestavení rovnice</h4>
+                        <p>p₁ · V₁ = p_výsl · V_celk</p>
+                        <p style="margin-top: 10px;">p₁ · V₁ = p_výsl · (V₁ + V₂)</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 4: Výpočet výsledného tlaku</h4>
+                        <p>p_výsl = p₁ · V₁ / (V₁ + V₂)</p>
+                        <p style="margin-top: 10px;">p_výsl = 10⁵ Pa · 10 l / (10 l + 5 l)</p>
+                        <p style="margin-top: 10px;">p_výsl = 10⁵ · 10 / 15</p>
+                        <p style="margin-top: 10px;">p_výsl = 10⁵ · (2/3)</p>
+                        <p style="margin-top: 10px;">p_výsl = 66 667 Pa</p>
+                        <p style="margin-top: 10px;"><strong>p_výsl ≈ 67 kPa</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 5: Alternativní přístup (pro kontrolu)</h4>
+                        <p><strong>Můžeme použít i jednotky v litrech:</strong></p>
+                        <p style="margin-top: 10px;">p_výsl = 100 kPa · 10 / 15 = 66,7 kPa ✓</p>
+                        <p style="margin-top: 15px;"><strong>Proč to funguje?</strong> Protože poměr objemů je stejný 
+                        v litrech i v m³, můžeme počítat přímo v litrech bez převodu.</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 6: Kontrola a interpretace</h4>
+                        <p><strong>✓ Dává to smysl?</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>• Objem se zvětšil 1,5× (z 10 l na 15 l)</li>
+                            <li>• Tlak by měl klesnout 1,5× (na 2/3 původní hodnoty)</li>
+                            <li>• 100 kPa → 66,7 kPa (přesně 2/3) ✓</li>
+                            <li>• <strong>Výsledek perfektně odpovídá fyzikálním zákonům! ✓</strong></li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Fyzikální vysvětlení:</strong> Molekuly se rozprostřou 
+                        do většího prostoru, takže na každou část stěny dopadá méně molekul za sekundu → nižší tlak.</p>
+                    </div>
+
+                    <div class="result-box">
+                        <h3>✅ VÝSLEDEK:</h3>
+                        <p>p_výsl = 67 kPa</p>
+                        <p style="font-size: 1em; font-weight: normal; margin-top: 15px;">
+                            <strong>Fyzikální interpretace:</strong> Když plyn rozpínáme při konstantní teplotě, 
+                            molekuly si zachovávají stejnou rychlost, ale mají více prostoru, takže na jednotku plochy 
+                            dopadne méně nárazů → tlak klesá úměrně zvětšení objemu.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PŘÍKLAD 5 -->
+            <div class="example-card">
+                <div class="example-header">
+                    <div class="example-title">Příklad 5: Bublina v jezeře (izotermický děj + hydrostatika)</div>
+                    <button class="toggle-button">▶ Zobrazit řešení</button>
+                </div>
+                
+                <div class="example-zadani">
+                    <strong>ZADÁNÍ:</strong> Objem vzduchové bubliny se u hladiny jezera zvětšil třikrát oproti objemu u dna. Určete hloubku jezera. Předpokládejte, že teplota vody je všude stejná.
+                </div>
+
+                <div class="example-solution">
+                    <h3 style="color: #f39c12; margin-bottom: 15px;">DÁNO:</h3>
+                    <ul style="list-style: none; padding: 0; color: #d1d5db;">
+                        <li>• V₂ = 3·V₁ (objem na hladině je 3× větší než na dně)</li>
+                        <li>• T = konst. (teplota konstantní)</li>
+                        <li>• p₀ = 10⁵ Pa = 100 kPa (atmosférický tlak)</li>
+                        <li>• ρ = 1000 kg/m³ (hustota vody)</li>
+                        <li>• g = 10 m/s² (tíhové zrychlení)</li>
+                        <li><strong>• h = ? (hloubka jezera)</strong></li>
+                    </ul>
+
+                    <h3 style="color: #f39c12; margin: 25px 0 15px 0;">ŘEŠENÍ:</h3>
+                    
+                    <div class="solution-step">
+                        <h4>Krok 1: Určení typu děje a analýza tlaku</h4>
+                        <p><strong>Typ děje:</strong></p>
+                        <p>• Teplota je konstantní → <strong>izotermický děj</strong></p>
+                        <p>• Použijeme: p₁·V₁ = p₂·V₂</p>
+                        
+                        <p style="margin-top: 20px;"><strong>Analýza tlaku:</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>• <strong>Na dně (hloubka h):</strong> p₁ = p₀ + ρ·g·h (atmosférický + hydrostatický)</li>
+                            <li>• <strong>U hladiny:</strong> p₂ = p₀ (pouze atmosférický tlak)</li>
+                        </ul>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 2: Použití izotermického vztahu</h4>
+                        <p>p₁ · V₁ = p₂ · V₂</p>
+                        <p style="margin-top: 10px;">Dosadíme známé vztahy:</p>
+                        <p style="margin-top: 10px;"><strong>(p₀ + ρ·g·h) · V₁ = p₀ · V₂</strong></p>
+                        <p style="margin-top: 10px;">A víme, že V₂ = 3·V₁:</p>
+                        <p style="margin-top: 10px;"><strong>(p₀ + ρ·g·h) · V₁ = p₀ · 3V₁</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 3: Zjednodušení rovnice</h4>
+                        <p>Vydělíme obě strany V₁:</p>
+                        <p style="margin-top: 10px;"><strong>p₀ + ρ·g·h = 3p₀</strong></p>
+                        <p style="margin-top: 10px;">Přesuneme p₀ na pravou stranu:</p>
+                        <p style="margin-top: 10px;"><strong>ρ·g·h = 3p₀ - p₀</strong></p>
+                        <p style="margin-top: 10px;"><strong>ρ·g·h = 2p₀</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 4: Výpočet hloubky</h4>
+                        <p>h = 2p₀ / (ρ·g)</p>
+                        <p style="margin-top: 10px;">h = (2 × 10⁵ Pa) / (1000 kg/m³ × 10 m/s²)</p>
+                        <p style="margin-top: 10px;">h = 200 000 / 10 000</p>
+                        <p style="margin-top: 10px;"><strong>h = 20 m</strong></p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 5: Kontrola pomocí pravidla "10 m = 1 atmosféra"</h4>
+                        <p><strong>✓ Dává to smysl?</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>• Ve 20 m hloubce: p = p₀ + 2p₀ = 3p₀ (trojnásobný tlak)</li>
+                            <li>• U hladiny: p = p₀ (jeden atmosférický tlak)</li>
+                            <li>• Tlak kles 3×, takže objem vzrostl 3× ✓</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Pravidlo:</strong> Každých 10 m = 1 atmosféra navíc</p>
+                        <p style="margin-top: 10px;">• 0 m (hladina): 1 atmosféra</p>
+                        <p style="margin-top: 5px;">• 10 m: 2 atmosféry</p>
+                        <p style="margin-top: 5px;">• 20 m: 3 atmosféry ✓</p>
+                    </div>
+
+                    <div class="solution-step">
+                        <h4>Krok 6: Fyzikální interpretace</h4>
+                        <p><strong>Co se děje s bublinou:</strong></p>
+                        <p style="margin-top: 10px;">
+                            Na dně jezera je bublina pod trojnásobným tlakem (1 atm atmosférický + 2 atm vody). 
+                            Když stoupá k hladině, tlak klesá na 1 atmosféru. Protože je teplota stejná, 
+                            molekuly si zachovávají rychlost, ale tlak je menší, takže se bublina může rozpínat - 
+                            její objem se zvětší třikrát.
+                        </p>
+                        <p style="margin-top: 15px;"><strong>Praktická aplikace:</strong> Proto potápěči musí 
+                        pomalu stoupat k hladině - bubliny vzduchu v jejich těle se rozpínají a mohly by způsobit 
+                        vážné zdravotní problémy (dekompresní nemoc)!</p>
+                    </div>
+
+                    <div class="result-box">
+                        <h3>✅ VÝSLEDEK:</h3>
+                        <p>h = 20 m</p>
+                        <p style="font-size: 1em; font-weight: normal; margin-top: 15px;">
+                            <strong>Fyzikální interpretace:</strong> Ve 20 metrech hloubky je tlak trojnásobný 
+                            (3 atmosféry). Když bublina stoupá k hladině (1 atmosféra), tlak klesne třikrát, 
+                            a proto se při konstantní teplotě objem zvětší také třikrát.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRACTICE TAB -->
+        <div id="practice" class="content">
+            <h2 class="section-title">Procvičování - 10 příkladů</h2>
+            
+            <div class="progress-indicator" id="progress">
+                Příklad 1 z 10 | Úspěšnost: 0% (0/0)
+            </div>
+
+            <div class="practice-problem">
+                <h3 id="question">Načítám příklad...</h3>
+
+                <div class="input-group">
+                    <label>Tvoje odpověď:</label>
+                    <input type="number" step="any" id="answer-input" placeholder="Zadej hodnotu">
+                    <span style="margin-left: 10px; font-size: 1.1em; font-weight: bold; color: #f39c12;" id="unit"></span>
+                </div>
+
+                <button class="submit-button" id="check-btn">Zkontrolovat</button>
+
+                <div class="feedback" id="feedback">
+                    <div id="feedback-message"></div>
+                    <div id="feedback-hint" style="margin-top: 15px; font-size: 0.95em;"></div>
+                    <button class="next-button" id="next-btn" style="display:none;">Další příklad →</button>
+                </div>
+            </div>
+
+            <div class="info-card warning">
+                <h3>💡 Strategie řešení</h3>
+                <ul>
+                    <li><strong>1. Urči typ děje</strong> - co je konstantní?</li>
+                    <li><strong>2. Převeď jednotky</strong> - °C → K, l → m³, kPa → Pa</li>
+                    <li><strong>3. Použij správný vzorec</strong> podle typu děje</li>
+                    <li><strong>4. Zkontroluj výsledek</strong> - dává smysl?</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MISTAKES TAB -->
+        <div id="mistakes" class="content">
+            <h2 class="section-title">Časté chyby a jak se jim vyhnout</h2>
+
+            <div class="info-card danger">
+                <h3>🚫 CHYBA #1: Zapomínání převodu °C na K</h3>
+                <p><strong>Nejčastější chyba vůbec!</strong></p>
+                <p style="margin-top: 15px;"><strong>Špatně:</strong></p>
+                <p>T = 20°C → dosadíš 20 do vzorce ❌</p>
+                <p style="margin-top: 15px;"><strong>Správně:</strong></p>
+                <p>T = 20°C = 20 + 273 = 293 K → dosadíš 293 ✓</p>
+                <p style="margin-top: 15px;"><strong>Proč je to důležité?</strong></p>
+                <p>Kelvinova stupnice začíná od absolutní nuly (-273°C), kde se molekuly prakticky nepohybují. 
+                Teplota v Kelvinech je přímo úměrná kinetické energii molekul. Celsius toto nemá!</p>
+                <p style="margin-top: 15px; color: #f39c12;"><strong>Tip:</strong> Jako první krok VŽDY převeď všechny teploty na Kelviny!</p>
+            </div>
+
+            <div class="info-card danger">
+                <h3>🚫 CHYBA #2: Špatný převod litrů na m³</h3>
+                <p><strong>Častá chyba při převodech objemu</strong></p>
+                <p style="margin-top: 15px;"><strong>Špatně:</strong></p>
+                <p>10 litrů = 0,01 m³ ❌ (toto je chyba!)</p>
+                <p style="margin-top: 15px;"><strong>Správně:</strong></p>
+                <p>1 litr = 0,001 m³ = 10⁻³ m³</p>
+                <p>10 litrů = 0,01 m³ = 10⁻² m³ ✓</p>
+                <p style="margin-top: 15px;"><strong>Zapamatuj si:</strong></p>
+                <ul style="margin-top: 10px;">
+                    <li>1 l = 1 dm³ = 0,001 m³</li>
+                    <li>1000 l = 1 m³</li>
+                    <li>Pro převod litrů na m³: vyděl 1000</li>
+                </ul>
+            </div>
+
+            <div class="info-card danger">
+                <h3>🚫 CHYBA #3: Špatné určení typu děje</h3>
+                <p><strong>Záměna otevřené a uzavřené nádoby</strong></p>
+                <p style="margin-top: 15px;"><strong>Uzavřená nádoba:</strong></p>
+                <ul style="margin-top: 10px;">
+                    <li>Objem je pevný → V = konst. → <strong>izochorický děj</strong></li>
+                    <li>Při zahřátí roste tlak</li>
+                    <li>Příklad: Plynová bomba, pevná nádoba</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Otevřená nádoba:</strong></p>
+                <ul style="margin-top: 10px;">
+                    <li>Tlak zůstává atmosférický → p = konst. → <strong>izobarický děj</strong></li>
+                    <li>Při zahřátí část plynu unikne</li>
+                    <li>Příklad: Hrnec na sporáku, balon</li>
+                </ul>
+            </div>
+
+            <div class="info-card danger">
+                <h3>🚫 CHYBA #4: Zapomínání na hydrostatický tlak</h3>
+                <p><strong>Pod vodou nezapomeň přičíst ρgh!</strong></p>
+                <p style="margin-top: 15px;"><strong>Špatně:</strong></p>
+                <p>Bublina ve 10 m: p = 100 kPa ❌</p>
+                <p style="margin-top: 15px;"><strong>Správně:</strong></p>
+                <p>p = p₀ + ρgh = 100 + 100 = 200 kPa ✓</p>
+                <p style="margin-top: 15px;"><strong>Kdy používat?</strong></p>
+                <ul style="margin-top: 10px;">
+                    <li>✓ Bublina v jezeře/moři</li>
+                    <li>✓ Potápěč</li>
+                    <li>✓ Jakýkoliv plyn pod vodou</li>
+                    <li>✗ Plyn ve vzduchu (tam jen p₀)</li>
+                </ul>
+            </div>
+
+            <div class="info-card danger">
+                <h3>🚫 CHYBA #5: Špatné převody tlaku</h3>
+                <p><strong>Pozor na předpony kilo a mega!</strong></p>
+                <p style="margin-top: 15px;"><strong>Základní jednotka: Pascal (Pa)</strong></p>
+                <ul style="margin-top: 10px;">
+                    <li>1 kPa = 1000 Pa = 10³ Pa</li>
+                    <li>1 MPa = 1 000 000 Pa = 10⁶ Pa</li>
+                    <li>100 kPa = 0,1 MPa</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Časté chyby:</strong></p>
+                <ul style="margin-top: 10px;">
+                    <li>❌ 4 MPa = 4000 Pa (zapomenutí na "mega")</li>
+                    <li>✓ 4 MPa = 4 000 000 Pa</li>
+                </ul>
+            </div>
+
+            <div class="info-card warning">
+                <h3>Kontrolní checklist před odevzdáním</h3>
+                <p><strong>Před odevzdáním úlohy si zkontroluj:</strong></p>
+                <ul style="margin-top: 15px; font-size: 1.1em;">
+                    <li>☐ Převedl jsem všechny teploty na Kelviny?</li>
+                    <li>☐ Převedl jsem litry na m³ (dělit 1000)?</li>
+                    <li>☐ Převedl jsem kPa/MPa na Pa?</li>
+                    <li>☐ Správně jsem určil typ děje?</li>
+                    <li>☐ U plynu pod vodou jsem přičetl ρgh?</li>
+                    <li>☐ Má můj výsledek fyzikální smysl?</li>
+                    <li>☐ Jsou jednotky správně?</li>
+                </ul>
+            </div>
+
+            <h3 class="section-subtitle">Tabulka častých chyb vs. správné řešení</h3>
+
+            <table>
+                <tr>
+                    <th>Situace</th>
+                    <th>❌ Chyba</th>
+                    <th>✅ Správně</th>
+                </tr>
+                <tr>
+                    <td>Teplota 20°C</td>
+                    <td>T = 20</td>
+                    <td>T = 293 K</td>
+                </tr>
+                <tr>
+                    <td>Objem 5 litrů</td>
+                    <td>V = 0,05 m³</td>
+                    <td>V = 0,005 m³</td>
+                </tr>
+                <tr>
+                    <td>Tlak 200 kPa</td>
+                    <td>p = 200 Pa</td>
+                    <td>p = 200 000 Pa</td>
+                </tr>
+                <tr>
+                    <td>Otevřená nádoba</td>
+                    <td>V = konst.</td>
+                    <td>p = konst.</td>
+                </tr>
+                <tr>
+                    <td>Uzavřená nádoba</td>
+                    <td>p = konst.</td>
+                    <td>V = konst.</td>
+                </tr>
+                <tr>
+                    <td>Bublina ve 10 m</td>
+                    <td>p = 100 kPa</td>
+                    <td>p = 200 kPa</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- FORMULAS TAB -->
+        <div id="formulas" class="content">
+            <h2 class="section-title">Kompletní přehled vzorců</h2>
+            <p style="font-size: 1.2em; margin-bottom: 30px; color: #9ca3af;">
+                Všechny vzorce, které musíš znát nazpaměť pro test
+            </p>
+
+            <div class="formula-grid">
+                <div class="formula-card">
+                    <h3>Základní stavová rovnice</h3>
+                    <div class="main-formula">p · V = n · R · T</div>
+                    <ul>
+                        <li>p = tlak [Pa]</li>
+                        <li>V = objem [m³]</li>
+                        <li>n = látkové množství [mol]</li>
+                        <li>R = 8,314 J/(mol·K)</li>
+                        <li>T = teplota [K]</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Přepočet teploty</h3>
+                    <div class="main-formula">T[K] = t[°C] + 273</div>
+                    <ul>
+                        <li>0°C = 273 K</li>
+                        <li>20°C = 293 K</li>
+                        <li>27°C = 300 K</li>
+                        <li>100°C = 373 K</li>
+                        <li>-273°C = 0 K (abs. nula)</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Látkové množství</h3>
+                    <div class="main-formula">n = m / M</div>
+                    <ul>
+                        <li>n = látkové množství [mol]</li>
+                        <li>m = hmotnost [g nebo kg]</li>
+                        <li>M = molární hmotnost [g/mol]</li>
+                        <li>1 mol = 6,02×10²³ molekul</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Izotermický děj (T = konst.)</h3>
+                    <div class="main-formula">p₁ · V₁ = p₂ · V₂</div>
+                    <ul>
+                        <li>Teplota konstantní</li>
+                        <li>Objem ↑ → Tlak ↓</li>
+                        <li>Objem ↓ → Tlak ↑</li>
+                        <li>Boylův-Mariottův zákon</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Izochorický děj (V = konst.)</h3>
+                    <div class="main-formula">p₁ / T₁ = p₂ / T₂</div>
+                    <ul>
+                        <li>Objem konstantní</li>
+                        <li>Teplota ↑ → Tlak ↑</li>
+                        <li>W = 0 (žádná práce)</li>
+                        <li>Q = ΔU</li>
+                        <li>ΔU = n·Cᵥ·ΔT</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Izobarický děj (p = konst.)</h3>
+                    <div class="main-formula">V₁ / T₁ = V₂ / T₂</div>
+                    <ul>
+                        <li>Tlak konstantní</li>
+                        <li>Teplota ↑ → Objem ↑</li>
+                        <li>Gay-Lussacův zákon</li>
+                        <li>W = p·ΔV</li>
+                        <li>Q = n·Cₚ·ΔT</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Obecná stavová rovnice</h3>
+                    <div class="main-formula">p₁·V₁/T₁ = p₂·V₂/T₂</div>
+                    <ul>
+                        <li>Pro n₁ = n₂</li>
+                        <li>Všechny veličiny se mění</li>
+                        <li>Univerzální vzorec</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Hydrostatický tlak</h3>
+                    <div class="main-formula">p = p₀ + ρ·g·h</div>
+                    <ul>
+                        <li>p₀ = 10⁵ Pa = 100 kPa</li>
+                        <li>ρ = 1000 kg/m³ (voda)</li>
+                        <li>g = 10 m/s²</li>
+                        <li>h = hloubka [m]</li>
+                        <li>Každých 10 m = +100 kPa</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Vnitřní energie</h3>
+                    <div class="main-formula">ΔU = n·Cᵥ·ΔT</div>
+                    <ul>
+                        <li>Jednoatomový: Cᵥ = (3/2)R</li>
+                        <li>Dvouatomový: Cᵥ = (5/2)R</li>
+                        <li>R = 8,314 J/(mol·K)</li>
+                        <li>Pro izochorický: Q = ΔU</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Převody jednotek - objem</h3>
+                    <div class="main-formula">1 l = 0,001 m³</div>
+                    <ul>
+                        <li>1 litr = 0,001 m³ = 10⁻³ m³</li>
+                        <li>1 dm³ = 1 litr</li>
+                        <li>1000 litrů = 1 m³</li>
+                        <li>Převod: litrů → m³: ÷1000</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Převody jednotek - tlak</h3>
+                    <div class="main-formula">1 kPa = 1000 Pa</div>
+                    <ul>
+                        <li>1 kPa = 1000 Pa = 10³ Pa</li>
+                        <li>1 MPa = 1 000 000 Pa = 10⁶ Pa</li>
+                        <li>1 atm ≈ 100 kPa = 10⁵ Pa</li>
+                        <li>1 bar = 100 kPa</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Důležité konstanty</h3>
+                    <div class="main-formula">R = 8,314 J/(mol·K)</div>
+                    <ul>
+                        <li>R = molární plynová konstanta</li>
+                        <li>k = 1,38×10⁻²³ J/K (Boltzmann)</li>
+                        <li>Nₐ = 6,02×10²³ (Avogadro)</li>
+                        <li>p₀ ≈ 10⁵ Pa (atmosféra)</li>
+                        <li>g = 10 m/s²</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card danger" style="margin-top: 40px;">
+                <h3>⚠️ KRITICKÉ BODY - POZOR!</h3>
+                <ul style="font-size: 1.2em;">
+                    <li><strong>Teplota VŽDY v Kelvinech!</strong> T[K] = t[°C] + 273</li>
+                    <li><strong>Jednotky v SI:</strong> Pa (ne kPa), m³ (ne l), K (ne °C)</li>
+                    <li><strong>1 litr = 0,001 m³</strong> (NE 0,01!)</li>
+                    <li><strong>1 MPa = 1 000 000 Pa</strong> (6 nul!)</li>
+                    <li><strong>R = 8,314</strong> - zapamatuj si přesně!</li>
+                    <li><strong>Hydrostatický tlak:</strong> 10 m = +100 kPa</li>
+                </ul>
+            </div>
+
+            <div class="info-card success" style="margin-top: 30px;">
+                <h3>✅ Kontrolní seznam před testem</h3>
+                <ul style="font-size: 1.1em;">
+                    <li>☐ Umím rozpoznat typ děje (izotermický, izochorický, izobarický)</li>
+                    <li>☐ Umím převádět jednotky (°C→K, l→m³, kPa→Pa)</li>
+                    <li>☐ Znám hodnotu R = 8,314 J/(mol·K)</li>
+                    <li>☐ Umím použít vzorec pro hydrostatický tlak</li>
+                    <li>☐ Vím, kdy použít který vzorec</li>
+                    <li>☐ Umím řešit příklady s únikem plynu</li>
+                    <li>☐ Umím řešit příklady s bublinou pod vodou</li>
+                    <li>☐ Kontroluji si výsledky (dávají smysl?)</li>
+                    <li>☐ Znám častéchyby a jak se jim vyhnout</li>
+                </ul>
+            </div>
+
+            <div class="info-card purple" style="margin-top: 30px;">
+                <h3>📚 Rozšířené znalosti (pro pětku)</h3>
+                <ul style="font-size: 1.05em;">
+                    <li><strong>Alternativní tvar:</strong> p·V = N·k·T (s počtem molekul)</li>
+                    <li><strong>1. termodynamický zákon:</strong> Q = ΔU + W</li>
+                    <li><strong>Ekvipartiční teorém:</strong> U = (f/2)·n·R·T (f = stupně volnosti)</li>
+                    <li><strong>Pro jednoatomový plyn:</strong> f = 3, U = (3/2)nRT</li>
+                    <li><strong>Pro dvouatomový plyn:</strong> f = 5, U = (5/2)nRT</li>
+                    <li><strong>Střední kinetická energie:</strong> Eₖ = (3/2)kT</li>
+                    <li><strong>Střední kvadratická rychlost:</strong> v = √(3RT/M)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const practiceProblems = [
+            {
+                question: "V nádobě je plyn při teplotě 20°C a tlaku 2 MPa. Jaká bude teplota v Kelvinech?",
+                answer: 293,
+                unit: "K",
+                tolerance: 1,
+                hint: "Použij vzorec: T[K] = t[°C] + 273"
+            },
+            {
+                question: "Plyn se rozpíná izotermicky z objemu 5 l na objem 15 l. Počáteční tlak je 300 kPa. Jaký bude konečný tlak?",
+                answer: 100,
+                unit: "kPa",
+                tolerance: 2,
+                hint: "Izotermický děj: p₁·V₁ = p₂·V₂"
+            },
+            {
+                question: "V hloubce 10 m pod hladinou. Jaký je celkový tlak v kPa? (p₀ = 100 kPa, ρ = 1000 kg/m³, g = 10 m/s²)",
+                answer: 200,
+                unit: "kPa",
+                tolerance: 5,
+                hint: "p = p₀ + ρ·g·h"
+            },
+            {
+                question: "Plyn se zahřál z 0°C na 100°C při stálém objemu. O kolik % se zvýšil tlak? (zaokrouhli)",
+                answer: 37,
+                unit: "%",
+                tolerance: 2,
+                hint: "p₁/T₁ = p₂/T₂, T₁=273K, T₂=373K, pak (p₂-p₁)/p₁ × 100%"
+            },
+            {
+                question: "Nádoba 8 l (400 kPa) se spojí s nádobou 4 l (vakuum). Výsledný tlak? (kPa, zaokrouhli)",
+                answer: 267,
+                unit: "kPa",
+                tolerance: 5,
+                hint: "p₁·V₁ = p₂·(V₁ + V₂)"
+            },
+            {
+                question: "Převeď 50°C na Kelviny.",
+                answer: 323,
+                unit: "K",
+                tolerance: 1,
+                hint: "T[K] = t[°C] + 273"
+            },
+            {
+                question: "Převeď 25 litrů na m³. (výsledek v m³, např. 0.025)",
+                answer: 0.025,
+                unit: "m³",
+                tolerance: 0.001,
+                hint: "1 litr = 0,001 m³"
+            },
+            {
+                question: "Plyn o objemu 10 l má tlak 200 kPa. Izotermicky se stlačí na 5 l. Jaký je nový tlak v kPa?",
+                answer: 400,
+                unit: "kPa",
+                tolerance: 5,
+                hint: "p₁V₁ = p₂V₂"
+            },
+            {
+                question: "Ve 30 m hloubky je jaký celkový tlak? (p₀=100 kPa, ρ=1000 kg/m³, g=10 m/s²) v kPa",
+                answer: 400,
+                unit: "kPa",
+                tolerance: 10,
+                hint: "p = p₀ + ρgh = 100 + 1000·10·30/1000"
+            },
+            {
+                question: "Plyn při 300 K má tlak 150 kPa. Zahřeje se na 400 K při V=konst. Nový tlak? (kPa)",
+                answer: 200,
+                unit: "kPa",
+                tolerance: 5,
+                hint: "p₁/T₁ = p₂/T₂"
+            }
+        ];
+
+        let currentProblem = 0;
+        let score = { correct: 0, total: 0 };
+
+        // Tab switching
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                const tabName = tab.getAttribute('data-tab');
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        // Example toggling
+        document.querySelectorAll('.example-card').forEach(card => {
+            const header = card.querySelector('.example-header');
+            const button = card.querySelector('.toggle-button');
+            const solution = card.querySelector('.example-solution');
+            
+            header.addEventListener('click', () => {
+                solution.classList.toggle('visible');
+                button.textContent = solution.classList.contains('visible') ? '▼ Skrýt řešení' : '▶ Zobrazit řešení';
+            });
+        });
+
+        // Practice functionality
+        function loadProblem() {
+            const problem = practiceProblems[currentProblem];
+            document.getElementById('question').textContent = problem.question;
+            document.getElementById('unit').textContent = problem.unit;
+            document.getElementById('answer-input').value = '';
+            document.getElementById('answer-input').disabled = false;
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('feedback').classList.remove('visible');
+            document.getElementById('next-btn').style.display = 'none';
+            
+            const percentage = score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0;
+            document.getElementById('progress').textContent = 
+                `Příklad ${currentProblem + 1} z ${practiceProblems.length} | Úspěšnost: ${percentage}% (${score.correct}/${score.total})`;
+        }
+
+        document.getElementById('check-btn').addEventListener('click', () => {
+            const userAnswer = parseFloat(document.getElementById('answer-input').value);
+            const problem = practiceProblems[currentProblem];
+            const feedback = document.getElementById('feedback');
+            const feedbackMessage = document.getElementById('feedback-message');
+            const feedbackHint = document.getElementById('feedback-hint');
+            
+            if (isNaN(userAnswer)) {
+                feedbackMessage.textContent = 'Zadej prosím číslo!';
+                feedback.className = 'feedback incorrect visible';
+                return;
+            }
+
+            const isCorrect = Math.abs(userAnswer - problem.answer) <= problem.tolerance;
+            
+            if (isCorrect) {
+                feedbackMessage.textContent = `🎉 Správně! Výsledek je ${problem.answer} ${problem.unit}.`;
+                feedback.className = 'feedback correct visible';
+                feedbackHint.textContent = '';
+                score.correct++;
+                score.total++;
+            } else {
+                feedbackMessage.textContent = `❌ Bohužel ne. Správný výsledek je ${problem.answer} ${problem.unit}.`;
+                feedback.className = 'feedback incorrect visible';
+                feedbackHint.innerHTML = `💡 <strong>Nápověda:</strong> ${problem.hint}`;
+                score.total++;
+            }
+            
+            document.getElementById('answer-input').disabled = true;
+            document.getElementById('check-btn').style.display = 'none';
+            
+            if (currentProblem < practiceProblems.length - 1) {
+                document.getElementById('next-btn').style.display = 'inline-block';
+            } else if (isCorrect) {
+                feedbackMessage.textContent = `🎊 Dokončil jsi všechny příklady! Tvoje skóre: ${score.correct}/${practiceProblems.length}`;
+            }
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            currentProblem++;
+            loadProblem();
+        });
+
+        document.getElementById('answer-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !document.getElementById('answer-input').disabled) {
+                document.getElementById('check-btn').click();
+            }
+        });
+
+        loadProblem();
+    </script>
+</body>
+</html>

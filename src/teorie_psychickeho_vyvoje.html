@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teorie psychického vývoje - Interaktivní příprava na test</title>
+    <meta name="subject" content="Science">
+    <meta name="topic" content="Psychology">
+    <meta name="template" content="mixed">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #667eea;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            min-width: 150px;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: -3px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .theory-section {
+            display: none;
+        }
+
+        .theory-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .author-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .author-info h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .author-info p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .stages-container {
+            display: grid;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stage-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .stage-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stage-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .stage-title {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        .stage-title h3 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .stage-age {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .stage-content {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed #ddd;
+        }
+
+        .stage-content.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 500px; }
+        }
+
+        .stage-description {
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .stage-key {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin-top: 10px;
+        }
+
+        .stage-key strong {
+            color: #856404;
+        }
+
+        .toggle-icon {
+            color: #667eea;
+            font-size: 1.5em;
+            transition: transform 0.3s;
+        }
+
+        .stage-card.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .key-concepts {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .key-concepts h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+
+        .key-concepts ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-concepts li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .key-concepts li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #0066cc;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .quiz-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .quiz-question.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #e7f3ff;
+        }
+
+        .quiz-option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .quiz-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .quiz-progress {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .quiz-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .quiz-nav-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .quiz-nav-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .quiz-nav-btn.current {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-nav-btn.answered-correct {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #28a745;
+        }
+
+        .quiz-nav-btn.answered-incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+            color: #dc3545;
+        }
+
+        .feedback-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        .feedback-box.correct {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .feedback-box.incorrect {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+
+        .feedback-box h4 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .feedback-box.correct h4 {
+            color: #28a745;
+        }
+
+        .feedback-box.incorrect h4 {
+            color: #dc3545;
+        }
+
+        .quiz-option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .quiz-score {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .quiz-score.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .quiz-score h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .quiz-score p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .flashcard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .flashcard {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #667eea;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .flashcard:hover {
+            transform: rotateY(10deg);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .flashcard.flipped .flashcard-front {
+            display: none;
+        }
+
+        .flashcard.flipped .flashcard-back {
+            display: block;
+        }
+
+        .flashcard-front h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .flashcard-back {
+            display: none;
+        }
+
+        .flashcard-back p {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .flip-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .nav-tab {
+                font-size: 0.9em;
+                padding: 15px 10px;
+            }
+
+            .author-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .comparison-table {
+                font-size: 0.9em;
+            }
+
+            .flashcard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Teorie psychického vývoje</h1>
+            <p>Kompletní příprava na test z psychologie</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('freud')">
+                Freud
+            </button>
+            <button class="nav-tab" onclick="showSection('piaget')">
+                Piaget
+            </button>
+            <button class="nav-tab" onclick="showSection('erikson')">
+                Erikson
+            </button>
+            <button class="nav-tab" onclick="showSection('comparison')">
+                Srovnání
+            </button>
+            <button class="nav-tab" onclick="showSection('quiz')">
+                Kvíz
+            </button>
+        </div>
+
+        <div class="content">
+            <!-- FREUD SECTION -->
+            <div id="freud" class="theory-section active">
+                <div class="author-card">
+                    <div class="author-info">
+                        <h2>Sigmund Freud</h2>
+                        <p><strong>Teorie psychosexuálního vývoje</strong></p>
+                        <p>Rozvoj osobnosti je primárně určen vrozenými dispozicemi. Vývoj probíhá podle vrozeného programu. Jednotlivé fáze jsou definovány podle způsobu dosahování slasti přes erotogenní zóny.</p>
+                    </div>
+                </div>
+
+                <div class="key-concepts">
+                    <h3>🔑 Klíčové koncepty</h3>
+                    <ul>
+                        <li><strong>Libido:</strong> Sexuální energie, která pohání vývoj</li>
+                        <li><strong>Erotogenní zóny:</strong> Oblasti těla, které přinášejí slast</li>
+                        <li><strong>Fixace:</strong> Uváznutí na určité vývojové fázi</li>
+                        <li><strong>Důraz na vrozené dispozice</strong></li>
+                    </ul>
+                </div>
+
+                <h2 style="color: #667eea; margin-bottom: 20px;">5 Stádií psychosexuálního vývoje</h2>
+
+                <div class="stages-container">
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">1</div>
+                            <div class="stage-title">
+                                <h3>Orální stádium</h3>
+                                <p class="stage-age">0-1 rok (kojenec)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Dítě dosahuje slasti pomocí sání, respektive komplexní orální aktivitou (dumláním). 
+                                Ústa jsou hlavní erotogenní zónou.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Riziko:</strong> Nedostatečné orální uspokojení nebo fixace může vést k 
+                                problémům v dospělosti (např. kouření, přejídání, závislost).
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">2</div>
+                            <div class="stage-title">
+                                <h3>Anální stádium</h3>
+                                <p class="stage-age">1-3 roky (batole)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Slastné pocity jsou spojeny s ovládáním vyměšování. Dítě uspokojuje 
+                                ovládání vylučování nebo zadržování.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Riziko:</strong> Příliš velký tlak rodičů na udržování čistoty může 
+                                vést k anální retentivitě (úzkostlivost, perfekcionismus) nebo expulzivitě (neukázněnost).
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">3</div>
+                            <div class="stage-title">
+                                <h3>Falické (1. genitální) stádium</h3>
+                                <p class="stage-age">3-6 let (předškolák)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Dítě je zaujato genitální oblastí a slast mu přináší manipulace s těmito orgány. 
+                                Zaujímá se i o genitálie jiných dětí různého pohlaví.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Oidipovský/Elektřin komplex:</strong> Dítě se eroticky upne na rodiče 
+                                opačného pohlaví a rodič stejného pohlaví se stává rivalem. Vyřešením je identifikace 
+                                s rodičem téhož pohlaví.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">4</div>
+                            <div class="stage-title">
+                                <h3>Stadium latence</h3>
+                                <p class="stage-age">6-12 let (mladší školní věk)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Období klidu, úbytek zájmu o sexuální podněty a jejich přesun na jiné aktivity.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Sublimace:</strong> Schopnost vybití libida prostřednictvím nějaké společenské 
+                                aktivity (sport, učení, koníčky). V současné době k latenci často nedochází.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">5</div>
+                            <div class="stage-title">
+                                <h3>2. Genitální stádium</h3>
+                                <p class="stage-age">12+ let (puberta)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Opětovné oživení a intenzivní rozvoj genitálně zaměřené slasti. 
+                                Nejdříve jde o autoerotické aktivity.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Vývoj:</strong> Postupně se rozvíjejí vztahy k jiným lidem sexuálního 
+                                charakteru. Dochází k vyzrávání sexuality.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PIAGET SECTION -->
+            <div id="piaget" class="theory-section">
+                <div class="author-card">
+                    <div class="author-info">
+                        <h2>Jean Piaget</h2>
+                        <p><strong>Teorie kognitivního vývoje</strong></p>
+                        <p>Vývoj je podmíněn jak vrozenými dispozicemi, tak vnějšími vlivy v jejich společné interakci. 
+                        Dítě si vytváří "teorie" neboli schémata na základě "miniexperimentů".</p>
+                    </div>
+                </div>
+
+                <div class="key-concepts">
+                    <h3>🔑 Klíčové koncepty</h3>
+                    <ul>
+                        <li><strong>Schémata:</strong> Mentální struktury pro organizaci poznání</li>
+                        <li><strong>Asimilace:</strong> Zahrnutí nových poznatků do stávajících schémat</li>
+                        <li><strong>Akomodace:</strong> Přizpůsobení dřívějších schémat novým poznatkům</li>
+                        <li><strong>Rovnováha:</strong> Proces adaptace a organizace poznání</li>
+                    </ul>
+                </div>
+
+                <h2 style="color: #667eea; margin-bottom: 20px;">5 Fází kognitivního vývoje</h2>
+
+                <div class="stages-container">
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">1</div>
+                            <div class="stage-title">
+                                <h3>Senzomotorická inteligence</h3>
+                                <p class="stage-age">0-2 roky</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Poznávání malého dítěte je závislé na smyslovém vnímání a motorických dovednostech - 
+                                na manipulaci s poznávanými objekty.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Charakteristika:</strong> "Vím to, co vidím a mohu si to vzít do ruky." 
+                                Postupně si dítě osvojuje pojem stálosti objektu.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">2</div>
+                            <div class="stage-title">
+                                <h3>Symbolické a předpojmové myšlení</h3>
+                                <p class="stage-age">2-4 roky</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Dítě už si dovede představit nějaký objekt nebo činnost, aniž by ji muselo skutečně 
+                                provádět. Ví, že různé symboly (např. obrázky) zastupují konkrétní realitu.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Předpojmy:</strong> Dítě používá například "hačí", "hají", "haf" místo 
+                                správných pojmů pro zvířata.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">3</div>
+                            <div class="stage-title">
+                                <h3>Názorné, intuitivní myšlení</h3>
+                                <p class="stage-age">4-7 let</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Dětské uvažování je egocentrické a ulpívající na zjevné podobě světa. 
+                                "Svět je takový, jaký ho vidím."
+                            </p>
+                            <div class="stage-key">
+                                <strong>Příklad:</strong> I když dítě vidí, jak se paní učitelka převléká za Mikuláše, 
+                                už to pro něj není paní učitelka, ale skutečný Mikuláš.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">4</div>
+                            <div class="stage-title">
+                                <h3>Konkrétní logické operace</h3>
+                                <p class="stage-age">7-11 let</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Dítě respektuje základní zákony logiky, ale je vázáno na konkrétní skutečnost. 
+                                Operuje s představami a symboly (např. čísla), které mají konkrétní jednoznačný obsah.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Důležité:</strong> Dítě dokáže řešit logické úlohy, ale potřebuje konkrétní 
+                                příklady a předměty.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">5</div>
+                            <div class="stage-title">
+                                <h3>Formální logické operace</h3>
+                                <p class="stage-age">11-12+ let</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Dospívající jsou schopni uvažovat i hypoteticky, nezávisle na konkrétním vymezení 
+                                problému. Uvažují o různých možnostech, dokonce i o těch, které reálně neexistují.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Abstraktní myšlení:</strong> "Co by mohlo být" nebo "co by mělo být". 
+                                Schopnost filozofických úvah a vědeckého myšlení.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ERIKSON SECTION -->
+            <div id="erikson" class="theory-section">
+                <div class="author-card">
+                    <div class="author-info">
+                        <h2>Erik Homburger Erikson</h2>
+                        <p><strong>Teorie psychosociálního vývoje</strong></p>
+                        <p>Psychický vývoj člení do osmi stádií. Každé má svůj cíl a psychosociální úkol. 
+                        Pokud se podaří úkol zvládnout, vývoj může pokračovat. Pokud ne, může stagnovat.</p>
+                    </div>
+                </div>
+
+                <div class="key-concepts">
+                    <h3>🔑 Klíčové koncepty</h3>
+                    <ul>
+                        <li><strong>Psychosociální krize:</strong> Konflikt, který musí být vyřešen</li>
+                        <li><strong>Epigenetický princip:</strong> Vývoj probíhá v předem daných stádiích</li>
+                        <li><strong>Celoživotní vývoj:</strong> Od narození po stáří</li>
+                        <li><strong>Sociální kontext:</strong> Důraz na interakci se společností</li>
+                    </ul>
+                </div>
+
+                <h2 style="color: #667eea; margin-bottom: 20px;">8 Stádií psychosociálního vývoje</h2>
+
+                <div class="stages-container">
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">1</div>
+                            <div class="stage-title">
+                                <h3>Důvěra vs. Nedůvěra</h3>
+                                <p class="stage-age">0-1 rok (kojenec)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Dítě se snaží dosáhnout základní důvěry ve svět - že svět je bezpečné a 
+                                poznatelné místo. Dosáhne toho pomocí lásky a péče matky.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Výsledek:</strong> Jistota a bezpečí. Toto stádium je zásadní pro celý život. 
+                                Eliminuje úzkost a rozvíjí sociální otevřenost.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">2</div>
+                            <div class="stage-title">
+                                <h3>Autonomie vs. Stud a pochyby</h3>
+                                <p class="stage-age">1-3 roky (batole)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Batolecí věk je fází první emancipace - osamostatnění. Rozvíjí se uvědomění 
+                                sebe sama, první zkušenost se sebeprosazením - vůlí a hranicemi svých možností.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Výsledek:</strong> Základní důvěra v sebe sama. "Já to dokážu sám!"
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">3</div>
+                            <div class="stage-title">
+                                <h3>Iniciativa vs. Pocit viny</h3>
+                                <p class="stage-age">3-6 let (předškolák)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Věk iniciativy a aktivity. Dítě je korigováno společenskými normami, 
+                                které určují hodnotu dětského projevu. Setkává se s dalšími lidmi mimo rodinu.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Výsledek:</strong> Iniciativa, aktivita. Vznikají základy svědomí.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">4</div>
+                            <div class="stage-title">
+                                <h3>Snaživá píle vs. Méněcennost</h3>
+                                <p class="stage-age">6-12 let (mladší školní věk)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Fáze snaživosti, dítě usiluje o dobrý výkon. Snaží se vyhnout neúspěchu 
+                                a z něho vyplývajícím pocitům méněcennosti.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Výsledek:</strong> Kompetence, dobrý výkon, kladné sebehodnocení. 
+                                Vztah k sobě je definován hodnocením výkonu.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">5</div>
+                            <div class="stage-title">
+                                <h3>Identita vs. Zmatení rolí</h3>
+                                <p class="stage-age">12-20 let (dospívání)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Dospívání je fází rozvoje identity. Dospívající usiluje o sebevymezení, 
+                                hledá odpověď na existenciální otázky.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Výsledek:</strong> Nalezení vlastní i sociální identity. Odpověď na otázku "Kdo jsem?"
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">6</div>
+                            <div class="stage-title">
+                                <h3>Intimita vs. Izolace</h3>
+                                <p class="stage-age">20-25(30) let (raná dospělost)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Ranná dospělost je fází intimity. Pokud si člověk v dospívání vybudoval 
+                                dostatečně pevnou identitu, je ochoten přijmout identitu párovou - "my".
+                            </p>
+                            <div class="stage-key">
+                                <strong>Výsledek:</strong> Párová identita, láska, hlubší vztahy.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">7</div>
+                            <div class="stage-title">
+                                <h3>Produktivita vs. Stagnace</h3>
+                                <p class="stage-age">25(30)-50(60) let (dospělost)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Dospělost je věkem, kdy by měl člověk něco vytvořit - děti, kariéru, 
+                                projekty. Pečovat o někoho nebo něco.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Výsledek:</strong> Schopnost něco vytvořit, pečovat o někoho. Generativita.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="toggleStage(this)">
+                        <div class="stage-header">
+                            <div class="stage-number">8</div>
+                            <div class="stage-title">
+                                <h3>Integrita Ega vs. Beznaděj</h3>
+                                <p class="stage-age">50(60)+ let (stáří)</p>
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="stage-content">
+                            <p class="stage-description">
+                                Pokud člověk v dospělosti něco vytvořil, je schopen se se svým životem smířit 
+                                a vidí v něm smysl. Nepodlehne marnosti a zoufalství.
+                            </p>
+                            <div class="stage-key">
+                                <strong>Výsledek:</strong> Přijmout vlastní život a zaujmout k němu pozitivní postoj. 
+                                Moudrost.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPARISON SECTION -->
+            <div id="comparison" class="theory-section">
+                <h2 style="color: #667eea; margin-bottom: 30px; text-align: center;">📊 Srovnání teorií</h2>
+
+                <div class="key-concepts">
+                    <h3>Hlavní rozdíly mezi teoriemi</h3>
+                    <ul>
+                        <li><strong>Freud:</strong> Zaměření na sexuální vývoj a vrozené pudy</li>
+                        <li><strong>Piaget:</strong> Zaměření na rozvoj myšlení a poznávání</li>
+                        <li><strong>Erikson:</strong> Zaměření na sociální vztahy a identitu</li>
+                    </ul>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 20px; color: #667eea;">Srovnání podle věku</h3>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Věk</th>
+                            <th>Freud</th>
+                            <th>Piaget</th>
+                            <th>Erikson</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>0-1 rok</strong></td>
+                            <td>Orální stádium</td>
+                            <td rowspan="2">Senzomotorická inteligence</td>
+                            <td>Důvěra vs. nedůvěra</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1-3 roky</strong></td>
+                            <td>Anální stádium</td>
+                            <td>Autonomie vs. stud</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3-6 let</strong></td>
+                            <td>Falické stádium</td>
+                            <td>Symbolické a předpojmové myšlení (2-4)<br>Intuitivní myšlení (4-7)</td>
+                            <td>Iniciativa vs. vina</td>
+                        </tr>
+                        <tr>
+                            <td><strong>6-12 let</strong></td>
+                            <td>Latence</td>
+                            <td>Konkrétní operace (7-11)</td>
+                            <td>Píle vs. méněcennost</td>
+                        </tr>
+                        <tr>
+                            <td><strong>12+ let</strong></td>
+                            <td>2. genitální stádium</td>
+                            <td>Formální operace (11-12+)</td>
+                            <td>Identita vs. zmatení (12-20)<br>Intimita vs. izolace (20-30)<br>Produktivita vs. stagnace (30-60)<br>Integrita vs. beznaděj (60+)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 40px; margin-bottom: 20px; color: #667eea;">💡 Rychlé kartičky</h3>
+                <p style="margin-bottom: 20px; color: #666;">Klikni na kartičku pro otočení</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" onclick="flipCard(this)">
+                        <div class="flashcard-front">
+                            <h4>Co je to libido?</h4>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>Sexuální energie podle Freuda, která pohání psychický vývoj</p>
+                        </div>
+                        <span class="flip-hint">👆 klikni</span>
+                    </div>
+
+                    <div class="flashcard" onclick="flipCard(this)">
+                        <div class="flashcard-front">
+                            <h4>Co je to asimilace?</h4>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>Podle Piageta: zahrnutí nových poznatků do stávajících schémat</p>
+                        </div>
+                        <span class="flip-hint">👆 klikni</span>
+                    </div>
+
+                    <div class="flashcard" onclick="flipCard(this)">
+                        <div class="flashcard-front">
+                            <h4>Co je to akomodace?</h4>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>Podle Piageta: přizpůsobení dřívějších schémat novým poznatkům</p>
+                        </div>
+                        <span class="flip-hint">👆 klikni</span>
+                    </div>
+
+                    <div class="flashcard" onclick="flipCard(this)">
+                        <div class="flashcard-front">
+                            <h4>Kolik stádií má Eriksonova teorie?</h4>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>8 stádií - od narození po stáří</p>
+                        </div>
+                        <span class="flip-hint">👆 klikni</span>
+                    </div>
+
+                    <div class="flashcard" onclick="flipCard(this)">
+                        <div class="flashcard-front">
+                            <h4>Co je Oidipovský komplex?</h4>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>Dítě se eroticky upne na rodiče opačného pohlaví a rodič stejného pohlaví se stává rivalem (falické stádium)</p>
+                        </div>
+                        <span class="flip-hint">👆 klikni</span>
+                    </div>
+
+                    <div class="flashcard" onclick="flipCard(this)">
+                        <div class="flashcard-front">
+                            <h4>Co charakterizuje egocentrismus?</h4>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>Názorné myšlení u dětí 4-7 let - "svět je takový, jaký ho vidím"</p>
+                        </div>
+                        <span class="flip-hint">👆 klikni</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUIZ SECTION -->
+            <div id="quiz" class="theory-section">
+                <div class="quiz-section">
+                    <h2 style="color: #667eea; margin-bottom: 20px; text-align: center;">🎯 Testovací kvíz</h2>
+                    <p style="text-align: center; color: #666; margin-bottom: 30px;">
+                        Prověř své znalosti z teorií psychického vývoje!
+                    </p>
+
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <div id="quizContainer">
+                        <!-- Questions will be inserted here by JavaScript -->
+                    </div>
+
+                    <div class="quiz-score" id="quizScore">
+                        <h2>🎉 Výsledek</h2>
+                        <p id="scoreText"></p>
+                        <button class="btn btn-primary" onclick="restartQuiz()">Zkusit znovu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.theory-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Toggle stage content
+        function toggleStage(card) {
+            card.classList.toggle('expanded');
+            const content = card.querySelector('.stage-content');
+            content.classList.toggle('show');
+        }
+
+        // Flip flashcard
+        function flipCard(card) {
+            card.classList.toggle('flipped');
+        }
+
+        // Quiz functionality
+        const quizQuestions = [
+            {
+                question: "V kterém stádiu podle Freuda se objevuje Oidipovský komplex?",
+                options: [
+                    "Orální stádium",
+                    "Anální stádium",
+                    "Falické stádium",
+                    "Stadium latence"
+                ],
+                correct: 2,
+                explanation: "Oidipovský komplex se objevuje ve falickém stádiu (3-6 let), kdy se dítě eroticky upne na rodiče opačného pohlaví."
+            },
+            {
+                question: "Co je hlavním úkolem v první fázi podle Eriksona?",
+                options: [
+                    "Vybudovat autonomii",
+                    "Vybudovat důvěru ve svět",
+                    "Najít identitu",
+                    "Vybudovat intimní vztahy"
+                ],
+                correct: 1,
+                explanation: "V první fázi (0-1 rok) se řeší krize 'Důvěra vs. Nedůvěra'. Dítě se učí, zda je svět bezpečné místo."
+            },
+            {
+                question: "Ve kterém věku podle Piageta začíná fáze formálních logických operací?",
+                options: [
+                    "4-7 let",
+                    "7-11 let",
+                    "11-12 let",
+                    "Od 15 let"
+                ],
+                correct: 2,
+                explanation: "Fáze formálních logických operací začíná kolem 11-12 let, kdy se rozvíjí abstraktní a hypotetické myšlení."
+            },
+            {
+                question: "Co znamená asimilace podle Piageta?",
+                options: [
+                    "Změna stávajících schémat",
+                    "Zahrnutí nových poznatků do stávajících schémat",
+                    "Vytvoření nových schémat",
+                    "Zapomínání starých poznatků"
+                ],
+                correct: 1,
+                explanation: "Asimilace je proces, kdy dítě zahrnuje nové poznatky do již existujících mentálních struktur (schémat)."
+            },
+            {
+                question: "Které stádium podle Freuda je považováno za období klidu?",
+                options: [
+                    "Orální",
+                    "Anální",
+                    "Latence",
+                    "Genitální"
+                ],
+                correct: 2,
+                explanation: "Stadium latence (6-12 let) je období úbytku zájmu o sexuální podněty, energie se přesouvá na jiné aktivity."
+            },
+            {
+                question: "V jakém věku se podle Eriksona řeší krize 'Identita vs. Zmatení rolí'?",
+                options: [
+                    "6-12 let",
+                    "12-20 let",
+                    "20-30 let",
+                    "30-50 let"
+                ],
+                correct: 1,
+                explanation: "Krize identity je typická pro období dospívání (12-20 let), kdy mladý člověk hledá odpověď na otázku 'Kdo jsem?'"
+            },
+            {
+                question: "Co je charakteristické pro názorné, intuitivní myšlení podle Piageta?",
+                options: [
+                    "Abstraktní myšlení",
+                    "Egocentrismus",
+                    "Logické operace",
+                    "Hypotetické uvažování"
+                ],
+                correct: 1,
+                explanation: "Intuitivní myšlení (4-7 let) je egocentrické - dítě vidí svět pouze ze svého pohledu a ulpívá na zjevné podobě věcí."
+            },
+            {
+                question: "Která teorie se zaměřuje primárně na sexuální vývoj?",
+                options: [
+                    "Freudova",
+                    "Piagetova",
+                    "Eriksonova",
+                    "Žádná z nich"
+                ],
+                correct: 0,
+                explanation: "Freudova teorie psychosexuálního vývoje se zaměřuje na vývoj libida a erotogenních zón."
+            },
+            {
+                question: "Co je výsledkem úspěšného zvládnutí fáze 'Autonomie vs. Stud' podle Eriksona?",
+                options: [
+                    "Důvěra ve svět",
+                    "Důvěra v sebe sama",
+                    "Iniciativa",
+                    "Identita"
+                ],
+                correct: 1,
+                explanation: "Úspěšné zvládnutí této fáze (1-3 roky) vede k základní důvěře v sebe sama - 'Já to dokážu!'"
+            },
+            {
+                question: "Ve které fázi podle Piageta dítě respektuje základní zákony logiky?",
+                options: [
+                    "Senzomotorická inteligence",
+                    "Symbolické myšlení",
+                    "Konkrétní logické operace",
+                    "Formální logické operace"
+                ],
+                correct: 2,
+                explanation: "Ve fázi konkrétních logických operací (7-11 let) dítě začína respektovat logické zákony, ale potřebuje konkrétní příklady."
+            },
+            {
+                question: "Co je akomodace podle Piageta?",
+                options: [
+                    "Zahrnutí nových poznatků do stávajících schémat",
+                    "Přizpůsobení schémat novým poznatkům",
+                    "Zapomínání starých schémat",
+                    "Opakování naučených věcí"
+                ],
+                correct: 1,
+                explanation: "Akomodace je proces přehodnocení a přizpůsobení našich mentálních struktur novým zkušenostem, které do nich nezapadají."
+            },
+            {
+                question: "V jakém věkovém rozmezí se nachází orální stádium?",
+                options: [
+                    "0-1 rok",
+                    "1-3 roky",
+                    "3-6 let",
+                    "6-12 let"
+                ],
+                correct: 0,
+                explanation: "Orální stádium je první fáze vývoje podle Freuda a probíhá od narození do 1 roku věku kojence."
+            },
+            {
+                question: "Jaký je hlavní úkol ve fázi 'Píle vs. Méněcennost' podle Eriksona?",
+                options: [
+                    "Naučit se důvěřovat",
+                    "Dosáhnout dobrého výkonu",
+                    "Najít svou identitu",
+                    "Vytvořit intimní vztah"
+                ],
+                correct: 1,
+                explanation: "Ve fázi snaživé píle (6-12 let) se dítě snaží dosáhnout dobrého výkonu a vyhnout se pocitům méněcennosti."
+            },
+            {
+                question: "Co charakterizuje senzomotorické stádium podle Piageta?",
+                options: [
+                    "Abstraktní myšlení",
+                    "Závislost na smyslovém vnímání a motorice",
+                    "Symbolické myšlení",
+                    "Logické operace"
+                ],
+                correct: 1,
+                explanation: "Senzomotorická inteligence (0-2 roky) znamená, že poznávání je závislé na tom, co dítě vidí a může si vzít do ruky."
+            },
+            {
+                question: "Co je sublimace podle Freuda?",
+                options: [
+                    "Potlačení vzpomínek",
+                    "Vybití libida společensky přijatelným způsobem",
+                    "Návrat k dřívějšímu stádiu",
+                    "Fixace na určité stádium"
+                ],
+                correct: 1,
+                explanation: "Sublimace je mechanismus, kdy se sexuální energie přesouvá do společensky přijatelných aktivit jako sport, umění nebo studium."
+            },
+            {
+                question: "Kolik vývojových stádií obsahuje Eriksonova teorie?",
+                options: [
+                    "5 stádií",
+                    "6 stádií",
+                    "7 stádií",
+                    "8 stádií"
+                ],
+                correct: 3,
+                explanation: "Eriksonova teorie psychosociálního vývoje obsahuje 8 stádií, která pokrývají celý lidský život od narození po stáří."
+            },
+            {
+                question: "V kterém stádiu podle Freuda se rozvíjí ovládání vyměšování?",
+                options: [
+                    "Orální stádium",
+                    "Anální stádium",
+                    "Falické stádium",
+                    "Stadium latence"
+                ],
+                correct: 1,
+                explanation: "Anální stádium (1-3 roky) je období, kdy dítě získává slast z ovládání vylučování a zadržování."
+            },
+            {
+                question: "Co je typické pro předpojmové myšlení podle Piageta?",
+                options: [
+                    "Používání abstraktních pojmů",
+                    "Používání zjednodušených pojmů jako 'haf', 'hají'",
+                    "Logické uvažování",
+                    "Hypotetické myšlení"
+                ],
+                correct: 1,
+                explanation: "V předpojmovém myšlení (2-4 roky) dítě používá zjednodušené pojmy - například 'haf' pro všechny psy místo správného pojmu."
+            },
+            {
+                question: "Jaká je poslední fáze podle Eriksona?",
+                options: [
+                    "Produktivita vs. Stagnace",
+                    "Intimita vs. Izolace",
+                    "Integrita Ega vs. Beznaděj",
+                    "Identita vs. Zmatení rolí"
+                ],
+                correct: 2,
+                explanation: "Poslední fáze je Integrita Ega vs. Beznaděj (50/60+ let), kdy se člověk snaží přijmout svůj život a dosáhnout moudrosti."
+            },
+            {
+                question: "Co je erotogenní zóna?",
+                options: [
+                    "Část mozku zodpovědná za emoce",
+                    "Oblast těla, která přináší slast",
+                    "Sociální vztah",
+                    "Mentální schéma"
+                ],
+                correct: 1,
+                explanation: "Erotogenní zóna je podle Freuda oblast těla, která v daném vývojovém stádiu přináší primární slast (ústa, análna oblast, genitálie)."
+            },
+            {
+                question: "Ve kterém věku se podle Piageta rozvíjí schopnost abstraktního myšlení?",
+                options: [
+                    "4-7 let",
+                    "7-11 let",
+                    "11-12+ let",
+                    "Již od narození"
+                ],
+                correct: 2,
+                explanation: "Abstraktní myšlení se rozvíjí až ve fázi formálních logických operací (11-12+ let), kdy dospívající dokáže uvažovat hypoteticky."
+            },
+            {
+                question: "Jaký je hlavní úkol v raném dospívání podle Eriksona?",
+                options: [
+                    "Vybudovat důvěru",
+                    "Najít identitu",
+                    "Vytvořit intimní vztahy",
+                    "Být produktivní"
+                ],
+                correct: 2,
+                explanation: "V raném dospívání (20-30 let) je úkolem vytvořit intimní vztahy a párovou identitu - přechod od 'já' k 'my'."
+            },
+            {
+                question: "Co znamená fixace podle Freuda?",
+                options: [
+                    "Normální postup vývojem",
+                    "Uváznutí na určitém vývojovém stádiu",
+                    "Rychlý vývoj",
+                    "Zdravý vývoj osobnosti"
+                ],
+                correct: 1,
+                explanation: "Fixace znamená uváznutí na určitém stádiu vývoje kvůli nedostatečnému nebo nadměrnému uspokojení potřeb v dané fázi."
+            },
+            {
+                question: "Která teorie zdůrazňuje důležitost sociálních vztahů?",
+                options: [
+                    "Freudova",
+                    "Piagetova",
+                    "Eriksonova",
+                    "Všechny stejně"
+                ],
+                correct: 2,
+                explanation: "Eriksonova teorie psychosociálního vývoje klade největší důraz na sociální vztahy a interakci jedince se společností."
+            },
+            {
+                question: "Co je typické pro fázi konkrétních operací?",
+                options: [
+                    "Egocentrismus",
+                    "Potřeba konkrétních příkladů pro logické uvažování",
+                    "Abstraktní myšlení",
+                    "Závislost pouze na vnímání"
+                ],
+                correct: 1,
+                explanation: "Ve fázi konkrétních operací (7-11 let) dítě dokáže logicky uvažovat, ale potřebuje konkrétní předměty a situace."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function initQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            displayQuizNavigation();
+            displayQuestion();
+        }
+
+        function displayQuizNavigation() {
+            const progress = document.getElementById('quizProgress');
+            let navHTML = '<div class="quiz-navigation">';
+            
+            for (let i = 0; i < quizQuestions.length; i++) {
+                let className = 'quiz-nav-btn';
+                if (i === currentQuestion) {
+                    className += ' current';
+                } else if (userAnswers[i] !== null) {
+                    if (userAnswers[i] === quizQuestions[i].correct) {
+                        className += ' answered-correct';
+                    } else {
+                        className += ' answered-incorrect';
+                    }
+                }
+                navHTML += `<button class="${className}" onclick="jumpToQuestion(${i})">${i + 1}</button>`;
+            }
+            
+            navHTML += '</div>';
+            progress.innerHTML = navHTML;
+        }
+
+        function jumpToQuestion(index) {
+            currentQuestion = index;
+            displayQuestion();
+            displayQuizNavigation();
+        }
+
+        function displayQuestion() {
+            const container = document.getElementById('quizContainer');
+            
+            if (currentQuestion < quizQuestions.length) {
+                const q = quizQuestions[currentQuestion];
+                const answered = userAnswers[currentQuestion] !== null;
+                
+                container.innerHTML = `
+                    <div class="quiz-question active">
+                        <h3>Otázka ${currentQuestion + 1}/${quizQuestions.length}</h3>
+                        <h3 style="margin-top: 15px;">${q.question}</h3>
+                        <div class="quiz-options">
+                            ${q.options.map((option, index) => {
+                                let optionClass = 'quiz-option';
+                                if (answered) {
+                                    optionClass += ' disabled';
+                                    if (index === q.correct) {
+                                        optionClass += ' correct';
+                                    } else if (index === userAnswers[currentQuestion]) {
+                                        optionClass += ' incorrect';
+                                    }
+                                } else if (userAnswers[currentQuestion] === index) {
+                                    optionClass += ' selected';
+                                }
+                                return `
+                                    <div class="${optionClass}" onclick="selectAnswer(${index})" data-index="${index}">
+                                        ${option}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div class="feedback-box ${answered ? 'show' : ''} ${answered && userAnswers[currentQuestion] === q.correct ? 'correct' : 'incorrect'}" id="feedbackBox">
+                            <h4>${userAnswers[currentQuestion] === q.correct ? '✅ Správně!' : '❌ Špatně!'}</h4>
+                            <p><strong>Správná odpověď:</strong> ${q.options[q.correct]}</p>
+                            <p><strong>Vysvětlení:</strong> ${q.explanation}</p>
+                        </div>
+                        <div class="quiz-controls">
+                            <button class="btn btn-secondary" onclick="previousQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>
+                                ← Předchozí
+                            </button>
+                            <button class="btn btn-primary" onclick="nextQuestion()">
+                                ${currentQuestion === quizQuestions.length - 1 ? 'Zobrazit výsledky' : 'Další →'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function selectAnswer(index) {
+            // Only allow selection if not already answered
+            if (userAnswers[currentQuestion] !== null) {
+                return;
+            }
+            
+            userAnswers[currentQuestion] = index;
+            
+            // Disable all options
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.add('disabled');
+            });
+            
+            // Show correct/incorrect styling
+            const q = quizQuestions[currentQuestion];
+            document.querySelectorAll('.quiz-option').forEach((opt, i) => {
+                if (i === q.correct) {
+                    opt.classList.add('correct');
+                } else if (i === index) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback
+            const feedbackBox = document.getElementById('feedbackBox');
+            feedbackBox.classList.add('show');
+            if (index === q.correct) {
+                feedbackBox.classList.add('correct');
+                feedbackBox.classList.remove('incorrect');
+                feedbackBox.querySelector('h4').textContent = '✅ Správně!';
+            } else {
+                feedbackBox.classList.add('incorrect');
+                feedbackBox.classList.remove('correct');
+                feedbackBox.querySelector('h4').textContent = '❌ Špatně!';
+            }
+            feedbackBox.querySelector('p:first-of-type').innerHTML = `<strong>Správná odpověď:</strong> ${q.options[q.correct]}`;
+            feedbackBox.querySelector('p:last-of-type').innerHTML = `<strong>Vysvětlení:</strong> ${q.explanation}`;
+            
+            // Update navigation
+            displayQuizNavigation();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizQuestions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+                displayQuizNavigation();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+                displayQuizNavigation();
+            }
+        }
+
+        function showResults() {
+            // Calculate score
+            score = 0;
+            let answered = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer !== null) {
+                    answered++;
+                    if (answer === quizQuestions[index].correct) {
+                        score++;
+                    }
+                }
+            });
+            
+            if (answered < quizQuestions.length) {
+                alert(`Ještě jsi neodpověděl/a na všechny otázky! Zodpovězeno: ${answered}/${quizQuestions.length}`);
+                return;
+            }
+            
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            let message = '';
+            let emoji = '';
+            
+            if (percentage >= 90) {
+                message = 'Výborně! Jsi perfektně připraven/a na test!';
+                emoji = '🌟';
+            } else if (percentage >= 70) {
+                message = 'Velmi dobře! Ještě trochu procvičit a budeš top!';
+                emoji = '👍';
+            } else if (percentage >= 50) {
+                message = 'Dobrý základ, ale určitě si ještě projdi materiál!';
+                emoji = '📚';
+            } else {
+                message = 'Potřebuješ ještě více studia. Projdi si teorie znovu!';
+                emoji = '💪';
+            }
+            
+            document.getElementById('quizProgress').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('quizScore').classList.add('show');
+            document.getElementById('scoreText').innerHTML = `
+                <div style="font-size: 4em; margin-bottom: 20px;">${emoji}</div>
+                <strong style="font-size: 3em;">${score}/${quizQuestions.length}</strong><br>
+                <span style="font-size: 2em;">${percentage}%</span><br><br>
+                ${message}
+            `;
+        }
+
+        function restartQuiz() {
+            document.getElementById('quizScore').classList.remove('show');
+            document.getElementById('quizProgress').style.display = 'block';
+            document.getElementById('quizContainer').style.display = 'block';
+            initQuiz();
+        }
+
+        // Initialize quiz when section is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize quiz only when quiz tab is clicked
+            const quizTab = document.querySelectorAll('.nav-tab')[4];
+            let quizInitialized = false;
+            quizTab.addEventListener('click', function() {
+                if (!quizInitialized) {
+                    initQuiz();
+                    quizInitialized = true;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
