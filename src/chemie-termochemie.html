@@ -1,0 +1,2645 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="subject" content="Science">
+    <meta name="topic" content="Chemistry">
+    <meta name="template" content="practice">
+    <title>Termochemie - Interaktivní Průvodce</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0e27;
+            --bg-card: #151932;
+            --bg-hover: #1e2440;
+            --text-light: #e2e8f0;
+            --text-dim: #94a3b8;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--accent-gold);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-red), var(--accent-gold), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+        }
+
+        .nav {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 1px solid var(--border);
+            sticky: top 0;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: var(--bg-hover);
+            color: var(--text-light);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.summary-btn {
+            background: var(--accent-gold) !important;
+            color: var(--bg-dark) !important;
+            font-weight: 700;
+        }
+
+        .nav-btn.summary-btn:hover {
+            background: var(--text-light) !important;
+            color: var(--bg-dark) !important;
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .nav-btn.active {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            border-color: var(--accent-gold);
+        }
+
+        .section {
+            display: none;
+            padding: 3rem 2rem;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            color: var(--accent-gold);
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .card h3 {
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .reaction-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .reaction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .reaction-card.exo::before {
+            background: var(--accent-red);
+        }
+
+        .reaction-card.endo::before {
+            background: var(--accent-blue);
+        }
+
+        .reaction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .reaction-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .exo h4 {
+            color: var(--accent-red);
+        }
+
+        .endo h4 {
+            color: var(--accent-blue);
+        }
+
+        .formula {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--accent-gold);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 1.1rem;
+        }
+
+        .info-box {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .info-box h4 {
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .example {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .example h4 {
+            color: var(--accent-gold);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .step {
+            background: var(--bg-hover);
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .step-num {
+            color: var(--accent-blue);
+            font-weight: 600;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .highlight {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .btn {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .calculator {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .calc-input {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-light);
+            padding: 0.8rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .calc-result {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--accent-gold);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .quiz-container {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .quiz-option {
+            background: var(--bg-hover);
+            border: 2px solid var(--border);
+            padding: 1rem 1.5rem;
+            margin: 0.5rem 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent-gold);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--accent-gold);
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--accent-red);
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .progress-bar {
+            background: var(--bg-hover);
+            height: 8px;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-gold));
+            height: 100%;
+            transition: width 0.5s;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin: 2rem 0;
+            font-weight: 700;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+            line-height: 1.8;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .nav {
+                padding: 1rem;
+            }
+
+            .nav-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .section {
+                padding: 2rem 1rem;
+            }
+        }
+
+        .demo-area {
+            background: var(--bg-hover);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .demo-btn {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .demo-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .demo-btn.endo {
+            background: var(--accent-blue);
+        }
+
+        .demo-btn.endo:hover {
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .law-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(59, 130, 246, 0.1));
+            border: 2px solid var(--accent-gold);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .law-box h3 {
+            text-align: center;
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .formula-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .formula-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-3px);
+        }
+
+        .formula-card h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .quiz-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .quiz-nav-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: var(--bg-hover);
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-nav-btn:hover {
+            border-color: var(--accent-gold);
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            transform: scale(1.1);
+        }
+
+        .quiz-nav-btn.current {
+            border-color: var(--accent-gold);
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+        }
+
+        .quiz-nav-btn.answered {
+            border-color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .quiz-nav-btn.answered.current {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>⚗️ Termochemie</h1>
+            <p>Interaktivní průvodce energií chemických reakcí</p>
+        </header>
+
+        <nav class="nav">
+            <button class="nav-btn active" onclick="showSection('uvod')">Úvod</button>
+            <button class="nav-btn" onclick="showSection('typy')">Typy reakcí</button>
+            <button class="nav-btn" onclick="showSection('rovnice')">Rovnice</button>
+            <button class="nav-btn" onclick="showSection('vzorce')">Vzorce</button>
+            <button class="nav-btn" onclick="showSection('vypocty')">Výpočty</button>
+            <button class="nav-btn" onclick="showSection('hess')">Hessův zákon</button>
+            <button class="nav-btn" onclick="showSection('kviz')">Kvíz</button>
+            <button class="nav-btn summary-btn" onclick="showSection('shrnuti')">📚 Shrnutí</button>
+        </nav>
+
+        <!-- ÚVOD -->
+        <section id="uvod" class="section active">
+            <h2 class="section-title">Co je termochemie?</h2>
+
+            <div class="card">
+                <h3>Základní definice</h3>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    <strong>Termochemie</strong> je část chemie, která se zabývá tepelnými změnami 
+                    doprovázejícími chemické reakce a fyzikální změny látek.
+                </p>
+                <p style="color: var(--text-dim);">
+                    Při chemických reakcích dochází k přeměně energie. Energie se může 
+                    uvolňovat (exotermické reakce) nebo pohlcovat (endotermické reakce).
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>Klíčové pojmy</h3>
+                <div class="grid-2">
+                    <div class="info-box" style="border-left: 3px solid var(--accent-red);">
+                        <h4 style="color: var(--accent-red);">Reakční teplo (Q, ΔH)</h4>
+                        <p>Množství tepla, které se při reakci uvolní nebo pohltí</p>
+                    </div>
+                    <div class="info-box" style="border-left: 3px solid var(--accent-blue);">
+                        <h4 style="color: var(--accent-blue);">Entalpie (H)</h4>
+                        <p>Termodynamická veličina charakterizující energetický stav systému</p>
+                    </div>
+                    <div class="info-box" style="border-left: 3px solid var(--accent-gold);">
+                        <h4>Termochemická rovnice</h4>
+                        <p>Chemická rovnice doplněná o údaj o reakčním teple</p>
+                    </div>
+                    <div class="info-box" style="border-left: 3px solid var(--accent-green);">
+                        <h4 style="color: var(--accent-green);">Standardní podmínky</h4>
+                        <p>Teplota 25°C (298 K), tlak 101,325 kPa</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Proč je termochemie důležitá?</h3>
+                <ul>
+                    <li>Umožňuje předpovídat, zda reakce proběhne samovolně</li>
+                    <li>Pomáhá navrhovat energeticky efektivní procesy</li>
+                    <li>Klíčová pro pochopení metabolismu v biologii</li>
+                    <li>Využití v energetice (spalování paliv, baterie)</li>
+                    <li>Důležitá pro bezpečnost v chemickém průmyslu</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TYPY REAKCÍ -->
+        <section id="typy" class="section">
+            <h2 class="section-title">Typy termochemických reakcí</h2>
+
+            <div class="demo-area">
+                <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">Interaktivní demonstrace</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Klikni na tlačítka a pozoruj rozdíl!</p>
+                <button class="demo-btn" onclick="showReactionType('exo')">🔥 Exotermická reakce</button>
+                <button class="demo-btn endo" onclick="showReactionType('endo')">❄️ Endotermická reakce</button>
+                <p id="reaction-message" style="margin-top: 1rem; font-size: 1.2rem; color: var(--accent-gold); min-height: 30px;"></p>
+            </div>
+
+            <div class="grid-2">
+                <div class="reaction-card exo">
+                    <h4>⚡ Exotermická reakce</h4>
+                    <p style="font-size: 1.1rem; margin: 1rem 0;">
+                        <strong style="color: var(--accent-red);">Q &lt; 0</strong> nebo 
+                        <strong style="color: var(--accent-red);">ΔH &lt; 0</strong>
+                    </p>
+                    <p style="color: var(--text-dim); margin: 1rem 0;">
+                        Reakce uvolňuje energii do okolí. Produkty mají nižší energii než výchozí látky.
+                    </p>
+                    <div class="formula">
+                        C(s) + O₂(g) → CO₂(g)<br/>
+                        <span style="color: var(--accent-red);">Q = -390 kJ/mol</span>
+                    </div>
+                    <h4 style="font-size: 1rem; margin-top: 1.5rem; color: var(--text-light);">Příklady:</h4>
+                    <ul style="color: var(--text-dim);">
+                        <li>Spalování (hoření)</li>
+                        <li>Neutralizace kyselin a zásad</li>
+                        <li>Rozpouštění NaOH ve vodě</li>
+                        <li>Hydratace CaO</li>
+                    </ul>
+                </div>
+
+                <div class="reaction-card endo">
+                    <h4>❄️ Endotermická reakce</h4>
+                    <p style="font-size: 1.1rem; margin: 1rem 0;">
+                        <strong style="color: var(--accent-blue);">Q &gt; 0</strong> nebo 
+                        <strong style="color: var(--accent-blue);">ΔH &gt; 0</strong>
+                    </p>
+                    <p style="color: var(--text-dim); margin: 1rem 0;">
+                        Reakce pohlcuje energii z okolí. Produkty mají vyšší energii než výchozí látky.
+                    </p>
+                    <div class="formula">
+                        2 HgO(s) → 2 Hg(l) + O₂(g)<br/>
+                        <span style="color: var(--accent-blue);">Q = +181 kJ/mol</span>
+                    </div>
+                    <h4 style="font-size: 1rem; margin-top: 1.5rem; color: var(--text-light);">Příklady:</h4>
+                    <ul style="color: var(--text-dim);">
+                        <li>Rozklad látek (termický rozklad)</li>
+                        <li>Fotosyntéza</li>
+                        <li>Rozpouštění NH₄Cl ve vodě</li>
+                        <li>Elektrolýza vody</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Jak rozpoznat typ reakce?</h3>
+                <div class="grid-2">
+                    <div>
+                        <h4 style="color: var(--accent-red); margin-bottom: 0.5rem;">Exotermická</h4>
+                        <ul>
+                            <li>Okolí se otepluje</li>
+                            <li>Teplo se uvolňuje</li>
+                            <li>Q &lt; 0 nebo ΔH &lt; 0</li>
+                            <li>Produkty níže než reaktanty na diagramu</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">Endotermická</h4>
+                        <ul>
+                            <li>Okolí se ochlazuje</li>
+                            <li>Teplo se pohlcuje</li>
+                            <li>Q &gt; 0 nebo ΔH &gt; 0</li>
+                            <li>Produkty výše než reaktanty na diagramu</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROVNICE -->
+        <section id="rovnice" class="section">
+            <h2 class="section-title">Termochemické rovnice</h2>
+
+            <div class="card">
+                <h3>Co je termochemická rovnice?</h3>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    Termochemická rovnice je chemická rovnice doplněná o údaj o <span class="highlight">reakčním teple (Q nebo ΔH)</span>.
+                </p>
+                <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                    2 H₂(g) + O₂(g) → 2 H₂O(l)    <span style="color: var(--accent-red);">ΔH = -571,6 kJ</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Zásady psaní termochemických rovnic</h3>
+                <div class="step">
+                    <span class="step-num">1.</span> Musí být <strong>vyčíslené</strong> (stechiometrické koeficienty)
+                </div>
+                <div class="step">
+                    <span class="step-num">2.</span> Musí obsahovat <strong>skupenství látek</strong>: (s), (l), (g), (aq)
+                </div>
+                <div class="step">
+                    <span class="step-num">3.</span> Hodnota ΔH se vztahuje k <strong>přesně takovému množství</strong> látek, jak je v rovnici
+                </div>
+                <div class="step">
+                    <span class="step-num">4.</span> Měrná jednotka je nejčastěji <strong>kJ</strong> nebo <strong>kJ/mol</strong>
+                </div>
+                <div class="step">
+                    <span class="step-num">5.</span> Záporné ΔH = exotermická, kladné ΔH = endotermická
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Příklady termochemických rovnic</h3>
+                <div class="formula" style="cursor: pointer;" onclick="toggleExplanation('ex1')">
+                    C(s) + O₂(g) → CO₂(g)    <span style="color: var(--accent-red);">Q = -390 kJ/mol</span>
+                </div>
+                <p id="ex1" style="display: none; margin-top: 0.5rem; color: var(--text-dim);">
+                    💡 Spalování uhlíku - velmi exotermická reakce
+                </p>
+
+                <div class="formula" style="cursor: pointer;" onclick="toggleExplanation('ex2')">
+                    2 HgO(s) → 2 Hg(l) + O₂(g)    <span style="color: var(--accent-blue);">Q = +181 kJ/mol</span>
+                </div>
+                <p id="ex2" style="display: none; margin-top: 0.5rem; color: var(--text-dim);">
+                    💡 Rozklad oxidu rtuťnatého - vyžaduje ohřev
+                </p>
+
+                <div class="formula" style="cursor: pointer;" onclick="toggleExplanation('ex3')">
+                    CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(g)    <span style="color: var(--accent-red);">Q = -804 kJ/mol</span>
+                </div>
+                <p id="ex3" style="display: none; margin-top: 0.5rem; color: var(--text-dim);">
+                    💡 Spalování metanu - používá se k vaření
+                </p>
+
+                <div class="formula" style="cursor: pointer;" onclick="toggleExplanation('ex4')">
+                    H₂O₂(l) → H₂O(l) + ½ O₂(g)    <span style="color: var(--accent-red);">Q = -196 kJ/mol</span>
+                </div>
+                <p id="ex4" style="display: none; margin-top: 0.5rem; color: var(--text-dim);">
+                    💡 Rozklad peroxidu vodíku
+                </p>
+            </div>
+
+            <div class="law-box">
+                <h3>📜 Lavoisierův-Laplaceův zákon</h3>
+                <p style="font-size: 1.2rem; text-align: center; margin: 1rem 0;">
+                    Reakční teplo rozkladu je <span class="highlight">stejně velké</span>, ale má 
+                    <span class="highlight">opačné znaménko</span> než reakční teplo vzniku.
+                </p>
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; margin-top: 2rem;">
+                    <div class="formula" style="text-align: center;">
+                        2 H₂(g) + O₂(g) → 2 H₂O(l)<br/>
+                        <span style="color: var(--accent-red);">ΔH = -571,6 kJ</span>
+                    </div>
+                    <div style="font-size: 2rem; color: var(--accent-gold);">⇄</div>
+                    <div class="formula" style="text-align: center;">
+                        2 H₂O(l) → 2 H₂(g) + O₂(g)<br/>
+                        <span style="color: var(--accent-blue);">ΔH = +571,6 kJ</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VZORCE -->
+        <section id="vzorce" class="section">
+            <h2 class="section-title">Všechny vzorce na jednom místě</h2>
+
+            <div class="card">
+                <h3>📐 Základní vzorce</h3>
+                <div class="formula-grid">
+                    <div class="formula-card">
+                        <h4>Reakční teplo</h4>
+                        <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                            Q = n × ΔH
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            Q = celkové teplo [kJ]<br/>
+                            n = množství látky [mol]<br/>
+                            ΔH = molární reakční teplo [kJ/mol]
+                        </p>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Množství látky</h4>
+                        <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                            n = m / M
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            n = množství látky [mol]<br/>
+                            m = hmotnost [g]<br/>
+                            M = molární hmotnost [g/mol]
+                        </p>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Hmotnost</h4>
+                        <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                            m = n × M
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            m = hmotnost [g]<br/>
+                            n = množství látky [mol]<br/>
+                            M = molární hmotnost [g/mol]
+                        </p>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Celkový výpočet</h4>
+                        <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                            Q = (m / M) × ΔH
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            Kombinace vzorců pro výpočet tepla<br/>
+                            z hmotnosti látky
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📜 Termochemické zákony</h3>
+                <div class="formula-grid">
+                    <div class="formula-card">
+                        <h4>Hessův zákon</h4>
+                        <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                            ΔH<sub>celková</sub> = ΔH₁ + ΔH₂ + ΔH₃ + ...
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            Celková změna entalpie nezávisí na cestě,<br/>
+                            ale pouze na počátečním a konečném stavu
+                        </p>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Lavoisierův-Laplaceův zákon</h4>
+                        <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                            ΔH<sub>rozklad</sub> = -ΔH<sub>vznik</sub>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            Reakční teplo rozkladu má stejnou velikost,<br/>
+                            ale opačné znaménko než teplo vzniku
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🔥 Důležité termochemické rovnice</h3>
+                <div class="formula-grid">
+                    <div class="formula-card">
+                        <h4>Spalování uhlíku</h4>
+                        <div class="formula">
+                            C(s) + O₂(g) → CO₂(g)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -390 kJ/mol</span>
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Spalování metanu</h4>
+                        <div class="formula">
+                            CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(g)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -804 kJ/mol</span>
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Vznik vody</h4>
+                        <div class="formula">
+                            2 H₂(g) + O₂(g) → 2 H₂O(l)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -571,6 kJ</span>
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Rozklad HgO</h4>
+                        <div class="formula">
+                            2 HgO(s) → 2 Hg(l) + O₂(g)<br/>
+                            <span style="color: var(--accent-blue);">ΔH = +181 kJ/mol</span>
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Vznik CO₂ z CO</h4>
+                        <div class="formula">
+                            CO(g) + ½ O₂(g) → CO₂(g)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -283,2 kJ/mol</span>
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Vznik CO z uhlíku</h4>
+                        <div class="formula">
+                            C(s) + ½ O₂(g) → CO(g)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -110,7 kJ/mol</span>
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Vznik H₂O z prvků</h4>
+                        <div class="formula">
+                            H₂(g) + ½ O₂(g) → H₂O(l)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -285,9 kJ/mol</span>
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Rozklad H₂O₂</h4>
+                        <div class="formula">
+                            H₂O₂(l) → H₂O(l) + ½ O₂(g)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -196 kJ/mol</span>
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4>Fotosyntéza (zjednodušeně)</h4>
+                        <div class="formula">
+                            6 CO₂(g) + 6 H₂O(l) → C₆H₁₂O₆ + 6 O₂(g)<br/>
+                            <span style="color: var(--accent-blue);">ΔH > 0 (endotermická)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💡 Tipy pro zapamatování</h3>
+                <div class="info-box">
+                    <h4>Exotermické reakce (ΔH < 0)</h4>
+                    <ul>
+                        <li><strong>Spalování</strong> - všechny reakce s O₂ jsou exotermické</li>
+                        <li><strong>Neutralizace</strong> - kyselina + zásada = voda + sůl</li>
+                        <li><strong>Rozpouštění NaOH, CaO</strong> ve vodě</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <h4>Endotermické reakce (ΔH > 0)</h4>
+                    <ul>
+                        <li><strong>Rozklady</strong> - většina rozkladů vyžaduje energii</li>
+                        <li><strong>Fotosyntéza</strong> - rostliny potřebují světlo</li>
+                        <li><strong>Rozpouštění NH₄Cl</strong> ve vodě</li>
+                        <li><strong>Elektrolýza</strong> - rozklad vodou pomocí elektřiny</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📝 Postup při řešení úloh</h3>
+                <div class="step">
+                    <span class="step-num">1.</span> Napiš a vyčísli chemickou rovnici
+                </div>
+                <div class="step">
+                    <span class="step-num">2.</span> Doplň skupenství látek (s), (l), (g), (aq)
+                </div>
+                <div class="step">
+                    <span class="step-num">3.</span> Urči typ reakce (exo/endo) podle zadání
+                </div>
+                <div class="step">
+                    <span class="step-num">4.</span> Použij vzorec n = m/M (pokud je zadána hmotnost)
+                </div>
+                <div class="step">
+                    <span class="step-num">5.</span> Vypočítej Q = n × ΔH
+                </div>
+                <div class="step">
+                    <span class="step-num">6.</span> U Hessova zákona: sečti/odečti známé reakce
+                </div>
+                <div class="step">
+                    <span class="step-num">7.</span> Nezapomeň na jednotky a znaménka!
+                </div>
+            </div>
+        </section>
+
+        <!-- VÝPOČTY -->
+        <section id="vypocty" class="section">
+            <h2 class="section-title">Výpočty s reakčním teplem</h2>
+
+            <div class="example">
+                <h4>📝 Vzorový příklad 1: Spalování metanu (PODROBNĚ)</h4>
+                
+                <div class="info-box" style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid var(--accent-blue);">
+                    <h4 style="color: var(--accent-blue);">📖 Zadání</h4>
+                    <p style="font-size: 1.1rem;">
+                        Při spalování metanu podle rovnice:<br/>
+                        <span class="formula" style="display: block; margin: 1rem 0;">
+                            CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(g)    <span style="color: var(--accent-red);">ΔH = -804 kJ/mol</span>
+                        </span>
+                        Kolik gramů metanu je potřeba spálit k ohřátí 1 litru vody z 10°C na 100°C?<br/>
+                        <strong>(K ohřátí 1 litru vody o 1°C je potřeba 4,2 kJ)</strong>
+                    </p>
+                </div>
+
+                <div class="info-box" style="background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--accent-gold); margin-top: 1rem;">
+                    <h4 style="color: var(--accent-gold);">🤔 Co vlastně hledáme?</h4>
+                    <p>
+                        Máme <strong>vodu</strong>, kterou chceme ohřát. K tomu potřebujeme <strong>energii</strong>.<br/>
+                        Tu energii získáme spálením <strong>metanu</strong>.<br/>
+                        Potřebujeme zjistit: <span class="highlight">Kolik metanu (v gramech) musíme spálit?</span>
+                    </p>
+                </div>
+
+                <div class="info-box" style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent-green); margin-top: 1rem;">
+                    <h4 style="color: var(--accent-green);">💡 Co víme ze zadání?</h4>
+                    <ul>
+                        <li><strong>Počáteční teplota vody:</strong> 10°C</li>
+                        <li><strong>Konečná teplota vody:</strong> 100°C (var)</li>
+                        <li><strong>Objem vody:</strong> 1 litr</li>
+                        <li><strong>Měrná tepelná kapacita vody:</strong> 4,2 kJ/(°C·litr)</li>
+                        <li><strong>Reakční teplo spalování CH₄:</strong> ΔH = -804 kJ/mol</li>
+                        <li><strong>Molární hmotnost CH₄:</strong> M = 12 + 4×1 = 16 g/mol</li>
+                    </ul>
+                </div>
+
+                <h4 style="margin-top: 2rem; color: var(--accent-gold);">🔍 Řešení krok za krokem:</h4>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));">
+                    <span class="step-num">KROK 1:</span> Kolik energie potřebujeme na ohřátí vody?
+                    
+                    <p style="margin: 1rem 0; font-size: 1.05rem;">
+                        <strong>Co děláme:</strong> Vypočítáme, o kolik stupňů musíme vodu ohřát a kolik energie to spotřebuje.
+                    </p>
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>a) Výpočet teplotního rozdílu (ΔT):</strong>
+                        <div class="formula">
+                            ΔT = T<sub>konečná</sub> - T<sub>počáteční</sub><br/>
+                            ΔT = 100°C - 10°C = <span class="highlight">90°C</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            ➜ Vodu musíme ohřát o 90 stupňů Celsia
+                        </p>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>b) Výpočet potřebné energie:</strong>
+                        <div class="formula">
+                            Q<sub>potřebné</sub> = měrná kapacita × ΔT<br/>
+                            Q<sub>potřebné</sub> = 4,2 kJ/°C × 90°C<br/>
+                            Q<sub>potřebné</sub> = <span class="highlight">378 kJ</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            ➜ K ohřátí 1 litru vody z 10°C na 100°C potřebujeme <strong>378 kJ energie</strong>
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(245, 158, 11, 0.15); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-gold);">
+                        <strong>💡 Vysvětlení:</strong><br/>
+                        Každý stupeň ohřátí 1 litru vody stojí 4,2 kJ. Když chceme ohřát o 90°C, 
+                        prostě vynásobíme: 4,2 × 90 = 378 kJ. Je to jako v obchodě - 
+                        jedno jablko stojí 4,2 Kč, 90 jablek stojí 4,2 × 90 = 378 Kč.
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));">
+                    <span class="step-num">KROK 2:</span> Kolik molů metanu musíme spálit?
+                    
+                    <p style="margin: 1rem 0; font-size: 1.05rem;">
+                        <strong>Co děláme:</strong> Zjistíme, kolik molů CH₄ nám dá potřebných 378 kJ energie.
+                    </p>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Co víme:</strong>
+                        <div class="formula">
+                            1 mol CH₄ při spálení uvolní 804 kJ<br/>
+                            (to je to |ΔH| = 804 kJ/mol ze zadání)
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Metoda 1: Trojčlenka (přímá úměra)</strong>
+                        <div class="formula">
+                            1 mol CH₄ .......... 804 kJ<br/>
+                            x mol CH₄ .......... 378 kJ<br/>
+                            <br/>
+                            x = (378 kJ × 1 mol) / 804 kJ<br/>
+                            x = 378 / 804<br/>
+                            x = <span class="highlight">0,470 mol</span>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Metoda 2: Přímý vzorec</strong>
+                        <div class="formula">
+                            n = Q / |ΔH|<br/>
+                            n = 378 kJ / 804 kJ/mol<br/>
+                            n = <span class="highlight">0,470 mol</span>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(245, 158, 11, 0.15); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-gold);">
+                        <strong>💡 Vysvětlení:</strong><br/>
+                        Potřebujeme 378 kJ, ale jeden mol CH₄ dá 804 kJ. To je víc, než potřebujeme!<br/>
+                        Proto potřebujeme <strong>méně než 1 mol</strong>.<br/>
+                        Konkrétně: 378/804 = 0,47 molu, což je skoro polovina (0,5).
+                        <br/><br/>
+                        <strong>Pozor:</strong> Používáme <strong>|ΔH|</strong> (absolutní hodnotu), protože nás zajímá 
+                        množství uvolněné energie, ne znaménko!
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));">
+                    <span class="step-num">KROK 3:</span> Přepočet molů na gramy
+                    
+                    <p style="margin: 1rem 0; font-size: 1.05rem;">
+                        <strong>Co děláme:</strong> Převedeme moly (které nikdo neváží) na gramy (které můžeme odvážit).
+                    </p>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Výpočet molární hmotnosti CH₄:</strong>
+                        <div class="formula">
+                            M(CH₄) = M(C) + 4 × M(H)<br/>
+                            M(CH₄) = 12 + 4 × 1<br/>
+                            M(CH₄) = <span class="highlight">16 g/mol</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            ➜ Jeden mol metanu váží 16 gramů
+                        </p>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Přepočet pomocí vzorce m = n × M:</strong>
+                        <div class="formula">
+                            m = n × M<br/>
+                            m = 0,470 mol × 16 g/mol<br/>
+                            m = <span class="highlight">7,52 g</span> ≈ <span class="highlight">7,5 g</span>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(245, 158, 11, 0.15); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-gold);">
+                        <strong>💡 Vysvětlení:</strong><br/>
+                        Máme 0,47 molu metanu a jeden mol váží 16 g.<br/>
+                        Takže 0,47 molu bude vážit: 0,47 × 16 = 7,5 g<br/>
+                        <br/>
+                        Je to jako s vajíčky: Máš 0,47 tuctu vajec. Jeden tucet = 12 vajec.<br/>
+                        Kolik máš vajec? 0,47 × 12 = 5,64 vajec (asi 6 vajec).
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); padding: 2rem; border-radius: 8px; margin-top: 2rem; border: 2px solid var(--accent-gold);">
+                    <h4 style="color: var(--accent-gold); font-size: 1.5rem; margin-bottom: 1rem;">✅ FINÁLNÍ ODPOVĚĎ</h4>
+                    <p style="font-size: 1.3rem;">
+                        K ohřátí <strong>1 litru vody</strong> z <strong>10°C na 100°C</strong> 
+                        je potřeba spálit <span class="highlight" style="font-size: 1.4rem;">7,5 gramu metanu</span>.
+                    </p>
+                </div>
+
+                <div class="info-box" style="margin-top: 2rem; background: rgba(147, 51, 234, 0.1); border-left: 3px solid #9333ea;">
+                    <h4 style="color: #9333ea;">🎯 Shrnutí celého postupu</h4>
+                    <div class="formula">
+                        <strong>1. Energie pro vodu:</strong> Q = 4,2 × 90 = 378 kJ<br/>
+                        <strong>2. Moly metanu:</strong> n = 378 / 804 = 0,47 mol<br/>
+                        <strong>3. Hmotnost:</strong> m = 0,47 × 16 = 7,5 g<br/>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 1rem; background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--accent-red);">
+                    <h4 style="color: var(--accent-red);">⚠️ Časté chyby, kterým se vyhnout</h4>
+                    <ul>
+                        <li><strong>Zapomenout na teplotní rozdíl:</strong> ΔT = 100 - 10 = 90°C (ne 100°C!)</li>
+                        <li><strong>Použít špatné znaménko:</strong> Pro výpočet energie používáme |ΔH| = 804 (ne -804)</li>
+                        <li><strong>Zapomenout na molární hmotnost:</strong> CH₄ = 16 g/mol (ne jen 12!)</li>
+                        <li><strong>Špatné jednotky:</strong> Kontroluj, že máš všude kJ, mol a gramy</li>
+                    </ul>
+                </div>
+
+                <div class="info-box" style="margin-top: 1rem; background: rgba(52, 211, 153, 0.1); border-left: 3px solid #34d399;">
+                    <h4 style="color: #34d399;">🚀 Rychlá kontrola výsledku</h4>
+                    <p>
+                        <strong>Dává to smysl?</strong><br/>
+                        • Jeden mol CH₄ (16 g) uvolní 804 kJ<br/>
+                        • My potřebujeme jen 378 kJ (necelá polovina)<br/>
+                        • Takže musíme spálit necelou polovinu 16 g → ~7,5 g ✓<br/>
+                        • <span style="color: #34d399;">Výsledek dává smysl! ✓</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>📝 Vzorový příklad 2: Redukce CO₂</h4>
+                <p style="margin-bottom: 1rem;">
+                    Napište termochemickou rovnici redukce 1 mol CO₂ uhlíkem, pokud se na reakci spotřebuje 172,5 kJ/mol.
+                </p>
+
+                <div class="step">
+                    <span class="step-num">Krok 1:</span> Napsat chemickou rovnici
+                    <div class="formula">
+                        CO₂(g) + C(s) → 2 CO(g)
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span class="step-num">Krok 2:</span> Určit typ reakce
+                    <p>Energie se <strong>spotřebuje</strong> → endotermická reakce → <span class="highlight">ΔH &gt; 0</span></p>
+                </div>
+
+                <div class="step">
+                    <span class="step-num">Krok 3:</span> Napsat termochemickou rovnici
+                    <div class="formula" style="font-size: 1.2rem;">
+                        CO₂(g) + C(s) → 2 CO(g)    <span style="color: var(--accent-blue);">ΔH = +172,5 kJ/mol</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calculator">
+                <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">🧮 Interaktivní kalkulačka</h3>
+                
+                <label>Reakční teplo (ΔH) v kJ/mol:</label>
+                <input type="number" id="calcQ" class="calc-input" placeholder="např. -804">
+
+                <label>Množství látky (n) v mol:</label>
+                <input type="number" id="calcN" class="calc-input" placeholder="např. 2">
+
+                <button class="btn" onclick="calculate()">Vypočítat</button>
+
+                <div id="calcResult" class="calc-result" style="display: none;"></div>
+            </div>
+        </section>
+
+        <!-- HESSŮV ZÁKON -->
+        <section id="hess" class="section">
+            <h2 class="section-title">Hessův zákon</h2>
+
+            <div class="law-box">
+                <h3>📜 Hessův zákon konstance součtů tepel</h3>
+                <p style="font-size: 1.3rem; text-align: center; margin: 2rem 0; line-height: 1.8;">
+                    Celková změna entalpie chemické reakce <span class="highlight">nezávisí na cestě</span>, 
+                    po které reakce probíhá, ale závisí pouze na <span class="highlight">počátečním a konečném stavu</span> systému.
+                </p>
+                <div style="background: var(--bg-hover); padding: 2rem; border-radius: 4px; text-align: center;">
+                    <div style="font-size: 1.5rem; color: var(--accent-gold);">
+                        ΔH<sub>celková</sub> = ΔH₁ + ΔH₂ + ΔH₃ + ...
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Praktické využití</h3>
+                <p style="margin-bottom: 1rem;">
+                    Hessův zákon nám umožňuje vypočítat reakční teplo reakce, kterou nelze přímo změřit, 
+                    pomocí kombinace známých reakčních tepel.
+                </p>
+            </div>
+
+            <div class="example">
+                <h4>📝 Vzorový příklad 15: Hessův zákon - KOMPLETNÍ PRŮVODCE</h4>
+                
+                <div class="info-box" style="background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--accent-gold);">
+                    <h4 style="color: var(--accent-gold);">🎯 Co je Hessův zákon?</h4>
+                    <p style="font-size: 1.1rem;">
+                        Hessův zákon říká, že <strong>celková změna entalpie nezávisí na cestě reakce</strong>, 
+                        ale pouze na počátečním a konečném stavu.<br/><br/>
+                        <strong>V praxi to znamená:</strong> Můžeme sčítat a odčítat známé reakce, 
+                        abychom získali reakci, kterou potřebujeme!
+                    </p>
+                </div>
+
+                <div class="info-box" style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid var(--accent-blue); margin-top: 1rem;">
+                    <h4 style="color: var(--accent-blue);">📐 Základní pravidla</h4>
+                    <ul style="line-height: 1.8;">
+                        <li><strong>Sčítání reakcí:</strong> Když sečteme dvě reakce, sečteme i jejich ΔH</li>
+                        <li><strong>Odečítání reakcí:</strong> Když odečteme reakci, odečteme i její ΔH</li>
+                        <li><strong>Násobení reakce:</strong> Když vynásobíme reakci číslem, vynásobíme i ΔH</li>
+                        <li><strong>Obrácení reakce:</strong> Když otočíme reakci (←), změní se znaménko ΔH</li>
+                    </ul>
+                </div>
+
+                <hr style="border: none; border-top: 2px solid var(--border); margin: 2rem 0;"/>
+
+                <!-- ČÁST A -->
+                <h4 style="color: var(--accent-gold); font-size: 1.5rem; margin-top: 2rem;">📍 ČÁST A) Výpočet ΔH pro vznik CO</h4>
+
+                <div class="info-box" style="background: rgba(147, 51, 234, 0.1); border-left: 3px solid #9333ea;">
+                    <h4 style="color: #9333ea;">📖 Zadání</h4>
+                    <p style="font-size: 1.1rem;">
+                        Vypočítejte reakční teplo pro reakci:
+                    </p>
+                    <div class="formula" style="font-size: 1.2rem; text-align: center; background: rgba(147, 51, 234, 0.1);">
+                        C(s) + 0,5 O₂(g) → CO(g)    <span style="color: #9333ea;">ΔH = ?</span>
+                    </div>
+                    <p style="margin-top: 1rem;">Známé reakce:</p>
+                    <div class="formula">
+                        <span style="color: var(--text-dim);">I.</span> C(s) + O₂(g) → CO₂(g)    <span style="color: var(--accent-red);">ΔH₁ = -393,9 kJ/mol</span>
+                    </div>
+                    <div class="formula">
+                        <span style="color: var(--text-dim);">II.</span> CO(g) + 0,5 O₂(g) → CO₂(g)    <span style="color: var(--accent-red);">ΔH₂ = -283,2 kJ/mol</span>
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));">
+                    <span class="step-num">KROK 1:</span> Analyzuj, co máme a co chceme
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Co CHCEME (hledaná reakce):</strong>
+                        <div class="formula">
+                            <span style="color: #34d399;">Reaktanty:</span> C + 0,5 O₂<br/>
+                            <span style="color: #f59e0b;">Produkty:</span> CO
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Co MÁME:</strong>
+                        <div class="formula">
+                            <span style="color: var(--text-dim);">Reakce I:</span> C + O₂ → CO₂<br/>
+                            <span style="color: var(--text-dim);">Reakce II:</span> CO + 0,5 O₂ → CO₂
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(245, 158, 11, 0.15); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-gold);">
+                        <strong>💡 Pozorování:</strong><br/>
+                        • V reakci I vzniká CO₂ (je na pravé straně)<br/>
+                        • V reakci II také vzniká CO₂ (je na pravé straně)<br/>
+                        • My ale CO₂ v hledané reakci NECHCEME!<br/>
+                        • <strong>Řešení:</strong> Když odečteme reakci II od reakci I, CO₂ se vyruší!
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));">
+                    <span class="step-num">KROK 2:</span> Manipulace s rovnicemi
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Bereme reakci I:</strong>
+                        <div class="formula">
+                            C(s) + O₂(g) → CO₂(g)    ΔH₁ = -393,9 kJ/mol
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>ODEČÍTÁME reakci II:</strong>
+                        <div class="formula">
+                            − [CO(g) + 0,5 O₂(g) → CO₂(g)]    ΔH₂ = -283,2 kJ/mol
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            ⚠️ Pozor! Když odečítáme celou rovnici, všechno se otočí:<br/>
+                            CO₂(g) → CO(g) + 0,5 O₂(g)    ΔH = −(−283,2) = +283,2 kJ/mol
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(245, 158, 11, 0.15); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-gold);">
+                        <strong>💡 Vysvětlení odečítání:</strong><br/>
+                        Když odečítáme rovnici, je to jako bychom ji <strong>otočili</strong>:<br/>
+                        • Reaktanty se stanou produkty<br/>
+                        • Produkty se stanou reaktanty<br/>
+                        • ΔH změní znaménko: −(−283,2) = +283,2
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));">
+                    <span class="step-num">KROK 3:</span> Sečti rovnice (I − II)
+                    
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 4px; margin: 1rem 0; font-family: 'Fira Code', monospace;">
+                        <div class="formula" style="margin: 0;">
+                            <span style="color: #34d399;">C(s) + O₂(g)</span> → <span style="color: #f59e0b;">CO₂(g)</span><br/>
+                            <span style="color: #f59e0b;">CO₂(g)</span> → <span style="color: #34d399;">CO(g) + 0,5 O₂(g)</span><br/>
+                            <hr style="border: 1px solid var(--border); margin: 0.5rem 0;"/>
+                            <span style="color: #34d399;">C(s) + O₂(g)</span> <span style="text-decoration: line-through; color: var(--text-dim);">+ CO₂(g)</span> → 
+                            <span style="text-decoration: line-through; color: var(--text-dim);">CO₂(g)</span> <span style="color: #34d399;">+ CO(g) + 0,5 O₂(g)</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 1rem; font-family: 'Inter', sans-serif;">
+                            CO₂ se vyskytuje na obou stranách → vyruší se!
+                        </p>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Po zjednodušení:</strong>
+                        <div class="formula">
+                            C(s) + O₂(g) → CO(g) + 0,5 O₂(g)
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            Teď zjednodušíme O₂: O₂ − 0,5 O₂ = 0,5 O₂
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.2); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-green);">
+                        <strong>Výsledná rovnice:</strong>
+                        <div class="formula" style="font-size: 1.2rem;">
+                            C(s) + 0,5 O₂(g) → CO(g)
+                        </div>
+                        <p style="margin-top: 0.5rem;">
+                            ✅ To je přesně to, co jsme hledali!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));">
+                    <span class="step-num">KROK 4:</span> Výpočet ΔH
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Aplikujeme Hessův zákon:</strong>
+                        <div class="formula">
+                            ΔH = ΔH₁ − ΔH₂<br/>
+                            ΔH = (−393,9) − (−283,2)<br/>
+                            ΔH = −393,9 + 283,2<br/>
+                            <span class="highlight" style="font-size: 1.3rem;">ΔH = −110,7 kJ/mol</span>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(245, 158, 11, 0.15); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-gold);">
+                        <strong>💡 Pozor na znaménka!</strong><br/>
+                        −(−283,2) = +283,2<br/>
+                        Je to jako v matematice: minus krát minus = plus
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); padding: 2rem; border-radius: 8px; margin-top: 1rem; border: 2px solid var(--accent-gold);">
+                    <h4 style="color: var(--accent-gold); font-size: 1.3rem; margin-bottom: 0.5rem;">✅ ODPOVĚĎ A)</h4>
+                    <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                        C(s) + 0,5 O₂(g) → CO(g)<br/>
+                        <span class="highlight" style="font-size: 1.4rem;">ΔH = −110,7 kJ/mol</span>
+                    </div>
+                </div>
+
+                <div class="info-box" style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent-green); margin-top: 2rem;">
+                    <h4 style="color: var(--accent-green);">🎓 Shrnutí postupu</h4>
+                    <ol style="line-height: 2;">
+                        <li><strong>Analyzuj:</strong> Co máš a co potřebuješ</li>
+                        <li><strong>Otáčej:</strong> Pokud látka je na špatné straně, otoč reakci (změní se znaménko ΔH)</li>
+                        <li><strong>Násoben:</strong> Pokud potřebuješ víc/míň látky, vynásob reakci (vynásob i ΔH)</li>
+                        <li><strong>Sečti:</strong> Sečti všechny upravené reakce</li>
+                        <li><strong>Vyškrtni:</strong> Zruš látky na obou stranách</li>
+                        <li><strong>Vypočítej ΔH:</strong> Sečti všechny ΔH (s respektováním znamének!)</li>
+                    </ol>
+                </div>
+
+                <hr style="border: none; border-top: 2px solid var(--border); margin: 3rem 0;"/>
+
+                <!-- ČÁST B -->
+                <h4 style="color: var(--accent-gold); font-size: 1.5rem; margin-top: 2rem;">📍 ČÁST B) Výpočet ΔH pro vznik metanu z grafitu</h4>
+
+                <div class="info-box" style="background: rgba(147, 51, 234, 0.1); border-left: 3px solid #9333ea;">
+                    <h4 style="color: #9333ea;">📖 Zadání</h4>
+                    <p style="font-size: 1.1rem;">
+                        Vypočítejte reakční teplo pro reakci:
+                    </p>
+                    <div class="formula" style="font-size: 1.2rem; text-align: center; background: rgba(147, 51, 234, 0.1);">
+                        C(grafit) + 2 H₂(g) → CH₄(g)    <span style="color: #9333ea;">ΔH = ?</span>
+                    </div>
+                    <p style="margin-top: 1rem;">Známé reakce:</p>
+                    <div class="formula">
+                        <span style="color: var(--text-dim);">I.</span> CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(l)    ΔH₁ = -890,9 kJ/mol
+                    </div>
+                    <div class="formula">
+                        <span style="color: var(--text-dim);">II.</span> C(grafit) + O₂(g) → CO₂(g)    ΔH₂ = -393,9 kJ/mol
+                    </div>
+                    <div class="formula">
+                        <span style="color: var(--text-dim);">III.</span> H₂(g) + 0,5 O₂(g) → H₂O(l)    ΔH₃ = -285,9 kJ/mol
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));">
+                    <span class="step-num">KROK 1:</span> Analyzuj hledanou reakci
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Co CHCEME:</strong>
+                        <div class="formula">
+                            <span style="color: #34d399;">Reaktanty:</span> C(grafit) + 2 H₂<br/>
+                            <span style="color: #f59e0b;">Produkty:</span> CH₄
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(245, 158, 11, 0.15); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-gold);">
+                        <strong>💡 Strategie:</strong><br/>
+                        • V reakci I je CH₄ jako REAKTANT (vlevo), ale my ho chceme jako PRODUKT (vpravo)<br/>
+                        • <strong>Řešení:</strong> Otočíme reakci I!<br/>
+                        • V reakci II máme C(grafit) na správné straně → použijeme ji tak, jak je<br/>
+                        • V reakci III máme H₂ → potřebujeme 2 H₂, takže reakci III <strong>vynásobíme 2×</strong>
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));">
+                    <span class="step-num">KROK 2:</span> Úprava reakcí
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Reakce I otočíme (← místo →):</strong>
+                        <div class="formula">
+                            Původní: CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(l)    ΔH₁ = -890,9 kJ/mol<br/>
+                            <span style="color: #34d399;">Otočená: CO₂(g) + 2 H₂O(l) → CH₄(g) + 2 O₂(g)    ΔH₁' = +890,9 kJ/mol</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            ⚠️ Znaménko ΔH se změní: −(−890,9) = +890,9
+                        </p>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Reakce II necháme, jak je:</strong>
+                        <div class="formula">
+                            C(grafit) + O₂(g) → CO₂(g)    ΔH₂ = -393,9 kJ/mol
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Reakce III vynásobíme 2×:</strong>
+                        <div class="formula">
+                            Původní: H₂(g) + 0,5 O₂(g) → H₂O(l)    ΔH₃ = -285,9 kJ/mol<br/>
+                            <span style="color: #34d399;">2×: 2 H₂(g) + O₂(g) → 2 H₂O(l)    ΔH₃' = 2 × (−285,9) = −571,8 kJ/mol</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem;">
+                            ⚠️ Když násobíme reakci, musíme vynásobit i ΔH!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));">
+                    <span class="step-num">KROK 3:</span> Sečti všechny tři reakce
+                    
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 4px; margin: 1rem 0; font-family: 'Fira Code', monospace; font-size: 0.95rem;">
+                        <div class="formula" style="margin: 0;">
+                            <span style="color: #f59e0b;">CO₂ + 2 H₂O</span> → <span style="color: #34d399;">CH₄ + 2 O₂</span>  (I otočená)<br/>
+                            <span style="color: #34d399;">C + O₂</span> → <span style="color: #f59e0b;">CO₂</span>  (II)<br/>
+                            <span style="color: #34d399;">2 H₂ + O₂</span> → <span style="color: #f59e0b;">2 H₂O</span>  (III × 2)<br/>
+                            <hr style="border: 1px solid var(--border); margin: 0.5rem 0;"/>
+                            <span style="color: #34d399;">C + 2 H₂</span> <span style="text-decoration: line-through; color: var(--text-dim);">+ CO₂ + 2 H₂O + 2 O₂</span> → 
+                            <span style="color: #34d399;">CH₄</span> <span style="text-decoration: line-through; color: var(--text-dim);">+ CO₂ + 2 H₂O + 2 O₂</span>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.2); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-green);">
+                        <strong>Po vyškrtnutí stejných látek na obou stranách:</strong>
+                        <div class="formula" style="font-size: 1.2rem;">
+                            C(grafit) + 2 H₂(g) → CH₄(g)
+                        </div>
+                        <p style="margin-top: 0.5rem;">
+                            ✅ Přesně to, co jsme hledali!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));">
+                    <span class="step-num">KROK 4:</span> Výpočet ΔH
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Sečteme všechny ΔH:</strong>
+                        <div class="formula">
+                            ΔH = ΔH₁' + ΔH₂ + ΔH₃'<br/>
+                            ΔH = (+890,9) + (−393,9) + (−571,8)<br/>
+                            ΔH = 890,9 − 393,9 − 571,8<br/>
+                            ΔH = 890,9 − 965,7<br/>
+                            <span class="highlight" style="font-size: 1.3rem;">ΔH = −74,8 kJ/mol</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); padding: 2rem; border-radius: 8px; margin-top: 1rem; border: 2px solid var(--accent-gold);">
+                    <h4 style="color: var(--accent-gold); font-size: 1.3rem; margin-bottom: 0.5rem;">✅ ODPOVĚĎ B)</h4>
+                    <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                        C(grafit) + 2 H₂(g) → CH₄(g)<br/>
+                        <span class="highlight" style="font-size: 1.4rem;">ΔH = −74,8 kJ/mol</span>
+                    </div>
+                    <p style="text-align: center; margin-top: 0.5rem; color: var(--text-dim);">
+                        Záporné ΔH → exotermická reakce (uvolňuje se energie)
+                    </p>
+                </div>
+
+                <hr style="border: none; border-top: 2px solid var(--border); margin: 3rem 0;"/>
+
+                <!-- ČÁST C -->
+                <h4 style="color: var(--accent-gold); font-size: 1.5rem; margin-top: 2rem;">📍 ČÁST C) Výpočet ΔH pro vznik ethanolu</h4>
+
+                <div class="info-box" style="background: rgba(147, 51, 234, 0.1); border-left: 3px solid #9333ea;">
+                    <h4 style="color: #9333ea;">📖 Zadání</h4>
+                    <p style="font-size: 1.1rem;">
+                        Vypočítejte reakční teplo pro reakci:
+                    </p>
+                    <div class="formula" style="font-size: 1.2rem; text-align: center; background: rgba(147, 51, 234, 0.1);">
+                        2 CO(g) + 4 H₂(g) → H₂O(l) + C₂H₅OH(l)    <span style="color: #9333ea;">ΔH = ?</span>
+                    </div>
+                    <p style="margin-top: 1rem;">Známé reakce:</p>
+                    <div class="formula">
+                        <span style="color: var(--text-dim);">I.</span> CO(g) + 0,5 O₂(g) → CO₂(g)    ΔH₁ = -283,2 kJ/mol
+                    </div>
+                    <div class="formula">
+                        <span style="color: var(--text-dim);">II.</span> H₂(g) + 0,5 O₂(g) → H₂O(l)    ΔH₂ = -285,9 kJ/mol
+                    </div>
+                    <div class="formula">
+                        <span style="color: var(--text-dim);">III.</span> C₂H₅OH(l) + 3 O₂(g) → 2 CO₂(g) + 3 H₂O(l)    ΔH₃ = -1368,5 kJ/mol
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));">
+                    <span class="step-num">KROK 1:</span> Strategie řešení
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Co CHCEME:</strong>
+                        <div class="formula">
+                            <span style="color: #34d399;">Reaktanty:</span> 2 CO + 4 H₂<br/>
+                            <span style="color: #f59e0b;">Produkty:</span> H₂O + C₂H₅OH
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(245, 158, 11, 0.15); padding: 1rem; border-radius: 4px; border-left: 3px solid var(--accent-gold);">
+                        <strong>💡 Plán:</strong><br/>
+                        • V reakci I máme CO jako reaktant ✓, potřebujeme 2 CO → vynásobíme 2×<br/>
+                        • V reakci II máme H₂ jako reaktant ✓, potřebujeme 4 H₂ → vynásobíme 4×<br/>
+                        • V reakci III je C₂H₅OH jako reaktant ✗, ale my ho chceme jako produkt → otočíme!
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));">
+                    <span class="step-num">KROK 2:</span> Úprava reakcí
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Reakce I × 2:</strong>
+                        <div class="formula">
+                            <span style="color: #34d399;">2 CO(g) + O₂(g) → 2 CO₂(g)</span><br/>
+                            ΔH₁' = 2 × (−283,2) = −566,4 kJ/mol
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Reakce II × 4:</strong>
+                        <div class="formula">
+                            <span style="color: #34d399;">4 H₂(g) + 2 O₂(g) → 4 H₂O(l)</span><br/>
+                            ΔH₂' = 4 × (−285,9) = −1143,6 kJ/mol
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Reakce III otočíme:</strong>
+                        <div class="formula">
+                            Původní: C₂H₅OH(l) + 3 O₂(g) → 2 CO₂(g) + 3 H₂O(l)    ΔH₃ = -1368,5<br/>
+                            <span style="color: #34d399;">Otočená: 2 CO₂(g) + 3 H₂O(l) → C₂H₅OH(l) + 3 O₂(g)</span><br/>
+                            ΔH₃' = +1368,5 kJ/mol
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));">
+                    <span class="step-num">KROK 3:</span> Sečti reakce
+                    
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 4px; margin: 1rem 0; font-family: 'Fira Code', monospace; font-size: 0.9rem;">
+                        <div class="formula" style="margin: 0;">
+                            <span style="color: #34d399;">2 CO + O₂</span> → <span style="color: #f59e0b;">2 CO₂</span>  (I × 2)<br/>
+                            <span style="color: #34d399;">4 H₂ + 2 O₂</span> → <span style="color: #f59e0b;">4 H₂O</span>  (II × 4)<br/>
+                            <span style="color: #f59e0b;">2 CO₂ + 3 H₂O</span> → <span style="color: #34d399;">C₂H₅OH + 3 O₂</span>  (III otočená)<br/>
+                            <hr style="border: 1px solid var(--border); margin: 0.5rem 0;"/>
+                            Po vyškrtnutí (2 CO₂, 3 H₂O, 6 O₂):<br/>
+                            <span style="color: #34d399;">2 CO + 4 H₂</span> → <span style="color: #34d399;">H₂O + C₂H₅OH</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));">
+                    <span class="step-num">KROK 4:</span> Výpočet ΔH
+                    
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                        <strong>Sečteme všechny ΔH:</strong>
+                        <div class="formula">
+                            ΔH = ΔH₁' + ΔH₂' + ΔH₃'<br/>
+                            ΔH = (−566,4) + (−1143,6) + (+1368,5)<br/>
+                            ΔH = −566,4 − 1143,6 + 1368,5<br/>
+                            ΔH = −1710,0 + 1368,5<br/>
+                            <span class="highlight" style="font-size: 1.3rem;">ΔH = −341,5 kJ/mol</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); padding: 2rem; border-radius: 8px; margin-top: 1rem; border: 2px solid var(--accent-gold);">
+                    <h4 style="color: var(--accent-gold); font-size: 1.3rem; margin-bottom: 0.5rem;">✅ ODPOVĚĎ C)</h4>
+                    <div class="formula" style="font-size: 1.3rem; text-align: center;">
+                        2 CO(g) + 4 H₂(g) → H₂O(l) + C₂H₅OH(l)<br/>
+                        <span class="highlight" style="font-size: 1.4rem;">ΔH = −341,5 kJ/mol</span>
+                    </div>
+                    <p style="text-align: center; margin-top: 0.5rem; color: var(--text-dim);">
+                        Exotermická reakce - syntéza ethanolu uvolňuje energii
+                    </p>
+                </div>
+
+                <div class="info-box" style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--accent-red); margin-top: 2rem;">
+                    <h4 style="color: var(--accent-red);">⚠️ Časté chyby při Hessovu zákonu</h4>
+                    <ul>
+                        <li>Zapomenutí změnit znaménko ΔH při otočení reakce</li>
+                        <li>Zapomenutí vynásobit ΔH při násobení celé reakce</li>
+                        <li>Špatné znaménka při sčítání záporných čísel</li>
+                        <li>Nevyškrtnutí látek, které se vyskytují na obou stranách</li>
+                        <li>Záměna reaktantů a produktů při analýze</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>📝 Vzorový příklad: Výpočet ΔH pro CO</h4>
+                <p style="margin-bottom: 1rem;">
+                    Vypočítejte reakční teplo pro reakci:<br/>
+                    <span class="formula">C(s) + ½ O₂(g) → CO(g)    ΔH = ?</span>
+                </p>
+
+                <p style="margin-top: 1rem;">Známé reakce:</p>
+                <div class="formula">
+                    <span style="color: var(--text-dim);">I.</span> C(s) + O₂(g) → CO₂(g)    ΔH₁ = -393,9 kJ/mol
+                </div>
+                <div class="formula">
+                    <span style="color: var(--text-dim);">II.</span> CO(g) + ½ O₂(g) → CO₂(g)    ΔH₂ = -283,2 kJ/mol
+                </div>
+
+                <div class="step">
+                    <span class="step-num">Řešení:</span>
+                    <div class="formula">
+                        Hledaná reakce = I. - II.<br/>
+                        ΔH = ΔH₁ - ΔH₂<br/>
+                        ΔH = -393,9 - (-283,2)<br/>
+                        ΔH = -393,9 + 283,2<br/>
+                        <span class="highlight">ΔH = -110,7 kJ/mol</span>
+                    </div>
+                </div>
+
+                <div style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 4px; margin-top: 1rem; border-left: 3px solid var(--accent-blue);">
+                    <strong>Vysvětlení:</strong> Protože CO₂ se vyskytuje na obou stranách, můžeme druhou rovnici "odečíst" od první rovnice. 
+                    To nám dá přesně hledanou reakci vzniku CO.
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>📝 Vzorový příklad: Spalování grafitu</h4>
+                <p style="margin-bottom: 1rem;">
+                    Vypočítejte ΔH pro vznik metanu z grafitu a vodíku:<br/>
+                    <span class="formula">C(grafit) + 2 H₂(g) → CH₄(g)    ΔH = ?</span>
+                </p>
+
+                <p style="margin-top: 1rem;">Známé reakce:</p>
+                <div class="formula">
+                    <span style="color: var(--text-dim);">I.</span> CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(l)    ΔH = -890,9 kJ/mol
+                </div>
+                <div class="formula">
+                    <span style="color: var(--text-dim);">II.</span> C(grafit) + O₂(g) → CO₂(g)    ΔH = -393,9 kJ/mol
+                </div>
+                <div class="formula">
+                    <span style="color: var(--text-dim);">III.</span> H₂(g) + ½ O₂(g) → H₂O(l)    ΔH = -285,9 kJ/mol
+                </div>
+
+                <div class="step">
+                    <span class="step-num">Řešení:</span>
+                    <div class="formula">
+                        Hledaná reakce = II. + 2×III. - I.<br/>
+                        ΔH = ΔH₂ + 2×ΔH₃ - ΔH₁<br/>
+                        ΔH = -393,9 + 2×(-285,9) - (-890,9)<br/>
+                        ΔH = -393,9 - 571,8 + 890,9<br/>
+                        <span class="highlight">ΔH = -74,8 kJ/mol</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KVÍZ -->
+        <section id="kviz" class="section">
+            <h2 class="section-title">Ověř si své znalosti</h2>
+
+            <div id="quiz-navigation" class="quiz-nav">
+                <!-- Quiz navigation buttons will be inserted here -->
+            </div>
+
+            <div id="quiz-progress" style="text-align: center; margin-bottom: 2rem;">
+                <span id="quiz-counter" style="font-size: 1.2rem; color: var(--text-dim);">Otázka 1 z 20</span>
+                <div class="progress-bar">
+                    <div id="quiz-progress-bar" class="progress-fill" style="width: 5%;"></div>
+                </div>
+            </div>
+
+            <div id="quiz-container" class="quiz-container">
+                <!-- Quiz will be inserted here by JavaScript -->
+            </div>
+
+            <div id="quiz-result" style="display: none; text-align: center; padding: 3rem;">
+                <div class="score" id="final-score">0 / 20</div>
+                <p id="result-message" style="font-size: 1.5rem; margin-top: 1rem;"></p>
+                <div class="progress-bar" style="max-width: 400px; margin: 2rem auto;">
+                    <div id="result-progress" class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <button class="btn" onclick="restartQuiz()" style="margin-top: 2rem;">Zkusit znovu</button>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <p id="current-score" style="font-size: 1.1rem; color: var(--text-dim);">
+                    Zodpovězeno: <span id="score-display" style="color: var(--accent-gold); font-weight: bold;">0 / 20</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- SHRNUTÍ -->
+        <section id="shrnuti" class="section">
+            <h2 class="section-title">📚 Kompletní shrnutí - Tahák na test</h2>
+
+            <div class="card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05)); border: 2px solid var(--accent-gold);">
+                <h3 style="text-align: center;">🎯 Vše, co potřebuješ vědět na test z termochemie</h3>
+                <p style="text-align: center; color: var(--text-dim); margin-top: 0.5rem;">
+                    Kompletní přehled všech vzorců, zákonů a postupů
+                </p>
+            </div>
+
+            <!-- ZÁKLADNÍ POJMY -->
+            <div class="card">
+                <h3>📖 1. Základní pojmy</h3>
+                <div class="grid-2">
+                    <div class="info-box">
+                        <h4>Termochemie</h4>
+                        <p>Část chemie zabývající se tepelnými změnami při chemických reakcích</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Reakční teplo (Q, ΔH)</h4>
+                        <p>Množství tepla, které se při reakci uvolní nebo pohltí [kJ nebo kJ/mol]</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Entalpie (H)</h4>
+                        <p>Termodynamická veličina popisující energetický stav systému</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Standardní podmínky</h4>
+                        <p>T = 25°C (298 K), p = 101,325 kPa</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TYPY REAKCÍ -->
+            <div class="card">
+                <h3>🔥❄️ 2. Typy termochemických reakcí</h3>
+                <div class="grid-2">
+                    <div class="reaction-card exo">
+                        <h4>⚡ EXOTERMICKÁ</h4>
+                        <div class="formula" style="text-align: center; font-size: 1.3rem;">
+                            Q &lt; 0 (záporné)<br/>
+                            ΔH &lt; 0
+                        </div>
+                        <ul style="margin-top: 1rem;">
+                            <li>Uvolňuje energii</li>
+                            <li>Okolí se zahřívá</li>
+                            <li>Produkty mají NIŽŠÍ energii</li>
+                            <li><strong>Příklady:</strong> spalování, neutralizace</li>
+                        </ul>
+                    </div>
+                    <div class="reaction-card endo">
+                        <h4>❄️ ENDOTERMICKÁ</h4>
+                        <div class="formula" style="text-align: center; font-size: 1.3rem;">
+                            Q &gt; 0 (kladné)<br/>
+                            ΔH &gt; 0
+                        </div>
+                        <ul style="margin-top: 1rem;">
+                            <li>Pohlcuje energii</li>
+                            <li>Okolí se ochlazuje</li>
+                            <li>Produkty mají VYŠŠÍ energii</li>
+                            <li><strong>Příklady:</strong> rozklady, fotosyntéza</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VZORCE -->
+            <div class="card">
+                <h3>📐 3. Všechny důležité vzorce</h3>
+                
+                <div class="formula-card" style="background: var(--bg-hover); padding: 1.5rem; margin: 1rem 0; border-left: 4px solid var(--accent-gold);">
+                    <h4 style="color: var(--accent-gold);">Výpočet reakčního tepla</h4>
+                    <div class="formula" style="font-size: 1.4rem; text-align: center;">
+                        Q = n × ΔH
+                    </div>
+                    <p style="text-align: center; margin-top: 0.5rem; color: var(--text-dim);">
+                        Q [kJ], n [mol], ΔH [kJ/mol]
+                    </p>
+                </div>
+
+                <div class="formula-card" style="background: var(--bg-hover); padding: 1.5rem; margin: 1rem 0; border-left: 4px solid var(--accent-blue);">
+                    <h4 style="color: var(--accent-blue);">Výpočet množství látky</h4>
+                    <div class="formula" style="font-size: 1.4rem; text-align: center;">
+                        n = m / M
+                    </div>
+                    <p style="text-align: center; margin-top: 0.5rem; color: var(--text-dim);">
+                        n [mol], m [g], M [g/mol]
+                    </p>
+                </div>
+
+                <div class="formula-card" style="background: var(--bg-hover); padding: 1.5rem; margin: 1rem 0; border-left: 4px solid var(--accent-green);">
+                    <h4 style="color: var(--accent-green);">Výpočet hmotnosti</h4>
+                    <div class="formula" style="font-size: 1.4rem; text-align: center;">
+                        m = n × M
+                    </div>
+                    <p style="text-align: center; margin-top: 0.5rem; color: var(--text-dim);">
+                        m [g], n [mol], M [g/mol]
+                    </p>
+                </div>
+
+                <div class="formula-card" style="background: var(--bg-hover); padding: 1.5rem; margin: 1rem 0; border-left: 4px solid var(--exo-color);">
+                    <h4 style="color: var(--exo-color);">Kombinovaný vzorec</h4>
+                    <div class="formula" style="font-size: 1.4rem; text-align: center;">
+                        Q = (m / M) × ΔH
+                    </div>
+                    <p style="text-align: center; margin-top: 0.5rem; color: var(--text-dim);">
+                        Pro přímý výpočet z hmotnosti
+                    </p>
+                </div>
+            </div>
+
+            <!-- TERMOCHEMICKÉ ROVNICE -->
+            <div class="card">
+                <h3>📝 4. Termochemické rovnice - Jak je psát?</h3>
+                
+                <div class="step">
+                    <span class="step-num">1.</span> <strong>Vyčísli rovnici</strong> (stechiometrické koeficienty)
+                </div>
+                <div class="step">
+                    <span class="step-num">2.</span> <strong>Doplň skupenství:</strong> (s) pevné, (l) kapalné, (g) plynné, (aq) vodný roztok
+                </div>
+                <div class="step">
+                    <span class="step-num">3.</span> <strong>Přidej ΔH</strong> s jednotkou kJ nebo kJ/mol
+                </div>
+                <div class="step">
+                    <span class="step-num">4.</span> <strong>Kontrola znaménka:</strong> záporné = exo, kladné = endo
+                </div>
+
+                <div class="formula" style="margin-top: 2rem; font-size: 1.3rem; text-align: center; background: rgba(16, 185, 129, 0.1);">
+                    <strong>Vzor správné rovnice:</strong><br/>
+                    2 H₂(g) + O₂(g) → 2 H₂O(l)    ΔH = -571,6 kJ
+                </div>
+            </div>
+
+            <!-- DŮLEŽITÉ REAKCE -->
+            <div class="card">
+                <h3>🔥 5. Důležité reakce k zapamatování</h3>
+                
+                <div class="formula-grid">
+                    <div class="formula-card">
+                        <div class="formula">
+                            C(s) + O₂(g) → CO₂(g)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -390 kJ/mol</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem; font-size: 0.95rem;">Spalování uhlíku</p>
+                    </div>
+
+                    <div class="formula-card">
+                        <div class="formula">
+                            CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(g)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -804 kJ/mol</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem; font-size: 0.95rem;">Spalování metanu</p>
+                    </div>
+
+                    <div class="formula-card">
+                        <div class="formula">
+                            C(s) + ½ O₂(g) → CO(g)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -110,7 kJ/mol</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem; font-size: 0.95rem;">Vznik CO</p>
+                    </div>
+
+                    <div class="formula-card">
+                        <div class="formula">
+                            CO(g) + ½ O₂(g) → CO₂(g)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -283,2 kJ/mol</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem; font-size: 0.95rem;">Dohoření CO</p>
+                    </div>
+
+                    <div class="formula-card">
+                        <div class="formula">
+                            H₂(g) + ½ O₂(g) → H₂O(l)<br/>
+                            <span style="color: var(--accent-red);">ΔH = -285,9 kJ/mol</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem; font-size: 0.95rem;">Vznik vody</p>
+                    </div>
+
+                    <div class="formula-card">
+                        <div class="formula">
+                            2 HgO(s) → 2 Hg(l) + O₂(g)<br/>
+                            <span style="color: var(--accent-blue);">ΔH = +181 kJ/mol</span>
+                        </div>
+                        <p style="color: var(--text-dim); margin-top: 0.5rem; font-size: 0.95rem;">Rozklad HgO (endo)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HESSŮV ZÁKON -->
+            <div class="law-box">
+                <h3>📜 6. Hessův zákon</h3>
+                
+                <div class="formula" style="font-size: 1.4rem; text-align: center; margin: 2rem 0;">
+                    ΔH<sub>celková</sub> = ΔH₁ + ΔH₂ + ΔH₃ + ...
+                </div>
+
+                <p style="font-size: 1.2rem; text-align: center; margin: 1.5rem 0;">
+                    Celková změna entalpie <span class="highlight">nezávisí na cestě</span>, ale pouze na 
+                    <span class="highlight">počátečním a konečném stavu</span>
+                </p>
+
+                <div class="info-box" style="margin-top: 2rem;">
+                    <h4 style="color: var(--accent-gold);">Pravidla pro manipulaci s rovnicemi:</h4>
+                    <ul style="line-height: 2;">
+                        <li><strong>Otočení reakce (← místo →):</strong> změní se znaménko ΔH</li>
+                        <li><strong>Násobení reakce číslem:</strong> vynásob i ΔH stejným číslem</li>
+                        <li><strong>Sčítání reakcí:</strong> sečti látky i ΔH</li>
+                        <li><strong>Odečítání reakcí:</strong> odečti látky i ΔH</li>
+                        <li><strong>Vyškrtávání:</strong> látky na obou stranách se ruší</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LAVOISIERŮV-LAPLACEŮV ZÁKON -->
+            <div class="law-box">
+                <h3>📜 7. Lavoisierův-Laplaceův zákon</h3>
+                
+                <div class="formula" style="font-size: 1.4rem; text-align: center; margin: 2rem 0;">
+                    ΔH<sub>rozklad</sub> = -ΔH<sub>vznik</sub>
+                </div>
+
+                <p style="font-size: 1.2rem; text-align: center;">
+                    Reakční teplo rozkladu má <span class="highlight">stejnou velikost</span>, 
+                    ale <span class="highlight">opačné znaménko</span> než teplo vzniku
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; margin-top: 2rem;">
+                    <div class="formula" style="text-align: center;">
+                        A + B → AB<br/>
+                        <span style="color: var(--accent-red);">ΔH = -100 kJ</span>
+                    </div>
+                    <div style="font-size: 2rem; color: var(--accent-gold);">⇄</div>
+                    <div class="formula" style="text-align: center;">
+                        AB → A + B<br/>
+                        <span style="color: var(--accent-blue);">ΔH = +100 kJ</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- POSTUP ŘEŠENÍ -->
+            <div class="card">
+                <h3>🎯 8. Postup při řešení úloh</h3>
+                
+                <div class="example" style="background: var(--bg-hover);">
+                    <h4 style="color: var(--accent-gold);">Pro základní výpočty:</h4>
+                    <div class="step">
+                        <span class="step-num">1.</span> Přečti si pozorně zadání a vypiš co víš
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2.</span> Napiš a vyčísli chemickou rovnici
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3.</span> Pokud máš hmotnost, vypočítej moly: n = m/M
+                    </div>
+                    <div class="step">
+                        <span class="step-num">4.</span> Vypočítej teplo: Q = n × |ΔH|
+                    </div>
+                    <div class="step">
+                        <span class="step-num">5.</span> Pokud hledáš hmotnost, použij: m = n × M
+                    </div>
+                    <div class="step">
+                        <span class="step-num">6.</span> Kontrola: Dává výsledek smysl?
+                    </div>
+                </div>
+
+                <div class="example" style="background: var(--bg-hover); margin-top: 2rem;">
+                    <h4 style="color: var(--accent-blue);">Pro Hessův zákon:</h4>
+                    <div class="step">
+                        <span class="step-num">1.</span> Napiš hledanou reakci (co chceme)
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2.</span> Analyzuj známé reakce (co máme)
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3.</span> Uprav reakce: otáčej, násobí, dělí
+                    </div>
+                    <div class="step">
+                        <span class="step-num">4.</span> Sečti upravené reakce
+                    </div>
+                    <div class="step">
+                        <span class="step-num">5.</span> Vyškrtni látky na obou stranách
+                    </div>
+                    <div class="step">
+                        <span class="step-num">6.</span> Sečti ΔH (pozor na znaménka!)
+                    </div>
+                </div>
+            </div>
+
+            <!-- ČASTÉ CHYBY -->
+            <div class="card" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05)); border: 2px solid var(--accent-red);">
+                <h3 style="color: var(--accent-red);">⚠️ 9. Časté chyby - VYVARUJ SE JIM!</h3>
+                
+                <div class="info-box" style="background: var(--bg-card);">
+                    <h4>Při výpočtech:</h4>
+                    <ul>
+                        <li>❌ Použití ΔH se špatným znaménkem (pro výpočet energie používej |ΔH|)</li>
+                        <li>❌ Zapomenutí na molární hmotnost (M ≠ protonové číslo!)</li>
+                        <li>❌ Záměna m a n (hmotnost vs. množství látky)</li>
+                        <li>❌ Špatné jednotky (kontroluj kJ vs. J, g vs. kg)</li>
+                    </ul>
+                </div>
+
+                <div class="info-box" style="background: var(--bg-card); margin-top: 1rem;">
+                    <h4>Při psaní rovnic:</h4>
+                    <ul>
+                        <li>❌ Chybějící skupenství látek (s), (l), (g), (aq)</li>
+                        <li>❌ Nevyčíslená rovnice</li>
+                        <li>❌ Chybějící ΔH nebo špatné jednotky</li>
+                    </ul>
+                </div>
+
+                <div class="info-box" style="background: var(--bg-card); margin-top: 1rem;">
+                    <h4>U Hessova zákona:</h4>
+                    <ul>
+                        <li>❌ Zapomenutí změnit znaménko při otočení reakce</li>
+                        <li>❌ Zapomenutí vynásobit ΔH při násobení reakce</li>
+                        <li>❌ Nevyškrtnutí látek na obou stranách</li>
+                        <li>❌ Chyby ve znaménkách: −(−x) = +x</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TIPY NA TEST -->
+            <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border: 2px solid var(--accent-green);">
+                <h3 style="color: var(--accent-green);">💡 10. Tipy na test</h3>
+                
+                <div class="info-box">
+                    <h4>Před testem:</h4>
+                    <ul style="line-height: 2;">
+                        <li>✅ Nauč se nazpaměť důležité reakce s hodnotami ΔH</li>
+                        <li>✅ Procvič si výpočty s moly a hmotnostmi</li>
+                        <li>✅ Zopakuj si Hessův zákon na 2-3 příkladech</li>
+                        <li>✅ Zkontroluj, že umíš vyčíslit rovnice</li>
+                        <li>✅ Projdi si kvíz v aplikaci vícekrát</li>
+                    </ul>
+                </div>
+
+                <div class="info-box" style="margin-top: 1rem;">
+                    <h4>Během testu:</h4>
+                    <ul style="line-height: 2;">
+                        <li>✅ Přečti si zadání 2× pozorně</li>
+                        <li>✅ Vypiš si všechno, co víš (dané hodnoty)</li>
+                        <li>✅ Kontroluj jednotky (kJ vs. J, g vs. mol)</li>
+                        <li>✅ U Hessova zákona si napiš CO CHCEŠ vs. CO MÁŠ</li>
+                        <li>✅ Na konci zkontroluj, zda výsledek dává smysl</li>
+                        <li>✅ Nezapomeň na skupenství a ΔH u rovnic</li>
+                    </ul>
+                </div>
+
+                <div class="info-box" style="margin-top: 1rem; background: rgba(245, 158, 11, 0.15); border-left: 3px solid var(--accent-gold);">
+                    <h4 style="color: var(--accent-gold);">Kontrolní otázky před odevzdáním:</h4>
+                    <ul style="line-height: 2;">
+                        <li>📋 Je rovnice vyčíslená?</li>
+                        <li>📋 Jsou tam skupenství látek?</li>
+                        <li>📋 Sedí znaménko ΔH (+ nebo −)?</li>
+                        <li>📋 Jsou správné jednotky?</li>
+                        <li>📋 Dává výsledek logický smysl?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- RYCHLÝ PŘEHLED -->
+            <div class="card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(59, 130, 246, 0.1)); border: 3px solid var(--accent-gold);">
+                <h3 style="text-align: center; color: var(--accent-gold);">⚡ RYCHLÝ PŘEHLED - 30 sekund před testem</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                    <div class="formula" style="font-size: 1.2rem; text-align: center;">
+                        <strong>Q = n × ΔH</strong><br/>
+                        <span style="color: var(--text-dim); font-size: 0.9rem;">Základní vzorec</span>
+                    </div>
+                    <div class="formula" style="font-size: 1.2rem; text-align: center;">
+                        <strong>n = m / M</strong><br/>
+                        <span style="color: var(--text-dim); font-size: 0.9rem;">Moly z hmotnosti</span>
+                    </div>
+                    <div class="formula" style="font-size: 1.2rem; text-align: center;">
+                        <strong>Q &lt; 0 = EXO</strong><br/>
+                        <span style="color: var(--text-dim); font-size: 0.9rem;">Uvolňuje teplo</span>
+                    </div>
+                    <div class="formula" style="font-size: 1.2rem; text-align: center;">
+                        <strong>Q &gt; 0 = ENDO</strong><br/>
+                        <span style="color: var(--text-dim); font-size: 0.9rem;">Pohlcuje teplo</span>
+                    </div>
+                    <div class="formula" style="font-size: 1.2rem; text-align: center;">
+                        <strong>Otočení → −ΔH</strong><br/>
+                        <span style="color: var(--text-dim); font-size: 0.9rem;">Hessův zákon</span>
+                    </div>
+                    <div class="formula" style="font-size: 1.2rem; text-align: center;">
+                        <strong>2× reakce → 2×ΔH</strong><br/>
+                        <span style="color: var(--text-dim); font-size: 0.9rem;">Hessův zákon</span>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem; font-size: 1.3rem; color: var(--accent-gold);">
+                    <strong>🌟 Věř si, zvládneš to! 🌟</strong>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Reaction type demo
+        function showReactionType(type) {
+            const msg = document.getElementById('reaction-message');
+            if (type === 'exo') {
+                msg.textContent = '🔥 Energie se uvolňuje! Okolí se zahřívá!';
+                msg.style.color = 'var(--accent-red)';
+            } else {
+                msg.textContent = '❄️ Energie se pohlcuje! Okolí se ochlazuje!';
+                msg.style.color = 'var(--accent-blue)';
+            }
+        }
+
+        // Toggle explanation
+        function toggleExplanation(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Calculator
+        function calculate() {
+            const q = parseFloat(document.getElementById('calcQ').value);
+            const n = parseFloat(document.getElementById('calcN').value);
+            const result = document.getElementById('calcResult');
+            
+            if (isNaN(q) || isNaN(n)) {
+                alert('Prosím vyplň obě pole!');
+                return;
+            }
+            
+            const totalQ = Math.abs(q * n);
+            result.style.display = 'block';
+            result.innerHTML = `
+                <strong>Výsledek:</strong><br/>
+                Pro ${n} mol látky při ΔH = ${q} kJ/mol:<br/>
+                <div style="font-size: 1.5rem; color: var(--accent-gold); margin-top: 0.5rem;">
+                    Q = ${totalQ.toFixed(2)} kJ
+                </div>
+            `;
+        }
+
+        // Quiz
+        const questions = [
+            {
+                q: "Která reakce je exotermická?",
+                options: [
+                    "2 HgO(s) → 2 Hg(l) + O₂(g), ΔH = +181 kJ/mol",
+                    "C(s) + O₂(g) → CO₂(g), ΔH = -390 kJ/mol",
+                    "Fotosyntéza",
+                    "Rozklad H₂O₂ s ΔH = +196 kJ/mol"
+                ],
+                correct: 1,
+                exp: "Exotermická reakce má záporné ΔH, což znamená, že se energie uvolňuje."
+            },
+            {
+                q: "Co platí pro endotermickou reakci?",
+                options: [
+                    "Q < 0",
+                    "Okolí se zahřívá",
+                    "Produkty mají vyšší energii než reaktanty",
+                    "Teplo se uvolňuje"
+                ],
+                correct: 2,
+                exp: "U endotermické reakce produkty obsahují více energie než výchozí látky, protože energii z okolí pohlcují."
+            },
+            {
+                q: "Kolik energie se uvolní při spálení 2 molů metanu, pokud ΔH = -804 kJ/mol?",
+                options: [
+                    "402 kJ",
+                    "804 kJ",
+                    "1608 kJ",
+                    "2412 kJ"
+                ],
+                correct: 2,
+                exp: "Q = n × ΔH = 2 mol × 804 kJ/mol = 1608 kJ"
+            },
+            {
+                q: "Co říká Hessův zákon?",
+                options: [
+                    "Všechny reakce jsou exotermické",
+                    "Reakční teplo závisí na cestě reakce",
+                    "Reakční teplo nezávisí na cestě, ale pouze na počátečním a koncovém stavu",
+                    "Energie se při reakci nezachovává"
+                ],
+                correct: 2,
+                exp: "Hessův zákon říká, že celková změna entalpie závisí pouze na počátečním a koncovém stavu, ne na cestě."
+            },
+            {
+                q: "Která rovnice je správně zapsaná termochemická rovnice?",
+                options: [
+                    "H₂ + O₂ → H₂O",
+                    "2 H₂ + O₂ → 2 H₂O, -571,6 kJ",
+                    "2 H₂(g) + O₂(g) → 2 H₂O(l), ΔH = -571,6 kJ",
+                    "H₂O → H₂ + ½ O₂"
+                ],
+                correct: 2,
+                exp: "Správná termochemická rovnice musí být vyčíslená, obsahovat skupenství látek a hodnotu ΔH."
+            },
+            {
+                q: "Při rozpouštění NaOH ve vodě se roztok zahřívá. Jedná se o:",
+                options: [
+                    "Endotermický proces",
+                    "Exotermický proces",
+                    "Proces bez změny energie",
+                    "Fotosyntézu"
+                ],
+                correct: 1,
+                exp: "Zahřívání znamená uvolňování energie, tedy exotermický proces."
+            },
+            {
+                q: "Co je správně o fotosyntéze?",
+                options: [
+                    "Je exotermická, Q < 0",
+                    "Je endotermická, Q > 0",
+                    "Neuvolňuje ani nepohlcuje energii",
+                    "Probíhá bez světla"
+                ],
+                correct: 1,
+                exp: "Fotosyntéza potřebuje energii ze slunečního světla, je tedy endotermická (Q > 0)."
+            },
+            {
+                q: "Pokud ΔH₁ = -400 kJ a ΔH₂ = -200 kJ, jaké je ΔH pro ΔH₁ - ΔH₂?",
+                options: [
+                    "-600 kJ",
+                    "-200 kJ",
+                    "+200 kJ",
+                    "+600 kJ"
+                ],
+                correct: 1,
+                exp: "ΔH = -400 - (-200) = -400 + 200 = -200 kJ"
+            },
+            {
+                q: "Kolik molů CH₄ je v 32 gramech metanu? (M(CH₄) = 16 g/mol)",
+                options: [
+                    "0,5 mol",
+                    "1 mol",
+                    "2 mol",
+                    "4 mol"
+                ],
+                correct: 2,
+                exp: "n = m/M = 32 g / 16 g/mol = 2 mol"
+            },
+            {
+                q: "Jaká je hmotnost 3 molů CO₂? (M(CO₂) = 44 g/mol)",
+                options: [
+                    "44 g",
+                    "88 g",
+                    "132 g",
+                    "176 g"
+                ],
+                correct: 2,
+                exp: "m = n × M = 3 mol × 44 g/mol = 132 g"
+            },
+            {
+                q: "Co platí podle Lavoisierova-Laplaceova zákona?",
+                options: [
+                    "ΔH(vznik) = ΔH(rozklad)",
+                    "ΔH(vznik) = -ΔH(rozklad)",
+                    "ΔH(vznik) = 2 × ΔH(rozklad)",
+                    "Žádný vztah neplatí"
+                ],
+                correct: 1,
+                exp: "Reakční teplo rozkladu má stejnou velikost, ale opačné znaménko než reakční teplo vzniku."
+            },
+            {
+                q: "Pokud při reakci platí ΔH = -285,9 kJ/mol, kolik energie se uvolní při reakci 0,5 mol?",
+                options: [
+                    "142,95 kJ",
+                    "285,9 kJ",
+                    "571,8 kJ",
+                    "1143,6 kJ"
+                ],
+                correct: 0,
+                exp: "Q = n × ΔH = 0,5 mol × 285,9 kJ/mol = 142,95 kJ"
+            },
+            {
+                q: "Která látka má na diagramu exotermické reakce VYŠŠÍ energii?",
+                options: [
+                    "Produkty",
+                    "Výchozí látky",
+                    "Obě stejně",
+                    "Záleží na teplotě"
+                ],
+                correct: 1,
+                exp: "U exotermické reakce mají výchozí látky vyšší energii, energie se uvolňuje, takže produkty mají nižší energii."
+            },
+            {
+                q: "Které skupenství látek používáme v termochemických rovnicích?",
+                options: [
+                    "Pouze (s) a (l)",
+                    "(s), (l), (g)",
+                    "(s), (l), (g), (aq)",
+                    "Skupenství se nepíše"
+                ],
+                correct: 2,
+                exp: "Používáme všechny čtyři značky: (s) pevné, (l) kapalné, (g) plynné, (aq) roztok ve vodě."
+            },
+            {
+                q: "Jaký je vztah mezi Q a ΔH při konstantním tlaku?",
+                options: [
+                    "Q = 2ΔH",
+                    "Q = ΔH",
+                    "Q = -ΔH",
+                    "Žádný vztah"
+                ],
+                correct: 1,
+                exp: "Při konstantním tlaku (což je většina případů) platí Q = ΔH. Oba symboly označují reakční teplo."
+            },
+            {
+                q: "Spalování je typicky:",
+                options: [
+                    "Endotermický proces",
+                    "Exotermický proces",
+                    "Proces bez změny tepla",
+                    "Závisí na látce"
+                ],
+                correct: 1,
+                exp: "Spalování je vždy exotermický proces - uvolňuje se teplo a světlo."
+            },
+            {
+                q: "Kolik gramů uhlíku spálíme, uvolní-li se 1170 kJ? (ΔH = -390 kJ/mol, M(C) = 12 g/mol)",
+                options: [
+                    "12 g",
+                    "24 g",
+                    "36 g",
+                    "48 g"
+                ],
+                correct: 2,
+                exp: "n = Q/|ΔH| = 1170/390 = 3 mol, m = n × M = 3 × 12 = 36 g"
+            },
+            {
+                q: "Pokud ΔH₁ = -393,9 kJ/mol a ΔH₂ = -283,2 kJ/mol, jaké je ΔH pro reakci ΔH₁ - ΔH₂?",
+                options: [
+                    "-677,1 kJ/mol",
+                    "-110,7 kJ/mol",
+                    "+110,7 kJ/mol",
+                    "+677,1 kJ/mol"
+                ],
+                correct: 1,
+                exp: "ΔH = -393,9 - (-283,2) = -393,9 + 283,2 = -110,7 kJ/mol"
+            },
+            {
+                q: "Co je termochemie?",
+                options: [
+                    "Nauka o teplotě",
+                    "Nauka o tepelných změnách při chemických reakcích",
+                    "Nauka o chemických vzorcích",
+                    "Nauka o molekulách"
+                ],
+                correct: 1,
+                exp: "Termochemie se zabývá tepelnými změnami doprovázejícími chemické reakce a fyzikální změny látek."
+            },
+            {
+                q: "Pokud reakce probíhá při teplotě 25°C a tlaku 101,325 kPa, jedná se o:",
+                options: [
+                    "Nestandardní podmínky",
+                    "Standardní podmínky",
+                    "Extrémní podmínky",
+                    "Laboratorní podmínky"
+                ],
+                correct: 1,
+                exp: "Standardní podmínky jsou definovány jako teplota 25°C (298 K) a tlak 101,325 kPa."
+            }
+        ];
+
+        let currentQ = 0;
+        let answeredQuestions = new Array(questions.length).fill(false);
+        let userAnswers = new Array(questions.length).fill(null);
+        let correctAnswers = 0;
+
+        function initQuizNavigation() {
+            const nav = document.getElementById('quiz-navigation');
+            nav.innerHTML = questions.map((_, i) => 
+                `<button class="quiz-nav-btn ${i === 0 ? 'current' : ''}" onclick="goToQuestion(${i})">${i + 1}</button>`
+            ).join('');
+        }
+
+        function updateNavigation() {
+            const buttons = document.querySelectorAll('.quiz-nav-btn');
+            buttons.forEach((btn, i) => {
+                btn.classList.remove('current');
+                if (answeredQuestions[i]) {
+                    btn.classList.add('answered');
+                } else {
+                    btn.classList.remove('answered');
+                }
+                if (i === currentQ) {
+                    btn.classList.add('current');
+                }
+            });
+        }
+
+        function goToQuestion(index) {
+            currentQ = index;
+            loadQuestion();
+            updateNavigation();
+        }
+
+        function loadQuestion() {
+            const container = document.getElementById('quiz-container');
+            const q = questions[currentQ];
+            
+            const wasAnswered = answeredQuestions[currentQ];
+            const previousAnswer = userAnswers[currentQ];
+            
+            container.innerHTML = `
+                <div class="quiz-question">${q.q}</div>
+                ${q.options.map((opt, i) => {
+                    let classes = 'quiz-option';
+                    if (wasAnswered) {
+                        if (i === q.correct) classes += ' correct';
+                        if (previousAnswer === i && i !== q.correct) classes += ' incorrect';
+                        if (previousAnswer === i) classes += ' selected';
+                    }
+                    return `<div class="${classes}" onclick="${wasAnswered ? '' : `selectAnswer(${i})`}">${opt}</div>`;
+                }).join('')}
+                <div id="explanation" style="${wasAnswered ? '' : 'display: none;'} margin-top: 2rem;"></div>
+                ${wasAnswered ? '' : '<button id="next-btn" class="btn" onclick="nextQuestion()" style="display: none; margin-top: 1rem;">Další otázka</button>'}
+            `;
+            
+            if (wasAnswered) {
+                showExplanationForCurrent();
+            }
+            
+            document.getElementById('quiz-counter').textContent = `Otázka ${currentQ + 1} z ${questions.length}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+            
+            const answered = answeredQuestions.filter(a => a).length;
+            document.getElementById('score-display').textContent = `${answered} / ${questions.length}`;
+        }
+
+        function showExplanationForCurrent() {
+            const q = questions[currentQ];
+            const previousAnswer = userAnswers[currentQ];
+            const exp = document.getElementById('explanation');
+            exp.style.display = 'block';
+            exp.innerHTML = `
+                <div style="background: ${previousAnswer === q.correct ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
+                     padding: 1.5rem; border-radius: 4px; 
+                     border-left: 4px solid ${previousAnswer === q.correct ? 'var(--accent-green)' : 'var(--accent-red)'}">
+                    <strong style="font-size: 1.2rem;">
+                        ${previousAnswer === q.correct ? '✓ Správně!' : '✗ Nesprávně'}
+                    </strong>
+                    <p style="margin-top: 0.5rem;">${q.exp}</p>
+                </div>
+            `;
+        }
+
+        function selectAnswer(index) {
+            if (answeredQuestions[currentQ]) return;
+            
+            answeredQuestions[currentQ] = true;
+            userAnswers[currentQ] = index;
+            
+            const q = questions[currentQ];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            options[index].classList.add('selected');
+            options[q.correct].classList.add('correct');
+            
+            if (index !== q.correct) {
+                options[index].classList.add('incorrect');
+            } else {
+                correctAnswers++;
+            }
+            
+            const exp = document.getElementById('explanation');
+            exp.style.display = 'block';
+            exp.innerHTML = `
+                <div style="background: ${index === q.correct ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
+                     padding: 1.5rem; border-radius: 4px; 
+                     border-left: 4px solid ${index === q.correct ? 'var(--accent-green)' : 'var(--accent-red)'}">
+                    <strong style="font-size: 1.2rem;">
+                        ${index === q.correct ? '✓ Správně!' : '✗ Nesprávně'}
+                    </strong>
+                    <p style="margin-top: 0.5rem;">${q.exp}</p>
+                </div>
+            `;
+            
+            document.getElementById('next-btn').style.display = 'block';
+            updateNavigation();
+            
+            const answered = answeredQuestions.filter(a => a).length;
+            document.getElementById('score-display').textContent = `${answered} / ${questions.length}`;
+        }
+
+        function nextQuestion() {
+            if (currentQ < questions.length - 1) {
+                currentQ++;
+                loadQuestion();
+                updateNavigation();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('quiz-progress').style.display = 'none';
+            document.getElementById('current-score').style.display = 'none';
+            document.getElementById('quiz-navigation').style.display = 'none';
+            document.getElementById('quiz-result').style.display = 'block';
+            
+            const percentage = (correctAnswers / questions.length) * 100;
+            document.getElementById('final-score').textContent = `${correctAnswers} / ${questions.length}`;
+            document.getElementById('result-progress').style.width = `${percentage}%`;
+            
+            let message;
+            if (percentage >= 90) {
+                message = '🎉 Perfektní! Jsi mistr termochemie!';
+            } else if (percentage >= 80) {
+                message = '🌟 Výborně! Termochemii ovládáš!';
+            } else if (percentage >= 70) {
+                message = '👍 Dobře! Ještě trochu zapracovat!';
+            } else if (percentage >= 60) {
+                message = '📖 Slušné! Zkus si některé části zopakovat!';
+            } else {
+                message = '📚 Ještě se uč, zvládneš to!';
+            }
+            document.getElementById('result-message').textContent = message;
+        }
+
+        function restartQuiz() {
+            currentQ = 0;
+            answeredQuestions = new Array(questions.length).fill(false);
+            userAnswers = new Array(questions.length).fill(null);
+            correctAnswers = 0;
+            
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('quiz-progress').style.display = 'block';
+            document.getElementById('current-score').style.display = 'block';
+            document.getElementById('quiz-navigation').style.display = 'flex';
+            document.getElementById('quiz-result').style.display = 'none';
+            
+            initQuizNavigation();
+            loadQuestion();
+            updateNavigation();
+        }
+
+        // Initialize quiz on load
+        initQuizNavigation();
+        loadQuestion();
+    </script>
+</body>
+</html>

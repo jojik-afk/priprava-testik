@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="subject" content="Math">
+    <meta name="topic" content="Pololetní test">
+    <meta name="template" content="practice">
+    <title>⚡ MATH MASTER - Pololetní Písemka Trainer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff2d95;
+            --neon-blue: #00d4ff;
+            --neon-purple: #b829dd;
+            --neon-yellow: #ffe53b;
+            --neon-green: #39ff14;
+            --dark-bg: #0a0a1a;
+            --card-bg: rgba(20, 20, 40, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--dark-bg);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ============ SYNTHWAVE BACKGROUND ============ */
+        .synthwave-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .sun {
+            position: absolute;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #ff6b35 0%, #ff2d95 50%, #b829dd 100%);
+            box-shadow: 
+                0 0 60px #ff2d95,
+                0 0 100px #ff2d95,
+                0 0 200px #b829dd;
+            animation: pulse-sun 4s ease-in-out infinite;
+        }
+
+        .sun::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 8px,
+                rgba(0,0,0,0.3) 8px,
+                rgba(0,0,0,0.3) 16px
+            );
+        }
+
+        @keyframes pulse-sun {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+            50% { transform: translateX(-50%) scale(1.05); opacity: 1; }
+        }
+
+        .grid-floor {
+            position: absolute;
+            bottom: 0;
+            left: -50%;
+            width: 200%;
+            height: 50%;
+            background: 
+                linear-gradient(90deg, rgba(0, 212, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(rgba(0, 212, 255, 0.3) 1px, transparent 1px);
+            background-size: 60px 30px;
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: center top;
+            animation: grid-move 2s linear infinite;
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        @keyframes grid-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 30px; }
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                        radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
+                        radial-gradient(1px 1px at 230px 80px, #fff, transparent),
+                        radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.7), transparent);
+            background-repeat: repeat;
+            background-size: 400px 200px;
+            animation: twinkle 8s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 25%;
+            width: 100%;
+            height: 200px;
+        }
+
+        .mountain::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            width: 0;
+            height: 0;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-bottom: 180px solid #1a1a3a;
+            filter: drop-shadow(0 0 20px rgba(184, 41, 221, 0.3));
+        }
+
+        .mountain::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 15%;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 140px solid #15152a;
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3));
+        }
+
+        /* ============ FLOATING PARTICLES ============ */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: float-up 15s linear infinite;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ============ HEADER ============ */
+        .header {
+            position: relative;
+            padding: 40px 20px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: 'Audiowide', cursive;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient-flow 5s ease infinite;
+            text-shadow: none;
+            filter: drop-shadow(0 0 30px rgba(255, 45, 149, 0.5));
+            letter-spacing: 4px;
+        }
+
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-blue);
+            font-size: 1rem;
+            letter-spacing: 8px;
+            margin-top: 10px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* ============ STATS BAR ============ */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Audiowide', cursive;
+            font-size: 1.3rem;
+        }
+
+        .stat-xp { color: var(--neon-yellow); border-color: rgba(255, 229, 59, 0.3); }
+        .stat-level { color: var(--neon-purple); border-color: rgba(184, 41, 221, 0.3); }
+        .stat-streak { 
+            color: var(--neon-pink); 
+            border-color: rgba(255, 45, 149, 0.3);
+            animation: pulse-streak 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-streak {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 45, 149, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 45, 149, 0.6); }
+        }
+
+        /* ============ NAVIGATION ============ */
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            font-family: 'Audiowide', cursive;
+            font-size: 0.9rem;
+            padding: 18px 35px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            background: var(--card-bg);
+            color: #888;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+            letter-spacing: 2px;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            box-shadow: 
+                0 10px 40px rgba(255, 45, 149, 0.4),
+                0 0 60px rgba(184, 41, 221, 0.2);
+            border-color: transparent;
+        }
+
+        .nav-btn.active::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
+            z-index: -1;
+            filter: blur(15px);
+            opacity: 0.7;
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============ SECTION FILTER ============ */
+        .section-filter {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .section-btn {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 600;
+            padding: 12px 25px;
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            color: #aaa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .section-btn:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+        }
+
+        .section-btn.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(184, 41, 221, 0.2));
+            border-color: var(--neon-blue);
+            color: white;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        /* ============ TASK CARDS ============ */
+        .task-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .task-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 50px rgba(0, 212, 255, 0.1);
+        }
+
+        .task-card:hover::before {
+            opacity: 1;
+        }
+
+        .task-header {
+            padding: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .task-number {
+            width: 55px;
+            height: 55px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Audiowide', cursive;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .task-number.easy {
+            background: linear-gradient(135deg, rgba(57, 255, 20, 0.2), rgba(0, 212, 255, 0.2));
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .task-number.medium {
+            background: linear-gradient(135deg, rgba(184, 41, 221, 0.2), rgba(255, 45, 149, 0.2));
+            border: 2px solid var(--neon-purple);
+            color: var(--neon-purple);
+        }
+
+        .task-number.hard {
+            background: linear-gradient(135deg, rgba(255, 45, 149, 0.2), rgba(255, 107, 53, 0.2));
+            border: 2px solid var(--neon-pink);
+            color: var(--neon-pink);
+            animation: glow-hard 2s ease-in-out infinite;
+        }
+
+        @keyframes glow-hard {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 45, 149, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 45, 149, 0.6); }
+        }
+
+        .task-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .task-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .badge-easy {
+            background: rgba(57, 255, 20, 0.15);
+            color: var(--neon-green);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+        }
+
+        .badge-medium {
+            background: rgba(184, 41, 221, 0.15);
+            color: var(--neon-purple);
+            border: 1px solid rgba(184, 41, 221, 0.3);
+        }
+
+        .badge-hard {
+            background: rgba(255, 45, 149, 0.15);
+            color: var(--neon-pink);
+            border: 1px solid rgba(255, 45, 149, 0.3);
+        }
+
+        .task-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .xp-badge {
+            background: linear-gradient(135deg, rgba(255, 229, 59, 0.2), rgba(255, 107, 53, 0.2));
+            border: 1px solid rgba(255, 229, 59, 0.3);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-family: 'Audiowide', cursive;
+            font-size: 0.85rem;
+            color: var(--neon-yellow);
+        }
+
+        .expand-icon {
+            font-size: 1.5rem;
+            color: #666;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .task-card.expanded .expand-icon {
+            transform: rotate(180deg);
+            color: var(--neon-blue);
+        }
+
+        /* ============ TASK CONTENT ============ */
+        .task-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .task-card.expanded .task-content {
+            max-height: 3000px;
+        }
+
+        .task-inner {
+            padding: 0 25px 25px;
+        }
+
+        .zadani-box {
+            background: linear-gradient(135deg, rgba(255, 229, 59, 0.1), rgba(255, 107, 53, 0.1));
+            border-left: 4px solid var(--neon-yellow);
+            padding: 20px;
+            border-radius: 0 15px 15px 0;
+            margin-bottom: 25px;
+        }
+
+        .zadani-box h4 {
+            font-family: 'Audiowide', cursive;
+            font-size: 0.85rem;
+            color: var(--neon-yellow);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .zadani-box p {
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .postup-step {
+            background: rgba(30, 30, 60, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .postup-step::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 60px;
+            bottom: -15px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--neon-blue), transparent);
+        }
+
+        .postup-step:last-child::before {
+            display: none;
+        }
+
+        .step-header {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Audiowide', cursive;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, rgba(184, 41, 221, 0.15), rgba(0, 212, 255, 0.15));
+            border: 1px solid rgba(184, 41, 221, 0.3);
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin-bottom: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-purple);
+            font-size: 0.95rem;
+            white-space: pre-line;
+        }
+
+        .calculation-box {
+            background: rgba(10, 10, 30, 0.5);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px 18px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+
+        .vysledky-box {
+            background: linear-gradient(135deg, rgba(57, 255, 20, 0.1), rgba(0, 212, 255, 0.1));
+            border-left: 4px solid var(--neon-green);
+            padding: 20px;
+            border-radius: 0 15px 15px 0;
+            margin-top: 20px;
+        }
+
+        .vysledky-box h4 {
+            font-family: 'Audiowide', cursive;
+            font-size: 0.85rem;
+            color: var(--neon-green);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .vysledky-box p {
+            font-family: 'JetBrains Mono', monospace;
+            color: #aaffaa;
+            line-height: 1.8;
+        }
+
+        /* ============ FORMULAS TAB ============ */
+        .formula-category {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .formula-category-header {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(184, 41, 221, 0.1));
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .formula-category-header h3 {
+            font-family: 'Audiowide', cursive;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .formula-list {
+            padding: 20px;
+        }
+
+        .formula-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px 20px;
+            background: rgba(30, 30, 60, 0.3);
+            border-radius: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .formula-item:hover {
+            background: rgba(40, 40, 80, 0.5);
+            border-color: var(--neon-blue);
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .formula-name {
+            flex: 0 0 200px;
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        .formula-value {
+            flex: 1;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-blue);
+            font-size: 1rem;
+            padding: 10px 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .tips-box {
+            background: linear-gradient(135deg, rgba(255, 229, 59, 0.1), rgba(255, 45, 149, 0.1));
+            border: 2px solid rgba(255, 229, 59, 0.3);
+            border-radius: 25px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .tips-box h3 {
+            font-family: 'Audiowide', cursive;
+            color: var(--neon-yellow);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tips-box ul {
+            list-style: none;
+        }
+
+        .tips-box li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #ccc;
+            font-size: 1.05rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tips-box li:last-child {
+            border-bottom: none;
+        }
+
+        .tips-box li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--neon-pink);
+            font-size: 1.2rem;
+        }
+
+        /* ============ QUIZ TAB ============ */
+        .quiz-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-purple), var(--neon-blue));
+            background-size: 300% 100%;
+            animation: gradient-flow 3s linear infinite;
+        }
+
+        .quiz-progress {
+            margin-bottom: 30px;
+        }
+
+        .quiz-progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-family: 'Audiowide', cursive;
+            font-size: 0.9rem;
+        }
+
+        .quiz-progress-header span:first-child {
+            color: var(--neon-blue);
+        }
+
+        .quiz-progress-header span:last-child {
+            color: var(--neon-green);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(30, 30, 60, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 20px rgba(255, 45, 149, 0.5);
+        }
+
+        .quiz-question {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .quiz-question-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .quiz-question h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.5;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: rgba(30, 30, 60, 0.5);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.15);
+            box-shadow: 0 0 40px rgba(57, 255, 20, 0.3);
+        }
+
+        .quiz-option.wrong {
+            border-color: #ff4444;
+            background: rgba(255, 68, 68, 0.15);
+            box-shadow: 0 0 40px rgba(255, 68, 68, 0.3);
+        }
+
+        .quiz-option.disabled {
+            cursor: default;
+            opacity: 0.5;
+        }
+
+        .option-letter {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid var(--neon-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Audiowide', cursive;
+            font-size: 1rem;
+            color: var(--neon-blue);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: var(--neon-green);
+            border-color: var(--neon-green);
+            color: #000;
+        }
+
+        .quiz-option.wrong .option-letter {
+            background: #ff4444;
+            border-color: #ff4444;
+            color: #fff;
+        }
+
+        .option-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.05rem;
+            color: #ddd;
+            flex: 1;
+        }
+
+        .option-icon {
+            font-size: 1.5rem;
+        }
+
+        /* ============ QUIZ RESULTS ============ */
+        .quiz-results {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .results-trophy {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            animation: trophy-bounce 1s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 229, 59, 0.5));
+        }
+
+        @keyframes trophy-bounce {
+            0%, 100% { transform: scale(1) rotate(-5deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        .results-title {
+            font-family: 'Audiowide', cursive;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 30px;
+        }
+
+        .results-score {
+            font-family: 'Audiowide', cursive;
+            font-size: 5rem;
+            margin: 30px 0;
+        }
+
+        .results-score .correct-count {
+            color: var(--neon-green);
+            text-shadow: 0 0 30px rgba(57, 255, 20, 0.5);
+        }
+
+        .results-score .total-count {
+            color: #666;
+        }
+
+        .results-message {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .results-stars {
+            color: var(--neon-yellow);
+            font-size: 2rem;
+        }
+
+        .quiz-history {
+            background: rgba(30, 30, 60, 0.5);
+            border-radius: 20px;
+            padding: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-icon {
+            font-size: 1.3rem;
+        }
+
+        .history-text {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        .restart-btn {
+            font-family: 'Audiowide', cursive;
+            font-size: 1rem;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 40px rgba(184, 41, 221, 0.4);
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(255, 45, 149, 0.5);
+        }
+
+        /* ============ CONFETTI ============ */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            text-align: center;
+            padding: 50px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-text {
+            font-family: 'Audiowide', cursive;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+        }
+
+        .footer-luck {
+            font-size: 2rem;
+            margin-top: 15px;
+            color: var(--neon-pink);
+            text-shadow: 0 0 20px rgba(255, 45, 149, 0.5);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .stats-bar {
+                gap: 10px;
+            }
+            
+            .stat-item {
+                padding: 10px 20px;
+            }
+            
+            .nav-btn {
+                padding: 12px 20px;
+                font-size: 0.8rem;
+            }
+            
+            .task-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .task-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .formula-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .formula-name {
+                flex: none;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .quiz-question h3 {
+                font-size: 1.1rem;
+            }
+            
+            .results-score {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* ============ SCROLLBAR ============ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(20, 20, 40, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--neon-pink), var(--neon-purple));
+        }
+    </style>
+</head>
+<body>
+    <!-- Synthwave Background -->
+    <div class="synthwave-bg">
+        <div class="stars"></div>
+        <div class="mountain"></div>
+        <div class="sun"></div>
+        <div class="grid-floor"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Confetti Container -->
+    <div class="confetti" id="confetti"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1 class="logo">MATH MASTER</h1>
+        <p class="subtitle">// Pololetní písemka trainer //</p>
+        
+        <div class="stats-bar">
+            <div class="stat-item stat-xp">
+                <span class="stat-icon">⚡</span>
+                <span class="stat-value" id="xp-display">0 XP</span>
+            </div>
+            <div class="stat-item stat-level">
+                <span class="stat-icon">🎯</span>
+                <span class="stat-value" id="level-display">LVL 1</span>
+            </div>
+            <div class="stat-item stat-streak" id="streak-container" style="display: none;">
+                <span class="stat-icon">🔥</span>
+                <span class="stat-value" id="streak-display">0x</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-container">
+        <button class="nav-btn active" data-tab="ulohy" onclick="switchTab('ulohy')">
+            📚 ÚLOHY
+        </button>
+        <button class="nav-btn" data-tab="vzorce" onclick="switchTab('vzorce')">
+            📐 VZORCE
+        </button>
+        <button class="nav-btn" data-tab="kviz" onclick="switchTab('kviz')">
+            🧠 KVÍZ
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- ÚLOHY TAB -->
+        <div class="tab-content active" id="tab-ulohy">
+            <div class="section-filter">
+                <button class="section-btn active" data-section="A" onclick="filterSection('A')">
+                    ⚡ PRAVOÚHLÝ
+                </button>
+                <button class="section-btn" data-section="B" onclick="filterSection('B')">
+                    🔺 OBECNÝ
+                </button>
+                <button class="section-btn" data-section="C" onclick="filterSection('C')">
+                    ⬡ MNOHOÚHELNÍKY
+                </button>
+            </div>
+            
+            <div id="tasks-container"></div>
+        </div>
+
+        <!-- VZORCE TAB -->
+        <div class="tab-content" id="tab-vzorce">
+            <div id="formulas-container"></div>
+            
+            <div class="tips-box">
+                <h3>💡 PRO TIPS</h3>
+                <ul>
+                    <li>Vždy nejdřív <strong>přesný výsledek</strong>, pak zaokrouhlený</li>
+                    <li>Podrobný postup = více bodů i při chybě ve výsledku</li>
+                    <li>Nakresli si <strong>náčrt</strong> – pomůže orientaci v úloze</li>
+                    <li>Zkontroluj <strong>jednotky a rozměry</strong></li>
+                    <li>U trojúhelníků vždy zkontroluj <strong>trojúhelníkovou nerovnost</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- KVÍZ TAB -->
+        <div class="tab-content" id="tab-kviz">
+            <div class="quiz-container">
+                <div id="quiz-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-text">// GOOD LUCK ON YOUR TEST //</p>
+        <p class="footer-luck">🚀 TO THE MOON! 🌙</p>
+    </footer>
+
+    <script>
+        // ============ DATA ============
+        const ulohy = [
+            {
+                id: 1, sekce: "A", nazev: "Pravoúhlý trojúhelník - výšková a Euklidova věta", body: 10, difficulty: "hard",
+                zadani: "Je dán pravoúhlý trojúhelník ABC s přeponou c. Víme, že cₐ = 6 cm a vᵧ = 4 cm.",
+                postup: [
+                    { krok: "Výpočet cᵦ z výškové věty", vzorec: "vᵧ² = cₐ · cᵦ", vypocet: "16 = 6 · cᵦ\ncᵦ = 16/6 = 8/3 cm ≐ 2,67 cm" },
+                    { krok: "Výpočet přepony c", vzorec: "c = cₐ + cᵦ", vypocet: "c = 6 + 8/3 = 26/3 cm ≐ 8,67 cm" },
+                    { krok: "Výpočet odvěsny a (Euklidova věta)", vzorec: "a² = c · cₐ", vypocet: "a² = (26/3) · 6 = 52\na = 2√13 cm ≐ 7,21 cm" },
+                    { krok: "Výpočet odvěsny b (Euklidova věta)", vzorec: "b² = c · cᵦ", vypocet: "b² = (26/3) · (8/3) = 208/9\nb = (4√13)/3 cm ≐ 4,81 cm" },
+                    { krok: "Výpočet úhlů", vzorec: "sin α = a/c", vypocet: "α = arcsin((3√13)/13) ≐ 56,31°\nβ = 90° - α ≐ 33,69°" },
+                    { krok: "Výpočet obsahu", vzorec: "S = (1/2) · c · vᵧ", vypocet: "S = (1/2) · (26/3) · 4 = 52/3 cm² ≐ 17,33 cm²" }
+                ],
+                vysledky: "a = 2√13 ≐ 7,21 cm | b = (4√13)/3 ≐ 4,81 cm | c = 26/3 ≐ 8,67 cm | S = 52/3 ≐ 17,33 cm²"
+            },
+            {
+                id: 2, sekce: "A", nazev: "Pravoúhlý trojúhelník - těžnice", body: 10, difficulty: "hard",
+                zadani: "Je dán pravoúhlý trojúhelník ABC s přeponou c. Víme, že tₐ = 8 cm a tᵦ = 12 cm.",
+                postup: [
+                    { krok: "Odvození vzorců pro těžnice", vzorec: "tₐ² = (a² + 4b²)/4\ntᵦ² = (4a² + b²)/4", vypocet: "Dosadíme c² = a² + b² do obecných vzorců" },
+                    { krok: "Sestavení soustavy rovnic", vzorec: "256 = a² + 4b²\n576 = 4a² + b²", vypocet: "Z první: a² = 256 - 4b²\nDo druhé: 576 = 1024 - 15b²\n15b² = 448" },
+                    { krok: "Výpočet stran", vzorec: "b² = 448/15, a² = 2048/15", vypocet: "a = (32√30)/15 ≐ 11,68 cm\nb = (8√105)/15 ≐ 5,46 cm\nc = √(2496/15) ≐ 12,90 cm" }
+                ],
+                vysledky: "a ≐ 11,68 cm | b ≐ 5,46 cm | c ≐ 12,90 cm | α ≐ 64,89° | β ≐ 25,11°"
+            },
+            {
+                id: 3, sekce: "A", nazev: "Výška věže - hloubkový úhel", body: 5, difficulty: "easy",
+                zadani: "Z vrcholu věže vidíme úpatí brány vzdálené 20 m pod hloubkovým úhlem 50°.",
+                postup: [
+                    { krok: "Aplikace tangenty", vzorec: "tan 50° = h/20", vypocet: "h = 20 · tan 50°\nh = 20 · 1,1918 ≐ 23,84 m" }
+                ],
+                vysledky: "h = 20·tan 50° ≐ 23,84 m"
+            },
+            {
+                id: 4, sekce: "A", nazev: "Čtverec - úhlopříčka a goniometrie 45°", body: 5, difficulty: "easy",
+                zadani: "Ve čtverci o straně x odvoďte úhlopříčku a goniometrické funkce pro 45°.",
+                postup: [
+                    { krok: "Úhlopříčka čtverce", vzorec: "u² = x² + x² = 2x²", vypocet: "u = x√2" },
+                    { krok: "Goniometrické funkce pro 45°", vzorec: "Trojúhelník 45°-45°-90°", vypocet: "sin 45° = cos 45° = √2/2\ntan 45° = cot 45° = 1" }
+                ],
+                vysledky: "u = x√2 | sin 45° = cos 45° = √2/2 | tan 45° = cot 45° = 1"
+            },
+            {
+                id: 5, sekce: "A", nazev: "Rovnostranný trojúhelník - odvození", body: 5, difficulty: "medium",
+                zadani: "V rovnostranném trojúhelníku o obsahu S odvoďte stranu, výšku a hodnoty sin 60°, cos 30°, cot 60°.",
+                postup: [
+                    { krok: "Základní vztahy", vzorec: "v = (a√3)/2\nS = (a²√3)/4", vypocet: "Výška a obsah rovnostranného trojúhelníku" },
+                    { krok: "Strana a výška v závislosti na S", vzorec: "a = 2·√(S√3/3)\nv = √(S√3)", vypocet: "Vyjádříme a ze vzorce pro obsah" },
+                    { krok: "Goniometrické hodnoty", vzorec: "Z trojúhelníku 30°-60°-90°", vypocet: "sin 60° = cos 30° = √3/2\ncot 60° = √3/3" }
+                ],
+                vysledky: "a = 2√(S√3/3) | v = √(S√3) | sin 60° = cos 30° = √3/2 | cot 60° = √3/3"
+            },
+            {
+                id: 6, sekce: "A", nazev: "Konstrukce √6", body: 2, difficulty: "easy",
+                zadani: "Bez použití Pythagorovy věty zkonstruujte úsečku délky √6.",
+                postup: [
+                    { krok: "Euklidova věta o výšce", vzorec: "v² = p · q → v = √(p·q)", vypocet: "Potřebujeme p · q = 6\nVolíme p = 2, q = 3" },
+                    { krok: "Konstrukce", vzorec: "Thaletova kružnice", vypocet: "1. Úsečka AB délky 5 (= 2 + 3)\n2. Bod C na AB: AC = 2, CB = 3\n3. Thaletova kružnice nad AB\n4. Kolmice v bodě C k AB\n5. Průsečík s kružnicí = D\n6. |CD| = √6" }
+                ],
+                vysledky: "CD = √(2·3) = √6"
+            },
+            {
+                id: 7, sekce: "A", nazev: "Rovnoramenný trojúhelník - opsaná kružnice", body: 5, difficulty: "medium",
+                zadani: "Rovnoramenný trojúhelník se základnou 6 a výškou 4. Určete úhel při základně a poloměr opsané kružnice.",
+                postup: [
+                    { krok: "Výpočet ramene", vzorec: "r² = 3² + 4²", vypocet: "r² = 9 + 16 = 25\nr = 5 cm" },
+                    { krok: "Úhel při základně", vzorec: "cos β = přilehlá/přepona = 3/5", vypocet: "β = arccos(0,6) ≐ 53,13°" },
+                    { krok: "Poloměr opsané kružnice", vzorec: "R = (a·b·c)/(4S)", vypocet: "S = (1/2)·6·4 = 12 cm²\nR = (5·5·6)/(4·12) = 150/48\nR = 25/8 = 3,125 cm" }
+                ],
+                vysledky: "β = arccos(3/5) ≐ 53,13° | R = 25/8 = 3,125 cm"
+            },
+            {
+                id: 8, sekce: "A", nazev: "Věž - dvojnásobný úhel", body: 5, difficulty: "hard",
+                zadani: "Z stanoviště vidíme vrchol věže pod 15°. Po přiblížení o 100 m vidíme vrchol pod 30°. Určete výšku věže.",
+                postup: [
+                    { krok: "Soustava rovnic", vzorec: "tan 15° = h/(x+100)\ntan 30° = h/x", vypocet: "x = vzdálenost od věže po přiblížení\nh = x · tan 30° = x/√3" },
+                    { krok: "Výpočet tan 15°", vzorec: "tan 15° = tan(45°-30°) = 2 - √3", vypocet: "Použijeme vzorec pro rozdíl úhlů" },
+                    { krok: "Řešení soustavy", vzorec: "Dosazení a úprava", vypocet: "Po úpravě: x = 50√3 m\nh = 50√3 · (1/√3) = 50 m" }
+                ],
+                vysledky: "h = 50 m"
+            },
+            {
+                id: 9, sekce: "A", nazev: "Tětivový čtyřúhelník", body: 5, difficulty: "easy",
+                zadani: "Kružnici je vepsán čtyřúhelník ABCD, kde α = 52° a β = 96°. Vypočítejte zbývající úhly.",
+                postup: [
+                    { krok: "Vlastnost tětivového čtyřúhelníku", vzorec: "α + γ = 180°\nβ + δ = 180°", vypocet: "Součet protějších úhlů = 180°" },
+                    { krok: "Výpočet úhlů", vzorec: "γ = 180° - α\nδ = 180° - β", vypocet: "γ = 180° - 52° = 128°\nδ = 180° - 96° = 84°" }
+                ],
+                vysledky: "γ = 128° | δ = 84°"
+            },
+            {
+                id: 10, sekce: "A", nazev: "Oblouky a obvodové úhly", body: 5, difficulty: "medium",
+                zadani: "Trojúhelník ABC vepsaný do kružnice dělí ji na oblouky v poměru 1:3:8.",
+                postup: [
+                    { krok: "Výpočet oblouků", vzorec: "Celkem 360°, poměr 1:3:8", vypocet: "Součet dílů = 1+3+8 = 12\nJeden díl = 360°/12 = 30°\nOblouky: 30°, 90°, 240°" },
+                    { krok: "Obvodové úhly", vzorec: "Obvodový úhel = ½ příslušného oblouku", vypocet: "α = 30°/2 = 15°\nβ = 90°/2 = 45°\nγ = 240°/2 = 120°" }
+                ],
+                vysledky: "α = 15° | β = 45° | γ = 120°"
+            },
+            {
+                id: 11, sekce: "B", nazev: "Heronův vzorec", body: 5, difficulty: "medium",
+                zadani: "Trojúhelník má strany 4, 5 a 6. Spočítejte přesně jeho obsah.",
+                postup: [
+                    { krok: "Poloviční obvod", vzorec: "s = (a+b+c)/2", vypocet: "s = (4+5+6)/2 = 15/2 = 7,5" },
+                    { krok: "Heronův vzorec", vzorec: "S = √(s(s-a)(s-b)(s-c))", vypocet: "s-a = 7/2, s-b = 5/2, s-c = 3/2\nS = √((15/2)·(7/2)·(5/2)·(3/2))\nS = √(1575/16) = √1575/4\nS = (15√7)/4 cm²" }
+                ],
+                vysledky: "S = (15√7)/4 ≐ 9,92 cm²"
+            },
+            {
+                id: 12, sekce: "B", nazev: "Dva vlaky - kosinová věta", body: 5, difficulty: "medium",
+                zadani: "Dva vlaky vyrazí ze stejného místa pod úhlem 30°. Rychlík: 34 m/s, osobní: 70 km/h. Vzdálenost za 45 min?",
+                postup: [
+                    { krok: "Převod jednotek a výpočet drah", vzorec: "s = v · t", vypocet: "Rychlík: 34 m/s = 122,4 km/h\nČas: 45 min = 0,75 h\na = 122,4 · 0,75 = 91,8 km\nb = 70 · 0,75 = 52,5 km" },
+                    { krok: "Kosinová věta", vzorec: "c² = a² + b² - 2ab·cos γ", vypocet: "c² = 91,8² + 52,5² - 2·91,8·52,5·cos 30°\nc² ≈ 8427 + 2756 - 8347 ≈ 2836\nc ≈ 53,25 km" }
+                ],
+                vysledky: "c ≈ 53,25 km"
+            },
+            {
+                id: 13, sekce: "B", nazev: "Šířka řeky - zorný úhel", body: 5, difficulty: "hard",
+                zadani: "Z pozorovatelny vysoké 3 m, 1 m od břehu, se řeka jeví pod zorným úhlem 45°. Jak je široká?",
+                postup: [
+                    { krok: "Úhel k bližšímu břehu", vzorec: "tan α = výška/vzdálenost", vypocet: "tan α = 3/1 = 3\nα = arctan(3) ≈ 71,57°" },
+                    { krok: "Úhel ke vzdálenějšímu břehu", vzorec: "α - β = 45° (zorný úhel)", vypocet: "β = α - 45° ≈ 26,57°" },
+                    { krok: "Výpočet šířky", vzorec: "tan(arctan 3 - 45°) = 1/2", vypocet: "3/(1+x) = 1/2\n1+x = 6\nx = 5 m" }
+                ],
+                vysledky: "Šířka řeky = 5 m"
+            },
+            {
+                id: 14, sekce: "B", nazev: "Sinová věta", body: 5, difficulty: "medium",
+                zadani: "b = 25 cm, c = 25√2 cm, γ = 45°. Určete všechny prvky trojúhelníku.",
+                postup: [
+                    { krok: "Sinová věta pro β", vzorec: "b/sin β = c/sin γ", vypocet: "25/sin β = 25√2/sin 45°\n25/sin β = 25√2/(√2/2) = 50\nsin β = 1/2 → β = 30°" },
+                    { krok: "Výpočet α", vzorec: "α + β + γ = 180°", vypocet: "α = 180° - 30° - 45° = 105°" },
+                    { krok: "Výpočet strany a", vzorec: "a/sin α = c/sin γ", vypocet: "sin 105° = (√6+√2)/4\na = 25√2 · sin 105°/sin 45°\na = 25(√6+√2)/2 ≈ 48,30 cm" }
+                ],
+                vysledky: "α = 105° | β = 30° | a = 25(√6+√2)/2 ≈ 48,30 cm"
+            },
+            {
+                id: 15, sekce: "B", nazev: "Lichoběžník - výpočet x", body: 5, difficulty: "medium",
+                zadani: "Lichoběžník s delší základnou 20 m, úhly při ní 64° a 77°. Určete rameno x u úhlu 77°.",
+                postup: [
+                    { krok: "Analýza lichoběžníku", vzorec: "Úhly při rameni = 180°", vypocet: "Úhly u delší základny: 64° a 77°\nÚhly u kratší: 116° a 103°\nV pomocném trojúhelníku: 180° - 64° - 77° = 39°" },
+                    { krok: "Sinová věta v pomocném trojúhelníku", vzorec: "x/sin 64° = 20/sin 39°", vypocet: "x = 20 · sin 64°/sin 39°\nx ≈ 20 · 0,899/0,629\nx ≈ 28,57 m" }
+                ],
+                vysledky: "x ≈ 28,57 m"
+            },
+            {
+                id: 16, sekce: "C", nazev: "Pravidelný 12-úhelník (opsaná kružnice)", body: 10, difficulty: "hard",
+                zadani: "Pravidelnému 12-úhelníku je opsána kružnice r = 2 cm.",
+                postup: [
+                    { krok: "Základní parametry", vzorec: "φ = 360°/n = 30°", vypocet: "Středový úhel = 30°" },
+                    { krok: "Součet a velikost vnitřních úhlů", vzorec: "Σ = (n-2)·180°\nα = Σ/n", vypocet: "Σ = (12-2)·180° = 1800°\nα = 1800°/12 = 150°" },
+                    { krok: "Délka strany", vzorec: "a = 2r·sin(φ/2)", vypocet: "a = 2·2·sin 15° = 4·(√6-√2)/4\na = √6-√2 ≈ 1,04 cm" },
+                    { krok: "Obsah", vzorec: "S = (1/2)·n·r²·sin φ", vypocet: "S = (1/2)·12·4·sin 30°\nS = 24·0,5 = 12 cm²" },
+                    { krok: "Poloměr vepsané kružnice", vzorec: "ρ = r·cos(φ/2)", vypocet: "ρ = 2·cos 15° = 2·(√6+√2)/4\nρ = (√6+√2)/2 ≈ 1,93 cm" }
+                ],
+                vysledky: "Σ = 1800° | α = 150° | a ≈ 1,04 cm | S = 12 cm² | ρ ≈ 1,93 cm"
+            },
+            {
+                id: 17, sekce: "C", nazev: "Pravidelný 15-úhelník (vepsaná kružnice)", body: 10, difficulty: "hard",
+                zadani: "Pravidelnému 15-úhelníku je vepsána kružnice ρ = 4 cm.",
+                postup: [
+                    { krok: "Základní parametry", vzorec: "φ = 360°/n = 24°", vypocet: "Středový úhel = 24°" },
+                    { krok: "Součet a velikost vnitřních úhlů", vzorec: "Σ = (n-2)·180°\nα = Σ/n", vypocet: "Σ = (15-2)·180° = 2340°\nα = 2340°/15 = 156°" },
+                    { krok: "Délka strany", vzorec: "a = 2ρ·tan(φ/2)", vypocet: "a = 2·4·tan 12°\na = 8·tan 12° ≈ 1,70 cm" },
+                    { krok: "Obsah", vzorec: "S = n·ρ²·tan(φ/2)", vypocet: "S = 15·16·tan 12°\nS = 240·tan 12° ≈ 51,02 cm²" },
+                    { krok: "Poloměr opsané kružnice", vzorec: "r = ρ/cos(φ/2)", vypocet: "r = 4/cos 12° ≈ 4,09 cm" }
+                ],
+                vysledky: "Σ = 2340° | α = 156° | a ≈ 1,70 cm | S ≈ 51,02 cm² | r ≈ 4,09 cm"
+            },
+            {
+                id: 18, sekce: "C", nazev: "Počet úhlopříček", body: 5, difficulty: "easy",
+                zadani: "Mnohoúhelník s x vrcholy má 1595 úhlopříček. Určete x.",
+                postup: [
+                    { krok: "Vzorec pro úhlopříčky", vzorec: "D = n(n-3)/2", vypocet: "1595 = x(x-3)/2\n3190 = x² - 3x\nx² - 3x - 3190 = 0" },
+                    { krok: "Řešení kvadratické rovnice", vzorec: "x = (3 ± √D)/2", vypocet: "D = 9 + 4·3190 = 12769 = 113²\nx = (3 + 113)/2 = 58" }
+                ],
+                vysledky: "x = 58 vrcholů"
+            }
+        ];
+
+        const vzorce = {
+            "⚡ PRAVOÚHLÝ TROJÚHELNÍK": [
+                { nazev: "Pythagorova věta", vzorec: "a² + b² = c²" },
+                { nazev: "Výšková věta", vzorec: "vᵧ² = cₐ · cᵦ" },
+                { nazev: "Euklidova věta (a)", vzorec: "a² = c · cₐ" },
+                { nazev: "Euklidova věta (b)", vzorec: "b² = c · cᵦ" },
+                { nazev: "Těžnice na přeponu", vzorec: "tᵧ = c/2" },
+                { nazev: "Obsah", vzorec: "S = (1/2)·a·b = (1/2)·c·vᵧ" }
+            ],
+            "🔺 OBECNÝ TROJÚHELNÍK": [
+                { nazev: "Sinová věta", vzorec: "a/sin α = b/sin β = c/sin γ = 2R" },
+                { nazev: "Kosinová věta", vzorec: "c² = a² + b² - 2ab·cos γ" },
+                { nazev: "Heronův vzorec", vzorec: "S = √(s(s-a)(s-b)(s-c))" },
+                { nazev: "Poloviční obvod", vzorec: "s = (a+b+c)/2" },
+                { nazev: "Poloměr opsané kružnice", vzorec: "R = (a·b·c)/(4S)" }
+            ],
+            "⬡ PRAVIDELNÝ N-ÚHELNÍK": [
+                { nazev: "Středový úhel", vzorec: "φ = 360°/n" },
+                { nazev: "Součet vnitřních úhlů", vzorec: "Σ = (n-2)·180°" },
+                { nazev: "Jeden vnitřní úhel", vzorec: "α = (n-2)·180°/n" },
+                { nazev: "Strana (opsaná kružnice)", vzorec: "a = 2r·sin(φ/2)" },
+                { nazev: "Strana (vepsaná kružnice)", vzorec: "a = 2ρ·tan(φ/2)" },
+                { nazev: "Vepsaná z opsané", vzorec: "ρ = r·cos(φ/2)" },
+                { nazev: "Obsah (opsaná)", vzorec: "S = (1/2)·n·r²·sin φ" },
+                { nazev: "Počet úhlopříček", vzorec: "D = n(n-3)/2" }
+            ],
+            "🎯 GONIOMETRICKÉ HODNOTY": [
+                { nazev: "sin 30° = cos 60°", vzorec: "1/2" },
+                { nazev: "sin 45° = cos 45°", vzorec: "√2/2" },
+                { nazev: "sin 60° = cos 30°", vzorec: "√3/2" },
+                { nazev: "tan 45°", vzorec: "1" },
+                { nazev: "tan 30° = cot 60°", vzorec: "√3/3" },
+                { nazev: "tan 60° = cot 30°", vzorec: "√3" },
+                { nazev: "sin 15°", vzorec: "(√6-√2)/4" },
+                { nazev: "cos 15°", vzorec: "(√6+√2)/4" },
+                { nazev: "tan 15°", vzorec: "2 - √3" }
+            ],
+            "⭕ KRUŽNICE A ÚHLY": [
+                { nazev: "Obvodový úhel", vzorec: "= (1/2) × středový úhel" },
+                { nazev: "Tětivový čtyřúhelník", vzorec: "α + γ = 180° (protější)" },
+                { nazev: "Thaletova věta", vzorec: "Obvodový nad průměrem = 90°" }
+            ]
+        };
+
+        const kvizOtazky = [
+            { otazka: "Jaký je vzorec pro výškovou větu v pravoúhlém trojúhelníku?", moznosti: ["vᵧ² = cₐ · cᵦ", "vᵧ = cₐ + cᵦ", "vᵧ² = cₐ + cᵦ", "vᵧ = cₐ · cᵦ"], spravna: 0 },
+            { otazka: "Kolik je sin 60°?", moznosti: ["1/2", "√2/2", "√3/2", "1"], spravna: 2 },
+            { otazka: "Jaký je součet vnitřních úhlů desetiúhelníku?", moznosti: ["1440°", "1620°", "1800°", "1260°"], spravna: 0 },
+            { otazka: "V tětivovém čtyřúhelníku platí, že součet protějších úhlů je:", moznosti: ["90°", "180°", "270°", "360°"], spravna: 1 },
+            { otazka: "Jaký je vzorec pro počet úhlopříček n-úhelníku?", moznosti: ["n(n-1)/2", "n(n-2)/2", "n(n-3)/2", "n(n+1)/2"], spravna: 2 },
+            { otazka: "Obvodový úhel je oproti středovému úhlu:", moznosti: ["Stejný", "Dvojnásobný", "Poloviční", "Třetinový"], spravna: 2 },
+            { otazka: "Těžnice na přeponu v pravoúhlém trojúhelníku má délku:", moznosti: ["c", "c/2", "c/3", "2c"], spravna: 1 },
+            { otazka: "Kolik je tan 45°?", moznosti: ["0", "1/2", "1", "√2"], spravna: 2 },
+            { otazka: "Heronův vzorec slouží k výpočtu:", moznosti: ["Obvodu trojúhelníku", "Obsahu trojúhelníku", "Výšky trojúhelníku", "Poloměru kružnice"], spravna: 1 },
+            { otazka: "Pro stranu pravidelného n-úhelníku s opsanou kružnicí r platí:", moznosti: ["a = r·sin(180°/n)", "a = 2r·sin(180°/n)", "a = r·cos(180°/n)", "a = 2r·cos(180°/n)"], spravna: 1 },
+            { otazka: "Jaká je Euklidova věta pro odvěsnu a?", moznosti: ["a² = c · cₐ", "a² = c · cᵦ", "a² = cₐ · cᵦ", "a = c · cₐ"], spravna: 0 },
+            { otazka: "Kolik je cos 45°?", moznosti: ["1/2", "√2/2", "√3/2", "1"], spravna: 1 },
+            { otazka: "Středový úhel pravidelného šestiúhelníku je:", moznosti: ["30°", "45°", "60°", "72°"], spravna: 2 },
+            { otazka: "Kosinová věta má tvar:", moznosti: ["c² = a² + b²", "c² = a² + b² + 2ab·cos γ", "c² = a² + b² - 2ab·cos γ", "c = a + b - 2ab·cos γ"], spravna: 2 },
+            { otazka: "Jeden vnitřní úhel pravidelného 12-úhelníku má velikost:", moznosti: ["144°", "150°", "156°", "160°"], spravna: 1 }
+        ];
+
+        // ============ STATE ============
+        let xp = 0;
+        let level = 1;
+        let streak = 0;
+        let currentSection = 'A';
+        let quizIndex = 0;
+        let quizAnswers = [];
+        let quizFinished = false;
+        let selectedAnswer = null;
+        let showResult = false;
+
+        // ============ INITIALIZE ============
+        function init() {
+            createParticles();
+            renderTasks();
+            renderFormulas();
+            renderQuiz();
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['#ff2d95', '#00d4ff', '#b829dd', '#ffe53b', '#39ff14'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // ============ NAVIGATION ============
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabName);
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === 'tab-' + tabName);
+            });
+        }
+
+        function filterSection(section) {
+            currentSection = section;
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.section === section);
+            });
+            renderTasks();
+        }
+
+        // ============ RENDER TASKS ============
+        function renderTasks() {
+            const container = document.getElementById('tasks-container');
+            const filtered = ulohy.filter(u => u.sekce === currentSection);
+            
+            container.innerHTML = filtered.map(uloha => `
+                <div class="task-card" id="task-${uloha.id}">
+                    <div class="task-header" onclick="toggleTask(${uloha.id}, ${uloha.body})">
+                        <div class="task-left">
+                            <div class="task-number ${uloha.difficulty}">${uloha.id}</div>
+                            <div class="task-info">
+                                <h3>${uloha.nazev}</h3>
+                                <div class="task-badges">
+                                    <span class="badge badge-${uloha.difficulty}">
+                                        ${uloha.difficulty === 'hard' ? '🔥 HARD' : uloha.difficulty === 'medium' ? '⚡ MEDIUM' : '✨ EASY'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-right">
+                            <span class="xp-badge">+${uloha.body} XP</span>
+                            <span class="expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div class="task-content">
+                        <div class="task-inner">
+                            <div class="zadani-box">
+                                <h4>📋 ZADÁNÍ</h4>
+                                <p>${uloha.zadani}</p>
+                            </div>
+                            
+                            ${uloha.postup.map((step, idx) => `
+                                <div class="postup-step">
+                                    <div class="step-header">
+                                        <div class="step-number">${idx + 1}</div>
+                                        <div class="step-content">
+                                            <h5>${step.krok}</h5>
+                                            <div class="formula-box">${step.vzorec}</div>
+                                            <div class="calculation-box">${step.vypocet}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                            
+                            <div class="vysledky-box">
+                                <h4>✅ VÝSLEDKY</h4>
+                                <p>${uloha.vysledky}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTask(id, points) {
+            const card = document.getElementById('task-' + id);
+            const wasExpanded = card.classList.contains('expanded');
+            
+            if (!wasExpanded) {
+                addXP(5);
+            }
+            
+            card.classList.toggle('expanded');
+        }
+
+        // ============ RENDER FORMULAS ============
+        function renderFormulas() {
+            const container = document.getElementById('formulas-container');
+            
+            container.innerHTML = Object.entries(vzorce).map(([category, formulas]) => `
+                <div class="formula-category">
+                    <div class="formula-category-header">
+                        <h3>${category}</h3>
+                    </div>
+                    <div class="formula-list">
+                        ${formulas.map(f => `
+                            <div class="formula-item">
+                                <span class="formula-name">${f.nazev}</span>
+                                <code class="formula-value">${f.vzorec}</code>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============ QUIZ ============
+        function renderQuiz() {
+            const container = document.getElementById('quiz-content');
+            
+            if (quizFinished) {
+                const correct = quizAnswers.filter(a => a.correct).length;
+                const stars = correct >= 13 ? '⭐⭐⭐' : correct >= 10 ? '⭐⭐' : '⭐';
+                const message = correct >= 13 ? 'LEGENDARY! Jsi připraven/a!' : 
+                               correct >= 10 ? 'GREAT! Ještě trochu procvič.' : 
+                               'KEEP GOING! Projdi si vzorce.';
+                const messageColor = correct >= 13 ? '#39ff14' : correct >= 10 ? '#ffe53b' : '#ff6b35';
+                
+                container.innerHTML = `
+                    <div class="quiz-results">
+                        <div class="results-trophy">🏆</div>
+                        <h2 class="results-title">MISSION COMPLETE!</h2>
+                        
+                        <div class="results-score">
+                            <span class="correct-count">${correct}</span>
+                            <span class="total-count">/${kvizOtazky.length}</span>
+                        </div>
+                        
+                        <div class="results-message" style="color: ${messageColor}">
+                            <span class="results-stars">${stars}</span>
+                            <span>${message}</span>
+                        </div>
+                        
+                        <div class="quiz-history">
+                            ${quizAnswers.map((a, i) => `
+                                <div class="history-item">
+                                    <span class="history-icon">${a.correct ? '✅' : '❌'}</span>
+                                    <span class="history-text">${kvizOtazky[i].otazka}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <button class="restart-btn" onclick="restartQuiz()">
+                            🔄 PLAY AGAIN
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const q = kvizOtazky[quizIndex];
+            const progress = (quizIndex / kvizOtazky.length) * 100;
+            const correctCount = quizAnswers.filter(a => a.correct).length;
+            
+            container.innerHTML = `
+                <div class="quiz-progress">
+                    <div class="quiz-progress-header">
+                        <span>OTÁZKA ${quizIndex + 1}/${kvizOtazky.length}</span>
+                        <span>${correctCount} SPRÁVNĚ</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <div class="quiz-question-icon">🎯</div>
+                    <h3>${q.otazka}</h3>
+                </div>
+                
+                <div class="quiz-options">
+                    ${q.moznosti.map((m, i) => {
+                        let classes = 'quiz-option';
+                        if (showResult) {
+                            classes += ' disabled';
+                            if (i === q.spravna) classes += ' correct';
+                            else if (i === selectedAnswer) classes += ' wrong';
+                        }
+                        return `
+                            <div class="${classes}" onclick="selectAnswer(${i})">
+                                <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+                                <span class="option-text">${m}</span>
+                                ${showResult && i === q.spravna ? '<span class="option-icon">✓</span>' : ''}
+                                ${showResult && i === selectedAnswer && i !== q.spravna ? '<span class="option-icon">✗</span>' : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function selectAnswer(index) {
+            if (showResult) return;
+            
+            selectedAnswer = index;
+            showResult = true;
+            
+            const isCorrect = index === kvizOtazky[quizIndex].spravna;
+            
+            if (isCorrect) {
+                streak++;
+                addXP(20 + streak * 5);
+                if (streak >= 2) showConfetti();
+                updateStreak();
+            } else {
+                streak = 0;
+                updateStreak();
+            }
+            
+            quizAnswers.push({ index: quizIndex, answer: index, correct: isCorrect });
+            
+            renderQuiz();
+            
+            setTimeout(() => {
+                if (quizIndex < kvizOtazky.length - 1) {
+                    quizIndex++;
+                    selectedAnswer = null;
+                    showResult = false;
+                } else {
+                    quizFinished = true;
+                }
+                renderQuiz();
+            }, 1500);
+        }
+
+        function restartQuiz() {
+            quizIndex = 0;
+            quizAnswers = [];
+            quizFinished = false;
+            selectedAnswer = null;
+            showResult = false;
+            streak = 0;
+            updateStreak();
+            renderQuiz();
+        }
+
+        // ============ XP & LEVEL ============
+        function addXP(amount) {
+            xp += amount;
+            level = Math.floor(xp / 100) + 1;
+            document.getElementById('xp-display').textContent = xp + ' XP';
+            document.getElementById('level-display').textContent = 'LVL ' + level;
+        }
+
+        function updateStreak() {
+            const container = document.getElementById('streak-container');
+            const display = document.getElementById('streak-display');
+            
+            if (streak > 0) {
+                container.style.display = 'flex';
+                display.textContent = streak + 'x';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // ============ CONFETTI ============
+        function showConfetti() {
+            const container = document.getElementById('confetti');
+            container.innerHTML = '';
+            
+            const colors = ['#ff2d95', '#00d4ff', '#b829dd', '#ffe53b', '#39ff14', '#ff6b35'];
+            
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 0.5 + 's';
+                piece.style.animationDuration = (2 + Math.random()) + 's';
+                container.appendChild(piece);
+            }
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="subject" content="Geography">
+    <meta name="topic" content="Hydrosféra">
+    <meta name="template" content="practice">
+    <title>Příprava na test - Hydrosféra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            background: #f8f9fa;
+            padding: 10px;
+            gap: 10px;
+            justify-content: center;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #1e3c72;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #2a5298;
+            margin: 25px 0 15px 0;
+            font-size: 1.5em;
+        }
+
+        h4 {
+            color: #667eea;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196F3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .card h4 {
+            margin-top: 0;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .quiz-question {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .quiz-option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .flow-diagram {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .flow-step {
+            display: inline-block;
+            background: white;
+            color: #333;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .arrow {
+            display: inline-block;
+            font-size: 2em;
+            margin: 0 10px;
+        }
+
+        .percentage-bar {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .percentage-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+
+        .btn-reveal {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-reveal:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .hidden-content {
+            display: none;
+            margin-top: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+
+        .diagram-box {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .tree-structure {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .tree-node {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .indent-1 { margin-left: 40px; }
+        .indent-2 { margin-left: 80px; }
+        .indent-3 { margin-left: 120px; }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .nav-btn {
+                font-size: 0.9em;
+                padding: 10px 15px;
+            }
+        }
+
+        .footer {
+            background: #1e3c72;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .study-tip {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 HYDROSFÉRA - Kompletní příprava na test</h1>
+            <p>Vše co potřebuješ vědět o vodní sféře Země</p>
+        </div>
+
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection('uvod')">📚 Úvod</button>
+            <button class="nav-btn" onclick="showSection('sucho')">🏜️ Sucho</button>
+            <button class="nav-btn" onclick="showSection('spotreba')">💧 Spotřeba vody</button>
+            <button class="nav-btn" onclick="showSection('vyznam')">⭐ Význam vody</button>
+            <button class="nav-btn" onclick="showSection('zasoby')">🌍 Zásoby vody</button>
+            <button class="nav-btn" onclick="showSection('kolobeh')">♻️ Koloběh vody</button>
+            <button class="nav-btn" onclick="showSection('proudy')">🌊 Oceánské proudy</button>
+            <button class="nav-btn" onclick="showSection('test')">✅ Test znalostí</button>
+        </div>
+
+        <div class="content">
+            <!-- ÚVOD -->
+            <div id="uvod" class="section active">
+                <h2>📚 Úvod do hydrosféry</h2>
+                
+                <div class="info-box">
+                    <h3>Co je to hydrosféra?</h3>
+                    <p><strong>Hydrosféra</strong> je vodní obal Země, zahrnující veškerou vodu na planetě ve všech skupenstvích (kapalném, pevném i plynném).</p>
+                </div>
+
+                <div class="success-box">
+                    <h3>Klíčové pojmy</h3>
+                    <ul>
+                        <li><strong>Hydrologie</strong> = věda o vodě</li>
+                        <li><strong>Salinita</strong> = množství soli rozpuštěné ve vodě (obsah soli)</li>
+                        <li><strong>Evaporace</strong> = výpar z vodní hladiny</li>
+                        <li><strong>Transpirace</strong> = výpar z rostlin</li>
+                        <li><strong>Evapotranspirace</strong> = součet evaporace a transpirace</li>
+                        <li><strong>Infiltrace</strong> = vsakování vody do půdy</li>
+                        <li><strong>Sublimace</strong> = přímý přechod z pevného do plynného skupenství</li>
+                    </ul>
+                </div>
+
+                <div class="study-tip">
+                    💡 TIP: Tento materiál obsahuje vše potřebné pro test. Projdi každou sekci pozorně a na konci si ověř znalosti v testu!
+                </div>
+            </div>
+
+            <!-- SUCHO -->
+            <div id="sucho" class="section">
+                <h2>🏜️ SUCHO</h2>
+
+                <div class="info-box">
+                    <h3>Definice sucha</h3>
+                    <p>Sucho je <span class="highlight">aktuální pokles dostupnosti vodních zdrojů</span>, stav kdy <span class="highlight">výdej vody v krajině převažuje nad jejím ziskem</span>. Jedná se o nahodilý přírodní jev způsobený deficitem atmosférických srážek, který vede k poklesu množství vody v různých částech hydrologického cyklu.</p>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ POZOR na rozdíl:</h4>
+                    <p><strong>SUCHO</strong> = krátkodobý jev (týdny, měsíce)</p>
+                    <p><strong>ARIDITA</strong> = dlouhodobý nedostatek vody (roky), roční úhrn srážek je nižší než infiltrace a evapotranspirace</p>
+                </div>
+
+                <h3>Druhy sucha (v pořadí jak na sebe navazují)</h3>
+                
+                <div class="flow-diagram">
+                    <div class="flow-step">1. METEOROLOGICKÉ SUCHO</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">2. ZEMĚDĚLSKÉ SUCHO</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">3. HYDROLOGICKÉ SUCHO</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">4. SOCIOEKONOMICKÉ SUCHO</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>1️⃣ Meteorologické sucho</h4>
+                        <p><strong>Příčina:</strong> Srážkový deficit - odchylka srážek od dlouhodobého průměru je záporná</p>
+                        <p><strong>Projevuje se:</strong> Nedostatkem srážek, často mu předchází dlouhodobá přítomnost tlakové výše s intenzivním slunečním zářením</p>
+                        <p><strong>Jak měřit:</strong> Pomocí meteorologických dat (množství srážek)</p>
+                        <p><strong>Boj:</strong> Pouze nepřímo</p>
+                    </div>
+
+                    <div class="card">
+                        <h4>2️⃣ Zemědělské (agronomické) sucho</h4>
+                        <p><strong>Příčina:</strong> Nedostatek půdní vláhy</p>
+                        <p><strong>Projevuje se:</strong> Vodním deficitem pro růst rostlin, snížením produkce biomasy a zemědělské produkce</p>
+                        <p><strong>Trvání:</strong> Několik měsíců, někdy jen týdny/dny</p>
+                        <p><strong>Boj:</strong> Střídání plodin, lehká agrotechnika (méně udusávání půdy), zmenšení půdních bloků, zavlažování</p>
+                    </div>
+
+                    <div class="card">
+                        <h4>3️⃣ Hydrologické sucho</h4>
+                        <p><strong>Příčina:</strong> Snížený odtok vody</p>
+                        <p><strong>Projevuje se:</strong> Nízkými průtoky vodních toků, nízkými stavy hladin nádrží, poklesem hladiny podzemních vod</p>
+                        <p><strong>Dopady:</strong> Projevují se s určitým odstupem, nejpalčivější na nejmenších vodních jednotkách (horské potoky)</p>
+                        <p><strong>Důsledek:</strong> Vyčerpání zásob podzemní vody</p>
+                    </div>
+
+                    <div class="card">
+                        <h4>4️⃣ Socioekonomické sucho</h4>
+                        <p><strong>Příčina:</strong> Dopady sucha negativně ovlivňují společnost</p>
+                        <p><strong>Projevuje se:</strong> Potíže s dostupností pitné vody, dopad na průmysl, energetiku, služby</p>
+                        <p><strong>Umocňuje se:</strong> Rostoucí poptávkou po vodě (růst populace, rozvoj společnosti)</p>
+                    </div>
+                </div>
+
+                <h3>Kauzální diagram sucha (příčiny a důsledky)</h3>
+                
+                <div class="diagram-box">
+                    <h4>METEOROLOGICKÁ SITUACE</h4>
+                    <p>↓</p>
+                    <p><strong>Přirozená variabilita klimatu</strong> → <strong>Přetrvávající tlaková výše</strong></p>
+                    <p>↓</p>
+                    <p><strong>Nízké/žádné srážky</strong></p>
+                    <p>↓</p>
+                    <h4>METEOROLOGICKÉ SUCHO</h4>
+                    <p>↓</p>
+                    <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+                        <div>
+                            <p><strong>Vysoká teplota, zvýšená rychlost větru, nízká relativní vlhkost, zesílené sluneční záření, malá oblačnost</strong></p>
+                            <p>↓</p>
+                            <p><strong>Zvýšený výpar (evaporace, transpirace)</strong></p>
+                        </div>
+                        <div>
+                            <p><strong>Nedostatek srážek</strong></p>
+                            <p>↓</p>
+                            <p><strong>Omezená dotace podzemních vod</strong></p>
+                        </div>
+                    </div>
+                    <p>↓</p>
+                    <h4>ZEMĚDĚLSKÉ SUCHO</h4>
+                    <p><strong>Nedostatek půdní vláhy</strong> → <strong>Vodní stres rostlin, omezená produkce biomasy, snížení výnosů úrody</strong></p>
+                    <p>↓</p>
+                    <h4>HYDROLOGICKÉ SUCHO</h4>
+                    <p><strong>Snížený odtok vody</strong> ← <strong>Vyčerpání zásob podzemní vody</strong></p>
+                </div>
+
+                <h3>Faktory ovlivňující sucho</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Příčiny sucha</th>
+                            <th>Důsledky sucha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nedostatek srážek</td>
+                            <td>Požáry</td>
+                        </tr>
+                        <tr>
+                            <td>Vysoká teplota vzduchu</td>
+                            <td>Nedostatek potravin</td>
+                        </tr>
+                        <tr>
+                            <td>Silný vítr</td>
+                            <td>Snížení biodiverzity</td>
+                        </tr>
+                        <tr>
+                            <td>Zvýšená evapotranspirace</td>
+                            <td>Snížení zemědělské produkce</td>
+                        </tr>
+                        <tr>
+                            <td>Městský povrch (nepropustný)</td>
+                            <td>Nedostatek pitné vody</td>
+                        </tr>
+                        <tr>
+                            <td>Snížená infiltrace</td>
+                            <td>Eroze zemědělské půdy</td>
+                        </tr>
+                        <tr>
+                            <td>Odlesňování</td>
+                            <td>Migrace</td>
+                        </tr>
+                        <tr>
+                            <td>Zavlažování (spotřeba vody)</td>
+                            <td>Vysychání vodních toků</td>
+                        </tr>
+                        <tr>
+                            <td>Hnojiva a chemikálie</td>
+                            <td>Nízká hladina podzemních vod</td>
+                        </tr>
+                        <tr>
+                            <td>Nedostatek sněhu</td>
+                            <td>Znečištění vody</td>
+                        </tr>
+                        <tr>
+                            <td>Ekonomický rozvoj</td>
+                            <td>Úbytek mokřadů</td>
+                        </tr>
+                        <tr>
+                            <td>Nadměrná spotřeba vody</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Klimatická změna</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Odvodňování krajiny</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <h4>🔄 Zpětné vazby u sucha</h4>
+                    <p><strong>Pozitivní zpětná vazba</strong> (zesiluje sucho):</p>
+                    <p>Nedostatek srážek → Snížená infiltrace → Nedostatek půdní vláhy → Zvýšená evapotranspirace → Nedostatek srážek</p>
+                    <br>
+                    <p><strong>Negativní zpětná vazba</strong> (zmírňuje sucho):</p>
+                    <p>Nedostatek srážek → Snížení zemědělské produkce → Méně zavlažování → Úspora vody</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>🌍 Vodní stres</h4>
+                    <p><strong>Vodní stres</strong> = stav, kdy poptávka po vodě převyšuje její dostupné množství / její využívání omezuje kvalitu zdrojů</p>
+                    <p>Jedná se o dlouhodobou nerovnováhu mezi spotřebou a obnovou vodních zdrojů</p>
+                    <p>Ukazatel: "kolik kubíků vody připadá ročně na 1 obyvatele"</p>
+                </div>
+            </div>
+
+            <!-- SPOTŘEBA VODY -->
+            <div id="spotreba" class="section">
+                <h2>💧 SPOTŘEBA VODY</h2>
+
+                <h3>Spotřeba vody v Praze (data 2024)</h3>
+                
+                <div class="info-box">
+                    <h4>📊 Základní údaje</h4>
+                    <ul>
+                        <li><strong>Roční spotřeba průměrného Pražana:</strong> cca 39 m³ (39 000 litrů)</li>
+                        <li><strong>Denní spotřeba:</strong> cca 107 litrů/osobu</li>
+                        <li><strong>Cena vodného a stočného:</strong> 151,27 Kč/m³</li>
+                        <li><strong>Roční náklady na osobu:</strong> cca 6 000 Kč</li>
+                    </ul>
+                </div>
+
+                <h4>Rozložení spotřeby vody v Praze (na 1 osobu/den):</h4>
+                
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kategorie</th>
+                                <th>Spotřeba (litry)</th>
+                                <th>Podíl</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Osobní hygiena, sprchování</td>
+                                <td>39 l</td>
+                                <td style="width: 200px;">
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill" style="width: 36%;">36%</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>WC</td>
+                                <td>26 l</td>
+                                <td>
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill" style="width: 24%;">24%</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Praní, úklid</td>
+                                <td>17 l</td>
+                                <td>
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill" style="width: 16%;">16%</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Příprava jídla, mytí nádobí</td>
+                                <td>10 l</td>
+                                <td>
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill" style="width: 9%;">9%</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mytí rukou</td>
+                                <td>5 l</td>
+                                <td>
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill" style="width: 5%;">5%</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Zalévání</td>
+                                <td>4 l</td>
+                                <td>
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill" style="width: 4%;">4%</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pití</td>
+                                <td>2 l</td>
+                                <td>
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill" style="width: 2%;">2%</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Ostatní</td>
+                                <td>4 l</td>
+                                <td>
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill" style="width: 4%;">4%</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="font-weight: bold; background: #e3f2fd;">
+                                <td>CELKEM</td>
+                                <td>107 l</td>
+                                <td>100%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Spotřeba vody ve světě (litry/osoba/den)</h3>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🌍 Srovnání zemí</h4>
+                        <table>
+                            <tr>
+                                <td>🇦🇪 Spojené arabské emiráty</td>
+                                <td><strong>550 l</strong></td>
+                            </tr>
+                            <tr>
+                                <td>🇺🇸 USA</td>
+                                <td><strong>300 l</strong></td>
+                            </tr>
+                            <tr>
+                                <td>🇳🇿 Nový Zéland</td>
+                                <td><strong>220 l</strong></td>
+                            </tr>
+                            <tr>
+                                <td>🇸🇬 Singapur</td>
+                                <td><strong>140 l</strong></td>
+                            </tr>
+                            <tr>
+                                <td>🇪🇺 Průměr EU</td>
+                                <td><strong>140 l</strong></td>
+                            </tr>
+                            <tr>
+                                <td>🇨🇿 Česko</td>
+                                <td><strong>100 l</strong></td>
+                            </tr>
+                            <tr style="background: #fff3cd;">
+                                <td>🌍 Celosvětový průměr</td>
+                                <td><strong>100 l</strong></td>
+                            </tr>
+                            <tr style="background: #d4edda;">
+                                <td>✅ Doporučené minimum</td>
+                                <td><strong>100 l</strong></td>
+                            </tr>
+                            <tr>
+                                <td>🇸🇴 Somálsko</td>
+                                <td><strong>10 l</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <div class="warning-box">
+                            <h4>⚠️ POZOR na metodiku!</h4>
+                            <p>Můžete nalézt různá čísla - v závislosti na tom, co se započítává:</p>
+                            <ul>
+                                <li><strong>Spotřebovaná voda</strong> = voda, která se reálně "spotřebuje" (vypaří, vstřebá do produktů)</li>
+                                <li><strong>Odebraná voda</strong> = voda odebraná ze zdrojů (část se může vrátit zpět)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h4>💧 Virtuální voda</h4>
+                    <p><strong>Virtuální voda</strong> je voda spotřebovaná při výrobě produktů a služeb.</p>
+                    <p>Příklady:</p>
+                    <ul>
+                        <li>1 kg hovězího masa = 15 000 litrů vody</li>
+                        <li>1 kg pšenice = 1 300 litrů vody</li>
+                        <li>1 šálek kávy = 140 litrů vody</li>
+                        <li>1 bavlněné tričko = 2 700 litrů vody</li>
+                    </ul>
+                    <p>Při mezinárodním obchodu se tedy obchoduje i s "virtuální vodou".</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>🤖 AI a spotřeba vody</h4>
+                    <p>Každé použití AI (jako ChatGPT) spotřebuje přibližně 0,5 litru vody na jeden delší rozhovor!</p>
+                    <p>Datová centra potřebují masivní chlazení, které spotřebovává obrovské množství vody.</p>
+                </div>
+            </div>
+
+            <!-- VÝZNAM VODY -->
+            <div id="vyznam" class="section">
+                <h2>⭐ VÝZNAM VODY</h2>
+
+                <div class="info-box">
+                    <p>Voda má tři základní kategorie významu:</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="color: #28a745;">🌿 EKOLOGICKÝ (přírodní) význam</h3>
+                        <ul>
+                            <li>Zdroj života</li>
+                            <li>Tvorba biotopů</li>
+                            <li>Rozpouštědlo</li>
+                            <li>Samočisticí schopnost</li>
+                            <li>Tvorba půdy</li>
+                            <li>Geomorfologický činitel (tvarování krajiny)</li>
+                            <li>Koloběh látek (kyslík, živiny)</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="color: #2196F3;">👥 SOCIOEKONOMICKÝ (lidský) význam</h3>
+                        <ul>
+                            <li>Pitná voda</li>
+                            <li>Zemědělství a rybolov</li>
+                            <li>Průmysl a výroba</li>
+                            <li>Energie (vodní elektrárny)</li>
+                            <li>Hygiena a sanita</li>
+                            <li>Doprava a obchod</li>
+                            <li>Rekreace a turismus</li>
+                            <li>Kultura</li>
+                            <li>Těžba</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="color: #ff6b6b;">🌡️ KLIMATICKÝ (regulační) význam</h3>
+                        <ul>
+                            <li>Regulace klimatu</li>
+                            <li>Koloběh látek (kyslík, CO₂)</li>
+                            <li>Koloběh vody</li>
+                            <li>Zásobárna tepla (vysoká měrná tepelná kapacita)</li>
+                            <li>Tvorba srážek</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h4>❓ Proč je slaná voda důležitější než sladká?</h4>
+                    <p>V určitém kontextu může být slaná voda důležitější:</p>
+                    <ul>
+                        <li>Tvoří 97,5% všech zásob vody na Zemi</li>
+                        <li>Reguluje globální klima (termohalinní cirkulace)</li>
+                        <li>Je domovem většiny biodiverzity planety</li>
+                        <li>Zajišťuje koloběh vody (výpar z oceánů)</li>
+                        <li>Umožňuje globální obchod (lodní doprava)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ZÁSOBY VODY -->
+            <div id="zasoby" class="section">
+                <h2>🌍 ZÁSOBY VODY NA ZEMI</h2>
+
+                <div class="info-box">
+                    <h3>Celkové množství vody na Zemi: cca 1,4 miliardy km³</h3>
+                    <p>Toto množství se NEMĚNÍ - voda pouze koluje mezi různými částmi hydrosféry!</p>
+                </div>
+
+                <h3>Základní rozdělení</h3>
+
+                <div class="diagram-box">
+                    <h3>VODA NA ZEMI (100%)</h3>
+                    <div style="display: flex; justify-content: space-around; margin: 30px 0;">
+                        <div style="background: #2196F3; color: white; padding: 40px; border-radius: 15px; flex: 1; margin: 10px;">
+                            <h2>SLANÁ VODA</h2>
+                            <h1 style="font-size: 3em; margin: 20px 0;">97,5%</h1>
+                            <p style="font-size: 1.2em;">Světový oceán: 97,2%</p>
+                            <p style="font-size: 1.2em;">Ostatní slaná: 0,3%</p>
+                        </div>
+                        <div style="background: #4CAF50; color: white; padding: 40px; border-radius: 15px; flex: 1; margin: 10px;">
+                            <h2>SLADKÁ VODA</h2>
+                            <h1 style="font-size: 3em; margin: 20px 0;">2,5%</h1>
+                            <p style="font-size: 0.9em;">(= 100% sladké vody)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Rozložení SLADKÉ vody (2,5% = 100% sladké vody)</h3>
+
+                <div class="tree-structure">
+                    <div class="tree-node" style="background: #4CAF50; color: white; font-size: 1.2em; font-weight: bold;">
+                        SLADKÁ VODA (2,5% celkové vody = 100% sladké vody)
+                    </div>
+                    <br>
+                    
+                    <div class="tree-node indent-1" style="background: #e3f2fd;">
+                        <strong>❄️ LEDOVCE - 69%</strong><br>
+                        <small>Pevninské + horské ledovce</small>
+                    </div>
+                    <br>
+                    
+                    <div class="tree-node indent-1" style="background: #e3f2fd;">
+                        <strong>💧 PODPOVRCHOVÁ VODA - 30,5%</strong><br>
+                        <small>Podzemní voda v horninách</small>
+                    </div>
+                    <br>
+                    
+                    <div class="tree-node indent-1" style="background: #fff3cd;">
+                        <strong>🌊 POVRCHOVÁ VODA - 0,44%</strong><br>
+                        <div class="indent-2">
+                            <div class="tree-node" style="margin-top: 10px; background: white;">
+                                Jezera: 0,4%
+                            </div>
+                            <div class="tree-node" style="background: white;">
+                                Bažiny, mokřady: 0,03%
+                            </div>
+                            <div class="tree-node" style="background: white;">
+                                Řeky: < 0,01%
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <div class="tree-node indent-1" style="background: #e3f2fd;">
+                        <strong>☁️ ATMOSFÉRA - 0,04%</strong><br>
+                        <small>Vodní pára v ovzduší</small>
+                    </div>
+                    <br>
+                    
+                    <div class="tree-node indent-1" style="background: #e3f2fd;">
+                        <strong>🌱 BIOSFÉRA - 0,02%</strong><br>
+                        <small>Voda v živých organismech</small>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ KLÍČOVÉ POZNATKY</h4>
+                    <ul>
+                        <li>Většina sladké vody (69%) je uzamčena v <strong>ledovcích</strong></li>
+                        <li>Další velká část (30,5%) je v <strong>podzemních vodách</strong></li>
+                        <li>Snadno dostupná povrchová voda tvoří pouze <strong>0,44%</strong> sladké vody!</li>
+                        <li>Řeky, na které jsme závislí, obsahují méně než <strong>0,01%</strong> sladké vody</li>
+                    </ul>
+                </div>
+
+                <div class="success-box">
+                    <h4>🧂 Proč je voda v mořích slaná?</h4>
+                    <p><strong>Hlavní důvody:</strong></p>
+                    <ol>
+                        <li><strong>Rozpouštění hornin a minerálů na pevnině</strong> - řeky odnášejí rozpuštěné soli do moří (HLAVNÍ DŮVOD!)</li>
+                        <li>Sopky a vulkanická činnost na dně oceánů - uvolňují minerály</li>
+                        <li>Dávné vysychání obrovských moří - vedlo ke koncentraci soli</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- KOLOBĚH VODY -->
+            <div id="kolobeh" class="section">
+                <h2>♻️ KOLOBĚH VODY</h2>
+
+                <div class="info-box">
+                    <h3>Koloběh vody (hydrologický cyklus)</h3>
+                    <p>Je to <span class="highlight">neustálý pohyb vody</span> mezi oceány, atmosférou a pevninou. Voda se pohybuje v <span class="highlight">neměnném celkovém množství</span>, pouze mění své skupenství a umístění.</p>
+                </div>
+
+                <h3>Typy koloběhu vody</h3>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🔄 MALÝ KOLOBĚH VODY</h4>
+                        <p><strong>Probíhá:</strong> Nad oceány</p>
+                        <p><strong>Proces:</strong></p>
+                        <ol>
+                            <li>Výpar z oceánu (evaporace)</li>
+                            <li>Kondenzace v atmosféře</li>
+                            <li>Srážky zpět do oceánu</li>
+                        </ol>
+                        <p>Voda se <strong>nevrací</strong> na pevninu</p>
+                    </div>
+
+                    <div class="card">
+                        <h4>🔄 VELKÝ KOLOBĚH VODY</h4>
+                        <p><strong>Probíhá:</strong> Mezi oceánem a pevninou</p>
+                        <p><strong>Proces:</strong></p>
+                        <ol>
+                            <li>Výpar z oceánu</li>
+                            <li>Přenos vodní páry na pevninu</li>
+                            <li>Srážky na pevnině</li>
+                            <li>Odtok řekami zpět do oceánu</li>
+                        </ol>
+                        <p>Voda <strong>koluje</strong> mezi oceánem a pevninou</p>
+                    </div>
+                </div>
+
+                <h3>📋 Složky koloběhu vody</h3>
+
+                <div class="card">
+                    <h4>☁️ ATMOSFÉRICKÁ ČÁST</h4>
+                    <ul>
+                        <li><strong>Evaporace</strong> = výpar z volné vodní hladiny</li>
+                        <li><strong>Transpirace</strong> = výpar z rostlin (přes průduchy)</li>
+                        <li><strong>Evapotranspirace</strong> = součet evaporace a transpirace</li>
+                        <li><strong>Sublimace</strong> = přímý přechod z pevného do plynného skupenství (z ledu/sněhu)</li>
+                        <li><strong>Vytváření oblaků</strong> = kondenzace vodní páry</li>
+                        <li><strong>Srážky</strong> = déšť, sníh, kroupy, rosa, jinovatka</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>🏔️ PEVNINSKÁ ČÁST</h4>
+                    <ul>
+                        <li><strong>Zásoby vody ve sněhu a ledu</strong> = akumulace v ledovcích</li>
+                        <li><strong>Odtok z tání sněhu</strong> = jarní tání</li>
+                        <li><strong>Vsakování (infiltrace)</strong> = průnik vody do půdy</li>
+                        <li><strong>Povrchový odtok</strong> = stékání po povrchu</li>
+                        <li><strong>Říční odtok</strong> = odtok v korytech řek</li>
+                        <li><strong>Pramen</strong> = místo, kde podzemní voda vytéká na povrch</li>
+                        <li><strong>Zásoby podzemních vod</strong> = voda v horninách</li>
+                        <li><strong>Zásoby sladké vody</strong> = jezera, řeky</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>🌊 OCEÁNSKÁ ČÁST</h4>
+                    <ul>
+                        <li><strong>Zásoby vody v mořích</strong> = největší zásobárna vody</li>
+                        <li><strong>Výpar z volné hladiny</strong> = evaporace z oceánů</li>
+                    </ul>
+                </div>
+
+                <h3>🔄 Jak koloběh probíhá (zjednodušeně)</h3>
+
+                <div class="flow-diagram">
+                    <div style="color: white; padding: 20px; line-height: 2;">
+                        <strong style="font-size: 1.3em;">OCEÁN</strong>
+                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                        <strong>Evaporace (výpar)</strong>
+                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                        <strong>Vodní pára stoupá</strong>
+                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                        <strong>Kondenzace → Oblaka</strong>
+                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                        <strong>Přenos nad pevninu</strong>
+                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                        <strong>Srážky na pevnině</strong>
+                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                        <div style="display: flex; justify-content: space-around;">
+                            <div>Vsakování → Podzemní voda</div>
+                            <div>Povrchový odtok → Řeky</div>
+                        </div>
+                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                        <strong style="font-size: 1.3em;">ZPĚT DO OCEÁNU</strong>
+                    </div>
+                </div>
+
+                <h3>🏙️ Vliv lidské činnosti na koloběh vody</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Měřítko</th>
+                            <th>Lidská činnost</th>
+                            <th>Dopad na koloběh vody</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Lokální</strong><br>(obec)</td>
+                            <td>Zástavba měst, nepropustné plochy (silnice, parkoviště, střechy)</td>
+                            <td>
+                                • Omezení vsakování<br>
+                                • Zvýšení povrchového odtoku<br>
+                                • Lokální záplavy<br>
+                                • Vysychání půdy<br>
+                                • Přehřívání města
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Regionální</strong><br>(oblast)</td>
+                            <td>Odlesňování</td>
+                            <td>
+                                • Snížení zadržování vody v krajině<br>
+                                • Rychlejší odtok → povodně<br>
+                                • Sucho v létě<br>
+                                • Menší výpar
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kontinentální</strong></td>
+                            <td>Intenzivní zemědělství, vysušování mokřadů</td>
+                            <td>
+                                • Menší tvorba oblačnosti<br>
+                                • Posun srážkových pásů<br>
+                                • Sucha nebo extrémní bouřky
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Globální</strong></td>
+                            <td>Globální oteplování</td>
+                            <td>
+                                • Zvýšení teplot oceánů<br>
+                                • Větší výpar → více vodní páry<br>
+                                • Intenzivnější srážky a extrémy<br>
+                                • Tání ledovců<br>
+                                • Změny mořských proudů
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <h4>⚠️ Proč je koloběh vody důležitý?</h4>
+                    <ul>
+                        <li>Zajišťuje <strong>dostupnost sladké vody</strong> na pevnině</li>
+                        <li>Reguluje <strong>klima</strong> planety</li>
+                        <li>Umožňuje <strong>život</strong> na Zemi</li>
+                        <li>Transportuje <strong>živiny a minerály</strong></li>
+                        <li>Ovlivňuje <strong>počasí</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- OCEÁNSKÉ PROUDY -->
+            <div id="proudy" class="section">
+                <h2>🌊 OCEÁNSKÉ PROUDĚNÍ</h2>
+
+                <div class="info-box">
+                    <h3>Dva základní typy oceánského proudění</h3>
+                    <p>Oceánské proudy mají <span class="highlight">zásadní vliv na globální klima</span> a redistribuci tepla po planetě.</p>
+                </div>
+
+                <h3>1️⃣ POVRCHOVÉ OCEÁNSKÉ PROUDY</h3>
+
+                <div class="success-box">
+                    <h4>Základní charakteristika</h4>
+                    <ul>
+                        <li><strong>Hloubka:</strong> Do cca 400 m pod hladinou</li>
+                        <li><strong>Hlavní motor:</strong> VÍTR (cirkulace atmosféry)</li>
+                        <li><strong>Další vlivy:</strong> Coriolisova síla (zemská rotace), tvar pevniny</li>
+                        <li><strong>Teplota:</strong> Studené nebo teplé proudy (podle směru proudění)</li>
+                    </ul>
+                </div>
+
+                <h4>🌀 Gyry (oceánské okruhy)</h4>
+
+                <div class="card">
+                    <p><strong>Gyr</strong> = velký kruhový systém oceánských proudů v oceánských pánvích</p>
+                    <p><strong>Směr proudění:</strong></p>
+                    <ul>
+                        <li>Na <strong>severní polokouli</strong>: ve směru hodinových ručiček</li>
+                        <li>Na <strong>jižní polokouli</strong>: proti směru hodinových ručiček</li>
+                    </ul>
+                    <p><strong>Příčina:</strong> Coriolisova síla - voda se stáčí doprava (SH) nebo doleva (JH) ve směru pohybu</p>
+                    
+                    <h4 style="margin-top: 20px;">Hlavní gyry:</h4>
+                    <ul>
+                        <li>Severoatlantický gyr</li>
+                        <li>Jihoatlantický gyr</li>
+                        <li>Severopacifický gyr</li>
+                        <li>Jihopacifický gyr</li>
+                        <li>Indickooceánský gyr (Indický oceán)</li>
+                    </ul>
+                </div>
+
+                <h4>❄️ Studené proudy vs 🔥 Teplé proudy</h4>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: #2196F3;">❄️ STUDENÉ PROUDY</h4>
+                        <p><strong>Směr:</strong> Z chladných oblastí do teplejších (od pólů směrem k rovníku)</p>
+                        <p><strong>Příklady:</strong></p>
+                        <ul>
+                            <li>Benguelský proud (záp. Afrika)</li>
+                            <li>Kalifornský proud (záp. USA)</li>
+                            <li>Peruánský proud (záp. J. Amerika)</li>
+                            <li>Západní příhon (kolem Antarktidy)</li>
+                        </ul>
+                        <p><strong>Vliv na klima:</strong></p>
+                        <ul>
+                            <li>Menší výpar (evaporace)</li>
+                            <li>Minimum oblaků</li>
+                            <li>Málo srážek</li>
+                            <li>Pouště a polopouště na pobřeží</li>
+                            <li>Pobřežní mlhy (rozdíl teplot)</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: #ff6b6b;">🔥 TEPLÉ PROUDY</h4>
+                        <p><strong>Směr:</strong> Z teplých oblastí do chladnějších (od rovníku směrem k pólům)</p>
+                        <p><strong>Příklady:</strong></p>
+                        <ul>
+                            <li>Golfský proud (sev. Atlantik)</li>
+                            <li>Brazilský proud (vých. J. Amerika)</li>
+                            <li>Kuroshio (vých. Asie)</li>
+                            <li>Rovníkové proudy</li>
+                        </ul>
+                        <p><strong>Vliv na klima:</strong></p>
+                        <ul>
+                            <li>Větší výpar (evaporace)</li>
+                            <li>Vzestupné proudy vzduchu</li>
+                            <li>Tvorba oblaků</li>
+                            <li>Více srážek</li>
+                            <li>Lesy a vlhké oblasti na pobřeží</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h4>🌍 Konkrétní příklad vlivu na klima:</h4>
+                    <p><strong>Jihozápadní Afrika (Namibie)</strong> - omývá Benguelský proud (studený)</p>
+                    <p>→ Pouště a polopouště (Namib), velmi málo srážek</p>
+                    <br>
+                    <p><strong>Východní Jižní Amerika (Brazílie)</strong> - omývá Brazilský proud (teplý)</p>
+                    <p>→ Vlhké lesy, více srážek, zelená vegetace</p>
+                </div>
+
+                <h3>2️⃣ TERMOHALINNÍ CIRKULACE (Hlubinné proudění)</h3>
+
+                <div class="success-box">
+                    <h4>Základní charakteristika</h4>
+                    <ul>
+                        <li><strong>Název:</strong> Global Conveyor Belt (Globální dopravní pás)</li>
+                        <li><strong>Hloubka:</strong> Od 400 m až po dno oceánů</li>
+                        <li><strong>Hlavní motor:</strong> HUSTOTA VODY (závislá na teplotě a salinitě)</li>
+                        <li><strong>Rychlost:</strong> Velmi pomalá (kompletní okruh trvá cca 1000 let!)</li>
+                        <li><strong>Význam:</strong> Redistribuce tepla po celé planetě</li>
+                    </ul>
+                </div>
+
+                <h4>🔬 Jak funguje termohalinní cirkulace?</h4>
+
+                <div class="diagram-box">
+                    <h4 style="color: white;">GRÓNSKÉ MOŘE - Klíčové místo!</h4>
+                    <br>
+                    <div style="background: white; color: #333; padding: 20px; border-radius: 10px; margin: 20px;">
+                        <h4>1. Teplý Golfský proud přináší teplou vodu k Evropě</h4>
+                        <div class="arrow" style="color: #ff6b6b;">↓</div>
+                        <h4>2. U Grónska se voda ochladí (nízká teplota)</h4>
+                        <div class="arrow" style="color: #2196F3;">↓</div>
+                        <h4>3. Vytváří se mořský led → sůl zůstává ve vodě</h4>
+                        <div class="arrow" style="color: #2196F3;">↓</div>
+                        <h4>4. Voda je STUDENÁ + SLANÁ = HUSTÁ</h4>
+                        <div class="arrow" style="color: #2196F3;">↓</div>
+                        <h4>5. Hustá voda KLESÁ ke dnu</h4>
+                        <div class="arrow" style="color: #2196F3;">↓</div>
+                        <h4>6. Proudí po dně oceánů na jih</h4>
+                        <div class="arrow" style="color: #2196F3;">↓</div>
+                        <h4>7. Postupně se otepluje a stoupá nahoru</h4>
+                        <div class="arrow" style="color: #ff6b6b;">↓</div>
+                        <h4>8. Vrací se jako teplý proud zpět na sever</h4>
+                        <div class="arrow" style="color: #ff6b6b;">↓</div>
+                        <h4 style="color: #667eea;">CYKLUS SE OPAKUJE</h4>
+                    </div>
+                </div>
+
+                <h4>🌡️ Faktory ovlivňující hustotu vody:</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Faktor</th>
+                            <th>Vliv na hustotu</th>
+                            <th>Chování vody</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>❄️ <strong>Nízká teplota</strong></td>
+                            <td>Zvyšuje hustotu</td>
+                            <td>Voda KLESÁ</td>
+                        </tr>
+                        <tr>
+                            <td>🔥 <strong>Vysoká teplota</strong></td>
+                            <td>Snižuje hustotu</td>
+                            <td>Voda STOUPÁ</td>
+                        </tr>
+                        <tr>
+                            <td>🧂 <strong>Vysoká salinita</strong></td>
+                            <td>Zvyšuje hustotu</td>
+                            <td>Voda KLESÁ</td>
+                        </tr>
+                        <tr>
+                            <td>💧 <strong>Nízká salinita</strong></td>
+                            <td>Snižuje hustotu</td>
+                            <td>Voda STOUPÁ</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>🌍 Důsledky termohalinní cirkulace:</h4>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: #28a745;">✅ Pozitivní důsledky</h4>
+                        <ul>
+                            <li><strong>Redistribuce tepla</strong> - oceány jsou "redistributory" tepla po planetě</li>
+                            <li><strong>Mírné klima v Evropě</strong> - díky Golfskému proudu</li>
+                            <li><strong>Živiny v oceánech</strong> - vertikální míchání přináší živiny z hloubky k povrchu</li>
+                            <li><strong>Bohatý rybolov</strong> - kde studená voda stoupá nahoru (upwelling)</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: #dc3545;">⚠️ Rizika a změny</h4>
+                        <ul>
+                            <li><strong>Citlivost na klimatickou změnu</strong></li>
+                            <li><strong>Tání ledovců</strong> → sladká voda snižuje salinitu</li>
+                            <li><strong>Oslabení cirkulace</strong> → voda méně klesá</li>
+                            <li><strong>Ochlazení Evropy</strong> možné při zastavení Golfského proudu</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Klimatická změna a termohalinní cirkulace</h4>
+                    <p><strong>Problém:</strong> Globální oteplování způsobuje masivní tání ledovců v Grónsku a Arktidě.</p>
+                    <p><strong>Důsledek:</strong></p>
+                    <ol>
+                        <li>Velké množství <strong>sladké vody</strong> vtéká do oceánu</li>
+                        <li>Snižuje se <strong>salinita</strong> (slanost) vody</li>
+                        <li>Voda je <strong>méně hustá</strong> → klesá pomaleji nebo vůbec</li>
+                        <li><strong>Zpomalení nebo zastavení</strong> termohalinní cirkulace</li>
+                        <li>Možné <strong>ochlazení Evropy</strong> (paradoxně při globálním oteplování!)</li>
+                        <li>Změny v rozložení <strong>srážek</strong> a <strong>teplot</strong> po celé planetě</li>
+                    </ol>
+                </div>
+
+                <h4>🌊 Západní příhon (West Wind Drift)</h4>
+
+                <div class="info-box">
+                    <p><strong>Západní příhon</strong> je velmi silný studený proud kroužící <strong>od západu na východ</strong> kolem celé Antarktidy (jižně od 60. rovnoběžky j. š.).</p>
+                    <p><strong>Význam:</strong></p>
+                    <ul>
+                        <li>Je to "motor" oceánského proudění</li>
+                        <li>Z něj se odpojují tři významné studené proudy směřující na sever</li>
+                        <li>Je důvodem, proč se vyčleňuje <strong>Jižní oceán</strong></li>
+                        <li>Kolem Antarktidy je více místa a hlubší voda než v Arktidě</li>
+                    </ul>
+                </div>
+
+                <div class="success-box">
+                    <h4>📍 Tři hlavní studené proudy z Západního příhonu:</h4>
+                    <ol>
+                        <li><strong>Benguelský proud</strong> (u západní Afriky)</li>
+                        <li><strong>Peruánský proud</strong> (u západní Jižní Ameriky)</li>
+                        <li><strong>Západoaustralský proud</strong> (u západní Austrálie)</li>
+                    </ol>
+                    <p style="margin-top: 15px;">💡 <strong>TIP:</strong> K těmto třem se naučte i tři teplé proudy pro úplnost!</p>
+                </div>
+
+                <h4>🗺️ Bezodtoká oblast</h4>
+
+                <div class="info-box">
+                    <p><strong>Bezodtoká oblast</strong> = území, z něhož voda <strong>neodtéká do žádného oceánu</strong></p>
+                    <p>Voda buď:</p>
+                    <ul>
+                        <li>Se <strong>vypaří</strong></li>
+                        <li>Končí v <strong>bezodtokých jezerech nebo pánvích</strong></li>
+                    </ul>
+                    <p><strong>Rozloha:</strong> 21% pevniny (více než pětina souše!)</p>
+                    <p><strong>Příklady:</strong></p>
+                    <ul>
+                        <li>Sahara</li>
+                        <li>Střední Asie</li>
+                        <li>Povodí Kaspického moře</li>
+                        <li>Velká pánev (USA)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TEST ZNALOSTÍ -->
+            <div id="test" class="section">
+                <h2>✅ TEST ZNALOSTÍ</h2>
+
+                <div class="study-tip">
+                    💡 Tento test ti pomůže ověřit, jak dobře jsi zvládl učivo. Klikni na odpověď a dozvíš se, jestli je správná!
+                </div>
+
+                <!-- Otázka 1 -->
+                <div class="quiz-question">
+                    <h4>1. Jaké je správné pořadí druhů sucha podle vzájemné provázanosti?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) Hydrologické → Meteorologické → Zemědělské → Socioekonomické
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        B) Meteorologické → Zemědělské → Hydrologické → Socioekonomické
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        C) Zemědělské → Meteorologické → Hydrologické → Socioekonomické
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) Meteorologické → Hydrologické → Zemědělské → Socioekonomické
+                    </div>
+                </div>
+
+                <!-- Otázka 2 -->
+                <div class="quiz-question">
+                    <h4>2. Kolik procent z celkové vody na Zemi tvoří sladká voda?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) 10%
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        B) 2,5%
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        C) 5%
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) 0,5%
+                    </div>
+                </div>
+
+                <!-- Otázka 3 -->
+                <div class="quiz-question">
+                    <h4>3. Která složka obsahuje největší podíl sladké vody na Zemi?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) Podzemní voda
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) Jezera a řeky
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        C) Ledovce
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) Atmosféra
+                    </div>
+                </div>
+
+                <!-- Otázka 4 -->
+                <div class="quiz-question">
+                    <h4>4. Jaká je průměrná denní spotřeba vody na obyvatele v Praze?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) 50 litrů
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        B) 107 litrů
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        C) 200 litrů
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) 300 litrů
+                    </div>
+                </div>
+
+                <!-- Otázka 5 -->
+                <div class="quiz-question">
+                    <h4>5. Co je hlavním motorem povrchových oceánských proudů?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        A) Vítr (cirkulace atmosféry)
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        B) Hustota vody
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        C) Salinita
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) Zemská rotace
+                    </div>
+                </div>
+
+                <!-- Otázka 6 -->
+                <div class="quiz-question">
+                    <h4>6. Co je hlavním motorem termohalinní cirkulace?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) Vítr
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        B) Hustota vody (závislá na teplotě a salinitě)
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        C) Přílivy a odlivy
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) Sluneční záření
+                    </div>
+                </div>
+
+                <!-- Otázka 7 -->
+                <div class="quiz-question">
+                    <h4>7. Studené oceánské proudy způsobují na pobřeží:</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        A) Málo srážek, pouště a polopouště
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        B) Hodně srážek, lesy
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        C) Nemají vliv na klima
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) Tvorbu hurikánů
+                    </div>
+                </div>
+
+                <!-- Otázka 8 -->
+                <div class="quiz-question">
+                    <h4>8. Co je to evapotranspirace?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) Výpar z vodní hladiny
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        B) Výpar z rostlin
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        C) Součet evaporace a transpirace
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) Kondenzace vodní páry
+                    </div>
+                </div>
+
+                <!-- Otázka 9 -->
+                <div class="quiz-question">
+                    <h4>9. Proč je voda v mořích slaná? (hlavní důvod)</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        A) Rozpouštění hornin a minerálů na pevnině odnášené řekami
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        B) Sopky a vulkanická činnost na dně oceánů
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        C) Vysychání obrovských moří
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) Meteorické bombardování
+                    </div>
+                </div>
+
+                <!-- Otázka 10 -->
+                <div class="quiz-question">
+                    <h4>10. Jak může klimatická změna ovlivnit termohalinní cirkulaci?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) Nijak ji neovlivní
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        B) Zrychlí ji
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        C) Zpomalí nebo zastaví kvůli tání ledovců (snížení salinity)
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) Změní její směr
+                    </div>
+                </div>
+
+                <!-- Otázka 11 -->
+                <div class="quiz-question">
+                    <h4>11. Co je to aridita?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) Krátkodobé sucho (týdny, měsíce)
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        B) Dlouhodobý nedostatek vody (roky), dlouhodobé sucho
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        C) Typ zemědělské plodiny
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) Vlhká oblast s mnoha srážkami
+                    </div>
+                </div>
+
+                <!-- Otázka 12 -->
+                <div class="quiz-question">
+                    <h4>12. Kolik procent sladké vody je uzamčeno v ledovcích?</h4>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        A) 30%
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        B) 50%
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">
+                        C) 69%
+                    </div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">
+                        D) 85%
+                    </div>
+                </div>
+
+                <div class="success-box" style="margin-top: 40px;">
+                    <h3>🎉 Gratulujeme!</h3>
+                    <p>Dokončil/a jsi test znalostí. Projdi si ještě jednou oblasti, kde jsi měl/a problémy, a budeš perfektně připraven/a na test!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>💧 Hydrosféra - Kompletní příprava na test 💧</p>
+            <p style="margin-top: 10px; opacity: 0.8;">Hodně štěstí u testu! 🍀</p>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function checkAnswer(element, isCorrect) {
+            // Remove previous states from all options in this question
+            const question = element.parentElement;
+            const options = question.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                opt.style.pointerEvents = 'none';
+            });
+
+            // Mark the clicked option
+            if (isCorrect) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('wrong');
+                // Also show the correct answer
+                options.forEach(opt => {
+                    if (opt.getAttribute('onclick').includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

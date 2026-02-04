@@ -16,6 +16,38 @@
     "file": "artifacts/biologie-plzi.html"
   },
   {
+    "title": "Chemie - Ideální plyn",
+    "subject": "Science",
+    "topic": "Chemistry",
+    "template": "practice",
+    "date": "2026-02-04",
+    "file": "artifacts/chemie-idealni-plyn.html"
+  },
+  {
+    "title": "Chemie - Reakční kinetika",
+    "subject": "Science",
+    "topic": "Chemistry",
+    "template": "practice",
+    "date": "2026-02-04",
+    "file": "artifacts/chemie-kinetika.html"
+  },
+  {
+    "title": "Chemie - Chemické rovnováhy",
+    "subject": "Science",
+    "topic": "Chemistry",
+    "template": "practice",
+    "date": "2026-02-04",
+    "file": "artifacts/chemie-rovnovahy.html"
+  },
+  {
+    "title": "Termochemie - Interaktivní Průvodce",
+    "subject": "Science",
+    "topic": "Chemistry",
+    "template": "practice",
+    "date": "2026-02-04",
+    "file": "artifacts/chemie-termochemie.html"
+  },
+  {
     "title": "Dějepis - První světová válka",
     "subject": "History",
     "topic": "WWI",
@@ -38,6 +70,30 @@
     "template": "practice",
     "date": "2026-02-04",
     "file": "artifacts/francais-corps-sante.html"
+  },
+  {
+    "title": "Francouzština - Časování sloves",
+    "subject": "Languages",
+    "topic": "French",
+    "template": "practice",
+    "date": "2026-02-04",
+    "file": "artifacts/francais-verbs.html"
+  },
+  {
+    "title": "⚡ MATH MASTER - Pololetní Písemka Trainer",
+    "subject": "Math",
+    "topic": "Pololetní test",
+    "template": "practice",
+    "date": "2026-02-04",
+    "file": "artifacts/matematika-pololetka.html"
+  },
+  {
+    "title": "Příprava na test - Hydrosféra",
+    "subject": "Geography",
+    "topic": "Hydrosféra",
+    "template": "practice",
+    "date": "2026-02-04",
+    "file": "artifacts/zemepis-hydrosfera.html"
   },
   {
     "title": "Stavová rovnice - Kompletní průvodce",

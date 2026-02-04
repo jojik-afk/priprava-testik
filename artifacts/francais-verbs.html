@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Francouzština - Časování sloves</title>
+    <meta name="subject" content="Languages">
+    <meta name="topic" content="French">
+    <meta name="template" content="practice">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/francais-verbs.jsx
+import React, { useState, useEffect } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+var verbData = {
+  avoir: {
+    type: "nepravidelné",
+    meaning: "mít",
+    present: ["ai", "as", "a", "avons", "avez", "ont"],
+    imperative: ["—", "aie", "—", "ayons", "ayez", "—"],
+    notes: "Pomocné sloveso pro tvorbu složených časů."
+  },
+  être: {
+    type: "nepravidelné",
+    meaning: "být",
+    present: ["suis", "es", "est", "sommes", "êtes", "sont"],
+    imperative: ["—", "sois", "—", "soyons", "soyez", "—"],
+    notes: "Pomocné sloveso. Pozor: vous êtes (koncovka -es)."
+  },
+  aller: {
+    type: "nepravidelné",
+    meaning: "jít, jet",
+    present: ["vais", "vas", "va", "allons", "allez", "vont"],
+    imperative: ["—", "va", "—", "allons", "allez", "—"],
+    notes: "Zcela nepravidelné sloveso, používá se i pro tvorbu blízké budoucnosti."
+  },
+  parler: {
+    type: "1. třída (-er)",
+    meaning: "mluvit",
+    present: ["parle", "parles", "parle", "parlons", "parlez", "parlent"],
+    imperative: ["—", "parle", "—", "parlons", "parlez", "—"],
+    notes: "Vzorové sloveso 1. třídy. Koncovky: -e, -es, -e, -ons, -ez, -ent."
+  },
+  habiter: {
+    type: "1. třída (-er)",
+    meaning: "bydlet",
+    present: ["habite", "habites", "habite", "habitons", "habitez", "habitent"],
+    imperative: ["—", "habite", "—", "habitons", "habitez", "—"],
+    notes: "Pravidelné sloveso 1. třídy."
+  },
+  aimer: {
+    type: "1. třída (-er)",
+    meaning: "milovat, mít rád",
+    present: ["aime", "aimes", "aime", "aimons", "aimez", "aiment"],
+    imperative: ["—", "aime", "—", "aimons", "aimez", "—"],
+    notes: "Pravidelné sloveso 1. třídy."
+  },
+  acheter: {
+    type: "1. třída (-er) + změna",
+    meaning: "kupovat",
+    present: ["achète", "achètes", "achète", "achetons", "achetez", "achètent"],
+    imperative: ["—", "achète", "—", "achetons", "achetez", "—"],
+    notes: "Systém bota: e → è v osobách je, tu, il/elle, ils/elles."
+  },
+  payer: {
+    type: "1. třída (-er) + změna",
+    meaning: "platit",
+    present: ["paie", "paies", "paie", "payons", "payez", "paient"],
+    imperative: ["—", "paie", "—", "payons", "payez", "—"],
+    notes: "Systém bota: y → i. Možný i tvar paye/payes/payent."
+  },
+  manger: {
+    type: "1. třída (-er) + změna",
+    meaning: "jíst",
+    present: ["mange", "manges", "mange", "mangeons", "mangez", "mangent"],
+    imperative: ["—", "mange", "—", "mangeons", "mangez", "—"],
+    notes: "V osobě nous vkládáme e: mangeons (zachování výslovnosti g)."
+  },
+  faire: {
+    type: "nepravidelné",
+    meaning: "dělat",
+    present: ["fais", "fais", "fait", "faisons", "faites", "font"],
+    imperative: ["—", "fais", "—", "faisons", "faites", "—"],
+    notes: "Pozor: vous faites (koncovka -es, nevyslovuje se)."
+  },
+  choisir: {
+    type: "2. třída (-ir)",
+    meaning: "vybrat",
+    present: ["choisis", "choisis", "choisit", "choisissons", "choisissez", "choisissent"],
+    imperative: ["—", "choisis", "—", "choisissons", "choisissez", "—"],
+    notes: "Vzorové sloveso 2. třídy. V množném čísle -iss-."
+  },
+  finir: {
+    type: "2. třída (-ir)",
+    meaning: "končit",
+    present: ["finis", "finis", "finit", "finissons", "finissez", "finissent"],
+    imperative: ["—", "finis", "—", "finissons", "finissez", "—"],
+    notes: "Vzorové sloveso 2. třídy. Koncovky: -is, -is, -it, -issons, -issez, -issent."
+  },
+  prendre: {
+    type: "nepravidelné",
+    meaning: "brát, vzít",
+    present: ["prends", "prends", "prend", "prenons", "prenez", "prennent"],
+    imperative: ["—", "prends", "—", "prenons", "prenez", "—"],
+    notes: "Stejně se časují: apprendre, comprendre, surprendre."
+  },
+  monter: {
+    type: "1. třída (-er)",
+    meaning: "stoupat, nastoupit",
+    present: ["monte", "montes", "monte", "montons", "montez", "montent"],
+    imperative: ["—", "monte", "—", "montons", "montez", "—"],
+    notes: "Pravidelné sloveso 1. třídy."
+  },
+  vouloir: {
+    type: "nepravidelné",
+    meaning: "chtít",
+    present: ["veux", "veux", "veut", "voulons", "voulez", "veulent"],
+    imperative: ["—", "veuille", "—", "veuillons", "veuillez", "—"],
+    notes: "Modální sloveso. Imperativ se používá zřídka (zdvořilostní forma)."
+  },
+  pouvoir: {
+    type: "nepravidelné",
+    meaning: "moci",
+    present: ["peux", "peux", "peut", "pouvons", "pouvez", "peuvent"],
+    imperative: ["—", "—", "—", "—", "—", "—"],
+    notes: "Modální sloveso. Nemá imperativ!"
+  },
+  vendre: {
+    type: "3. třída (-re)",
+    meaning: "prodávat",
+    present: ["vends", "vends", "vend", "vendons", "vendez", "vendent"],
+    imperative: ["—", "vends", "—", "vendons", "vendez", "—"],
+    notes: "Vzorové sloveso 3. třídy. Koncovky: -s, -s, —, -ons, -ez, -ent."
+  },
+  mettre: {
+    type: "nepravidelné",
+    meaning: "dát, položit",
+    present: ["mets", "mets", "met", "mettons", "mettez", "mettent"],
+    imperative: ["—", "mets", "—", "mettons", "mettez", "—"],
+    notes: "Stejně: admettre, permettre, promettre, transmettre."
+  }
+};
+var pronouns = ["je", "tu", "il/elle/on", "nous", "vous", "ils/elles"];
+var imperativePronouns = ["—", "(tu)", "—", "(nous)", "(vous)", "—"];
+function App() {
+  const [activeTab, setActiveTab] = useState("theory");
+  const [selectedVerb, setSelectedVerb] = useState("avoir");
+  const [quizMode, setQuizMode] = useState("present");
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [userAnswer, setUserAnswer] = useState("");
+  const [feedback, setFeedback] = useState(null);
+  const [score, setScore] = useState({ correct: 0, total: 0 });
+  const [showHint, setShowHint] = useState(false);
+  const [studiedVerbs, setStudiedVerbs] = useState([]);
+  const [testQuestions, setTestQuestions] = useState([]);
+  const [testIndex, setTestIndex] = useState(0);
+  const [testScore, setTestScore] = useState(0);
+  const [testFinished, setTestFinished] = useState(false);
+  const [testAnswers, setTestAnswers] = useState([]);
+  const verbs = Object.keys(verbData);
+  const generateQuestion = () => {
+    const randomVerb = verbs[Math.floor(Math.random() * verbs.length)];
+    const data = verbData[randomVerb];
+    if (quizMode === "present") {
+      const randomIndex = Math.floor(Math.random() * 6);
+      return {
+        verb: randomVerb,
+        pronoun: pronouns[randomIndex],
+        correctAnswer: data.present[randomIndex],
+        mode: "present"
+      };
+    } else {
+      const validIndices = [1, 3, 4].filter((i) => data.imperative[i] !== "—");
+      if (validIndices.length === 0) {
+        return generateQuestion();
+      }
+      const randomIndex = validIndices[Math.floor(Math.random() * validIndices.length)];
+      return {
+        verb: randomVerb,
+        pronoun: imperativePronouns[randomIndex],
+        correctAnswer: data.imperative[randomIndex],
+        mode: "imperative"
+      };
+    }
+  };
+  const startQuiz = () => {
+    const q = generateQuestion();
+    setCurrentQuestion(q);
+    setUserAnswer("");
+    setFeedback(null);
+    setShowHint(false);
+  };
+  const checkAnswer = () => {
+    if (!currentQuestion)
+      return;
+    const isCorrect = userAnswer.toLowerCase().trim() === currentQuestion.correctAnswer.toLowerCase();
+    setFeedback({
+      correct: isCorrect,
+      correctAnswer: currentQuestion.correctAnswer
+    });
+    setScore((prev) => ({
+      correct: prev.correct + (isCorrect ? 1 : 0),
+      total: prev.total + 1
+    }));
+  };
+  const generateTest = () => {
+    const questions = [];
+    verbs.forEach((verb) => {
+      const data = verbData[verb];
+      const randomIndex = Math.floor(Math.random() * 6);
+      questions.push({
+        verb,
+        pronoun: pronouns[randomIndex],
+        correctAnswer: data.present[randomIndex],
+        mode: "present"
+      });
+      const validImperativeIndices = [1, 3, 4].filter((i) => data.imperative[i] !== "—");
+      if (validImperativeIndices.length > 0) {
+        const impIndex = validImperativeIndices[Math.floor(Math.random() * validImperativeIndices.length)];
+        questions.push({
+          verb,
+          pronoun: imperativePronouns[impIndex],
+          correctAnswer: data.imperative[impIndex],
+          mode: "imperative"
+        });
+      }
+    });
+    for (let i = questions.length - 1;i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+    return questions.slice(0, 20);
+  };
+  const startTest = () => {
+    const questions = generateTest();
+    setTestQuestions(questions);
+    setTestIndex(0);
+    setTestScore(0);
+    setTestFinished(false);
+    setTestAnswers([]);
+    setUserAnswer("");
+    setFeedback(null);
+  };
+  const submitTestAnswer = () => {
+    const current = testQuestions[testIndex];
+    const isCorrect = userAnswer.toLowerCase().trim() === current.correctAnswer.toLowerCase();
+    setTestAnswers((prev) => [...prev, {
+      ...current,
+      userAnswer: userAnswer.trim(),
+      isCorrect
+    }]);
+    if (isCorrect)
+      setTestScore((prev) => prev + 1);
+    if (testIndex + 1 < testQuestions.length) {
+      setTestIndex((prev) => prev + 1);
+      setUserAnswer("");
+    } else {
+      setTestFinished(true);
+    }
+  };
+  const markAsStudied = (verb) => {
+    if (!studiedVerbs.includes(verb)) {
+      setStudiedVerbs((prev) => [...prev, verb]);
+    }
+  };
+  const TheoryTab = () => /* @__PURE__ */ jsxDEV("div", {
+    className: "space-y-6",
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200",
+        children: [
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-2xl font-bold text-blue-800 mb-4",
+            children: "\uD83D\uDCDA Tři třídy pravidelných sloves"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "grid md:grid-cols-3 gap-4",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "bg-white p-4 rounded-lg shadow-sm",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h3", {
+                    className: "font-bold text-green-700 text-lg mb-2",
+                    children: "1. třída (-er)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    className: "text-sm text-gray-600 mb-2",
+                    children: "Nejpočetnější skupina"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "text-sm font-mono bg-green-50 p-2 rounded",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "je parl",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-green-600 font-bold",
+                            children: "e"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "tu parl",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-green-600 font-bold",
+                            children: "es"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "il parl",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-green-600 font-bold",
+                            children: "e"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "nous parl",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-green-600 font-bold",
+                            children: "ons"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "vous parl",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-green-600 font-bold",
+                            children: "ez"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "ils parl",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-green-600 font-bold",
+                            children: "ent"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "bg-white p-4 rounded-lg shadow-sm",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h3", {
+                    className: "font-bold text-purple-700 text-lg mb-2",
+                    children: "2. třída (-ir)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    className: "text-sm text-gray-600 mb-2",
+                    children: "Vložka -iss- v mn. čísle"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "text-sm font-mono bg-purple-50 p-2 rounded",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "je fin",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-purple-600 font-bold",
+                            children: "is"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "tu fin",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-purple-600 font-bold",
+                            children: "is"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "il fin",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-purple-600 font-bold",
+                            children: "it"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "nous fin",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-purple-600 font-bold",
+                            children: "issons"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "vous fin",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-purple-600 font-bold",
+                            children: "issez"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "ils fin",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-purple-600 font-bold",
+                            children: "issent"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "bg-white p-4 rounded-lg shadow-sm",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h3", {
+                    className: "font-bold text-orange-700 text-lg mb-2",
+                    children: "3. třída (-re)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    className: "text-sm text-gray-600 mb-2",
+                    children: "3. os. j.č. bez koncovky"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "text-sm font-mono bg-orange-50 p-2 rounded",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "je vend",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-orange-600 font-bold",
+                            children: "s"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "tu vend",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-orange-600 font-bold",
+                            children: "s"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "il vend",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-orange-600 font-bold",
+                            children: "—"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "nous vend",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-orange-600 font-bold",
+                            children: "ons"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "vous vend",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-orange-600 font-bold",
+                            children: "ez"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "ils vend",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-orange-600 font-bold",
+                            children: "ent"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "bg-gradient-to-r from-amber-50 to-yellow-50 p-6 rounded-xl border border-amber-200",
+        children: [
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-2xl font-bold text-amber-800 mb-4",
+            children: "\uD83D\uDC62 Systém bota"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            className: "text-gray-700 mb-4",
+            children: 'U některých sloves 1. třídy dochází ke změnám v základu. Tyto změny se týkají osob ve tvaru "boty":'
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "flex flex-wrap gap-6 items-center",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "bg-white p-4 rounded-lg shadow-sm",
+                children: /* @__PURE__ */ jsxDEV("div", {
+                  className: "grid grid-cols-2 gap-2 text-center font-mono",
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      className: "bg-amber-100 p-2 rounded font-bold",
+                      children: "je"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      className: "bg-gray-100 p-2 rounded opacity-50",
+                      children: "nous"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      className: "bg-amber-100 p-2 rounded font-bold",
+                      children: "tu"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      className: "bg-gray-100 p-2 rounded opacity-50",
+                      children: "vous"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      className: "bg-amber-100 p-2 rounded font-bold",
+                      children: "il/elle"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      className: "bg-amber-100 p-2 rounded font-bold",
+                      children: "ils/elles"
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "flex-1 space-y-2",
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "bg-white p-3 rounded-lg",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "font-bold text-amber-700",
+                        children: "acheter:"
+                      }, undefined, false, undefined, this),
+                      " e → è (j'ach",
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "text-red-600 font-bold",
+                        children: "è"
+                      }, undefined, false, undefined, this),
+                      "te)"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "bg-white p-3 rounded-lg",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "font-bold text-amber-700",
+                        children: "payer:"
+                      }, undefined, false, undefined, this),
+                      " y → i (je pa",
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "text-red-600 font-bold",
+                        children: "i"
+                      }, undefined, false, undefined, this),
+                      "e)"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "bg-white p-3 rounded-lg",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "font-bold text-amber-700",
+                        children: "manger:"
+                      }, undefined, false, undefined, this),
+                      " nous mang",
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "text-red-600 font-bold",
+                        children: "e"
+                      }, undefined, false, undefined, this),
+                      "ons (vložené e)"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "bg-gradient-to-r from-rose-50 to-pink-50 p-6 rounded-xl border border-rose-200",
+        children: [
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-2xl font-bold text-rose-800 mb-4",
+            children: "⚡ Imperativ (rozkazovací způsob)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            className: "text-gray-700 mb-4",
+            children: [
+              "Imperativ má pouze 3 osoby: tu, nous, vous. U sloves 1. třídy se v osobě tu ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "vypouští -s"
+              }, undefined, false, undefined, this),
+              "!"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "grid md:grid-cols-2 gap-4",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "bg-white p-4 rounded-lg",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h4", {
+                    className: "font-bold mb-2",
+                    children: "1. třída (parler):"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "font-mono text-sm",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "Parl",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-rose-600 font-bold",
+                            children: "e"
+                          }, undefined, false, undefined, this),
+                          " ! (ty)"
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "Parl",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-rose-600 font-bold",
+                            children: "ons"
+                          }, undefined, false, undefined, this),
+                          " ! (my)"
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "Parl",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-rose-600 font-bold",
+                            children: "ez"
+                          }, undefined, false, undefined, this),
+                          " ! (vy)"
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "bg-white p-4 rounded-lg",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h4", {
+                    className: "font-bold mb-2",
+                    children: "2. třída (finir):"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "font-mono text-sm",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "Fini",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-rose-600 font-bold",
+                            children: "s"
+                          }, undefined, false, undefined, this),
+                          " ! (ty)"
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "Finiss",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-rose-600 font-bold",
+                            children: "ons"
+                          }, undefined, false, undefined, this),
+                          " ! (my)"
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          "Finiss",
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-rose-600 font-bold",
+                            children: "ez"
+                          }, undefined, false, undefined, this),
+                          " ! (vy)"
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "mt-4 bg-rose-100 p-3 rounded-lg",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                className: "font-bold",
+                children: "⚠️ Pozor:"
+              }, undefined, false, undefined, this),
+              " avoir → aie, ayons, ayez | être → sois, soyons, soyez | pouvoir nemá imperativ!"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "bg-gradient-to-r from-violet-50 to-purple-50 p-6 rounded-xl border border-violet-200",
+        children: [
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-2xl font-bold text-violet-800 mb-4",
+            children: "\uD83C\uDFAF Důležité výjimky"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "bg-white p-4 rounded-lg",
+            children: [
+              /* @__PURE__ */ jsxDEV("p", {
+                className: "font-bold text-violet-700 mb-2",
+                children: "Slovesa s koncovkou -es v osobě vous:"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "flex gap-4 font-mono text-lg",
+                children: [
+                  /* @__PURE__ */ jsxDEV("span", {
+                    className: "bg-violet-100 px-3 py-1 rounded",
+                    children: [
+                      "vous ",
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "text-violet-600 font-bold",
+                        children: "êtes"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    className: "bg-violet-100 px-3 py-1 rounded",
+                    children: [
+                      "vous ",
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "text-violet-600 font-bold",
+                        children: "faites"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    className: "bg-violet-100 px-3 py-1 rounded",
+                    children: [
+                      "vous ",
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "text-violet-600 font-bold",
+                        children: "dites"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                className: "text-sm text-gray-600 mt-2",
+                children: "Tato koncovka se nevyslovuje!"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+  const VerbsTab = () => /* @__PURE__ */ jsxDEV("div", {
+    className: "space-y-4",
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "flex flex-wrap gap-2 mb-4",
+        children: verbs.map((verb) => /* @__PURE__ */ jsxDEV("button", {
+          onClick: () => {
+            setSelectedVerb(verb);
+            markAsStudied(verb);
+          },
+          className: `px-3 py-2 rounded-lg font-medium transition-all ${selectedVerb === verb ? "bg-blue-600 text-white shadow-lg" : studiedVerbs.includes(verb) ? "bg-green-100 text-green-800 hover:bg-green-200" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`,
+          children: [
+            verb,
+            " ",
+            studiedVerbs.includes(verb) && "✓"
+          ]
+        }, verb, true, undefined, this))
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "text-sm text-gray-600 mb-4",
+        children: [
+          "Prostudováno: ",
+          studiedVerbs.length,
+          "/",
+          verbs.length,
+          " sloves",
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "w-full bg-gray-200 rounded-full h-2 mt-1",
+            children: /* @__PURE__ */ jsxDEV("div", {
+              className: "bg-green-500 h-2 rounded-full transition-all",
+              style: { width: `${studiedVerbs.length / verbs.length * 100}%` }
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      selectedVerb && /* @__PURE__ */ jsxDEV("div", {
+        className: "bg-white rounded-xl shadow-lg overflow-hidden",
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white",
+            children: [
+              /* @__PURE__ */ jsxDEV("h2", {
+                className: "text-3xl font-bold",
+                children: selectedVerb
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                className: "text-blue-100 text-lg",
+                children: verbData[selectedVerb].meaning
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                className: "inline-block mt-2 px-3 py-1 bg-white/20 rounded-full text-sm",
+                children: verbData[selectedVerb].type
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "p-6 grid md:grid-cols-2 gap-6",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("h3", {
+                    className: "text-lg font-bold text-gray-800 mb-3 flex items-center gap-2",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600",
+                        children: "P"
+                      }, undefined, false, undefined, this),
+                      "Přítomný čas (Présent)"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "bg-gray-50 rounded-lg overflow-hidden",
+                    children: pronouns.map((pronoun, i) => /* @__PURE__ */ jsxDEV("div", {
+                      className: `flex justify-between p-3 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`,
+                      children: [
+                        /* @__PURE__ */ jsxDEV("span", {
+                          className: "text-gray-600",
+                          children: pronoun
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("span", {
+                          className: "font-mono font-bold text-blue-700",
+                          children: pronoun === "je" && verbData[selectedVerb].present[i].match(/^[aeiouéèêë]/i) ? `j'${verbData[selectedVerb].present[i]}` : verbData[selectedVerb].present[i]
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, i, true, undefined, this))
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("h3", {
+                    className: "text-lg font-bold text-gray-800 mb-3 flex items-center gap-2",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "w-8 h-8 bg-rose-100 rounded-full flex items-center justify-center text-rose-600",
+                        children: "I"
+                      }, undefined, false, undefined, this),
+                      "Imperativ (Impératif)"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "bg-gray-50 rounded-lg overflow-hidden",
+                    children: imperativePronouns.map((pronoun, i) => /* @__PURE__ */ jsxDEV("div", {
+                      className: `flex justify-between p-3 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`,
+                      children: [
+                        /* @__PURE__ */ jsxDEV("span", {
+                          className: "text-gray-600",
+                          children: pronoun
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("span", {
+                          className: `font-mono font-bold ${verbData[selectedVerb].imperative[i] === "—" ? "text-gray-400" : "text-rose-700"}`,
+                          children: verbData[selectedVerb].imperative[i]
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, i, true, undefined, this))
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "px-6 pb-6",
+            children: /* @__PURE__ */ jsxDEV("div", {
+              className: "bg-amber-50 border border-amber-200 rounded-lg p-4",
+              children: [
+                /* @__PURE__ */ jsxDEV("span", {
+                  className: "font-bold text-amber-800",
+                  children: "\uD83D\uDCA1 Poznámka:"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("p", {
+                  className: "text-amber-900 mt-1",
+                  children: verbData[selectedVerb].notes
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+  const PracticeTab = () => /* @__PURE__ */ jsxDEV("div", {
+    className: "space-y-6",
+    children: /* @__PURE__ */ jsxDEV("div", {
+      className: "bg-white rounded-xl shadow-lg p-6",
+      children: [
+        /* @__PURE__ */ jsxDEV("h2", {
+          className: "text-2xl font-bold text-gray-800 mb-4",
+          children: "\uD83C\uDFAF Procvičování"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("div", {
+          className: "flex gap-4 mb-6",
+          children: [
+            /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => setQuizMode("present"),
+              className: `flex-1 py-3 rounded-lg font-medium transition-all ${quizMode === "present" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`,
+              children: "Přítomný čas"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => setQuizMode("imperative"),
+              className: `flex-1 py-3 rounded-lg font-medium transition-all ${quizMode === "imperative" ? "bg-rose-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`,
+              children: "Imperativ"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("div", {
+          className: "text-center mb-4",
+          children: [
+            /* @__PURE__ */ jsxDEV("span", {
+              className: "text-lg",
+              children: "Skóre: "
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("span", {
+              className: "text-2xl font-bold text-green-600",
+              children: score.correct
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("span", {
+              className: "text-gray-500",
+              children: [
+                " / ",
+                score.total
+              ]
+            }, undefined, true, undefined, this),
+            score.total > 0 && /* @__PURE__ */ jsxDEV("span", {
+              className: "ml-2 text-gray-600",
+              children: [
+                "(",
+                Math.round(score.correct / score.total * 100),
+                "%)"
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        !currentQuestion ? /* @__PURE__ */ jsxDEV("button", {
+          onClick: startQuiz,
+          className: "w-full py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg font-bold text-lg hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg",
+          children: "Začít procvičovat"
+        }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("div", {
+          className: "space-y-4",
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "bg-gray-50 rounded-lg p-6 text-center",
+              children: [
+                /* @__PURE__ */ jsxDEV("p", {
+                  className: "text-gray-600 mb-2",
+                  children: currentQuestion.mode === "present" ? "Doplň přítomný čas:" : "Doplň imperativ:"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("p", {
+                  className: "text-3xl font-bold text-gray-800",
+                  children: [
+                    /* @__PURE__ */ jsxDEV("span", {
+                      className: "text-blue-600",
+                      children: currentQuestion.pronoun
+                    }, undefined, false, undefined, this),
+                    " ",
+                    /* @__PURE__ */ jsxDEV("span", {
+                      className: "text-purple-600",
+                      children: [
+                        "(",
+                        currentQuestion.verb,
+                        ")"
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("p", {
+                  className: "text-sm text-gray-500 mt-2",
+                  children: verbData[currentQuestion.verb].meaning
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            showHint && /* @__PURE__ */ jsxDEV("div", {
+              className: "bg-amber-50 border border-amber-200 rounded-lg p-3 text-center",
+              children: /* @__PURE__ */ jsxDEV("p", {
+                className: "text-amber-800",
+                children: [
+                  "\uD83D\uDCA1 Typ: ",
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: verbData[currentQuestion.verb].type
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "flex gap-2",
+              children: [
+                /* @__PURE__ */ jsxDEV("input", {
+                  type: "text",
+                  value: userAnswer,
+                  onChange: (e) => setUserAnswer(e.target.value),
+                  onKeyPress: (e) => e.key === "Enter" && !feedback && checkAnswer(),
+                  placeholder: "Napiš odpověď...",
+                  className: "flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-lg",
+                  disabled: feedback !== null,
+                  autoFocus: true
+                }, undefined, false, undefined, this),
+                !feedback && /* @__PURE__ */ jsxDEV("button", {
+                  onClick: () => setShowHint(!showHint),
+                  className: "px-4 py-3 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200",
+                  children: "\uD83D\uDCA1"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            feedback ? /* @__PURE__ */ jsxDEV("div", {
+              className: `p-4 rounded-lg ${feedback.correct ? "bg-green-100 border border-green-300" : "bg-red-100 border border-red-300"}`,
+              children: [
+                /* @__PURE__ */ jsxDEV("p", {
+                  className: `font-bold text-lg ${feedback.correct ? "text-green-700" : "text-red-700"}`,
+                  children: feedback.correct ? "✅ Správně!" : "❌ Špatně!"
+                }, undefined, false, undefined, this),
+                !feedback.correct && /* @__PURE__ */ jsxDEV("p", {
+                  className: "text-red-600 mt-1",
+                  children: [
+                    "Správná odpověď: ",
+                    /* @__PURE__ */ jsxDEV("strong", {
+                      children: feedback.correctAnswer
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("button", {
+                  onClick: startQuiz,
+                  className: "mt-3 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700",
+                  children: "Další otázka →"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+              onClick: checkAnswer,
+              className: "w-full py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700",
+              children: "Zkontrolovat"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  }, undefined, false, undefined, this);
+  const TestTab = () => /* @__PURE__ */ jsxDEV("div", {
+    className: "space-y-6",
+    children: /* @__PURE__ */ jsxDEV("div", {
+      className: "bg-white rounded-xl shadow-lg p-6",
+      children: [
+        /* @__PURE__ */ jsxDEV("h2", {
+          className: "text-2xl font-bold text-gray-800 mb-4",
+          children: "\uD83D\uDCDD Test"
+        }, undefined, false, undefined, this),
+        testQuestions.length === 0 ? /* @__PURE__ */ jsxDEV("div", {
+          className: "text-center py-8",
+          children: [
+            /* @__PURE__ */ jsxDEV("p", {
+              className: "text-gray-600 mb-4",
+              children: "Test obsahuje 20 náhodných otázek z přítomného času a imperativu všech sloves."
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("button", {
+              onClick: startTest,
+              className: "px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-bold text-lg hover:from-purple-700 hover:to-indigo-700 shadow-lg",
+              children: "Zahájit test"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this) : testFinished ? /* @__PURE__ */ jsxDEV("div", {
+          className: "text-center py-8",
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "text-6xl mb-4",
+              children: testScore / testQuestions.length >= 0.9 ? "\uD83C\uDFC6" : testScore / testQuestions.length >= 0.7 ? "\uD83D\uDC4D" : testScore / testQuestions.length >= 0.5 ? "\uD83D\uDCDA" : "\uD83D\uDCAA"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("h3", {
+              className: "text-3xl font-bold text-gray-800",
+              children: [
+                testScore,
+                " / ",
+                testQuestions.length
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("p", {
+              className: "text-xl text-gray-600 mt-2",
+              children: [
+                Math.round(testScore / testQuestions.length * 100),
+                "%"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("p", {
+              className: "text-gray-500 mt-2",
+              children: testScore / testQuestions.length >= 0.9 ? "Výborně! Skvěle ovládáš časování!" : testScore / testQuestions.length >= 0.7 ? "Dobrá práce! Ještě trochu procvičuj." : testScore / testQuestions.length >= 0.5 ? "Jde to, ale potřebuješ více praxe." : "Nevzdávej to! Vrať se ke studiu a zkus to znovu."
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "mt-6 text-left max-h-60 overflow-y-auto bg-gray-50 rounded-lg p-4",
+              children: [
+                /* @__PURE__ */ jsxDEV("h4", {
+                  className: "font-bold mb-2",
+                  children: "Přehled odpovědí:"
+                }, undefined, false, undefined, this),
+                testAnswers.map((answer, i) => /* @__PURE__ */ jsxDEV("div", {
+                  className: `p-2 rounded mb-1 ${answer.isCorrect ? "bg-green-100" : "bg-red-100"}`,
+                  children: /* @__PURE__ */ jsxDEV("span", {
+                    className: answer.isCorrect ? "text-green-700" : "text-red-700",
+                    children: [
+                      answer.isCorrect ? "✓" : "✗",
+                      " ",
+                      answer.pronoun,
+                      " ",
+                      answer.verb,
+                      ":",
+                      " ",
+                      answer.isCorrect ? answer.correctAnswer : `${answer.userAnswer} → ${answer.correctAnswer}`
+                    ]
+                  }, undefined, true, undefined, this)
+                }, i, false, undefined, this))
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("button", {
+              onClick: startTest,
+              className: "mt-6 px-8 py-3 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700",
+              children: "Nový test"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this) : /* @__PURE__ */ jsxDEV("div", {
+          className: "space-y-4",
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "flex justify-between items-center mb-4",
+              children: [
+                /* @__PURE__ */ jsxDEV("span", {
+                  className: "text-gray-600",
+                  children: [
+                    "Otázka ",
+                    testIndex + 1,
+                    " / ",
+                    testQuestions.length
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("span", {
+                  className: "text-green-600 font-bold",
+                  children: [
+                    "Správně: ",
+                    testScore
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "w-full bg-gray-200 rounded-full h-2",
+              children: /* @__PURE__ */ jsxDEV("div", {
+                className: "bg-purple-500 h-2 rounded-full transition-all",
+                style: { width: `${testIndex / testQuestions.length * 100}%` }
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "bg-gray-50 rounded-lg p-6 text-center",
+              children: [
+                /* @__PURE__ */ jsxDEV("p", {
+                  className: "text-gray-600 mb-2",
+                  children: testQuestions[testIndex].mode === "present" ? "Přítomný čas:" : "Imperativ:"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("p", {
+                  className: "text-3xl font-bold text-gray-800",
+                  children: [
+                    /* @__PURE__ */ jsxDEV("span", {
+                      className: "text-blue-600",
+                      children: testQuestions[testIndex].pronoun
+                    }, undefined, false, undefined, this),
+                    " ",
+                    /* @__PURE__ */ jsxDEV("span", {
+                      className: "text-purple-600",
+                      children: [
+                        "(",
+                        testQuestions[testIndex].verb,
+                        ")"
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("p", {
+                  className: "text-sm text-gray-500 mt-2",
+                  children: verbData[testQuestions[testIndex].verb].meaning
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("input", {
+              type: "text",
+              value: userAnswer,
+              onChange: (e) => setUserAnswer(e.target.value),
+              onKeyPress: (e) => e.key === "Enter" && submitTestAnswer(),
+              placeholder: "Napiš odpověď...",
+              className: "w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none text-lg",
+              autoFocus: true
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("button", {
+              onClick: submitTestAnswer,
+              className: "w-full py-3 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700",
+              children: testIndex + 1 < testQuestions.length ? "Další otázka →" : "Dokončit test"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  }, undefined, false, undefined, this);
+  const tabs = [
+    { id: "theory", label: "\uD83D\uDCDA Teorie", component: TheoryTab },
+    { id: "verbs", label: "\uD83D\uDCD6 Slovesa", component: VerbsTab },
+    { id: "practice", label: "\uD83C\uDFAF Procvičování", component: PracticeTab },
+    { id: "test", label: "\uD83D\uDCDD Test", component: TestTab }
+  ];
+  const ActiveComponent = tabs.find((t) => t.id === activeTab)?.component || TheoryTab;
+  return /* @__PURE__ */ jsxDEV("div", {
+    className: "min-h-screen bg-gradient-to-br from-slate-100 to-blue-50 p-4",
+    children: /* @__PURE__ */ jsxDEV("div", {
+      className: "max-w-4xl mx-auto",
+      children: [
+        /* @__PURE__ */ jsxDEV("header", {
+          className: "text-center mb-6",
+          children: [
+            /* @__PURE__ */ jsxDEV("h1", {
+              className: "text-3xl font-bold text-gray-800 mb-2",
+              children: "\uD83C\uDDEB\uD83C\uDDF7 Francouzská slovesa"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("p", {
+              className: "text-gray-600",
+              children: "Časování v přítomném čase a imperativu"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("nav", {
+          className: "flex gap-2 mb-6 bg-white rounded-xl p-2 shadow-md overflow-x-auto",
+          children: tabs.map((tab) => /* @__PURE__ */ jsxDEV("button", {
+            onClick: () => setActiveTab(tab.id),
+            className: `flex-1 min-w-max px-4 py-3 rounded-lg font-medium transition-all ${activeTab === tab.id ? "bg-blue-600 text-white shadow-lg" : "text-gray-600 hover:bg-gray-100"}`,
+            children: tab.label
+          }, tab.id, false, undefined, this))
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(ActiveComponent, {}, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  }, undefined, false, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
