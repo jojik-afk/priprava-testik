@@ -396,35 +396,91 @@ export default function App() {
   }
 
   if (mode === 'vocabulary') {
+    // Group verbs by infinitive for table display
+    const verbGroups = {};
+    const verbCategory = "Passé composé - slovesa";
+    if (vocabulary[verbCategory]) {
+      vocabulary[verbCategory].forEach(word => {
+        const verbName = word.fr.split(' → ')[0];
+        if (!verbGroups[verbName]) {
+          verbGroups[verbName] = [];
+        }
+        verbGroups[verbName].push(word);
+      });
+    }
+
+    const renderVerbTable = (verbName, conjugations) => {
+      const persons = ['je/j\'', 'tu', 'il/elle', 'nous', 'vous', 'ils/elles'];
+      return (
+        <div key={verbName} className="mb-4 overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-purple-100">
+                <th className="border border-purple-200 p-2 text-left font-bold text-purple-800" colSpan={2}>
+                  {verbName} {conjugations[0]?.hint}
+                </th>
+              </tr>
+              <tr className="bg-purple-50">
+                <th className="border border-purple-200 p-2 text-left text-purple-700 w-1/2">Francouzsky</th>
+                <th className="border border-purple-200 p-2 text-left text-purple-700 w-1/2">Česky</th>
+              </tr>
+            </thead>
+            <tbody>
+              {conjugations.map((conj, i) => (
+                <tr key={i} className="hover:bg-purple-50">
+                  <td className="border border-purple-200 p-2 font-medium text-purple-700">
+                    {conj.fr.split(' → ')[1]}
+                  </td>
+                  <td className="border border-purple-200 p-2 text-gray-600">
+                    {conj.cz.split(' → ')[1]}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    };
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-6">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-2xl font-bold text-purple-700 mb-6">📖 Přehled slovíček</h2>
-          
+
           {Object.entries(vocabulary).map(([category, words]) => (
             <div key={category} className="mb-6 bg-white rounded-xl shadow-sm overflow-hidden">
               <h3 className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-3 font-semibold">
                 {category}
               </h3>
-              <div className="divide-y">
-                {words.map((word, i) => (
-                  <div key={i} className="p-3 flex items-center justify-between hover:bg-purple-50">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{word.hint}</span>
-                      <div>
-                        <p className="font-semibold text-purple-700">{word.fr}</p>
-                        <p className="text-gray-600">{word.cz}</p>
-                      </div>
-                    </div>
-                    {learnedWords.has(word.fr) && (
-                      <span className="text-green-500 text-xl">✓</span>
+              {category === verbCategory ? (
+                <div className="p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {Object.entries(verbGroups).map(([verbName, conjugations]) =>
+                      renderVerbTable(verbName, conjugations)
                     )}
                   </div>
-                ))}
-              </div>
+                </div>
+              ) : (
+                <div className="divide-y">
+                  {words.map((word, i) => (
+                    <div key={i} className="p-3 flex items-center justify-between hover:bg-purple-50">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{word.hint}</span>
+                        <div>
+                          <p className="font-semibold text-purple-700">{word.fr}</p>
+                          <p className="text-gray-600">{word.cz}</p>
+                        </div>
+                      </div>
+                      {learnedWords.has(word.fr) && (
+                        <span className="text-green-500 text-xl">✓</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
-          
+
           <button
             onClick={() => setMode('menu')}
             className="w-full p-4 rounded-xl bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300"

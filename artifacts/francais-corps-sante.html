@@ -419,6 +419,72 @@ function App() {
     }, undefined, false, undefined, this);
   }
   if (mode === "vocabulary") {
+    const verbGroups = {};
+    const verbCategory = "Passé composé - slovesa";
+    if (vocabulary[verbCategory]) {
+      vocabulary[verbCategory].forEach((word) => {
+        const verbName = word.fr.split(" → ")[0];
+        if (!verbGroups[verbName]) {
+          verbGroups[verbName] = [];
+        }
+        verbGroups[verbName].push(word);
+      });
+    }
+    const renderVerbTable = (verbName, conjugations) => {
+      const persons = ["je/j'", "tu", "il/elle", "nous", "vous", "ils/elles"];
+      return /* @__PURE__ */ jsxDEV("div", {
+        className: "mb-4 overflow-x-auto",
+        children: /* @__PURE__ */ jsxDEV("table", {
+          className: "w-full border-collapse",
+          children: [
+            /* @__PURE__ */ jsxDEV("thead", {
+              children: [
+                /* @__PURE__ */ jsxDEV("tr", {
+                  className: "bg-purple-100",
+                  children: /* @__PURE__ */ jsxDEV("th", {
+                    className: "border border-purple-200 p-2 text-left font-bold text-purple-800",
+                    colSpan: 2,
+                    children: [
+                      verbName,
+                      " ",
+                      conjugations[0]?.hint
+                    ]
+                  }, undefined, true, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("tr", {
+                  className: "bg-purple-50",
+                  children: [
+                    /* @__PURE__ */ jsxDEV("th", {
+                      className: "border border-purple-200 p-2 text-left text-purple-700 w-1/2",
+                      children: "Francouzsky"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("th", {
+                      className: "border border-purple-200 p-2 text-left text-purple-700 w-1/2",
+                      children: "Česky"
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("tbody", {
+              children: conjugations.map((conj, i) => /* @__PURE__ */ jsxDEV("tr", {
+                className: "hover:bg-purple-50",
+                children: [
+                  /* @__PURE__ */ jsxDEV("td", {
+                    className: "border border-purple-200 p-2 font-medium text-purple-700",
+                    children: conj.fr.split(" → ")[1]
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("td", {
+                    className: "border border-purple-200 p-2 text-gray-600",
+                    children: conj.cz.split(" → ")[1]
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this))
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, verbName, false, undefined, this);
+    };
     return /* @__PURE__ */ jsxDEV("div", {
       className: "min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-6",
       children: /* @__PURE__ */ jsxDEV("div", {
@@ -435,7 +501,13 @@ function App() {
                 className: "bg-gradient-to-r from-purple-500 to-pink-500 text-white p-3 font-semibold",
                 children: category
               }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV("div", {
+              category === verbCategory ? /* @__PURE__ */ jsxDEV("div", {
+                className: "p-4",
+                children: /* @__PURE__ */ jsxDEV("div", {
+                  className: "grid grid-cols-1 md:grid-cols-2 gap-4",
+                  children: Object.entries(verbGroups).map(([verbName, conjugations]) => renderVerbTable(verbName, conjugations))
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("div", {
                 className: "divide-y",
                 children: words.map((word, i) => /* @__PURE__ */ jsxDEV("div", {
                   className: "p-3 flex items-center justify-between hover:bg-purple-50",
