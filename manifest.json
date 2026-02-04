@@ -1,5 +1,21 @@
 [
   {
+    "title": "Biologie - Mlži a hlavonožci",
+    "subject": "Science",
+    "topic": "Biology",
+    "template": "quiz",
+    "date": "2026-02-04",
+    "file": "artifacts/biologie-mlzi-hlavonozci.html"
+  },
+  {
+    "title": "Biologie - Plži",
+    "subject": "Science",
+    "topic": "Biology",
+    "template": "quiz",
+    "date": "2026-02-04",
+    "file": "artifacts/biologie-plzi.html"
+  },
+  {
     "title": "Dějepis - První světová válka",
     "subject": "History",
     "topic": "WWI",

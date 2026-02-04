@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biologie - Plži</title>
+    <meta name="subject" content="Science">
+    <meta name="topic" content="Biology">
+    <meta name="template" content="quiz">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/biologie-plzi.jsx
+import React, { useState, useEffect } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+var testData = [
+  {
+    id: 1,
+    question: "Tělo plžů se člení na:",
+    options: [
+      { letter: "a", text: "Hlavu, nohu a útrobní vak", correct: true },
+      { letter: "b", text: "Hlavohruď a plášť", correct: false },
+      { letter: "c", text: "Lasturu, útrobní vak a hlavu", correct: false },
+      { letter: "d", text: "Svalnatou nohu, hlavu, ulitu", correct: false }
+    ],
+    explanation: "Tělo plžů se skládá ze tří základních částí: hlavy (obsahuje smyslové orgány a ústní otvor s radulou), nohy (svalnatý orgán sloužící k pohybu) a útrobního vaku (obsahuje vnitřní orgány a je krytý ulitou). Hlavohruď je typická pro korýše, ne pro měkkýše.",
+    tip: "Zapamatuj si: Hlava → Noha → Útrobní vak = HNU (jako 'hnu se')"
+  },
+  {
+    id: 2,
+    question: "Ulita je produkována:",
+    options: [
+      { letter: "a", text: "Nohou", correct: false },
+      { letter: "b", text: "Hlavou", correct: false },
+      { letter: "c", text: "Pláštěm", correct: true },
+      { letter: "d", text: "Radulou", correct: false }
+    ],
+    explanation: "Plášť je kožní záhyb, který pokrývá útrobní vak a produkuje vápenatou ulitu. Buňky pláště vylučují uhličitan vápenatý (CaCO₃), který tvoří schránku. Noha slouží k pohybu, hlava obsahuje smysly a radula je struhadlo na potravu.",
+    tip: "Plášť = 'továrna na ulitu'. Vylučuje vápník → vzniká schránka."
+  },
+  {
+    id: 3,
+    question: "Vnitřní orgány plžů jsou umístěny:",
+    options: [
+      { letter: "a", text: "V plášťové dutině", correct: false },
+      { letter: "b", text: "V útrobním vaku", correct: true },
+      { letter: "c", text: "V osrdečníku", correct: false },
+      { letter: "d", text: "V kloace", correct: false }
+    ],
+    explanation: "Útrobní vak (viscerální hmota) obsahuje většinu vnitřních orgánů: trávicí soustavu, vylučovací orgány, pohlavní žlázy a část nervové soustavy. Plášťová dutina je prostor mezi pláštěm a tělem, kde jsou žábry. Osrdečník je pouze obal srdce, kloaka je vyústění u obratlovců.",
+    tip: "Útrobní vak = 'batoh s orgány' schovaný v ulitě."
+  },
+  {
+    id: 4,
+    question: "Dýchacím ústrojím plžů mohou být:",
+    options: [
+      { letter: "a", text: "Žábry", correct: true },
+      { letter: "b", text: "Ulita", correct: false },
+      { letter: "c", text: "Prokrvená stěna plášťové dutiny", correct: true },
+      { letter: "d", text: "Spodní strana nohy", correct: false }
+    ],
+    multipleCorrect: true,
+    explanation: "Plži mají dva typy dýchání: Vodní plži (předožábří) dýchají žábrami. Suchozemští a někteří sladkovodní plži (plicnatí) dýchají prokrvenou stěnou plášťové dutiny, která funguje jako primitivní plíce. Ulita je ochranná schránka, nedýchá se jí!",
+    tip: "Vodní = žábry \uD83D\uDC1F | Suchozemští = 'plicní vak' (plášťová dutina) \uD83D\uDC0C"
+  },
+  {
+    id: 5,
+    question: "Cévní soustava plžů:",
+    options: [
+      { letter: "a", text: "Je otevřená", correct: true },
+      { letter: "b", text: "Je uzavřená", correct: false },
+      { letter: "c", text: "Mají srdce", correct: true },
+      { letter: "d", text: "Ještě nemají vytvořené srdce", correct: false }
+    ],
+    multipleCorrect: true,
+    explanation: "Plži mají OTEVŘENOU cévní soustavu – krev (hemolymfa) volně omývá orgány v tělních dutinách (není stále v cévách). Přesto MAJÍ srdce (obvykle s jednou komorou a 1–2 předsíněmi), které hemolymfu pumpuje. Uzavřenou soustavu mají hlavonožci.",
+    tip: "Otevřená soustava + srdce = krev teče 'volně', ale srdce ji pumpuje."
+  },
+  {
+    id: 6,
+    question: "Radula je:",
+    options: [
+      { letter: "a", text: "Forma nervové soustavy hlemýždě", correct: false },
+      { letter: "b", text: "Chitinová pilníkovitá páska v ústech plžů", correct: true },
+      { letter: "c", text: "Slouží k rozmnožování", correct: false },
+      { letter: "d", text: "Slouží k strouhání potravy", correct: true }
+    ],
+    multipleCorrect: true,
+    explanation: "Radula je chitinový pásek pokrytý drobnými zoubky (jako pilník nebo struhadlo). Nachází se v ústech plžů a slouží ke strouhání a rozmělňování potravy – především řas a rostlinných pletiv. Není to nervová soustava ani rozmnožovací orgán!",
+    tip: "Radula = 'struhadlo na sýr' v puse šneka \uD83E\uDDC0"
+  },
+  {
+    id: 7,
+    question: "Okružák ploský je:",
+    options: [
+      { letter: "a", text: "Předožábrý plž", correct: false },
+      { letter: "b", text: "Sladkovodní mlž", correct: false },
+      { letter: "c", text: "Plicnatý vodní plž", correct: true },
+      { letter: "d", text: "Fosilní suchozemský plž", correct: false }
+    ],
+    explanation: "Okružák ploský (Planorbarius corneus) je PLICNATÝ plž, který žije ve sladké vodě. I když žije ve vodě, dýchá vzduchem pomocí plášťové dutiny – musí se vynořovat k hladině. Má charakteristickou plochou, spirálovitě stočenou ulitu. Není to mlž (ti mají dvě lastury)!",
+    tip: "Okružák = vodní, ale PLICNATÝ (vynoří se nadechnout). Plochá ulita jako 'kroužek'."
+  },
+  {
+    id: 8,
+    question: "Pojmenuj plže na obrázcích (přiřazení):",
+    isImageQuestion: true,
+    images: [
+      { id: 1, name: "Plovatka bahenní", description: "Protáhlá špičatá ulita, vodní plicnatý plž" },
+      { id: 2, name: "Bahenka živorodá", description: "Kuželovitá ulita s víčkem, předožábrý vodní plž" },
+      { id: 3, name: "Okružák ploský", description: "Plochá spirálovitá ulita, plicnatý vodní plž" },
+      { id: 4, name: "Páskovka keřová", description: "Kulovitá ulita s pruhy, suchozemský plicnatý plž" }
+    ],
+    explanation: "Každý druh má charakteristický tvar ulity: Plovatka má protáhlou špičatou ulitu a žije v rybnících. Bahenka má kuželovitou ulitu s víčkem (operculum) a je živorodá. Okružák má plochou spirálu. Páskovka má kulovitou ulitu s barevnými pruhy."
+  }
+];
+var snailSpecies = [
+  {
+    name: "Plovatka bahenní",
+    latin: "Lymnaea stagnalis",
+    type: "Plicnatý vodní plž",
+    habitat: "Stojaté a pomalu tekoucí vody",
+    shell: "Protáhlá, špičatá, pravotočivá",
+    size: "4–6 cm",
+    features: "Největší evropský sladkovodní plž, dýchá plícemi"
+  },
+  {
+    name: "Bahenka živorodá",
+    latin: "Viviparus viviparus",
+    type: "Předožábrý vodní plž",
+    habitat: "Řeky, rybníky, jezera",
+    shell: "Kuželovitá s víčkem (operculum)",
+    size: "3–4 cm",
+    features: "Živorodá (rodí živá mláďata), dýchá žábrami"
+  },
+  {
+    name: "Okružák ploský",
+    latin: "Planorbarius corneus",
+    type: "Plicnatý vodní plž",
+    habitat: "Stojaté vody s vegetací",
+    shell: "Plochá, spirálovitá, levotočivá",
+    size: "2–3 cm",
+    features: "Hemoglobin v krvi (červená krev), dýchá plícemi"
+  },
+  {
+    name: "Páskovka keřová",
+    latin: "Cepaea hortensis",
+    type: "Plicnatý suchozemský plž",
+    habitat: "Křoviny, zahrady, lesy",
+    shell: "Kulovitá s barevnými pruhy",
+    size: "1,5–2 cm",
+    features: "Variabilní zbarvení (polymorfismus), hermafrodit"
+  },
+  {
+    name: "Hlemýžď zahradní",
+    latin: "Helix pomatia",
+    type: "Plicnatý suchozemský plž",
+    habitat: "Lesy, zahrady, křoviny",
+    shell: "Velká kulovitá, hnědavá",
+    size: "4–5 cm",
+    features: "Největší český suchozemský plž, jedlý druh"
+  },
+  {
+    name: "Slimák popelavý",
+    latin: "Limax cinereus",
+    type: "Plicnatý suchozemský plž (nahý)",
+    habitat: "Vlhké lesy, sklepy",
+    shell: "Redukovaná (pod kůží)",
+    size: "10–20 cm",
+    features: "Nahý plž bez viditelné ulity, noční aktivita"
+  }
+];
+var anatomyTerms = [
+  { term: "Útrobní vak", definition: "Část těla obsahující vnitřní orgány, krytá ulitou" },
+  { term: "Plášť", definition: "Kožní záhyb produkující ulitu a ohraničující plášťovou dutinu" },
+  { term: "Plášťová dutina", definition: "Prostor mezi pláštěm a tělem, obsahuje dýchací orgány" },
+  { term: "Radula", definition: "Chitinové struhadlo v ústech pro rozmělňování potravy" },
+  { term: "Noha", definition: "Svalnatý orgán na spodní straně těla, slouží k pohybu" },
+  { term: "Ulita", definition: "Vápenatá schránka chránící měkké tělo, spirálovitě stočená" },
+  { term: "Operculum", definition: "Vápenité nebo rohové víčko uzavírající ústí ulity (u některých druhů)" },
+  { term: "Tykadla", definition: "Smyslové orgány na hlavě, obvykle 2 páry (oči na horních)" },
+  { term: "Hemolymfa", definition: "Tělní tekutina (krev) proudící v otevřené cévní soustavě" },
+  { term: "Hepatopankreas", definition: "Trávicí žláza (játra + slinivka v jednom orgánu)" }
+];
+function App() {
+  const [activeTab, setActiveTab] = useState("intro");
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [currentQuizQuestion, setCurrentQuizQuestion] = useState(0);
+  const [quizAnswers, setQuizAnswers] = useState({});
+  const [showQuizResults, setShowQuizResults] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [expandedCard, setExpandedCard] = useState(null);
+  const [particles, setParticles] = useState([]);
+  useEffect(() => {
+    const newParticles = Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 4 + 2,
+      duration: Math.random() * 20 + 10,
+      delay: Math.random() * 5
+    }));
+    setParticles(newParticles);
+  }, []);
+  const handleQuizAnswer = (questionId, optionLetter) => {
+    const question = testData.find((q) => q.id === questionId);
+    if (question.multipleCorrect) {
+      setSelectedAnswers((prev) => {
+        if (prev.includes(optionLetter)) {
+          return prev.filter((l) => l !== optionLetter);
+        }
+        return [...prev, optionLetter];
+      });
+    } else {
+      setQuizAnswers((prev) => ({ ...prev, [questionId]: optionLetter }));
+      setTimeout(() => {
+        if (currentQuizQuestion < testData.length - 1) {
+          setCurrentQuizQuestion((prev) => prev + 1);
+          setSelectedAnswers([]);
+        } else {
+          setShowQuizResults(true);
+        }
+      }, 800);
+    }
+  };
+  const confirmMultipleAnswer = (questionId) => {
+    setQuizAnswers((prev) => ({ ...prev, [questionId]: selectedAnswers }));
+    setTimeout(() => {
+      if (currentQuizQuestion < testData.length - 1) {
+        setCurrentQuizQuestion((prev) => prev + 1);
+        setSelectedAnswers([]);
+      } else {
+        setShowQuizResults(true);
+      }
+    }, 500);
+  };
+  const calculateScore = () => {
+    let correct = 0;
+    testData.forEach((question) => {
+      if (question.isImageQuestion) {
+        correct += 1;
+        return;
+      }
+      const userAnswer = quizAnswers[question.id];
+      if (question.multipleCorrect) {
+        const correctOptions = question.options.filter((o) => o.correct).map((o) => o.letter);
+        if (Array.isArray(userAnswer) && userAnswer.length === correctOptions.length && userAnswer.every((a) => correctOptions.includes(a))) {
+          correct++;
+        }
+      } else {
+        const correctOption = question.options.find((o) => o.correct);
+        if (userAnswer === correctOption?.letter) {
+          correct++;
+        }
+      }
+    });
+    return correct;
+  };
+  const resetQuiz = () => {
+    setQuizStarted(false);
+    setCurrentQuizQuestion(0);
+    setQuizAnswers({});
+    setShowQuizResults(false);
+    setSelectedAnswers([]);
+  };
+  const GlassCard = ({ children, className = "", onClick = null, hover = true }) => /* @__PURE__ */ jsxDEV("div", {
+    onClick,
+    className: `
+        relative backdrop-blur-xl bg-white/10 
+        border border-white/20 rounded-2xl
+        shadow-[0_8px_32px_rgba(0,0,0,0.12)]
+        ${hover ? "hover:bg-white/15 hover:border-white/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:scale-[1.02]" : ""}
+        transition-all duration-300 ease-out
+        ${onClick ? "cursor-pointer" : ""}
+        ${className}
+      `,
+    children
+  }, undefined, false, undefined, this);
+  const TabButton = ({ id, label, icon }) => /* @__PURE__ */ jsxDEV("button", {
+    onClick: () => setActiveTab(id),
+    className: `
+        relative px-4 py-3 rounded-xl font-medium text-sm
+        transition-all duration-300 ease-out
+        ${activeTab === id ? "bg-white/20 text-white shadow-lg border border-white/30" : "text-white/70 hover:text-white hover:bg-white/10"}
+      `,
+    children: [
+      /* @__PURE__ */ jsxDEV("span", {
+        className: "flex items-center gap-2",
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            className: "text-lg",
+            children: icon
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            className: "hidden sm:inline",
+            children: label
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      activeTab === id && /* @__PURE__ */ jsxDEV("div", {
+        className: "absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full"
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+  const renderIntro = () => /* @__PURE__ */ jsxDEV("div", {
+    className: "space-y-6",
+    children: [
+      /* @__PURE__ */ jsxDEV(GlassCard, {
+        className: "p-6",
+        hover: false,
+        children: [
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-2xl font-bold text-white mb-4 flex items-center gap-3",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                className: "text-3xl",
+                children: "\uD83D\uDC0C"
+              }, undefined, false, undefined, this),
+              "Vítej ve studiu plžů!"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            className: "text-white/80 leading-relaxed mb-4",
+            children: "Tato aplikace tě kompletně připraví na test z biologie o plžích (Gastropoda). Najdeš zde vzorové řešení testu, podrobná vysvětlení každé odpovědi, přehled druhů a anatomie, a interaktivní kvíz na procvičení."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6",
+            children: [
+              { icon: "\uD83D\uDCDD", label: "8 otázek", desc: "v testu" },
+              { icon: "\uD83D\uDD2C", label: "6 druhů", desc: "k poznání" },
+              { icon: "\uD83E\uDDE0", label: "10 pojmů", desc: "anatomie" },
+              { icon: "✅", label: "Kvíz", desc: "procvičení" }
+            ].map((item, i) => /* @__PURE__ */ jsxDEV("div", {
+              className: "text-center p-3 rounded-xl bg-white/5 border border-white/10",
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "text-2xl mb-1",
+                  children: item.icon
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "text-white font-semibold",
+                  children: item.label
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "text-white/50 text-xs",
+                  children: item.desc
+                }, undefined, false, undefined, this)
+              ]
+            }, i, true, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(GlassCard, {
+        className: "p-6",
+        hover: false,
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            className: "text-xl font-bold text-white mb-4",
+            children: "\uD83D\uDCDA Klíčové informace o plžích"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "space-y-4 text-white/80",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "p-4 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h4", {
+                    className: "font-semibold text-emerald-300 mb-2",
+                    children: "Stavba těla"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    children: [
+                      "Tělo se člení na ",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: "hlavu"
+                      }, undefined, false, undefined, this),
+                      " (smyslové orgány, radula),",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: " nohu"
+                      }, undefined, false, undefined, this),
+                      " (pohyb) a ",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: "útrobní vak"
+                      }, undefined, false, undefined, this),
+                      " (vnitřní orgány v ulitě)."
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "p-4 rounded-xl bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h4", {
+                    className: "font-semibold text-blue-300 mb-2",
+                    children: "Dýchání"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: "Předožábří"
+                      }, undefined, false, undefined, this),
+                      " (vodní) – žábry | ",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: "Plicnatí"
+                      }, undefined, false, undefined, this),
+                      " (suchozemští + někteří vodní) – plášťová dutina jako plíce"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "p-4 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h4", {
+                    className: "font-semibold text-purple-300 mb-2",
+                    children: "Cévní soustava"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: "Otevřená"
+                      }, undefined, false, undefined, this),
+                      " – hemolymfa omývá orgány volně v dutinách. Přesto ",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: "mají srdce"
+                      }, undefined, false, undefined, this),
+                      " (1 komora, 1–2 předsíně)."
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "p-4 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h4", {
+                    className: "font-semibold text-amber-300 mb-2",
+                    children: "Radula & Ulita"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: "Radula"
+                      }, undefined, false, undefined, this),
+                      " = chitinové struhadlo na potravu.",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: " Ulita"
+                      }, undefined, false, undefined, this),
+                      " = vápenatá schránka produkovaná ",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        className: "text-white",
+                        children: "pláštěm"
+                      }, undefined, false, undefined, this),
+                      "."
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "flex justify-center",
+        children: /* @__PURE__ */ jsxDEV("button", {
+          onClick: () => setActiveTab("solutions"),
+          className: `px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-2xl
+                     shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-105
+                     transition-all duration-300`,
+          children: "Začít studovat →"
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+  const renderSolutions = () => /* @__PURE__ */ jsxDEV("div", {
+    className: "space-y-4",
+    children: [
+      /* @__PURE__ */ jsxDEV(GlassCard, {
+        className: "p-4 mb-6",
+        hover: false,
+        children: [
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-xl font-bold text-white flex items-center gap-2",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "\uD83D\uDCDD"
+              }, undefined, false, undefined, this),
+              " Vzorové řešení testu"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            className: "text-white/60 text-sm mt-1",
+            children: "Klikni na otázku pro zobrazení vysvětlení"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      testData.map((question, index) => /* @__PURE__ */ jsxDEV(GlassCard, {
+        className: "overflow-hidden",
+        onClick: () => setExpandedCard(expandedCard === question.id ? null : question.id),
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "p-4",
+            children: /* @__PURE__ */ jsxDEV("div", {
+              className: "flex items-start gap-3",
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: `w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 
+                            flex items-center justify-center text-white font-bold text-sm flex-shrink-0`,
+                  children: question.id
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "flex-1",
+                  children: [
+                    /* @__PURE__ */ jsxDEV("h3", {
+                      className: "text-white font-medium",
+                      children: question.question
+                    }, undefined, false, undefined, this),
+                    question.isImageQuestion ? /* @__PURE__ */ jsxDEV("div", {
+                      className: "mt-3 grid grid-cols-2 gap-2",
+                      children: question.images.map((img, i) => /* @__PURE__ */ jsxDEV("div", {
+                        className: "p-2 rounded-lg bg-white/5 border border-white/10",
+                        children: [
+                          /* @__PURE__ */ jsxDEV("div", {
+                            className: "text-emerald-400 font-semibold text-sm",
+                            children: [
+                              i + 1,
+                              ". ",
+                              img.name
+                            ]
+                          }, undefined, true, undefined, this),
+                          /* @__PURE__ */ jsxDEV("div", {
+                            className: "text-white/50 text-xs",
+                            children: img.description
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, i, true, undefined, this))
+                    }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("div", {
+                      className: "mt-3 flex flex-wrap gap-2",
+                      children: question.options.map((option) => /* @__PURE__ */ jsxDEV("span", {
+                        className: `
+                          px-3 py-1 rounded-lg text-sm font-medium
+                          ${option.correct ? "bg-emerald-500/30 text-emerald-300 border border-emerald-500/50" : "bg-white/5 text-white/50 border border-white/10"}
+                        `,
+                        children: [
+                          option.letter,
+                          ") ",
+                          option.text
+                        ]
+                      }, option.letter, true, undefined, this))
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: `transform transition-transform duration-300 ${expandedCard === question.id ? "rotate-180" : ""}`,
+                  children: /* @__PURE__ */ jsxDEV("svg", {
+                    className: "w-5 h-5 text-white/50",
+                    fill: "none",
+                    viewBox: "0 0 24 24",
+                    stroke: "currentColor",
+                    children: /* @__PURE__ */ jsxDEV("path", {
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      strokeWidth: 2,
+                      d: "M19 9l-7 7-7-7"
+                    }, undefined, false, undefined, this)
+                  }, undefined, false, undefined, this)
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: `
+            overflow-hidden transition-all duration-300 ease-out
+            ${expandedCard === question.id ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}
+          `,
+            children: /* @__PURE__ */ jsxDEV("div", {
+              className: "p-4 pt-0 border-t border-white/10",
+              children: /* @__PURE__ */ jsxDEV("div", {
+                className: "p-4 rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h4", {
+                    className: "text-blue-300 font-semibold mb-2 flex items-center gap-2",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        children: "\uD83D\uDCA1"
+                      }, undefined, false, undefined, this),
+                      " Vysvětlení"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    className: "text-white/80 text-sm leading-relaxed",
+                    children: question.explanation
+                  }, undefined, false, undefined, this),
+                  question.tip && /* @__PURE__ */ jsxDEV("div", {
+                    className: "mt-3 p-2 rounded-lg bg-amber-500/20 border border-amber-500/30",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "text-amber-300 text-sm font-medium",
+                        children: "\uD83C\uDFAF Tip: "
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "text-white/80 text-sm",
+                        children: question.tip
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, question.id, true, undefined, this))
+    ]
+  }, undefined, true, undefined, this);
+  const renderSpecies = () => /* @__PURE__ */ jsxDEV("div", {
+    className: "space-y-4",
+    children: [
+      /* @__PURE__ */ jsxDEV(GlassCard, {
+        className: "p-4 mb-6",
+        hover: false,
+        children: [
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-xl font-bold text-white flex items-center gap-2",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "\uD83D\uDD2C"
+              }, undefined, false, undefined, this),
+              " Přehled druhů plžů"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            className: "text-white/60 text-sm mt-1",
+            children: "Druhy, které se objevují v testu a které bys měl znát"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "grid gap-4",
+        children: snailSpecies.map((species, index) => /* @__PURE__ */ jsxDEV(GlassCard, {
+          className: "p-4",
+          hover: false,
+          children: /* @__PURE__ */ jsxDEV("div", {
+            className: "flex items-start gap-4",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: `w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400/30 to-teal-500/30 
+                            flex items-center justify-center text-2xl flex-shrink-0`,
+                children: "\uD83D\uDC0C"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "flex-1",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h3", {
+                    className: "text-white font-bold",
+                    children: species.name
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    className: "text-emerald-400 text-sm italic",
+                    children: species.latin
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "mt-3 grid grid-cols-2 gap-2 text-sm",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        className: "p-2 rounded-lg bg-white/5",
+                        children: [
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-white/50",
+                            children: "Typ:"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-white ml-1",
+                            children: species.type
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        className: "p-2 rounded-lg bg-white/5",
+                        children: [
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-white/50",
+                            children: "Velikost:"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-white ml-1",
+                            children: species.size
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        className: "p-2 rounded-lg bg-white/5 col-span-2",
+                        children: [
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-white/50",
+                            children: "Ulita:"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-white ml-1",
+                            children: species.shell
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        className: "p-2 rounded-lg bg-white/5 col-span-2",
+                        children: [
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-white/50",
+                            children: "Biotop:"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("span", {
+                            className: "text-white ml-1",
+                            children: species.habitat
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "mt-2 p-2 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30",
+                    children: /* @__PURE__ */ jsxDEV("span", {
+                      className: "text-purple-300 text-sm",
+                      children: [
+                        "✨ ",
+                        species.features
+                      ]
+                    }, undefined, true, undefined, this)
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        }, index, false, undefined, this))
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+  const renderAnatomy = () => /* @__PURE__ */ jsxDEV("div", {
+    className: "space-y-4",
+    children: [
+      /* @__PURE__ */ jsxDEV(GlassCard, {
+        className: "p-4 mb-6",
+        hover: false,
+        children: [
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-xl font-bold text-white flex items-center gap-2",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "\uD83E\uDDE0"
+              }, undefined, false, undefined, this),
+              " Anatomické pojmy"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            className: "text-white/60 text-sm mt-1",
+            children: "Důležité pojmy ze stavby těla plžů"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "grid gap-3",
+        children: anatomyTerms.map((item, index) => /* @__PURE__ */ jsxDEV(GlassCard, {
+          className: "p-4",
+          hover: true,
+          children: /* @__PURE__ */ jsxDEV("div", {
+            className: "flex items-center gap-3",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: `w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/30 to-cyan-500/30 
+                            flex items-center justify-center text-lg flex-shrink-0`,
+                children: index + 1
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("h3", {
+                    className: "text-white font-semibold",
+                    children: item.term
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    className: "text-white/70 text-sm",
+                    children: item.definition
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        }, index, false, undefined, this))
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+  const renderQuiz = () => {
+    if (!quizStarted) {
+      return /* @__PURE__ */ jsxDEV(GlassCard, {
+        className: "p-8 text-center",
+        hover: false,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "text-6xl mb-4",
+            children: "\uD83C\uDFAF"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-2xl font-bold text-white mb-2",
+            children: "Kvíz na procvičení"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            className: "text-white/70 mb-6",
+            children: "Ověř si svoje znalosti! Kvíz obsahuje všech 8 otázek z testu v náhodném pořadí."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            onClick: () => setQuizStarted(true),
+            className: `px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-2xl
+                       shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-105
+                       transition-all duration-300`,
+            children: "Spustit kvíz →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this);
+    }
+    if (showQuizResults) {
+      const score = calculateScore();
+      const percentage = Math.round(score / testData.length * 100);
+      return /* @__PURE__ */ jsxDEV(GlassCard, {
+        className: "p-8 text-center",
+        hover: false,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "text-6xl mb-4",
+            children: percentage >= 80 ? "\uD83C\uDFC6" : percentage >= 60 ? "\uD83D\uDC4D" : "\uD83D\uDCDA"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("h2", {
+            className: "text-2xl font-bold text-white mb-2",
+            children: "Výsledky kvízu"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "my-6",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "text-5xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent",
+                children: [
+                  score,
+                  "/",
+                  testData.length
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "text-white/60 mt-1",
+                children: [
+                  percentage,
+                  "% správně"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "w-full h-4 bg-white/10 rounded-full overflow-hidden mb-6",
+            children: /* @__PURE__ */ jsxDEV("div", {
+              className: "h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-1000",
+              style: { width: `${percentage}%` }
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            className: "text-white/80 mb-6",
+            children: percentage >= 80 ? "Výborně! Jsi skvěle připraven/a na test! \uD83C\uDF89" : percentage >= 60 ? "Dobrá práce! Zkus si ještě projít slabší témata." : "Nevadí! Projdi si znovu teorii a zkus to znovu."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "flex gap-4 justify-center",
+            children: [
+              /* @__PURE__ */ jsxDEV("button", {
+                onClick: resetQuiz,
+                className: `px-6 py-3 bg-white/10 text-white font-medium rounded-xl
+                         border border-white/20 hover:bg-white/20 transition-all`,
+                children: "Zkusit znovu"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("button", {
+                onClick: () => {
+                  resetQuiz();
+                  setActiveTab("solutions");
+                },
+                className: `px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium rounded-xl
+                         shadow-lg hover:scale-105 transition-all`,
+                children: "Zpět k teorii"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this);
+    }
+    const question = testData[currentQuizQuestion];
+    if (question.isImageQuestion) {
+      return /* @__PURE__ */ jsxDEV(GlassCard, {
+        className: "p-6",
+        hover: false,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "flex items-center justify-between mb-6",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                className: "text-white/60 text-sm",
+                children: [
+                  "Otázka ",
+                  currentQuizQuestion + 1,
+                  " z ",
+                  testData.length
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "flex gap-1",
+                children: testData.map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+                  className: `w-2 h-2 rounded-full ${i === currentQuizQuestion ? "bg-emerald-400" : i < currentQuizQuestion ? "bg-emerald-400/50" : "bg-white/20"}`
+                }, i, false, undefined, this))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            className: "text-xl font-bold text-white mb-4",
+            children: question.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "p-4 rounded-xl bg-amber-500/20 border border-amber-500/30 mb-4",
+            children: /* @__PURE__ */ jsxDEV("p", {
+              className: "text-amber-200 text-sm",
+              children: "ℹ️ Toto je otázka na přiřazení obrázků. V testu budeš mít obrázky 4 plžů a musíš je správně pojmenovat."
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "grid grid-cols-2 gap-3 mb-6",
+            children: question.images.map((img, i) => /* @__PURE__ */ jsxDEV("div", {
+              className: "p-3 rounded-xl bg-white/10 border border-white/20",
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "text-emerald-400 font-bold",
+                  children: [
+                    i + 1,
+                    ". ",
+                    img.name
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "text-white/60 text-xs mt-1",
+                  children: img.description
+                }, undefined, false, undefined, this)
+              ]
+            }, i, true, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            onClick: () => {
+              setQuizAnswers((prev) => ({ ...prev, [question.id]: "viewed" }));
+              if (currentQuizQuestion < testData.length - 1) {
+                setCurrentQuizQuestion((prev) => prev + 1);
+              } else {
+                setShowQuizResults(true);
+              }
+            },
+            className: "w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-xl",
+            children: "Pokračovat →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this);
+    }
+    return /* @__PURE__ */ jsxDEV(GlassCard, {
+      className: "p-6",
+      hover: false,
+      children: [
+        /* @__PURE__ */ jsxDEV("div", {
+          className: "flex items-center justify-between mb-6",
+          children: [
+            /* @__PURE__ */ jsxDEV("span", {
+              className: "text-white/60 text-sm",
+              children: [
+                "Otázka ",
+                currentQuizQuestion + 1,
+                " z ",
+                testData.length
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "flex gap-1",
+              children: testData.map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+                className: `w-2 h-2 rounded-full ${i === currentQuizQuestion ? "bg-emerald-400" : i < currentQuizQuestion ? "bg-emerald-400/50" : "bg-white/20"}`
+              }, i, false, undefined, this))
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("h3", {
+          className: "text-xl font-bold text-white mb-2",
+          children: question.question
+        }, undefined, false, undefined, this),
+        question.multipleCorrect && /* @__PURE__ */ jsxDEV("p", {
+          className: "text-amber-400 text-sm mb-4",
+          children: "⚠️ Více správných odpovědí – vyber všechny správné"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("div", {
+          className: "space-y-3 mt-6",
+          children: question.options.map((option) => {
+            const isSelected = question.multipleCorrect ? selectedAnswers.includes(option.letter) : quizAnswers[question.id] === option.letter;
+            return /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => handleQuizAnswer(question.id, option.letter),
+              disabled: !question.multipleCorrect && quizAnswers[question.id],
+              className: `
+                  w-full p-4 rounded-xl text-left transition-all duration-300
+                  ${isSelected ? "bg-emerald-500/30 border-emerald-500/50 text-white" : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10"}
+                  border
+                `,
+              children: [
+                /* @__PURE__ */ jsxDEV("span", {
+                  className: "font-semibold mr-2",
+                  children: [
+                    option.letter,
+                    ")"
+                  ]
+                }, undefined, true, undefined, this),
+                option.text
+              ]
+            }, option.letter, true, undefined, this);
+          })
+        }, undefined, false, undefined, this),
+        question.multipleCorrect && selectedAnswers.length > 0 && /* @__PURE__ */ jsxDEV("button", {
+          onClick: () => confirmMultipleAnswer(question.id),
+          className: "w-full mt-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-xl",
+          children: [
+            "Potvrdit výběr (",
+            selectedAnswers.length,
+            " vybraných)"
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  };
+  return /* @__PURE__ */ jsxDEV("div", {
+    className: "min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900 relative overflow-hidden",
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "absolute inset-0 overflow-hidden pointer-events-none",
+        children: [
+          particles.map((particle) => /* @__PURE__ */ jsxDEV("div", {
+            className: "absolute rounded-full bg-emerald-400/20",
+            style: {
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              animation: `float ${particle.duration}s ease-in-out infinite`,
+              animationDelay: `${particle.delay}s`
+            }
+          }, particle.id, false, undefined, this)),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @keyframes float {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
+          50% { transform: translateY(-20px) translateX(10px); opacity: 0.5; }
+        }
+      `
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("header", {
+        className: "relative z-10 p-4 sm:p-6",
+        children: /* @__PURE__ */ jsxDEV("div", {
+          className: "max-w-4xl mx-auto",
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "flex items-center justify-center gap-3 mb-6",
+              children: [
+                /* @__PURE__ */ jsxDEV("span", {
+                  className: "text-4xl",
+                  children: "\uD83D\uDC0C"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("h1", {
+                  className: "text-2xl sm:text-3xl font-bold text-white",
+                  children: [
+                    "Plži ",
+                    /* @__PURE__ */ jsxDEV("span", {
+                      className: "text-emerald-400",
+                      children: "(Gastropoda)"
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "flex justify-center gap-2 flex-wrap",
+              children: [
+                /* @__PURE__ */ jsxDEV(TabButton, {
+                  id: "intro",
+                  label: "Úvod",
+                  icon: "\uD83C\uDFE0"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV(TabButton, {
+                  id: "solutions",
+                  label: "Řešení",
+                  icon: "\uD83D\uDCDD"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV(TabButton, {
+                  id: "species",
+                  label: "Druhy",
+                  icon: "\uD83D\uDD2C"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV(TabButton, {
+                  id: "anatomy",
+                  label: "Anatomie",
+                  icon: "\uD83E\uDDE0"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV(TabButton, {
+                  id: "quiz",
+                  label: "Kvíz",
+                  icon: "\uD83C\uDFAF"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("main", {
+        className: "relative z-10 p-4 sm:p-6 pb-20",
+        children: /* @__PURE__ */ jsxDEV("div", {
+          className: "max-w-4xl mx-auto",
+          children: [
+            activeTab === "intro" && renderIntro(),
+            activeTab === "solutions" && renderSolutions(),
+            activeTab === "species" && renderSpecies(),
+            activeTab === "anatomy" && renderAnatomy(),
+            activeTab === "quiz" && renderQuiz()
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("footer", {
+        className: "relative z-10 p-4 text-center",
+        children: /* @__PURE__ */ jsxDEV("p", {
+          className: "text-white/40 text-sm",
+          children: [
+            "Vytvořeno pro přípravu na test z biologie • ",
+            new Date().getFullYear()
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
