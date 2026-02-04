@@ -1,3 +1,8 @@
+// @title Dějepis - První světová válka
+// @subject History
+// @topic WWI
+// @template practice
+
 import React, { useState, useEffect } from 'react';
 
 const studyData = {
