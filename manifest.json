@@ -1,11 +1,11 @@
 [
   {
-    "title": "Linear Equations Practice",
-    "subject": "Math",
-    "topic": "Algebra",
+    "title": "Dějepis - První světová válka",
+    "subject": "History",
+    "topic": "WWI",
     "template": "practice",
-    "date": "2026-02-01",
-    "file": "artifacts/linear-equations.html"
+    "date": "2026-02-04",
+    "file": "artifacts/dejak-wwi.html"
   },
   {
     "title": "Stavová rovnice - Kompletní průvodce",
@@ -14,13 +14,5 @@
     "template": "practice",
     "date": "2026-02-01",
     "file": "artifacts/stavova_rovnice_kompletni.html"
-  },
-  {
-    "title": "Teorie psychického vývoje - Interaktivní příprava na test",
-    "subject": "Science",
-    "topic": "Psychology",
-    "template": "mixed",
-    "date": "2026-02-01",
-    "file": "artifacts/teorie_psychickeho_vyvoje.html"
   }
 ]
