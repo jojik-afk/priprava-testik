@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="subject" content="Geography">
+    <meta name="topic" content="Meteorologie">
+    <meta name="template" content="practice">
+    <title>Základy Meteorologie - Příprava na test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sky-top: #1a237e;
+            --sky-mid: #3949ab;
+            --sky-bottom: #7986cb;
+            --cloud-white: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --accent-warm: #ff7043;
+            --accent-cool: #4fc3f7;
+            --accent-green: #81c784;
+            --accent-yellow: #ffd54f;
+            --text-light: #ffffff;
+            --text-dark: #1a237e;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 40%, var(--sky-bottom) 100%);
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Sky Background */
+        .sky-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background: var(--cloud-white);
+            border-radius: 50%;
+            filter: blur(2px);
+            opacity: 0.6;
+            animation: float linear infinite;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .cloud-1 {
+            width: 120px;
+            height: 50px;
+            top: 10%;
+            animation-duration: 45s;
+        }
+        .cloud-1::before { width: 60px; height: 60px; top: -30px; left: 20px; }
+        .cloud-1::after { width: 80px; height: 70px; top: -40px; left: 50px; }
+
+        .cloud-2 {
+            width: 150px;
+            height: 60px;
+            top: 25%;
+            animation-duration: 55s;
+            animation-delay: -20s;
+        }
+        .cloud-2::before { width: 70px; height: 70px; top: -35px; left: 30px; }
+        .cloud-2::after { width: 90px; height: 80px; top: -45px; left: 70px; }
+
+        .cloud-3 {
+            width: 100px;
+            height: 40px;
+            top: 45%;
+            animation-duration: 40s;
+            animation-delay: -10s;
+            opacity: 0.4;
+        }
+        .cloud-3::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+        .cloud-3::after { width: 65px; height: 55px; top: -30px; left: 40px; }
+
+        .cloud-4 {
+            width: 180px;
+            height: 70px;
+            top: 60%;
+            animation-duration: 60s;
+            animation-delay: -30s;
+            opacity: 0.3;
+        }
+        .cloud-4::before { width: 80px; height: 80px; top: -40px; left: 35px; }
+        .cloud-4::after { width: 100px; height: 90px; top: -50px; left: 85px; }
+
+        @keyframes float {
+            from { transform: translateX(-200px); }
+            to { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        /* Sun */
+        .sun {
+            position: absolute;
+            top: 50px;
+            right: 100px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #fff9c4 0%, #ffee58 50%, #ffc107 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px 20px rgba(255, 235, 59, 0.4),
+                        0 0 100px 40px rgba(255, 193, 7, 0.2);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        /* Main Content */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 0%, #e3f2fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            padding: 12px 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: var(--cloud-white);
+            color: var(--text-dark);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, var(--accent-warm) 0%, #ff5722 100%);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .question-content {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 15px;
+        }
+
+        .answer-box {
+            background: rgba(129, 199, 132, 0.2);
+            border-left: 4px solid var(--accent-green);
+            border-radius: 0 12px 12px 0;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .answer-box h4 {
+            color: var(--accent-green);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .explanation {
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .explanation strong {
+            color: var(--accent-yellow);
+            font-weight: 600;
+        }
+
+        .explanation em {
+            color: var(--accent-cool);
+            font-style: normal;
+        }
+
+        /* Sub-questions */
+        .sub-question {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .sub-question-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-cool);
+            margin-bottom: 8px;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid var(--glass-border);
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        .data-table td:first-child {
+            text-align: left;
+        }
+
+        .checkmark {
+            color: var(--accent-green);
+            font-size: 1.3rem;
+        }
+
+        /* Cloud Types Visual */
+        .cloud-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .cloud-level {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .cloud-level-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--glass-border);
+        }
+
+        .cloud-level.high .cloud-level-title { color: #ce93d8; }
+        .cloud-level.mid .cloud-level-title { color: var(--accent-cool); }
+        .cloud-level.low .cloud-level-title { color: var(--accent-green); }
+        .cloud-level.special .cloud-level-title { color: var(--accent-warm); }
+
+        .cloud-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+        }
+
+        .quiz-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cool) 0%, var(--accent-green) 100%);
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+
+        .progress-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .quiz-question {
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid transparent;
+            border-radius: 14px;
+            padding: 18px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            color: var(--text-light);
+            text-align: left;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--glass-border);
+        }
+
+        .quiz-option.selected {
+            background: rgba(79, 195, 247, 0.2);
+            border-color: var(--accent-cool);
+        }
+
+        .quiz-option.correct {
+            background: rgba(129, 199, 132, 0.3);
+            border-color: var(--accent-green);
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(255, 112, 67, 0.3);
+            border-color: var(--accent-warm);
+        }
+
+        .quiz-option.disabled {
+            cursor: default;
+        }
+
+        .quiz-feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 14px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(129, 199, 132, 0.2);
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(255, 112, 67, 0.2);
+            border-left: 4px solid var(--accent-warm);
+        }
+
+        .quiz-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .quiz-btn {
+            background: linear-gradient(135deg, var(--accent-cool) 0%, #0288d1 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 35px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .quiz-btn.secondary {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Results */
+        .quiz-results {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cool) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .results-message {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            background: rgba(255, 213, 79, 0.15);
+            border: 1px solid var(--accent-yellow);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Space Mono', monospace;
+            text-align: center;
+        }
+
+        .formula {
+            font-size: 1.2rem;
+            color: var(--accent-yellow);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(79, 195, 247, 0.15);
+            border-left: 4px solid var(--accent-cool);
+            border-radius: 0 12px 12px 0;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .info-box h4 {
+            color: var(--accent-cool);
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 20px 15px;
+            }
+
+            .question-card {
+                padding: 20px;
+            }
+
+            .nav-tabs {
+                gap: 10px;
+            }
+
+            .nav-tab {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .sun {
+                width: 50px;
+                height: 50px;
+                top: 30px;
+                right: 30px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Sky Background -->
+    <div class="sky-container">
+        <div class="sun"></div>
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>☁️ Základy Meteorologie</h1>
+            <p>Kompletní příprava na test 2.B</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('theory')">📚 Teorie & Odpovědi</button>
+            <button class="nav-tab" onclick="showSection('quiz')">🎯 Kvíz</button>
+        </nav>
+
+        <!-- Theory Section -->
+        <section id="theory" class="content-section active">
+            
+            <!-- Question 1 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">1</div>
+                    <h3 class="question-title">Inverze - doplňte chybějící informace</h3>
+                </div>
+                <div class="question-content">
+                    <div class="answer-box">
+                        <h4>✓ Správné odpovědi:</h4>
+                        <p class="explanation">
+                            Inverze je meteorologický jev typický pro <strong>zimní</strong> část roku. 
+                            <strong>Studená</strong> vrstva vzduchu se zformuje mezi dvěma vrstvami <strong>teplými</strong>. 
+                            Pod "pokličkou" <strong>studeného</strong> vzduchu je omezeno horizontální i vertikální proudění. 
+                            Vznikají tak mlhy a <strong>nízká</strong> oblačnost. 
+                            <strong>V nížinách</strong> je proto chladno a může sněžit, zatímco <strong>na horách</strong> je jasno a vyšší teplota. 
+                            V průmyslových oblastech či městech se hromadí <strong>smog</strong>.
+                        </p>
+                    </div>
+                    <div class="info-box">
+                        <h4>💡 Vysvětlení inverze</h4>
+                        <p>Normálně teplota s výškou klesá (cca 0,65°C na 100 m). Při inverzi je to naopak - studený vzduch zůstává u země a teplý vzduch je nahoře. Studený vzduch je těžší, proto zůstává dole jako "poklička" a brání vertikálnímu proudění. Proto se v nížinách hromadí mlhy, smog a znečištění.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">2</div>
+                    <h3 class="question-title">Rozpoznejte druh meteorologického měření</h3>
+                </div>
+                <div class="question-content">
+                    <div class="answer-box">
+                        <h4>✓ Správné odpovědi:</h4>
+                        <p class="explanation">
+                            <strong>Levý obrázek:</strong> <em>Satelitní (družicový) snímek</em> - černobílý snímek zobrazující oblačnost z pohledu z vesmíru<br><br>
+                            <strong>Pravý obrázek:</strong> <em>Radarová mapa srážek</em> - barevná mapa ČR zobrazující intenzitu srážek (modrá = slabé, zelená/žlutá = střední, červená = silné)
+                        </p>
+                    </div>
+                    <div class="info-box">
+                        <h4>💡 Rozdíl mezi měřeními</h4>
+                        <p><strong>Satelitní snímky</strong> pořizují družice (např. Meteosat) z výšky ~36 000 km. Ukazují rozložení oblačnosti, lze z nich odhadnout typ oblaků a jejich vývoj.<br><br>
+                        <strong>Meteorologické radary</strong> vysílají mikrovlnné záření, které se odráží od srážkových částic. Měří intenzitu a pohyb srážek v reálném čase. V ČR je síť radarů ČHMÚ.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">3</div>
+                    <h3 class="question-title">Rozpoznejte meteorologické jevy podle charakteristiky</h3>
+                </div>
+                <div class="question-content">
+                    <div class="sub-question">
+                        <div class="sub-question-label">a) Vzniká nad oceány v okolí rovníku, menší než "příbuzní" v mírných šířkách, vysoká rychlost větru, extrémní přívalové srážky</div>
+                        <div class="answer-box">
+                            <h4>✓ Odpověď: HURIKÁN (tropická cyklona)</h4>
+                            <p class="explanation">Hurikány vznikají nad teplými oceány (min. 26°C) v tropických oblastech. "Příbuzní v mírných šířkách" jsou mimotropické cyklony, které jsou větší, ale méně intenzivní. Hurikány mají "oko" uprostřed s klidným počasím, kolem něj jsou nejsilnější větry (až 300 km/h).</p>
+                        </div>
+                    </div>
+                    <div class="sub-question">
+                        <div class="sub-question-label">b) Silný studený padavý a nárazový vítr z náhorních vnitrozemských plošin směrem k teplému moři, přináší výrazné ochlazení</div>
+                        <div class="answer-box">
+                            <h4>✓ Odpověď: BÓRA</h4>
+                            <p class="explanation">Bóra je katabatický vítr (padavý, studený). Vzniká, když se studený vzduch z náhorních plošin přelije přes hory k teplému moři. Typická je pro Jadranské pobřeží (Chorvatsko), kde může dosahovat rychlosti přes 200 km/h. Kornatské ostrovy jsou kvůli bóře téměř bez vegetace.</p>
+                        </div>
+                    </div>
+                    <div class="sub-question">
+                        <div class="sub-question-label">c) Místní padavý teplý suchý nárazový vítr, nejlépe na závětrné straně hor, může způsobit tání sněhu na sjezdovkách</div>
+                        <div class="answer-box">
+                            <h4>✓ Odpověď: FÉN</h4>
+                            <p class="explanation">Fén vzniká, když vlhký vzduch stoupá na návětrné straně hor, ochlazuje se a ztrácí vlhkost (srážky). Na závětrné straně pak klesá jako suchý a ohřívá se rychleji (1°C/100 m místo 0,5°C/100 m při vlhkém vzestupu). Proto je na závětrné straně teplo a sucho. V Alpách může způsobit rychlé tání sněhu a laviny.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">4</div>
+                    <h3 class="question-title">Cyklona - vyhození míče ve středu</h3>
+                </div>
+                <div class="question-content">
+                    <p><em>"Kdybyste ve středu cyklony svisle vyhodili volejbalový míč o hmotnosti 280 gramů do výšky dvou metrů, jak daleko by míč dopadl od místa vyhození?"</em></p>
+                    <div class="answer-box">
+                        <h4>✓ Odpověď: 0 metrů (na stejné místo)</h4>
+                    </div>
+                    <div class="info-box">
+                        <h4>💡 Vysvětlení</h4>
+                        <p><strong>Ve středu cyklony je "oko"</strong> - oblast relativního klidu, kde je velmi slabý nebo žádný vítr. Vítr cirkuluje kolem středu, ale přímo ve středu je bezvětří. Proto míč dopadne zpět na místo, odkud byl vyhozen.</p>
+                        <p style="margin-top: 10px;">Poznámka: Hmotnost míče (280 g) ani výška (2 m) nehrají roli - důležité je jen to, že ve středu cyklony nefouká vítr.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">5</div>
+                    <h3 class="question-title">Vyberte pojem, který mezi ostatní nepatří</h3>
+                </div>
+                <div class="question-content">
+                    <div class="sub-question">
+                        <div class="sub-question-label">a) vichřice - orkán - tornádo - silný vítr</div>
+                        <div class="answer-box">
+                            <h4>✓ Nepatří: TORNÁDO</h4>
+                            <p class="explanation">Vichřice, orkán a silný vítr jsou <strong>stupně Beaufortovy stupnice</strong> popisující rychlost větru (9-12 stupňů). Tornádo je zcela jiný jev - rotující vzdušný vír spojený s bouřkovým mrakem (cumulonimbem).</p>
+                        </div>
+                    </div>
+                    <div class="sub-question">
+                        <div class="sub-question-label">b) monzun - barické sedlo - brázda nízkého tlaku - hřeben vysokého tlaku</div>
+                        <div class="answer-box">
+                            <h4>✓ Nepatří: MONZUN</h4>
+                            <p class="explanation">Barické sedlo, brázda nízkého tlaku a hřeben vysokého tlaku jsou <strong>útvary tlakového pole</strong> (zobrazované na synoptických mapách). Monzun je <strong>sezónní vítr</strong> způsobený rozdílným ohříváním pevniny a oceánu - není to tlaková útvar.</p>
+                        </div>
+                    </div>
+                    <div class="sub-question">
+                        <div class="sub-question-label">c) mrholení - jinovatka - sníh - kroupy</div>
+                        <div class="answer-box">
+                            <h4>✓ Nepatří: JINOVATKA</h4>
+                            <p class="explanation">Mrholení, sníh a kroupy jsou <strong>atmosférické srážky</strong> - padají z oblaků. Jinovatka je <strong>usazená námraza</strong> - vzniká přímou kondenzací vodní páry na podchlazených površích (podobně jako rosa, ale při teplotách pod bodem mrazu).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">6</div>
+                    <h3 class="question-title">Typy oblaků - přiřazení k obrázkům</h3>
+                </div>
+                <div class="question-content">
+                    <div class="answer-box">
+                        <h4>✓ Odpovědi podle obrázku:</h4>
+                        <p class="explanation">
+                            <strong>A (vlevo nahoře, vysoký jemný):</strong> <em>Cirrus (Ci)</em> - řasa<br>
+                            <strong>B (dole vlevo, nízký plochý šedý):</strong> <em>Stratus (St)</em> - sloha<br>
+                            <strong>C (nahoře vpravo, vysoký zledovatělý):</strong> <em>Cirrostratus (Cs)</em> - řasosloha<br>
+                            <strong>D (vpravo dole, "kudrnatý" nízký):</strong> <em>Stratocumulus (Sc)</em> - slohokupa
+                        </p>
+                    </div>
+                    
+                    <div class="cloud-levels">
+                        <div class="cloud-level high">
+                            <div class="cloud-level-title">Vysoké oblaky (6-12 km)</div>
+                            <div class="cloud-item"><strong>Ci</strong> - Cirrus (řasa)</div>
+                            <div class="cloud-item"><strong>Cc</strong> - Cirrocumulus (řasokupa)</div>
+                            <div class="cloud-item"><strong>Cs</strong> - Cirrostratus (řasosloha)</div>
+                        </div>
+                        <div class="cloud-level mid">
+                            <div class="cloud-level-title">Středně vysoké (2-6 km)</div>
+                            <div class="cloud-item"><strong>Ac</strong> - Altocumulus (vysoká kupa)</div>
+                            <div class="cloud-item"><strong>As</strong> - Altostratus (vysoká sloha)</div>
+                        </div>
+                        <div class="cloud-level low">
+                            <div class="cloud-level-title">Nízké oblaky (0-2 km)</div>
+                            <div class="cloud-item"><strong>St</strong> - Stratus (sloha)</div>
+                            <div class="cloud-item"><strong>Sc</strong> - Stratocumulus (slohokupa)</div>
+                            <div class="cloud-item"><strong>Cu</strong> - Cumulus (kupa)</div>
+                        </div>
+                        <div class="cloud-level special">
+                            <div class="cloud-level-title">Oblaky s velkým vertikálním rozsahem</div>
+                            <div class="cloud-item"><strong>Ns</strong> - Nimbostratus (dešťová sloha)</div>
+                            <div class="cloud-item"><strong>Cb</strong> - Cumulonimbus (dešťová kupa)</div>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 Jak rozpoznat oblaky</h4>
+                        <p><strong>Cirrus</strong> - jemné vláknité ("koňské ohony"), nejvyšší, složené z ledových krystalů<br>
+                        <strong>Stratus</strong> - souvislá šedá vrstva, připomíná mlhu ve výšce<br>
+                        <strong>Cumulus</strong> - bílé "kupy vaty", nahoře zaoblené, dole ploché<br>
+                        <strong>Cumulonimbus</strong> - mohutný bouřkový mrak, ve tvaru kovadliny nahoře</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">7</div>
+                    <h3 class="question-title">Atmosférické fronty - přiřazení charakteristik</h3>
+                </div>
+                <div class="question-content">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Charakteristika</th>
+                                <th>Teplá</th>
+                                <th>Studená</th>
+                                <th>Okl. teplá</th>
+                                <th>Okl. studená</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Srážky obvykle padají před přechodem front. rozhraní (nultým bodem)</td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td></td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Teplý vzduch je vytlačován studeným</td>
+                                <td></td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td></td>
+                                <td><span class="checkmark">✓</span></td>
+                            </tr>
+                            <tr>
+                                <td>Tvoří se bouřková oblaka typu cumulonimbus</td>
+                                <td></td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td></td>
+                                <td><span class="checkmark">✓</span></td>
+                            </tr>
+                            <tr>
+                                <td>Po přechodu fronty zpravidla teplota roste</td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td></td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Srážky obvykle padají výrazně před, během i výrazně po přechodu front. rozhraní (nultého bodu)</td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td></td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Po přechodu fronty zpravidla teplota klesá</td>
+                                <td></td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td></td>
+                                <td><span class="checkmark">✓</span></td>
+                            </tr>
+                            <tr>
+                                <td>Je způsobena činností tlakové níže</td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td><span class="checkmark">✓</span></td>
+                                <td><span class="checkmark">✓</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="info-box">
+                        <h4>💡 Vysvětlení front</h4>
+                        <p><strong>Teplá fronta:</strong> Teplý vzduch pomalu nastupuje nad studený → pozvolné srážky (déšť) před frontou<br>
+                        <strong>Studená fronta:</strong> Studený vzduch rychle podtéká teplý → prudké srážky (bouřky), rychlý přechod<br>
+                        <strong>Okluzní fronta:</strong> Studená fronta dohoní teplou. <em>Teplá okluze</em> = vzadu je teplejší vzduch než vpředu, <em>studená okluze</em> = vzadu je studenější</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">8</div>
+                    <h3 class="question-title">Výpočet teploty pomocí teplotního gradientu</h3>
+                </div>
+                <div class="question-content">
+                    <p><em>"V Malenovicích u Ostravy (423 m n. m.) bylo včera v poledne 17°C. Jaká teplota byla teoreticky naměřena (za jasného počasí) na Lysé hoře (1323 m n. m.)?"</em></p>
+                    
+                    <div class="formula-box">
+                        <p>Teplotní gradient: <span class="formula">0,65°C / 100 m</span></p>
+                    </div>
+                    
+                    <div class="answer-box">
+                        <h4>✓ Postup výpočtu:</h4>
+                        <p class="explanation">
+                            1. Výškový rozdíl: 1323 - 423 = <strong>900 m</strong><br><br>
+                            2. Pokles teploty: 900 ÷ 100 × 0,65 = <strong>5,85°C</strong><br><br>
+                            3. Teplota na Lysé hoře: 17 - 5,85 = <strong>11,15°C ≈ 11°C</strong>
+                        </p>
+                    </div>
+                    <div class="info-box">
+                        <h4>💡 Poznámka</h4>
+                        <p>Teplotní gradient 0,65°C/100 m platí pro <strong>suchý vzduch za jasného počasí</strong>. Při vlhkém vzduchu je gradient menší (cca 0,5°C/100 m), protože při kondenzaci vodní páry se uvolňuje teplo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">9</div>
+                    <h3 class="question-title">Pravda/Nepravda - synoptická mapa (QR kód)</h3>
+                </div>
+                <div class="question-content">
+                    <p style="margin-bottom: 20px; opacity: 0.8;"><em>Poznámka: Bez přístupu k synoptické mapě z QR kódu uvádím typické odpovědi a vysvětlení principů.</em></p>
+                    
+                    <div class="sub-question">
+                        <div class="sub-question-label">a) "Británie, Benelux a západ Skandinávie jsou ovlivněny činností anticyklóny, zatímco území Grónska ovlivňuje cyklóna."</div>
+                        <div class="answer-box">
+                            <h4>Jak hodnotit:</h4>
+                            <p class="explanation">Na synoptické mapě hledej: <strong>V</strong> nebo <strong>H</strong> (vysoký/vysoká = anticyklóna), <strong>N</strong> nebo <strong>L</strong> (nízký/low = cyklóna). Anticyklóna = jasno, cyklóna = oblačno a srážky.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="sub-question">
+                        <div class="sub-question-label">b) "V Anglii, na Ukrajině a v Turecku je možné naměřit stejné hodnoty tlaku."</div>
+                        <div class="answer-box">
+                            <h4>Jak hodnotit:</h4>
+                            <p class="explanation">Hledej <strong>izobary</strong> (čáry spojující místa se stejným tlakem). Pokud všemi třemi zeměmi prochází stejná izobara, pak PRAVDA.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="sub-question">
+                        <div class="sub-question-label">c) "Počasí v Česku je ovlivněno okluzním frontálním rozhraním. Nejvíce se přechod front projeví na západě země. Po přechodu fronty se výrazně ochladí."</div>
+                        <div class="answer-box">
+                            <h4>Jak hodnotit:</h4>
+                            <p class="explanation">Na mapě hledej: <strong>fialovou čáru s trojúhelníky a půlkruhy</strong> = okluzní fronta. Zkontroluj, zda prochází přes ČR a kde je její "nultý bod". Pokud je to studená okluze → ochlazení = PRAVDA.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 Značky na synoptické mapě</h4>
+                        <p>
+                            <strong>Teplá fronta:</strong> červená čára s půlkruhy (směrem kam postupuje)<br>
+                            <strong>Studená fronta:</strong> modrá čára s trojúhelníky<br>
+                            <strong>Okluzní fronta:</strong> fialová čára s oběma značkami<br>
+                            <strong>Stacionární fronta:</strong> střídající se značky na obou stranách
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="content-section">
+            <div class="quiz-container">
+                <div id="quiz-content">
+                    <!-- Quiz loaded by JS -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (sectionId === 'quiz') {
+                startQuiz();
+            }
+        }
+
+        // Quiz Data
+        const quizQuestions = [
+            {
+                question: "Inverze je typický jev pro kterou část roku?",
+                options: ["Léto", "Jaro", "Zimu", "Podzim"],
+                correct: 2,
+                explanation: "Inverze je typická pro zimní období, kdy se studený vzduch drží u země pod vrstvou teplejšího vzduchu."
+            },
+            {
+                question: "Co vzniká při inverzi v průmyslových oblastech?",
+                options: ["Déšť", "Smog", "Sníh", "Kroupy"],
+                correct: 1,
+                explanation: "Při inverzi se pod 'pokličkou' hromadí znečištění a vzniká smog."
+            },
+            {
+                question: "Který meteorologický jev vzniká nad teplými oceány v tropech a má 'oko' uprostřed?",
+                options: ["Tornádo", "Bóra", "Hurikán", "Fén"],
+                correct: 2,
+                explanation: "Hurikán (tropická cyklona) vzniká nad oceány s teplotou min. 26°C a má charakteristické 'oko' s klidným počasím."
+            },
+            {
+                question: "Bóra je:",
+                options: ["Teplý suchý vítr", "Studený padavý vítr", "Sezónní vítr", "Rotující vzdušný vír"],
+                correct: 1,
+                explanation: "Bóra je silný studený padavý (katabatický) vítr vanoucí z náhorních plošin k moři."
+            },
+            {
+                question: "Fén způsobuje na závětrné straně hor:",
+                options: ["Ochlazení a srážky", "Oteplení a sucho", "Mlhy", "Bouřky"],
+                correct: 1,
+                explanation: "Fén klesá na závětrné straně jako suchý vzduch a ohřívá se, proto přináší teplé a suché počasí."
+            },
+            {
+                question: "Co se stane s míčem vyhozeným svisle ve středu cyklony?",
+                options: ["Odletí daleko po větru", "Dopadne na stejné místo", "Bude kroužit dokola", "Zůstane viset ve vzduchu"],
+                correct: 1,
+                explanation: "Ve středu cyklony (v 'oku') je bezvětří, proto míč spadne zpět na místo vyhození."
+            },
+            {
+                question: "Který pojem nepatří mezi stupně Beaufortovy stupnice?",
+                options: ["Vichřice", "Orkán", "Tornádo", "Silný vítr"],
+                correct: 2,
+                explanation: "Tornádo je rotující vzdušný vír, ne stupeň rychlosti větru. Vichřice, orkán a silný vítr jsou stupně Beaufortovy stupnice."
+            },
+            {
+                question: "Jinovatka je:",
+                options: ["Atmosférická srážka", "Usazená námraza", "Typ oblaku", "Druh mlhy"],
+                correct: 1,
+                explanation: "Jinovatka vzniká přímou kondenzací vodní páry na podchlazených površích - není to srážka padající z oblaků."
+            },
+            {
+                question: "Cirrus patří mezi:",
+                options: ["Nízké oblaky", "Středně vysoké oblaky", "Vysoké oblaky", "Oblaky s velkým vertikálním rozsahem"],
+                correct: 2,
+                explanation: "Cirrus (řasa) je vysoký oblak v 6-12 km, složený z ledových krystalů."
+            },
+            {
+                question: "Cumulonimbus je typický pro:",
+                options: ["Teplou frontu", "Studenou frontu", "Anticyklónu", "Inverzi"],
+                correct: 1,
+                explanation: "Při studené frontě studený vzduch rychle podtéká teplý, což vytváří mohutné bouřkové mraky (cumulonimby)."
+            },
+            {
+                question: "Jaký je teplotní gradient v suchém vzduchu?",
+                options: ["0,5°C/100m", "0,65°C/100m", "1°C/100m", "0,3°C/100m"],
+                correct: 1,
+                explanation: "Standardní teplotní gradient je 0,65°C na 100 m výškového rozdílu."
+            },
+            {
+                question: "Po přechodu studené fronty teplota zpravidla:",
+                options: ["Roste", "Klesá", "Zůstává stejná", "Kolísá"],
+                correct: 1,
+                explanation: "Studená fronta přináší studenější vzduch, proto po jejím přechodu teplota klesá."
+            },
+            {
+                question: "Monzun je:",
+                options: ["Tlakový útvar", "Sezónní vítr", "Typ fronty", "Druh srážek"],
+                correct: 1,
+                explanation: "Monzun je sezónní vítr způsobený rozdílným ohříváním pevniny a oceánu, ne tlakový útvar."
+            },
+            {
+                question: "Okluzní fronta vzniká, když:",
+                options: ["Teplá fronta předběhne studenou", "Studená fronta dohání teplou", "Dvě anticyklóny se setkají", "Vzniká inverze"],
+                correct: 1,
+                explanation: "Okluzní fronta vzniká, když rychlejší studená fronta dohání pomalejší teplou frontu."
+            },
+            {
+                question: "Barické sedlo, brázda a hřeben jsou:",
+                options: ["Druhy větrů", "Útvary tlakového pole", "Typy oblaků", "Atmosférické fronty"],
+                correct: 1,
+                explanation: "Jsou to útvary tlakového pole zobrazované na synoptických mapách."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function startQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= quizQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const q = quizQuestions[currentQuestion];
+            const progress = ((currentQuestion) / quizQuestions.length) * 100;
+
+            document.getElementById('quiz-content').innerHTML = `
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <span class="progress-text">${currentQuestion + 1}/${quizQuestions.length}</span>
+                </div>
+                <div class="quiz-question">
+                    <h3>${q.question}</h3>
+                    <div class="quiz-options">
+                        ${q.options.map((opt, i) => `
+                            <button class="quiz-option" onclick="selectAnswer(${i})" id="opt-${i}">${opt}</button>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="quiz-feedback" id="feedback"></div>
+                <div class="quiz-buttons">
+                    <button class="quiz-btn" onclick="nextQuestion()" id="next-btn" style="display: none;">Další otázka →</button>
+                </div>
+            `;
+            answered = false;
+        }
+
+        function selectAnswer(index) {
+            if (answered) return;
+            answered = true;
+
+            const q = quizQuestions[currentQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            options.forEach((opt, i) => {
+                opt.classList.add('disabled');
+                if (i === q.correct) {
+                    opt.classList.add('correct');
+                } else if (i === index && i !== q.correct) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            if (index === q.correct) {
+                score++;
+                feedback.className = 'quiz-feedback show correct';
+                feedback.innerHTML = `<strong>✓ Správně!</strong><br>${q.explanation}`;
+            } else {
+                feedback.className = 'quiz-feedback show incorrect';
+                feedback.innerHTML = `<strong>✗ Špatně.</strong> Správná odpověď: ${q.options[q.correct]}<br><br>${q.explanation}`;
+            }
+
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            showQuestion();
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            let message = '';
+            if (percentage >= 90) message = '🏆 Výborně! Jsi expert na meteorologii!';
+            else if (percentage >= 70) message = '👍 Velmi dobře! Jen pár drobností k doplnění.';
+            else if (percentage >= 50) message = '📚 Solidní základ, ale ještě si zopakuj teorii.';
+            else message = '💪 Nevzdávej to! Projdi si znovu teorii a zkus to znovu.';
+
+            document.getElementById('quiz-content').innerHTML = `
+                <div class="quiz-results">
+                    <div class="results-score">${score}/${quizQuestions.length}</div>
+                    <div class="results-message">${message}</div>
+                    <p style="margin-bottom: 30px; opacity: 0.8;">Úspěšnost: ${percentage}%</p>
+                    <div class="quiz-buttons" style="justify-content: center;">
+                        <button class="quiz-btn" onclick="startQuiz()">🔄 Zkusit znovu</button>
+                        <button class="quiz-btn secondary" onclick="showSection('theory'); document.querySelector('.nav-tab').click();">📚 Zpět k teorii</button>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
