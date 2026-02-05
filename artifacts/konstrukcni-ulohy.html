@@ -1,0 +1,2818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konstrukční úlohy</title>
+    <meta name="subject" content="Math">
+    <meta name="topic" content="Konstrukční úlohy - trojúhelníky a čtyřúhelníky">
+    <meta name="template" content="practice">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/konstrukcni-ulohy.jsx
+import { useState, useCallback, useMemo } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function shuffleQuestions(questions) {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const shuffledOptions = shuffledIndices.map((i) => q.options[i]);
+    const newCorrect = q.correct.map((oldIdx) => shuffledIndices.indexOf(oldIdx));
+    return {
+      ...q,
+      options: shuffledOptions,
+      correct: newCorrect
+    };
+  });
+}
+function QuizEngine({ questions, accentColor = "#a855f7" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  const shuffledQuestions = useMemo(() => {
+    return shuffleQuestions(questions);
+  }, [questions, shuffleKey]);
+  const q = shuffledQuestions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffledQuestions.filter((q2, i) => revealed[i] && arrEqual(answers[i] || [], q2.correct)).length;
+  const pct = Math.round(score / shuffledQuestions.length * 100);
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, shuffledQuestions]);
+  const handleSingleSelect = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [optionIdx] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, isRevealed]);
+  const toggleMulti = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setPendingMulti((prev) => prev.includes(optionIdx) ? prev.filter((i) => i !== optionIdx) : [...prev, optionIdx]);
+  }, [isRevealed]);
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [...pendingMulti] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, pendingMulti]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPendingMulti([]);
+    setShowResults(false);
+    setShuffleKey((k) => k + 1);
+  }, []);
+  function arrEqual(a, b) {
+    if (!a || !b)
+      return false;
+    const sa = [...a].sort((x, y) => x - y);
+    const sb = [...b].sort((x, y) => x - y);
+    return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+  }
+  if (showResults) {
+    const msg = pct >= 90 ? "Vynikající! Máš konstrukční úlohy zvládnuté!" : pct >= 70 ? "Dobře! Téměř zvládáš vše." : pct >= 50 ? "Mohlo by to být lepší. Opakuj si teorii." : "Potřebuješ více přípravy. Prostuduj si znovu teorii!";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "24px", padding: "40px 48px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "52px", fontWeight: 800, lineHeight: 1.1 },
+            children: [
+              score,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+            children: [
+              pct,
+              " %"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.8)", fontSize: "17px", lineHeight: 1.5, marginBottom: "24px", maxWidth: "340px", margin: "0 auto 24px" },
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { padding: "10px 22px", background: accentColor + "66", border: `1px solid ${accentColor}`, borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px" },
+            onClick: restart,
+            children: "Začít znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  const activeSet = isMulti ? isRevealed ? myAnswer : pendingMulti : myAnswer;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "680px", margin: "0 auto", padding: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" },
+        children: shuffledQuestions.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
+          return /* @__PURE__ */ jsxDEV("div", {
+            onClick: () => goTo(i),
+            title: `Otázka ${i + 1}`,
+            style: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: bg }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "24px", transition: "all 0.4s ease" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
+            children: [
+              "Otázka ",
+              idx + 1,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", flexDirection: "column", gap: "10px" },
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(255,255,255,0.12)";
+              let bg = "rgba(255,255,255,0.04)";
+              if (isRevealed) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(34,197,94,0.15)";
+                  border = "1px solid #22c55e";
+                } else if (activeSet.includes(i)) {
+                  bg = "rgba(239,68,68,0.15)";
+                  border = "1px solid #ef4444";
+                }
+              } else if (activeSet.includes(i)) {
+                bg = accentColor + "18";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("div", {
+                style: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px", background: bg, border },
+                onClick: () => isMulti ? toggleMulti(i) : handleSingleSelect(i),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: { fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" },
+                    children: activeSet.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRevealed && /* @__PURE__ */ jsxDEV("button", {
+            style: { marginTop: "12px", padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", opacity: pendingMulti.length === 0 ? 0.4 : 1 },
+            onClick: submitMulti,
+            disabled: pendingMulti.length === 0,
+            children: "Potvrdít"
+          }, undefined, false, undefined, this),
+          isRevealed && /* @__PURE__ */ jsxDEV("div", {
+            style: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: `1px solid ${isCorrect ? "#22c55e" : "#ef4444"}`, background: "rgba(255,255,255,0.03)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+                children: isCorrect ? "Správně!" : "Špatně"
+              }, undefined, false, undefined, this),
+              !isCorrect && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+                children: [
+                  "Správná odpověď: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 },
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+                children: [
+                  "Tip: ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px" },
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          idx < shuffledQuestions.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: { padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px" },
+            onClick: () => goTo(idx + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: { padding: "10px 22px", background: accentColor + "55", border: `1px solid ${accentColor}`, borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px" },
+            onClick: () => setShowResults(true),
+            children: "Výsledky →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var quizQuestions = [
+  {
+    question: "Jaká je struktura řešení konstrukční úlohy?",
+    type: "single",
+    options: [
+      "Náčrt a rozbor → Postup konstrukce → Konstrukce → Diskuze",
+      "Zadání → Výpočet → Konstrukce → Kontrola",
+      "Rozbor → Konstrukce → Náčrt → Zápis",
+      "Postup → Náčrt → Diskuze → Konstrukce"
+    ],
+    correct: [0],
+    explanation: "Správná struktura je: 1. Náčrt a rozbor (analýza situace), 2. Postup konstrukce (seznam kroků), 3. Konstrukce (samotné rýsování), 4. Diskuze (počet řešení).",
+    tip: "Pamatuj: NRKD = Náčrt, Rozbor (v jednom), Konstrukce s Postupem, Diskuze"
+  },
+  {
+    question: "Co označuje zápis k(S; r)?",
+    type: "single",
+    options: [
+      "Kružnice se středem S a poloměrem r",
+      "Kulová plocha se středem S",
+      "Kolmice k přímce S",
+      "Kružnice o průměru r"
+    ],
+    correct: [0],
+    explanation: "Zápis k(S; r) označuje kružnici se středem S a poloměrem r. Je to standardní geometrické značení.",
+    tip: "k jako kružnice, první parametr střed, druhý poloměr"
+  },
+  {
+    question: "Co je Thaletova kružnice?",
+    type: "single",
+    options: [
+      "Množina bodů, ze kterých je úsečka AB vidět pod pravým úhlem",
+      "Kružnice opsaná trojúhelníku",
+      "Množina bodů stejně vzdálených od dvou bodů",
+      "Kružnice vepsaná trojúhelníku"
+    ],
+    correct: [0],
+    explanation: "Thaletova kružnice je množina všech bodů X, ze kterých je úsečka AB vidět pod úhlem 90°. Její střed leží ve středu úsečky AB a prochází body A i B.",
+    tip: "Thaletova věta: úhel nad průměrem = 90°"
+  },
+  {
+    question: "Jak zapíšeme osu úhlu α?",
+    type: "single",
+    options: [
+      "o; o je osa úhlu α",
+      "α/2",
+      "osa(α)",
+      "o ⊥ α"
+    ],
+    correct: [0],
+    explanation: "Osu úhlu α zapisujeme jako 'o; o je osa úhlu α' nebo zkráceně jen 'o' s vyznačením v náčrtu. Osa úhlu je množina bodů stejně vzdálených od obou ramen úhlu."
+  },
+  {
+    question: "Co je osa úsečky AB?",
+    type: "single",
+    options: [
+      "Množina bodů X, pro které platí |AX| = |BX|",
+      "Přímka procházející body A a B",
+      "Kolmice k AB v bodě A",
+      "Úhlopříčka spojující A a B"
+    ],
+    correct: [0],
+    explanation: "Osa úsečky AB je množina všech bodů, které mají stejnou vzdálenost od bodu A jako od bodu B. Zapisujeme: o = {X; |AX| = |BX|}.",
+    tip: "Osa úsečky prochází středem úsečky a je na ni kolmá"
+  },
+  {
+    question: "Jak zapíšeme kružnici o(150°)?",
+    type: "single",
+    options: [
+      "ε = {X; |∠AXB| = 150°}",
+      "k(S; 150°)",
+      "o(A, B, 150)",
+      "ε ⊥ 150°"
+    ],
+    correct: [0],
+    explanation: "Kružnici, ze které je úsečka AB vidět pod úhlem 150°, zapisujeme jako ε = {X; |∠AXB| = 150°}. Je to zobecnění Thaletovy kružnice."
+  },
+  {
+    question: "Co je to polohová konstrukční úloha?",
+    type: "single",
+    options: [
+      "Úloha, kde je známa poloha alespoň jednoho prvku",
+      "Úloha bez zadaných rozměrů",
+      "Úloha s jedním řešením",
+      "Úloha na konstrukci polohy bodu"
+    ],
+    correct: [0],
+    explanation: "Polohová KÚ je taková, kde známe polohu alespoň jednoho prvku (např. úsečka AB je dána). Začínáme prvkem, který je dán svou polohou. Výsledkem jsou všechna sestrojitelná řešení.",
+    tip: "Polohová = je dána POLOha něčeho"
+  },
+  {
+    question: "Jaký je rozdíl mezi polohovou a nepolohovou konstrukční úlohou?",
+    type: "single",
+    options: [
+      "U nepolohové nejsou známy polohy prvků, pouze vlastnosti útvaru",
+      "Nepolohová úloha nemá řešení",
+      "Polohová má více řešení než nepolohová",
+      "Není mezi nimi rozdíl"
+    ],
+    correct: [0],
+    explanation: "U nepolohové KÚ nejsou známy polohy žádných prvků, pouze vlastnosti útvaru (délky, úhly). Začínáme libovolným prvkem a bereme v úvahu jen tvarově odlišná řešení."
+  },
+  {
+    question: "Co označuje zápis tₐ v trojúhelníku ABC?",
+    type: "single",
+    options: [
+      "Těžnice z vrcholu A",
+      "Tečna ke kružnici v bodě A",
+      "Třetina strany a",
+      "Thaletova kružnice nad AB"
+    ],
+    correct: [0],
+    explanation: "tₐ označuje těžnici z vrcholu A, která spojuje vrchol A se středem protilehlé strany BC. Střed strany BC značíme Sbc.",
+    tip: "tₐ = úsečka A→Sbc (střed strany BC)"
+  },
+  {
+    question: "Co označuje zápis vₐ v trojúhelníku ABC?",
+    type: "single",
+    options: [
+      "Výška z vrcholu A na stranu a (BC)",
+      "Vnitřní úhel u vrcholu A",
+      "Vzdálenost bodu A od těžiště",
+      "Vnější úhel u vrcholu A"
+    ],
+    correct: [0],
+    explanation: "vₐ označuje výšku z vrcholu A, kolmou na stranu a (tedy BC). Pata výšky je bod C₀ na přímce BC.",
+    tip: "Výška = kolmice z vrcholu na protilehlou stranu"
+  },
+  {
+    question: "Co znamená zápis p ⊥ q?",
+    type: "single",
+    options: [
+      "Přímka p je kolmá na přímku q",
+      "Přímka p je rovnoběžná s q",
+      "Přímka p protíná q",
+      "Přímka p leží na q"
+    ],
+    correct: [0],
+    explanation: "Symbol ⊥ značí kolmost. Zápis p ⊥ q tedy znamená, že přímka p je kolmá na přímku q."
+  },
+  {
+    question: "Co znamená zápis p ∥ q?",
+    type: "single",
+    options: [
+      "Přímka p je rovnoběžná s přímkou q",
+      "Přímka p je kolmá na q",
+      "Přímka p protíná q",
+      "Přímky p a q jsou totožné"
+    ],
+    correct: [0],
+    explanation: "Symbol ∥ značí rovnoběžnost. Zápis p ∥ q znamená, že přímky p a q jsou rovnoběžné (nemají společný bod, nebo jsou totožné)."
+  },
+  {
+    question: "Co označuje zápis A ∈ p?",
+    type: "single",
+    options: [
+      "Bod A leží na přímce p",
+      "Bod A je středem přímky p",
+      "Bod A je kolmý k přímce p",
+      "Bod A neleží na přímce p"
+    ],
+    correct: [0],
+    explanation: "Symbol ∈ značí náležení (příslušnost). A ∈ p znamená, že bod A leží na přímce p (je prvkem přímky)."
+  },
+  {
+    question: "Co označuje zápis p ∩ q = {X}?",
+    type: "single",
+    options: [
+      "Průnik přímek p a q je bod X",
+      "Přímky p a q jsou rovnoběžné",
+      "Přímka p je kolmá na q v bodě X",
+      "Bod X leží mimo obě přímky"
+    ],
+    correct: [0],
+    explanation: "Symbol ∩ značí průnik. p ∩ q = {X} znamená, že přímky p a q se protínají právě v bodě X."
+  },
+  {
+    question: "Pro úhel φ ∈ (0°; 90°) platí, že kružnice ε(φ) nad úsečkou AB:",
+    type: "single",
+    options: [
+      "Je obloukem, kde střed leží na ose úsečky AB",
+      "Je přímkou procházející body A a B",
+      "Je úsečkou AB",
+      "Neexistuje"
+    ],
+    correct: [0],
+    explanation: "Pro ostrý úhel φ ∈ (0°; 90°) je množina bodů, ze kterých je AB vidět pod úhlem φ, tvořena dvěma oblouky symetrickými podle osy úsečky AB. Středy oblouků leží na ose úsečky."
+  },
+  {
+    question: "Co zapisujeme v kroku konstrukce, když hledáme průsečík dvou objektů?",
+    type: "single",
+    options: [
+      "Název bodu; bod ∈ objekt₁ ∩ objekt₂",
+      "Pouze název bodu",
+      "Pouze průsečík",
+      "Objekt₁ + objekt₂"
+    ],
+    correct: [0],
+    explanation: "Když hledáme průsečík (např. bod A), zapíšeme: A; A ∈ p ∩ ε, což znamená, že bod A je prvkem průniku přímky p a kružnice ε."
+  }
+];
+var flashcards = [
+  { front: "k(S; r)", back: "Kružnice se středem S a poloměrem r" },
+  { front: "p ⊥ q", back: "Přímka p je kolmá na přímku q" },
+  { front: "p ∥ q", back: "Přímka p je rovnoběžná s přímkou q" },
+  { front: "A ∈ p", back: "Bod A leží na přímce p" },
+  { front: "p ∩ q = {X}", back: "Průnik přímek p a q je bod X" },
+  { front: "vₐ", back: "Výška z vrcholu A na stranu a (BC)" },
+  { front: "tₐ", back: "Těžnice z vrcholu A ke středu strany BC" },
+  { front: "Sbc", back: "Střed strany BC" },
+  { front: "C₀", back: "Pata výšky z vrcholu C (na přímce AB)" },
+  { front: "o (osa úsečky AB)", back: "Množina bodů X, kde |AX| = |BX|" },
+  { front: "o (osa úhlu α)", back: "Množina bodů stejně vzdálených od obou ramen úhlu" },
+  { front: "Thaletova kružnice", back: "Množina bodů X, ze kterých je AB vidět pod úhlem 90°" },
+  { front: "ε = {X; |∠AXB| = φ}", back: "Množina bodů, ze kterých je AB vidět pod úhlem φ" },
+  { front: "rv", back: "Poloměr kružnice vepsané trojúhelníku" },
+  { front: "ro", back: "Poloměr kružnice opsané trojúhelníku" },
+  { front: "|AB| = c", back: "Délka úsečky AB je c" },
+  { front: "|∠ABC| = α", back: "Velikost úhlu ABC je α" },
+  { front: "△ABC", back: "Trojúhelník s vrcholy A, B, C" }
+];
+var problems = [
+  {
+    id: 1,
+    title: "Trojúhelník ABC: c = 7 cm, b = 4 cm, γ = 30°",
+    difficulty: "easy",
+    zadani: "Je dána úsečka AB; |AB| = c = 7 cm. Sestrojte všechny △ABC, kde b = 4 cm a γ = 30°.",
+    nacrt: "Načrtneme trojúhelník ABC s vyznačením úsečky AB (strana c), strany b = AC a úhlu γ u vrcholu C.",
+    rozbor: [
+      "Úsečka AB je dána → začínáme úsečkou c",
+      "Bod C leží na kružnici k(A; 4cm) — vzdálenost od A je b",
+      "Bod C leží na kružnici ε(30°) — množina bodů, ze kterých je AB vidět pod úhlem 30°",
+      "C je průsečík těchto dvou množin"
+    ],
+    postup: [
+      "AB; |AB| = 7 cm",
+      "k; k(A; 4 cm)",
+      "ε; ε = {X; |∠AXB| = 30°}",
+      "C; C ∈ k ∩ ε",
+      "△ABC"
+    ],
+    diskuze: "Počet řešení závisí na vzájemné poloze kružnice k a oblouku ε. Může být 0, 1, 2 nebo 4 řešení (dva oblouky ε nad a pod AB, každý může mít 0-2 průsečíky s k)."
+  },
+  {
+    id: 2,
+    title: "Trojúhelník ABC: c = 6 cm, tᴄ = 4 cm, α = 45°",
+    difficulty: "medium",
+    zadani: "Sestrojte trojúhelník ABC, je-li dáno: c = 6 cm, tᴄ = 4 cm, α = 45°.",
+    nacrt: "Načrtneme trojúhelník ABC, vyznačíme stranu c = AB, těžnici tᴄ ze strany c a úhel α u vrcholu A.",
+    rozbor: [
+      "Strana c = AB je zadána → začneme úsečkou AB délky 6 cm",
+      "Těžnice tᴄ vychází ze středu Sc strany AB a má délku 4 cm",
+      "Střed Sc úsečky AB najdeme jako střed",
+      "Bod C leží na kružnici k(Sc; 4 cm)",
+      "Bod C leží na rameni úhlu α od bodu A",
+      "Sestrojíme polopřímku z A pod úhlem 45° od AB"
+    ],
+    postup: [
+      "AB; |AB| = 6 cm",
+      "Sc; Sc je střed úsečky AB",
+      "k; k(Sc; 4 cm)",
+      "p; polopřímka z A, |∠BAp| = 45°",
+      "C; C ∈ k ∩ p",
+      "△ABC"
+    ],
+    diskuze: "Řešení závisí na poloze polopřímky p vůči kružnici k. Může být 0, 1 nebo 2 řešení."
+  },
+  {
+    id: 3,
+    title: "Trojúhelník ABC: c = 6 cm, vᴄ = 5,3 cm, a = 7 cm",
+    difficulty: "medium",
+    zadani: "Sestrojte trojúhelník ABC, je-li dáno: c = 6 cm, vᴄ = 5,3 cm, a = 7 cm.",
+    nacrt: "Trojúhelník ABC s vyznačením strany c = AB, výšky vᴄ z bodu C kolmo na AB a strany a = BC.",
+    rozbor: [
+      "Strana c = AB je zadána → úsečka délky 6 cm",
+      "Výška vᴄ = 5,3 cm je kolmá vzdálenost C od přímky AB",
+      "Bod C leží na přímce rovnoběžné s AB ve vzdálenosti 5,3 cm",
+      "Bod C leží na kružnici k(B; 7 cm) — vzdálenost od B je a",
+      "C je průsečík rovnoběžky s kružnicí"
+    ],
+    postup: [
+      "AB; |AB| = 6 cm",
+      "p; p ∥ AB ∧ vzdálenost p od AB je 5,3 cm",
+      "k; k(B; 7 cm)",
+      "C; C ∈ p ∩ k",
+      "△ABC"
+    ],
+    diskuze: "Existují dvě rovnoběžky p (nad a pod AB), každá může mít 0, 1 nebo 2 průsečíky s kružnicí k."
+  },
+  {
+    id: 4,
+    title: "Trojúhelník ABC: a = 6 cm, tₐ = 3,5 cm, α = 75°",
+    difficulty: "medium",
+    zadani: "Sestrojte trojúhelník ABC, je-li dáno: a = 6 cm, tₐ = 3,5 cm, α = 75°.",
+    nacrt: "Trojúhelník ABC, strana a = BC, těžnice tₐ z vrcholu A do středu strany BC, úhel α u vrcholu A.",
+    rozbor: [
+      "Strana a = BC je zadána → úsečka délky 6 cm",
+      "Střed Sa strany BC určíme",
+      "Těžnice tₐ má délku 3,5 cm → A leží na kružnici k(Sa; 3,5 cm)",
+      "Úhel α = 75° je úhel ∠BAC → A leží na kružnici ε(75°) nad BC",
+      "A je průsečík kružnic k a ε"
+    ],
+    postup: [
+      "BC; |BC| = 6 cm",
+      "Sa; Sa je střed úsečky BC",
+      "k; k(Sa; 3,5 cm)",
+      "ε; ε = {X; |∠BXC| = 75°}",
+      "A; A ∈ k ∩ ε",
+      "△ABC"
+    ],
+    diskuze: "Počet řešení závisí na průniku kružnice k a oblouků ε."
+  },
+  {
+    id: 5,
+    title: "Trojúhelník ABC: vₐ = 3,8 cm, vᴄ = 4,2 cm, γ = 30°",
+    difficulty: "hard",
+    zadani: "Sestrojte trojúhelník ABC, je-li dáno: vₐ = 3,8 cm, vᴄ = 4,2 cm, γ = 30°.",
+    nacrt: "Trojúhelník ABC s vyznačením výšek vₐ (z A na BC) a vᴄ (z C na AB), a úhlu γ = 30° u vrcholu C.",
+    rozbor: [
+      "Začneme konstrukcí úhlu γ = 30° pomocí ramen CX a CY",
+      "Bod A leží na jednom rameni a B na druhém",
+      "A leží ve vzdálenosti vₐ od přímky BC → na rovnoběžce s CY",
+      "Použijeme Thaletovu kružnici pro konstrukci pravoúhlého trojúhelníku",
+      "Bod B najdeme pomocí podmínky vᴄ a kružnice ε"
+    ],
+    postup: [
+      "CX (polopřímka z C)",
+      "CY; |∠XCY| = 30°",
+      "p; p ∥ CX ∧ vzdálenost = vₐ = 3,8 cm",
+      "A; A ∈ p ∩ CY",
+      "k; k(C; vᴄ) = k(C; 4,2 cm)",
+      "T; T = {X; |∠AXC| = 90°} — Thaletova kružnice nad AC",
+      "C₀; C₀ ∈ k ∩ T",
+      "q; q = AC₀ (přímka obsahující výšku)",
+      "B; B ∈ q ∩ CX",
+      "△ABC"
+    ],
+    diskuze: "Úloha má více kroků a podmínek. Počet řešení závisí na vzájemné poloze všech konstruovaných objektů."
+  },
+  {
+    id: 6,
+    title: "Trojúhelník ABC: α = 60°, rᵥ = 2 cm, vᴄ = 5 cm",
+    difficulty: "hard",
+    zadani: "Sestrojte trojúhelník ABC, je-li dáno: α = 60°, rᵥ = 2 cm (kružnice vepsaná), vᴄ = 5 cm.",
+    nacrt: "Trojúhelník ABC s vepsanou kružnicí o poloměru 2 cm, úhlem α = 60° u vrcholu A a výškou vᴄ z C.",
+    rozbor: [
+      "Začneme konstrukcí výšky vᴄ jako úsečky CC₀ délky 5 cm",
+      "Sestrojíme kružnici ε = {X; |∠C₀XC| = 60°} — body, ze kterých je CC₀ vidět pod 60°",
+      "Sestrojíme kolmici p k CC₀ v bodě C₀ — na ní leží strana AB",
+      "A je průsečík p a ε",
+      "Osa úhlu α je množina bodů pro střed vepsané kružnice",
+      "Střed vepsané kružnice S leží ve vzdálenosti rᵥ od všech stran"
+    ],
+    postup: [
+      "CC₀; |CC₀| = vᴄ = 5 cm",
+      "ε; ε = {X; |∠C₀XC| = 60°}",
+      "p; p ⊥ CC₀ ∧ C₀ ∈ p",
+      "A; A ∈ p ∩ ε",
+      "o; o je osa úhlu α (osa ∠CAp)",
+      "q; q ∥ AC ∧ vzdálenost q od AC = 2 cm",
+      "S; S ∈ o ∩ q",
+      "kᵥ; kᵥ(S; 2 cm) — kružnice vepsaná",
+      "M; M = {X; |∠SXC| = 90°}",
+      "T; T ∈ M ∩ kᵥ",
+      "B; B ∈ p ∩ CT",
+      "△ABC"
+    ],
+    diskuze: "Složitá úloha s mnoha kroky. Existence řešení závisí na splnění všech podmínek současně."
+  },
+  {
+    id: 7,
+    title: "Rovnoběžník ABCD: |AC| = 10 cm, vₐ = 4 cm, |AB| = 7 cm",
+    difficulty: "medium",
+    zadani: "Sestrojte rovnoběžník ABCD, je-li |AC| = 10 cm, vₐ = 4 cm, |AB| = 7 cm.",
+    nacrt: "Rovnoběžník ABCD s úhlopříčkou AC, výškou vₐ na stranu a (BC nebo AD) a stranou AB.",
+    rozbor: [
+      "Úhlopříčka AC má délku 10 cm → začneme úsečkou AC",
+      "Strana AB má délku 7 cm → B leží na kružnici k(A; 7 cm)",
+      "Výška vₐ = 4 cm → vzdálenost mezi rovnoběžnými stranami AD a BC",
+      "B leží ve vzdálenosti 4 cm od přímky AD",
+      "D je obraz B podle středu S úhlopříčky AC"
+    ],
+    postup: [
+      "AC; |AC| = 10 cm",
+      "S; S je střed AC",
+      "k; k(A; 7 cm)",
+      "p; p ∥ AC (přímka pro AD)",
+      "q; q ∥ p ve vzdálenosti 4 cm",
+      "B; B ∈ k ∩ q",
+      "D; D je obraz B podle S",
+      "ABCD"
+    ],
+    diskuze: "Rovnoběžník má střed úhlopříček totožný. Řešení závisí na průniku kružnice k s rovnoběžkou q."
+  },
+  {
+    id: 8,
+    title: "Podle postupu konstrukce určete zadání",
+    difficulty: "medium",
+    zadani: `Podle následujícího postupu zkonstruujte trojúhelník. Jak znělo zadání úlohy?
+
+1) BC; |BC| = 6 cm
+2) S₁; (S₁ ∈ BC) ∧ (|S₁B| = |S₁C|)
+3) o; o = {X; |CX| = |BX|}
+4) k₁; k₁(C; 4 cm)
+5) S₂; S₂ ∈ o ∩ k₁
+6) k₂; k₂(S₂; 4 cm)
+7) k₃; k₃(S₁; 6 cm)
+8) A; A ∈ k₂ ∩ k₃
+9) △ABC`,
+    nacrt: "Trojúhelník ABC s vyznačením: strana a = BC = 6 cm, středy S₁ (úsečky BC) a S₂, kružnice k₁, k₂, k₃.",
+    rozbor: [
+      "Krok 1: BC = 6 cm → strana a = 6 cm",
+      "Krok 2-3: Osa úsečky BC → budeme hledat body stejně vzdálené od B a C",
+      "Krok 4-5: S₂ leží na ose BC a na kružnici k(C; 4cm) → S₂ je střed kružnice opsané? Ne, je to pomocný bod.",
+      "Krok 6: k₂(S₂; 4cm) — A leží na této kružnici → |AS₂| = 4 cm",
+      "Krok 7: k₃(S₁; 6cm) — A leží na této kružnici → |AS₁| = 6 cm → tₐ = 6 cm (těžnice z A)",
+      "Krok 8: A je průsečík k₂ a k₃",
+      "Závěr: a = 6 cm, tₐ = 6 cm, a ještě nějaká podmínka na vzdálenost od C"
+    ],
+    postup: [
+      "Zadání: a = 6 cm, tₐ = 6 cm, k = 4 cm (nějaká další podmínka)"
+    ],
+    diskuze: "Úloha ukazuje zpětnou analýzu konstrukce. Zadání bylo pravděpodobně: △ABC, kde a = 6 cm, tₐ = 6 cm a další podmínka."
+  }
+];
+function TheorySection() {
+  const [openSection, setOpenSection] = useState(null);
+  const toggle = (section) => {
+    setOpenSection(openSection === section ? null : section);
+  };
+  const sections = [
+    {
+      id: "struktura",
+      title: "Struktura řešení konstrukční úlohy",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: styles.p,
+            children: [
+              "Každá konstrukční úloha se řeší ve ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "čtyřech krocích"
+              }, undefined, false, undefined, this),
+              ":"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.stepBox,
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.stepNum,
+                children: "1"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Náčrt a rozbor"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: { ...styles.p, marginTop: 8 },
+                    children: "Analýza vyřešené situace. Črtáme obrazec, zvýrazníme zadané prvky a hledáme vztahy mezi nimi. Nalezení cesty od zadaných prvků k prvkům hledaným."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.stepBox,
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.stepNum,
+                children: "2"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Postup konstrukce"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: { ...styles.p, marginTop: 8 },
+                    children: "Seznam kroků konstrukce. Pojmenování prvku v rozboru musí být shodné s pojmenováním v postupu. Žádný krok nesmí používat objekt, který ještě nebyl sestrojen."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.stepBox,
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.stepNum,
+                children: "3"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Konstrukce"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: { ...styles.p, marginTop: 8 },
+                    children: "Samotné rýsování podle postupu. Postup konstrukce by měl předcházet nebo být psán současně s konstrukcí."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.stepBox,
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.stepNum,
+                children: "4"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Diskuze"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: { ...styles.p, marginTop: 8 },
+                    children: "Určení počtu řešení a podmínek existence. Analyzujeme, za jakých podmínek má úloha 0, 1, 2 nebo více řešení."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    },
+    {
+      id: "typy",
+      title: "Polohové vs. nepolohové úlohy",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: styles.comparisonBox,
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { ...styles.comparisonCol, borderRight: "1px solid rgba(255,255,255,0.1)" },
+              children: [
+                /* @__PURE__ */ jsxDEV("h4", {
+                  style: styles.comparisonTitle,
+                  children: "Polohové úlohy"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("ul", {
+                  style: styles.ul,
+                  children: [
+                    /* @__PURE__ */ jsxDEV("li", {
+                      children: "Je známa poloha alespoň jednoho prvku"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("li", {
+                      children: "Začínáme prvkem, který je dán svou polohou"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("li", {
+                      children: [
+                        "Výsledkem jsou ",
+                        /* @__PURE__ */ jsxDEV("strong", {
+                          children: "všechny"
+                        }, undefined, false, undefined, this),
+                        " sestrojitelné možnosti"
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("li", {
+                      children: 'Např.: "Je dána úsečka AB..."'
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: styles.comparisonCol,
+              children: [
+                /* @__PURE__ */ jsxDEV("h4", {
+                  style: styles.comparisonTitle,
+                  children: "Nepolohové úlohy"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("ul", {
+                  style: styles.ul,
+                  children: [
+                    /* @__PURE__ */ jsxDEV("li", {
+                      children: "Nejsou známy polohy prvků, jen vlastnosti"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("li", {
+                      children: "Začínáme libovolným prvkem"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("li", {
+                      children: [
+                        "Bereme v úvahu jen ",
+                        /* @__PURE__ */ jsxDEV("strong", {
+                          children: "tvarově odlišná"
+                        }, undefined, false, undefined, this),
+                        " řešení"
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("li", {
+                      children: 'Např.: "Sestrojte trojúhelník, kde c = 7 cm..."'
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this)
+    },
+    {
+      id: "mnoziny",
+      title: "Množiny bodů dané vlastnosti",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.conceptCard,
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
+                style: styles.conceptTitle,
+                children: "Osa úsečky AB"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formula,
+                children: [
+                  "o = ",
+                  "{X; |AX| = |BX|}"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: styles.p,
+                children: "Množina všech bodů, které mají stejnou vzdálenost od A jako od B. Osa úsečky prochází jejím středem a je na ni kolmá."
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.conceptCard,
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
+                style: styles.conceptTitle,
+                children: "Osa úhlu α"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formula,
+                children: [
+                  "o = ",
+                  "{M; vzdálenost M od obou ramen je stejná}"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: styles.p,
+                children: "Množina všech bodů stejně vzdálených od obou ramen úhlu. Osa úhlu půlí úhel."
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.conceptCard,
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
+                style: styles.conceptTitle,
+                children: "Kružnice ε(φ) — zobecněná Thaletova"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formula,
+                children: [
+                  "ε = ",
+                  "{X; |∠AXB| = φ}"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: styles.p,
+                children: "Množina bodů, ze kterých je úsečka AB vidět pod úhlem φ."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("ul", {
+                style: styles.ul,
+                children: [
+                  /* @__PURE__ */ jsxDEV("li", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "φ = 90°"
+                      }, undefined, false, undefined, this),
+                      " → Thaletova kružnice (průměr = AB)"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("li", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "φ ∈ (0°; 90°)"
+                      }, undefined, false, undefined, this),
+                      " → dva oblouky nad a pod AB (ostrý úhel)"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("li", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "φ ∈ (90°; 180°)"
+                      }, undefined, false, undefined, this),
+                      " → dva oblouky, středy mezi A a B (tupý úhel)"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.conceptCard,
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
+                style: styles.conceptTitle,
+                children: "Rovnoběžka ve vzdálenosti d"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formula,
+                children: "p ∥ q ∧ vzdálenost(p, q) = d"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: styles.p,
+                children: "Množina bodů ve vzdálenosti d od přímky tvoří dvě rovnoběžné přímky (jednu na každé straně)."
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    },
+    {
+      id: "thaletova",
+      title: "Thaletova kružnice podrobně",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.highlightBox,
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Thaletova věta:"
+              }, undefined, false, undefined, this),
+              " Každý obvodový úhel nad průměrem kružnice je pravý (90°)."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: styles.p,
+            children: "Pro úsečku AB platí:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: styles.ul,
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                children: [
+                  "Střed Thaletovy kružnice je ",
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "střed S úsečky AB"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                children: [
+                  "Poloměr je ",
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "|AB|/2"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                children: "Každý bod X na kružnici (kromě A, B) splňuje: |∠AXB| = 90°"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { ...styles.p, marginTop: 16 },
+            children: "Zobecnění pro úhel φ:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: styles.ul,
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                children: "Pokud φ = 90°, je to právě Thaletova kružnice"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                children: 'Pro ostrý úhel φ jsou oblouky "vyduté" od středu'
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                children: 'Pro tupý úhel φ (např. 150°) jsou oblouky "prohnuté" dovnitř'
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { ...styles.formula, marginTop: 16 },
+            children: [
+              "Zápis: ε = ",
+              "{X; |∠AXB| = 90°}",
+              " — Thaletova kružnice"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    },
+    {
+      id: "trojuhelnik",
+      title: "Prvky trojúhelníku",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: styles.tableWrap,
+          children: /* @__PURE__ */ jsxDEV("table", {
+            style: styles.table,
+            children: [
+              /* @__PURE__ */ jsxDEV("thead", {
+                children: /* @__PURE__ */ jsxDEV("tr", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("th", {
+                      style: styles.th,
+                      children: "Značka"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("th", {
+                      style: styles.th,
+                      children: "Název"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("th", {
+                      style: styles.th,
+                      children: "Popis"
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("tbody", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "a, b, c"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Strany"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "a = BC, b = AC, c = AB (protilehlé vrcholům A, B, C)"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "α, β, γ"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Vnitřní úhly"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "α u vrcholu A, β u B, γ u C"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "vₐ, vᵦ, vᴄ"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Výšky"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Kolmice z vrcholu na protilehlou stranu"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "tₐ, tᵦ, tᴄ"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Těžnice"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Spojnice vrcholu se středem protilehlé strany"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Sₐ, Sᵦ, Sᴄ"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Středy stran"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Sₐ střed BC, Sᵦ střed AC, Sᴄ střed AB"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "A₀, B₀, C₀"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Paty výšek"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Body na stranách, kde výška dopadá"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "rᵥ"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Poloměr vepsané kružnice"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Kružnice dotýkající se všech tří stran zevnitř"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "rₒ"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Poloměr opsané kružnice"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: styles.td,
+                        children: "Kružnice procházející všemi třemi vrcholy"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this)
+    }
+  ];
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: sections.map((section) => /* @__PURE__ */ jsxDEV("div", {
+      style: styles.accordionItem,
+      children: [
+        /* @__PURE__ */ jsxDEV("div", {
+          style: styles.accordionHeader,
+          onClick: () => toggle(section.id),
+          children: [
+            /* @__PURE__ */ jsxDEV("span", {
+              children: section.title
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("span", {
+              style: { transform: openSection === section.id ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.4s ease" },
+              children: "▼"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        openSection === section.id && /* @__PURE__ */ jsxDEV("div", {
+          style: styles.accordionContent,
+          children: section.content
+        }, undefined, false, undefined, this)
+      ]
+    }, section.id, true, undefined, this))
+  }, undefined, false, undefined, this);
+}
+function NotationSection() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.card,
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: styles.sectionTitle,
+            children: "Základní symboly"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.tableWrap,
+            children: /* @__PURE__ */ jsxDEV("table", {
+              style: styles.table,
+              children: [
+                /* @__PURE__ */ jsxDEV("thead", {
+                  children: /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("th", {
+                        style: styles.th,
+                        children: "Symbol"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        style: styles.th,
+                        children: "Význam"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        style: styles.th,
+                        children: "Příklad"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("tbody", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "∈"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "náleží, je prvkem"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "A ∈ p (bod A leží na přímce p)"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "∉"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "nenáleží"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "A ∉ p (bod A neleží na p)"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "∩"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "průnik"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: [
+                            "p ∩ q = ",
+                            "{X}",
+                            " (průsečík p a q je X)"
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "∪"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "sjednocení"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "p ∪ q (všechny body p nebo q)"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "⊥"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "kolmý na"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "p ⊥ q (p je kolmá na q)"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "∥"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "rovnoběžný s"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "p ∥ q (p je rovnoběžná s q)"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "∧"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: 'a zároveň (logické "a")'
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "A ∈ p ∧ A ∈ k"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "|AB|"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "délka úsečky AB"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "|AB| = 5 cm"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "|∠ABC|"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "velikost úhlu ABC"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "|∠ABC| = 60°"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.card,
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: styles.sectionTitle,
+            children: "Zápis objektů"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.tableWrap,
+            children: /* @__PURE__ */ jsxDEV("table", {
+              style: styles.table,
+              children: [
+                /* @__PURE__ */ jsxDEV("thead", {
+                  children: /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("th", {
+                        style: styles.th,
+                        children: "Zápis"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        style: styles.th,
+                        children: "Význam"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("tbody", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "k(S; r)"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Kružnice se středem S a poloměrem r"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "AB"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Úsečka s koncovými body A a B"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "↔AB"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Přímka procházející body A a B"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "→AB"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Polopřímka z A směrem k B"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "△ABC"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Trojúhelník s vrcholy A, B, C"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "□ABCD"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Čtyřúhelník ABCD"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "∠ABC"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Úhel s vrcholem B, ramena BA a BC"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.card,
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: styles.sectionTitle,
+            children: "Zápis kroků konstrukce"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.tableWrap,
+            children: /* @__PURE__ */ jsxDEV("table", {
+              style: styles.table,
+              children: [
+                /* @__PURE__ */ jsxDEV("thead", {
+                  children: /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("th", {
+                        style: styles.th,
+                        children: "Příklad zápisu"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        style: styles.th,
+                        children: "Význam"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("tbody", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "AB; |AB| = 5 cm"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Sestrojíme úsečku AB délky 5 cm"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "k; k(A; 3 cm)"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Sestrojíme kružnici k se středem A a poloměrem 3 cm"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "p; p ⊥ AB ∧ A ∈ p"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Sestrojíme přímku p kolmou na AB procházející bodem A"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "q; q ∥ p ∧ |q, p| = 4 cm"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Sestrojíme přímku q rovnoběžnou s p ve vzdálenosti 4 cm"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "C; C ∈ k ∩ p"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Bod C je průsečíkem kružnice k a přímky p"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "S; S je střed AB"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "S je střed úsečky AB"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "o; o je osa úhlu α"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "o je osa úhlu α"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: [
+                            "ε; ε = ",
+                            "{X; |∠AXB| = 60°}"
+                          ]
+                        }, undefined, true, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          style: styles.td,
+                          children: "Množina bodů, ze kterých je AB vidět pod 60°"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProblemsSection() {
+  const [selectedProblem, setSelectedProblem] = useState(null);
+  const [showSolution, setShowSolution] = useState(false);
+  const difficultyColors = {
+    easy: { bg: "#22c55e33", border: "#22c55e", label: "Easy" },
+    medium: { bg: "#f59e0b33", border: "#f59e0b", label: "Medium" },
+    hard: { bg: "#ef444433", border: "#ef4444", label: "Hard" }
+  };
+  if (selectedProblem) {
+    const problem = problems.find((p) => p.id === selectedProblem);
+    const diff = difficultyColors[problem.difficulty];
+    return /* @__PURE__ */ jsxDEV("div", {
+      children: [
+        /* @__PURE__ */ jsxDEV("button", {
+          style: styles.backButton,
+          onClick: () => {
+            setSelectedProblem(null);
+            setShowSolution(false);
+          },
+          children: "← Zpět na seznam"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("div", {
+          style: styles.card,
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 16 },
+              children: [
+                /* @__PURE__ */ jsxDEV("span", {
+                  style: { ...styles.diffBadge, background: diff.bg, borderColor: diff.border },
+                  children: diff.label
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("h3", {
+                  style: { ...styles.problemTitle, margin: 0 },
+                  children: problem.title
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: styles.zadaniBox,
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Zadání:"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("p", {
+                  style: { margin: "8px 0 0 0", whiteSpace: "pre-wrap" },
+                  children: problem.zadani
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("button", {
+              style: styles.revealButton,
+              onClick: () => setShowSolution(!showSolution),
+              children: showSolution ? "Skrýt řešení" : "Zobrazit řešení"
+            }, undefined, false, undefined, this),
+            showSolution && /* @__PURE__ */ jsxDEV("div", {
+              style: styles.solutionBox,
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: styles.solutionSection,
+                  children: [
+                    /* @__PURE__ */ jsxDEV("h4", {
+                      style: styles.solutionTitle,
+                      children: "I. Náčrt"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("p", {
+                      style: styles.p,
+                      children: problem.nacrt
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: styles.solutionSection,
+                  children: [
+                    /* @__PURE__ */ jsxDEV("h4", {
+                      style: styles.solutionTitle,
+                      children: "II. Rozbor"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("ul", {
+                      style: styles.ul,
+                      children: problem.rozbor.map((item, i) => /* @__PURE__ */ jsxDEV("li", {
+                        children: item
+                      }, i, false, undefined, this))
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: styles.solutionSection,
+                  children: [
+                    /* @__PURE__ */ jsxDEV("h4", {
+                      style: styles.solutionTitle,
+                      children: "III. Postup konstrukce"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("ol", {
+                      style: styles.ol,
+                      children: problem.postup.map((step, i) => /* @__PURE__ */ jsxDEV("li", {
+                        style: styles.constructionStep,
+                        children: step
+                      }, i, false, undefined, this))
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: styles.solutionSection,
+                  children: [
+                    /* @__PURE__ */ jsxDEV("h4", {
+                      style: styles.solutionTitle,
+                      children: "IV. Diskuze"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("p", {
+                      style: styles.p,
+                      children: problem.diskuze
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: styles.problemsGrid,
+    children: problems.map((problem) => {
+      const diff = difficultyColors[problem.difficulty];
+      return /* @__PURE__ */ jsxDEV("div", {
+        style: styles.problemCard,
+        onClick: () => setSelectedProblem(problem.id),
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { ...styles.diffBadge, background: diff.bg, borderColor: diff.border },
+            children: diff.label
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("h4", {
+            style: styles.problemCardTitle,
+            children: problem.title
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: styles.problemCardDesc,
+            children: [
+              problem.zadani.substring(0, 80),
+              "..."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, problem.id, true, undefined, this);
+    })
+  }, undefined, false, undefined, this);
+}
+function FlashcardsSection() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const next = () => {
+    setFlipped(false);
+    setCurrentIndex((currentIndex + 1) % flashcards.length);
+  };
+  const prev = () => {
+    setFlipped(false);
+    setCurrentIndex((currentIndex - 1 + flashcards.length) % flashcards.length);
+  };
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: styles.flashcardsWrap,
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.dotBar,
+        children: flashcards.map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+          style: {
+            ...styles.dot,
+            background: i === currentIndex ? "#06b6d4" : "#4b5563"
+          },
+          onClick: () => {
+            setFlipped(false);
+            setCurrentIndex(i);
+          }
+        }, i, false, undefined, this))
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.flashcard,
+        onClick: () => setFlipped(!flipped),
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: {
+            ...styles.flashcardInner,
+            transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)"
+          },
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: styles.flashcardFront,
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: styles.flashcardContent,
+                  children: flashcards[currentIndex].front
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: styles.flashcardHint,
+                  children: "Klikni pro odpověď"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: styles.flashcardBack,
+              children: /* @__PURE__ */ jsxDEV("div", {
+                style: styles.flashcardContent,
+                children: flashcards[currentIndex].back
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.flashcardNav,
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: styles.navButton,
+            onClick: prev,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: styles.flashcardCounter,
+            children: [
+              currentIndex + 1,
+              " / ",
+              flashcards.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: styles.navButton,
+            onClick: next,
+            children: "Další →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function FormulaSheet() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.card,
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: styles.sectionTitle,
+            children: "Množiny bodů dané vlastnosti"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.formulaGrid,
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Osa úsečky AB"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: [
+                      "o = ",
+                      "{X; |AX| = |BX|}"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Osa úhlu"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: [
+                      "o = ",
+                      "{M; dist(M, rameno₁) = dist(M, rameno₂)}"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Thaletova kružnice"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: [
+                      "T = ",
+                      "{X; |∠AXB| = 90°}"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Kružnice ε(φ)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: [
+                      "ε = ",
+                      "{X; |∠AXB| = φ}"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Kružnice"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: [
+                      "k(S; r) = ",
+                      "{X; |SX| = r}"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Rovnoběžka ve vzdálenosti d"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: "p ∥ q ∧ dist(p, q) = d"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.card,
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: styles.sectionTitle,
+            children: "Prvky trojúhelníku"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.formulaGrid,
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Strany"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: "a = BC, b = AC, c = AB"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Vnitřní úhly"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: "α + β + γ = 180°"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Výška vₐ"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: "vₐ ⊥ BC, A ∈ vₐ"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Těžnice tₐ"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: "tₐ = ASbc (A → střed BC)"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Těžiště"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: "T = tₐ ∩ tᵦ ∩ tᴄ, dělí těžnice 2:1"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.formulaItem,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formulaName,
+                    children: "Trojúhelníková nerovnost"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: styles.formula,
+                    children: [
+                      "a ",
+                      "<",
+                      " b + c, b ",
+                      "<",
+                      " a + c, c ",
+                      "<",
+                      " a + b"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.card,
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: styles.sectionTitle,
+            children: "Postup při řešení KÚ"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: styles.procedureBox,
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.procedureStep,
+                children: [
+                  /* @__PURE__ */ jsxDEV("span", {
+                    style: styles.procedureNum,
+                    children: "1"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "Náčrt a rozbor"
+                      }, undefined, false, undefined, this),
+                      " — nakresli hotový obrazec, vyznač známé prvky, analyzuj vztahy"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.procedureStep,
+                children: [
+                  /* @__PURE__ */ jsxDEV("span", {
+                    style: styles.procedureNum,
+                    children: "2"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "Postup konstrukce"
+                      }, undefined, false, undefined, this),
+                      " — sepiš kroky, každý objekt pojmenuj, nepoužívej nesestrojené"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.procedureStep,
+                children: [
+                  /* @__PURE__ */ jsxDEV("span", {
+                    style: styles.procedureNum,
+                    children: "3"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "Konstrukce"
+                      }, undefined, false, undefined, this),
+                      " — rýsuj podle postupu (nebo současně s ním)"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: styles.procedureStep,
+                children: [
+                  /* @__PURE__ */ jsxDEV("span", {
+                    style: styles.procedureNum,
+                    children: "4"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "Diskuze"
+                      }, undefined, false, undefined, this),
+                      " — urči počet řešení (0, 1, 2, ..., ∞)"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function App() {
+  const [activeTab, setActiveTab] = useState("theory");
+  const tabs = [
+    { id: "theory", label: "Teorie" },
+    { id: "notation", label: "Značení" },
+    { id: "problems", label: "Příklady" },
+    { id: "quiz", label: "Kvíz" },
+    { id: "flashcards", label: "Kartičky" },
+    { id: "formulas", label: "Vzorce" }
+  ];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: styles.container,
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.bgGrid
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.bgSun
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.bgParticle1
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.bgParticle2
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: styles.bgParticle3
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("header", {
+        style: styles.header,
+        children: [
+          /* @__PURE__ */ jsxDEV("h1", {
+            style: styles.title,
+            children: "Konstrukční úlohy"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: styles.subtitle,
+            children: "Kompletní příprava na písemku"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("nav", {
+        style: styles.nav,
+        children: tabs.map((tab) => /* @__PURE__ */ jsxDEV("button", {
+          style: {
+            ...styles.tabButton,
+            ...activeTab === tab.id ? styles.tabButtonActive : {}
+          },
+          onClick: () => setActiveTab(tab.id),
+          children: tab.label
+        }, tab.id, false, undefined, this))
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("main", {
+        style: styles.main,
+        children: [
+          activeTab === "theory" && /* @__PURE__ */ jsxDEV(TheorySection, {}, undefined, false, undefined, this),
+          activeTab === "notation" && /* @__PURE__ */ jsxDEV(NotationSection, {}, undefined, false, undefined, this),
+          activeTab === "problems" && /* @__PURE__ */ jsxDEV(ProblemsSection, {}, undefined, false, undefined, this),
+          activeTab === "quiz" && /* @__PURE__ */ jsxDEV(QuizEngine, {
+            questions: quizQuestions,
+            accentColor: "#06b6d4"
+          }, undefined, false, undefined, this),
+          activeTab === "flashcards" && /* @__PURE__ */ jsxDEV(FlashcardsSection, {}, undefined, false, undefined, this),
+          activeTab === "formulas" && /* @__PURE__ */ jsxDEV(FormulaSheet, {}, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        @keyframes gridMove {
+          0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+          100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        @keyframes sunPulse {
+          0%, 100% { box-shadow: 0 0 60px #ff006640, 0 0 120px #ff006620; }
+          50% { box-shadow: 0 0 80px #ff006660, 0 0 160px #ff006630; }
+        }
+
+        @keyframes float1 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(20px, -30px); }
+        }
+
+        @keyframes float2 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(-30px, 20px); }
+        }
+
+        @keyframes float3 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(15px, 25px); }
+        }
+      `
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var styles = {
+  container: {
+    minHeight: "100vh",
+    background: "#0a0a1a",
+    color: "#fff",
+    fontFamily: "'Exo 2', sans-serif",
+    position: "relative",
+    overflow: "hidden"
+  },
+  bgGrid: {
+    position: "fixed",
+    bottom: 0,
+    left: "-50%",
+    right: "-50%",
+    height: "40vh",
+    background: "repeating-linear-gradient(90deg, #06b6d420 0px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, #06b6d420 0px, transparent 1px, transparent 50px)",
+    animation: "gridMove 20s linear infinite",
+    transformOrigin: "center bottom",
+    zIndex: 0
+  },
+  bgSun: {
+    position: "fixed",
+    bottom: "15vh",
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: "300px",
+    height: "150px",
+    borderRadius: "300px 300px 0 0",
+    background: "linear-gradient(180deg, #ff0066 0%, #ff006600 100%)",
+    animation: "sunPulse 4s ease-in-out infinite",
+    zIndex: 0
+  },
+  bgParticle1: {
+    position: "fixed",
+    top: "20%",
+    left: "10%",
+    width: "8px",
+    height: "8px",
+    borderRadius: "50%",
+    background: "#06b6d4",
+    boxShadow: "0 0 20px #06b6d4",
+    animation: "float1 15s ease-in-out infinite",
+    zIndex: 0
+  },
+  bgParticle2: {
+    position: "fixed",
+    top: "40%",
+    right: "15%",
+    width: "6px",
+    height: "6px",
+    borderRadius: "50%",
+    background: "#ff0066",
+    boxShadow: "0 0 15px #ff0066",
+    animation: "float2 18s ease-in-out infinite",
+    zIndex: 0
+  },
+  bgParticle3: {
+    position: "fixed",
+    top: "60%",
+    left: "20%",
+    width: "10px",
+    height: "10px",
+    borderRadius: "50%",
+    background: "#a855f7",
+    boxShadow: "0 0 25px #a855f7",
+    animation: "float3 12s ease-in-out infinite",
+    zIndex: 0
+  },
+  header: {
+    position: "relative",
+    zIndex: 1,
+    textAlign: "center",
+    padding: "40px 20px 20px"
+  },
+  title: {
+    fontFamily: "'Audiowide', cursive",
+    fontSize: "clamp(28px, 5vw, 42px)",
+    background: "linear-gradient(90deg, #06b6d4, #ff0066)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    marginBottom: "8px"
+  },
+  subtitle: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: "16px"
+  },
+  nav: {
+    position: "relative",
+    zIndex: 1,
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: "8px",
+    padding: "0 20px 20px"
+  },
+  tabButton: {
+    padding: "10px 18px",
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "20px",
+    color: "rgba(255,255,255,0.7)",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontFamily: "'Exo 2', sans-serif",
+    transition: "all 0.4s ease"
+  },
+  tabButtonActive: {
+    background: "rgba(6,182,212,0.2)",
+    borderColor: "#06b6d4",
+    color: "#fff"
+  },
+  main: {
+    position: "relative",
+    zIndex: 1,
+    maxWidth: "900px",
+    margin: "0 auto",
+    padding: "0 20px 40px"
+  },
+  card: {
+    background: "rgba(255,255,255,0.05)",
+    backdropFilter: "blur(20px)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "20px",
+    padding: "24px",
+    marginBottom: "20px",
+    transition: "all 0.4s ease"
+  },
+  sectionTitle: {
+    fontFamily: "'Audiowide', cursive",
+    fontSize: "20px",
+    color: "#06b6d4",
+    marginBottom: "16px"
+  },
+  p: {
+    color: "rgba(255,255,255,0.8)",
+    lineHeight: 1.6,
+    marginBottom: "12px"
+  },
+  ul: {
+    color: "rgba(255,255,255,0.8)",
+    lineHeight: 1.8,
+    paddingLeft: "24px",
+    marginBottom: "12px"
+  },
+  ol: {
+    color: "rgba(255,255,255,0.8)",
+    lineHeight: 1.8,
+    paddingLeft: "24px",
+    marginBottom: "12px"
+  },
+  accordionItem: {
+    background: "rgba(255,255,255,0.05)",
+    backdropFilter: "blur(20px)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "16px",
+    marginBottom: "12px",
+    overflow: "hidden",
+    transition: "all 0.4s ease"
+  },
+  accordionHeader: {
+    padding: "16px 20px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    cursor: "pointer",
+    color: "#fff",
+    fontWeight: 600,
+    fontSize: "16px"
+  },
+  accordionContent: {
+    padding: "0 20px 20px",
+    borderTop: "1px solid rgba(255,255,255,0.1)"
+  },
+  stepBox: {
+    display: "flex",
+    gap: "16px",
+    padding: "16px",
+    background: "rgba(6,182,212,0.1)",
+    borderRadius: "12px",
+    marginBottom: "12px",
+    border: "1px solid rgba(6,182,212,0.2)"
+  },
+  stepNum: {
+    width: "32px",
+    height: "32px",
+    borderRadius: "50%",
+    background: "#06b6d4",
+    color: "#0a0a1a",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: 700,
+    flexShrink: 0
+  },
+  comparisonBox: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gap: "0"
+  },
+  comparisonCol: {
+    padding: "16px"
+  },
+  comparisonTitle: {
+    color: "#06b6d4",
+    marginBottom: "12px",
+    fontWeight: 600
+  },
+  conceptCard: {
+    background: "rgba(255,255,255,0.03)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: "12px",
+    padding: "16px",
+    marginBottom: "12px"
+  },
+  conceptTitle: {
+    color: "#ff0066",
+    marginBottom: "8px",
+    fontWeight: 600
+  },
+  formula: {
+    fontFamily: "'JetBrains Mono', monospace",
+    background: "rgba(6,182,212,0.1)",
+    padding: "12px 16px",
+    borderRadius: "8px",
+    color: "#06b6d4",
+    fontSize: "15px",
+    marginBottom: "12px"
+  },
+  highlightBox: {
+    background: "rgba(255,0,102,0.15)",
+    border: "1px solid rgba(255,0,102,0.3)",
+    borderRadius: "12px",
+    padding: "16px",
+    marginBottom: "16px",
+    color: "#fff"
+  },
+  tableWrap: {
+    overflowX: "auto"
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    fontSize: "14px"
+  },
+  th: {
+    textAlign: "left",
+    padding: "12px",
+    background: "rgba(6,182,212,0.2)",
+    color: "#06b6d4",
+    fontWeight: 600,
+    borderBottom: "1px solid rgba(255,255,255,0.1)"
+  },
+  td: {
+    padding: "12px",
+    borderBottom: "1px solid rgba(255,255,255,0.05)",
+    color: "rgba(255,255,255,0.8)",
+    fontFamily: "'JetBrains Mono', monospace"
+  },
+  problemsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+    gap: "16px"
+  },
+  problemCard: {
+    background: "rgba(255,255,255,0.05)",
+    backdropFilter: "blur(20px)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "16px",
+    padding: "20px",
+    cursor: "pointer",
+    transition: "all 0.4s ease"
+  },
+  problemCardTitle: {
+    color: "#fff",
+    fontSize: "16px",
+    fontWeight: 600,
+    marginTop: "8px",
+    marginBottom: "8px"
+  },
+  problemCardDesc: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: "13px",
+    lineHeight: 1.5
+  },
+  diffBadge: {
+    display: "inline-block",
+    padding: "4px 10px",
+    borderRadius: "12px",
+    fontSize: "11px",
+    fontWeight: 600,
+    textTransform: "uppercase",
+    border: "1px solid"
+  },
+  backButton: {
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "10px",
+    color: "#fff",
+    padding: "10px 16px",
+    cursor: "pointer",
+    fontSize: "14px",
+    marginBottom: "16px",
+    fontFamily: "'Exo 2', sans-serif"
+  },
+  problemTitle: {
+    fontSize: "18px",
+    fontWeight: 700
+  },
+  zadaniBox: {
+    background: "rgba(6,182,212,0.1)",
+    border: "1px solid rgba(6,182,212,0.2)",
+    borderRadius: "12px",
+    padding: "16px",
+    marginBottom: "16px",
+    color: "rgba(255,255,255,0.9)"
+  },
+  revealButton: {
+    background: "rgba(255,0,102,0.2)",
+    border: "1px solid #ff0066",
+    borderRadius: "10px",
+    color: "#fff",
+    padding: "12px 24px",
+    cursor: "pointer",
+    fontSize: "15px",
+    fontFamily: "'Exo 2', sans-serif",
+    transition: "all 0.4s ease"
+  },
+  solutionBox: {
+    marginTop: "20px",
+    padding: "20px",
+    background: "rgba(255,255,255,0.03)",
+    borderRadius: "16px",
+    border: "1px solid rgba(255,255,255,0.08)"
+  },
+  solutionSection: {
+    marginBottom: "20px"
+  },
+  solutionTitle: {
+    color: "#06b6d4",
+    fontFamily: "'Audiowide', cursive",
+    fontSize: "14px",
+    marginBottom: "12px"
+  },
+  constructionStep: {
+    fontFamily: "'JetBrains Mono', monospace",
+    background: "rgba(6,182,212,0.08)",
+    padding: "8px 12px",
+    borderRadius: "6px",
+    marginBottom: "6px"
+  },
+  flashcardsWrap: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "24px",
+    padding: "20px"
+  },
+  dotBar: {
+    display: "flex",
+    gap: "8px",
+    flexWrap: "wrap",
+    justifyContent: "center"
+  },
+  dot: {
+    width: "12px",
+    height: "12px",
+    borderRadius: "50%",
+    cursor: "pointer",
+    transition: "background 0.4s ease"
+  },
+  flashcard: {
+    width: "100%",
+    maxWidth: "400px",
+    height: "250px",
+    perspective: "1000px",
+    cursor: "pointer"
+  },
+  flashcardInner: {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    transition: "transform 0.4s ease",
+    transformStyle: "preserve-3d"
+  },
+  flashcardFront: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backfaceVisibility: "hidden",
+    background: "rgba(255,255,255,0.05)",
+    backdropFilter: "blur(20px)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "20px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "24px"
+  },
+  flashcardBack: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backfaceVisibility: "hidden",
+    background: "rgba(6,182,212,0.1)",
+    backdropFilter: "blur(20px)",
+    border: "1px solid rgba(6,182,212,0.3)",
+    borderRadius: "20px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "24px",
+    transform: "rotateY(180deg)"
+  },
+  flashcardContent: {
+    fontFamily: "'JetBrains Mono', monospace",
+    fontSize: "24px",
+    textAlign: "center",
+    color: "#fff"
+  },
+  flashcardHint: {
+    position: "absolute",
+    bottom: "20px",
+    color: "rgba(255,255,255,0.4)",
+    fontSize: "13px"
+  },
+  flashcardNav: {
+    display: "flex",
+    alignItems: "center",
+    gap: "16px"
+  },
+  navButton: {
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "10px",
+    color: "#fff",
+    padding: "10px 16px",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontFamily: "'Exo 2', sans-serif"
+  },
+  flashcardCounter: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: "14px"
+  },
+  formulaGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gap: "12px"
+  },
+  formulaItem: {
+    background: "rgba(255,255,255,0.03)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: "12px",
+    padding: "16px"
+  },
+  formulaName: {
+    color: "#ff0066",
+    fontSize: "13px",
+    fontWeight: 600,
+    marginBottom: "8px"
+  },
+  procedureBox: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px"
+  },
+  procedureStep: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: "12px",
+    padding: "12px",
+    background: "rgba(6,182,212,0.08)",
+    borderRadius: "10px"
+  },
+  procedureNum: {
+    width: "28px",
+    height: "28px",
+    borderRadius: "50%",
+    background: "#06b6d4",
+    color: "#0a0a1a",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: 700,
+    fontSize: "14px",
+    flexShrink: 0
+  }
+};
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
