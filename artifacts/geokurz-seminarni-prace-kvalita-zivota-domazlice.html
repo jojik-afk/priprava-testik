@@ -580,47 +580,77 @@ function App() {
     { id: "kviz", label: "Kvíz" }
   ];
   return /* @__PURE__ */ jsxDEV("div", {
-    style: { minHeight: "100vh", padding: "20px", maxWidth: "900px", margin: "0 auto", fontFamily: "'Segoe UI', 'Inter', sans-serif" },
+    style: { minHeight: "100vh", background: "#0a0a1a", color: "#fff", fontFamily: "'Segoe UI', 'Inter', sans-serif", position: "relative", overflow: "hidden" },
     children: [
       /* @__PURE__ */ jsxDEV("div", {
-        style: { textAlign: "center", marginBottom: "32px" },
+        style: { position: "fixed", top: "-20%", left: "-10%", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.12) 0%, transparent 70%)", filter: "blur(40px)", animation: "float1 18s ease-in-out infinite", zIndex: 0 }
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "fixed", bottom: "-15%", right: "-5%", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle, rgba(168,85,247,0.10) 0%, transparent 70%)", filter: "blur(40px)", animation: "float2 22s ease-in-out infinite", zIndex: 0 }
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "fixed", top: "40%", right: "20%", width: "350px", height: "350px", borderRadius: "50%", background: "radial-gradient(circle, rgba(251,191,36,0.08) 0%, transparent 70%)", filter: "blur(40px)", animation: "float3 15s ease-in-out infinite", zIndex: 0 }
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "relative", zIndex: 1, padding: "20px", maxWidth: "900px", margin: "0 auto" },
         children: [
-          /* @__PURE__ */ jsxDEV("h1", {
-            style: { color: "#fff", fontSize: "28px", fontWeight: 800, marginBottom: "8px", lineHeight: 1.3 },
-            children: "Seminární práce: Kvalita života v Domažlicích"
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { textAlign: "center", marginBottom: "32px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("h1", {
+                style: { color: "#fff", fontSize: "28px", fontWeight: 800, marginBottom: "8px", lineHeight: 1.3 },
+                children: "Seminární práce: Kvalita života v Domažlicích"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: { color: "rgba(255,255,255,0.5)", fontSize: "15px", margin: 0 },
+                children: "Geokurz 2026 — Gymnázium Jana Keplera — Odevzdání do 6. 3. 2026"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center", marginBottom: "28px" },
+            children: tabs.map((t) => /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => setTab(t.id),
+              style: {
+                padding: "8px 18px",
+                borderRadius: "20px",
+                border: "1px solid " + (tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.12)"),
+                background: tab === t.id ? "#60a5fa25" : "rgba(255,255,255,0.04)",
+                color: tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.6)",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: tab === t.id ? 600 : 400,
+                transition: "all 0.4s ease"
+              },
+              children: t.label
+            }, t.id, false, undefined, this))
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsxDEV("p", {
-            style: { color: "rgba(255,255,255,0.5)", fontSize: "15px", margin: 0 },
-            children: "Geokurz 2026 — Gymnázium Jana Keplera — Odevzdání do 6. 3. 2026"
-          }, undefined, false, undefined, this)
+          tab === "osnova" && /* @__PURE__ */ jsxDEV(OsnovaTab, {}, undefined, false, undefined, this),
+          tab === "profil" && /* @__PURE__ */ jsxDEV(ProfilTab, {}, undefined, false, undefined, this),
+          tab === "teorie" && /* @__PURE__ */ jsxDEV(TeorieTab, {}, undefined, false, undefined, this),
+          tab === "zdroje" && /* @__PURE__ */ jsxDEV(ZdrojeTab, {}, undefined, false, undefined, this),
+          tab === "metody" && /* @__PURE__ */ jsxDEV(MetodyTab, {}, undefined, false, undefined, this),
+          tab === "forma" && /* @__PURE__ */ jsxDEV(FormaTab, {}, undefined, false, undefined, this),
+          tab === "checklist" && /* @__PURE__ */ jsxDEV(ChecklistTab, {}, undefined, false, undefined, this),
+          tab === "kviz" && /* @__PURE__ */ jsxDEV(KvizTab, {}, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsxDEV("div", {
-        style: { display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center", marginBottom: "28px" },
-        children: tabs.map((t) => /* @__PURE__ */ jsxDEV("button", {
-          onClick: () => setTab(t.id),
-          style: {
-            padding: "8px 18px",
-            borderRadius: "20px",
-            border: "1px solid " + (tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.12)"),
-            background: tab === t.id ? "#60a5fa25" : "rgba(255,255,255,0.04)",
-            color: tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.6)",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: tab === t.id ? 600 : 400,
-            transition: "all 0.4s ease"
-          },
-          children: t.label
-        }, t.id, false, undefined, this))
-      }, undefined, false, undefined, this),
-      tab === "osnova" && /* @__PURE__ */ jsxDEV(OsnovaTab, {}, undefined, false, undefined, this),
-      tab === "profil" && /* @__PURE__ */ jsxDEV(ProfilTab, {}, undefined, false, undefined, this),
-      tab === "teorie" && /* @__PURE__ */ jsxDEV(TeorieTab, {}, undefined, false, undefined, this),
-      tab === "zdroje" && /* @__PURE__ */ jsxDEV(ZdrojeTab, {}, undefined, false, undefined, this),
-      tab === "metody" && /* @__PURE__ */ jsxDEV(MetodyTab, {}, undefined, false, undefined, this),
-      tab === "forma" && /* @__PURE__ */ jsxDEV(FormaTab, {}, undefined, false, undefined, this),
-      tab === "checklist" && /* @__PURE__ */ jsxDEV(ChecklistTab, {}, undefined, false, undefined, this),
-      tab === "kviz" && /* @__PURE__ */ jsxDEV(KvizTab, {}, undefined, false, undefined, this)
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @keyframes float1 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(30px, -40px); }
+        }
+        @keyframes float2 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(-25px, 35px); }
+        }
+        @keyframes float3 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(15px, 25px); }
+        }
+      `
+      }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 }

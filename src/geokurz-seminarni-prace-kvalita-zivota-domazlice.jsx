@@ -411,36 +411,58 @@ export default function App() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", padding: "20px", maxWidth: "900px", margin: "0 auto", fontFamily: "'Segoe UI', 'Inter', sans-serif" }}>
-      <div style={{ textAlign: "center", marginBottom: "32px" }}>
-        <h1 style={{ color: "#fff", fontSize: "28px", fontWeight: 800, marginBottom: "8px", lineHeight: 1.3 }}>
-          Seminární práce: Kvalita života v Domažlicích
-        </h1>
-        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "15px", margin: 0 }}>
-          Geokurz 2026 — Gymnázium Jana Keplera — Odevzdání do 6. 3. 2026
-        </p>
+    <div style={{ minHeight: "100vh", background: "#0a0a1a", color: "#fff", fontFamily: "'Segoe UI', 'Inter', sans-serif", position: "relative", overflow: "hidden" }}>
+      {/* Animated background circles */}
+      <div style={{ position: "fixed", top: "-20%", left: "-10%", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.12) 0%, transparent 70%)", filter: "blur(40px)", animation: "float1 18s ease-in-out infinite", zIndex: 0 }} />
+      <div style={{ position: "fixed", bottom: "-15%", right: "-5%", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle, rgba(168,85,247,0.10) 0%, transparent 70%)", filter: "blur(40px)", animation: "float2 22s ease-in-out infinite", zIndex: 0 }} />
+      <div style={{ position: "fixed", top: "40%", right: "20%", width: "350px", height: "350px", borderRadius: "50%", background: "radial-gradient(circle, rgba(251,191,36,0.08) 0%, transparent 70%)", filter: "blur(40px)", animation: "float3 15s ease-in-out infinite", zIndex: 0 }} />
+
+      <div style={{ position: "relative", zIndex: 1, padding: "20px", maxWidth: "900px", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <h1 style={{ color: "#fff", fontSize: "28px", fontWeight: 800, marginBottom: "8px", lineHeight: 1.3 }}>
+            Seminární práce: Kvalita života v Domažlicích
+          </h1>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "15px", margin: 0 }}>
+            Geokurz 2026 — Gymnázium Jana Keplera — Odevzdání do 6. 3. 2026
+          </p>
+        </div>
+
+        {/* Tab bar */}
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center", marginBottom: "28px" }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{
+              padding: "8px 18px", borderRadius: "20px", border: "1px solid " + (tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.12)"),
+              background: tab === t.id ? "#60a5fa25" : "rgba(255,255,255,0.04)", color: tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.6)",
+              cursor: "pointer", fontSize: "14px", fontWeight: tab === t.id ? 600 : 400, transition: "all 0.4s ease"
+            }}>{t.label}</button>
+          ))}
+        </div>
+
+        {/* Tab content */}
+        {tab === "osnova" && <OsnovaTab />}
+        {tab === "profil" && <ProfilTab />}
+        {tab === "teorie" && <TeorieTab />}
+        {tab === "zdroje" && <ZdrojeTab />}
+        {tab === "metody" && <MetodyTab />}
+        {tab === "forma" && <FormaTab />}
+        {tab === "checklist" && <ChecklistTab />}
+        {tab === "kviz" && <KvizTab />}
       </div>
 
-      {/* Tab bar */}
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center", marginBottom: "28px" }}>
-        {tabs.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)} style={{
-            padding: "8px 18px", borderRadius: "20px", border: "1px solid " + (tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.12)"),
-            background: tab === t.id ? "#60a5fa25" : "rgba(255,255,255,0.04)", color: tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.6)",
-            cursor: "pointer", fontSize: "14px", fontWeight: tab === t.id ? 600 : 400, transition: "all 0.4s ease"
-          }}>{t.label}</button>
-        ))}
-      </div>
-
-      {/* Tab content */}
-      {tab === "osnova" && <OsnovaTab />}
-      {tab === "profil" && <ProfilTab />}
-      {tab === "teorie" && <TeorieTab />}
-      {tab === "zdroje" && <ZdrojeTab />}
-      {tab === "metody" && <MetodyTab />}
-      {tab === "forma" && <FormaTab />}
-      {tab === "checklist" && <ChecklistTab />}
-      {tab === "kviz" && <KvizTab />}
+      <style>{`
+        @keyframes float1 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(30px, -40px); }
+        }
+        @keyframes float2 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(-25px, 35px); }
+        }
+        @keyframes float3 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(15px, 25px); }
+        }
+      `}</style>
     </div>
   );
 }
