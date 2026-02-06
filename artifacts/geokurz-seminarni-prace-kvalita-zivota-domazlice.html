@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geokurz: Seminární práce – Kvalita života v Domažlicích</title>
+    <meta name="subject" content="Geography">
+    <meta name="topic" content="Kvalita života, regionální geografie, Domažlice">
+    <meta name="template" content="practice">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/geokurz-seminarni-prace-kvalita-zivota-domazlice.jsx
+import { useState, useMemo, useCallback } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function shuffleQuestions(questions) {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const shuffledOptions = shuffledIndices.map((i) => q.options[i]);
+    const newCorrect = q.correct.map((oldIdx) => shuffledIndices.indexOf(oldIdx));
+    return { ...q, options: shuffledOptions, correct: newCorrect };
+  });
+}
+function arrEqual(a, b) {
+  if (!a || !b)
+    return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+function QuizEngine({ questions, accentColor = "#a855f7" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  const shuffledQuestions = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = shuffledQuestions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffledQuestions.filter((q2, i) => revealed[i] && arrEqual(answers[i] || [], q2.correct)).length;
+  const pct = Math.round(score / shuffledQuestions.length * 100);
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, shuffledQuestions]);
+  const handleSingleSelect = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [optionIdx] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, isRevealed]);
+  const toggleMulti = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setPendingMulti((prev) => prev.includes(optionIdx) ? prev.filter((i) => i !== optionIdx) : [...prev, optionIdx]);
+  }, [isRevealed]);
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [...pendingMulti] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, pendingMulti]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPendingMulti([]);
+    setShowResults(false);
+    setShuffleKey((k) => k + 1);
+  }, []);
+  const activeSet = isMulti ? isRevealed ? myAnswer : pendingMulti : myAnswer;
+  if (showResults) {
+    const msg = pct >= 90 ? "Výborně! Máš to perfektně zvládnuté!" : pct >= 70 ? "Dobře! Téměř máš vše zvládnuté." : pct >= 50 ? "Mohlo by to být lepší." : "Potřebuješ více přípravy.";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", ...glassCard, padding: "40px 48px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "52px", fontWeight: 800 },
+            children: [
+              score,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+            children: [
+              pct,
+              " %"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.8)", fontSize: "17px", marginBottom: "24px", maxWidth: "340px" },
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, background: accentColor + "66", border: `1px solid ${accentColor}` },
+            onClick: restart,
+            children: "Začít znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "680px", margin: "0 auto" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" },
+        children: shuffledQuestions.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
+          return /* @__PURE__ */ jsxDEV("div", {
+            onClick: () => goTo(i),
+            style: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: bg }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: glassCard,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
+            children: [
+              "Otázka ",
+              idx + 1,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", flexDirection: "column", gap: "10px" },
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(255,255,255,0.12)";
+              let bg = "rgba(255,255,255,0.04)";
+              if (isRevealed) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(34,197,94,0.15)";
+                  border = "1px solid #22c55e";
+                } else if (activeSet.includes(i)) {
+                  bg = "rgba(239,68,68,0.15)";
+                  border = "1px solid #ef4444";
+                }
+              } else if (activeSet.includes(i)) {
+                bg = accentColor + "18";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("div", {
+                style: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px", background: bg, border },
+                onClick: () => isMulti ? toggleMulti(i) : handleSingleSelect(i),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: { fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" },
+                    children: activeSet.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRevealed && /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, opacity: pendingMulti.length === 0 ? 0.4 : 1, marginTop: "12px" },
+            onClick: submitMulti,
+            disabled: pendingMulti.length === 0,
+            children: "Potvrdít"
+          }, undefined, false, undefined, this),
+          isRevealed && /* @__PURE__ */ jsxDEV("div", {
+            style: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: `1px solid ${isCorrect ? "#22c55e" : "#ef4444"}`, background: "rgba(255,255,255,0.03)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+                children: isCorrect ? "Správně!" : "Špatně"
+              }, undefined, false, undefined, this),
+              !isCorrect && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+                children: [
+                  "Správná odpověď: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 },
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+                children: [
+                  "Tip: ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnStyle,
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          idx < shuffledQuestions.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: btnStyle,
+            onClick: () => goTo(idx + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, background: accentColor + "55", border: `1px solid ${accentColor}` },
+            onClick: () => setShowResults(true),
+            children: "Výsledky →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function Section({ title, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { ...glassCard, marginBottom: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        onClick: () => setOpen(!open),
+        style: { display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", color: "#fff", fontSize: "17px", fontWeight: 600 },
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            children: title
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { fontSize: "20px", transition: "transform 0.4s ease", transform: open ? "rotate(180deg)" : "rotate(0deg)" },
+            children: "▼"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      open && /* @__PURE__ */ jsxDEV("div", {
+        style: { marginTop: "16px", color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7 },
+        children
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function TipBox({ children, color = "#60a5fa" }) {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { background: color + "15", border: `1px solid ${color}40`, borderRadius: "12px", padding: "14px 18px", margin: "12px 0", color: "rgba(255,255,255,0.9)", fontSize: "14px", lineHeight: 1.6 },
+    children
+  }, undefined, false, undefined, this);
+}
+function CitationExample({ type, example }) {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", padding: "12px 16px", margin: "8px 0", fontFamily: "'JetBrains Mono', monospace", fontSize: "13px", color: "rgba(255,255,255,0.8)", lineHeight: 1.6 },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "#fbbf24", fontSize: "12px", marginBottom: "6px", fontFamily: "inherit" },
+        children: type
+      }, undefined, false, undefined, this),
+      example
+    ]
+  }, undefined, true, undefined, this);
+}
+function OutlineItem({ number, title, description, pages, children }) {
+  const [expanded, setExpanded] = useState(false);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "14px", padding: "16px 20px", marginBottom: "12px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        onClick: () => setExpanded(!expanded),
+        style: { display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer" },
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { background: "#60a5fa30", color: "#60a5fa", borderRadius: "8px", padding: "4px 10px", fontSize: "14px", fontWeight: 700, minWidth: "36px", textAlign: "center" },
+            children: number
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { flex: 1 },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontWeight: 600, fontSize: "16px" },
+                children: title
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.5)", fontSize: "13px", marginTop: "4px" },
+                children: description
+              }, undefined, false, undefined, this),
+              pages && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#60a5fa", fontSize: "12px", marginTop: "4px" },
+                children: [
+                  "Doporučený rozsah: ",
+                  pages
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: "rgba(255,255,255,0.4)", fontSize: "18px", transition: "transform 0.4s ease", transform: expanded ? "rotate(180deg)" : "rotate(0deg)" },
+            children: "▼"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      expanded && /* @__PURE__ */ jsxDEV("div", {
+        style: { marginTop: "14px", paddingTop: "14px", borderTop: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.8)", fontSize: "14px", lineHeight: 1.7 },
+        children
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function SourceCard({ type, title, author, detail, how }) {
+  const colors = { kniha: "#a855f7", článek: "#60a5fa", web: "#22c55e", data: "#fbbf24", práce: "#f472b6" };
+  const c = colors[type] || "#60a5fa";
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { background: "rgba(255,255,255,0.04)", border: `1px solid ${c}30`, borderRadius: "12px", padding: "14px 18px", marginBottom: "10px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { background: c + "25", color: c, borderRadius: "6px", padding: "2px 8px", fontSize: "11px", fontWeight: 600, textTransform: "uppercase" },
+            children: type
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: "#fff", fontSize: "15px", fontWeight: 600 },
+            children: title
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      author && /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.6)", fontSize: "13px" },
+        children: author
+      }, undefined, false, undefined, this),
+      detail && /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.5)", fontSize: "13px", marginTop: "4px" },
+        children: detail
+      }, undefined, false, undefined, this),
+      how && /* @__PURE__ */ jsxDEV("div", {
+        style: { color: c, fontSize: "13px", marginTop: "6px", fontStyle: "italic" },
+        children: how
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function Checklist({ items }) {
+  const [checked, setChecked] = useState({});
+  const toggle = (i) => setChecked((prev) => ({ ...prev, [i]: !prev[i] }));
+  const done = Object.values(checked).filter(Boolean).length;
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.5)", fontSize: "13px", marginBottom: "12px" },
+        children: [
+          done,
+          " / ",
+          items.length,
+          " splněno"
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { background: `linear-gradient(90deg, #60a5fa ${done / items.length * 100}%, rgba(255,255,255,0.1) ${done / items.length * 100}%)`, height: "6px", borderRadius: "3px", marginBottom: "16px", transition: "all 0.8s ease" }
+      }, undefined, false, undefined, this),
+      items.map((item, i) => /* @__PURE__ */ jsxDEV("div", {
+        onClick: () => toggle(i),
+        style: { display: "flex", alignItems: "flex-start", gap: "10px", padding: "10px 14px", borderRadius: "10px", marginBottom: "6px", cursor: "pointer", background: checked[i] ? "rgba(34,197,94,0.08)" : "rgba(255,255,255,0.03)", border: `1px solid ${checked[i] ? "rgba(34,197,94,0.2)" : "rgba(255,255,255,0.06)"}`, transition: "all 0.4s ease" },
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { fontSize: "18px", minWidth: "24px" },
+            children: checked[i] ? "☑" : "☐"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: checked[i] ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.5, textDecoration: checked[i] ? "line-through" : "none", transition: "all 0.4s ease" },
+            children: item
+          }, undefined, false, undefined, this)
+        ]
+      }, i, true, undefined, this))
+    ]
+  }, undefined, true, undefined, this);
+}
+var glassCard = {
+  background: "rgba(255,255,255,0.05)",
+  backdropFilter: "blur(20px)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "20px",
+  padding: "24px",
+  transition: "all 0.4s ease"
+};
+var btnStyle = {
+  padding: "10px 22px",
+  background: "rgba(255,255,255,0.07)",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: "10px",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: "15px",
+  transition: "all 0.4s ease"
+};
+var quizQuestions = [
+  {
+    question: "Co musí obsahovat úvod seminární práce podle pravidel GJK?",
+    type: "multi",
+    options: [
+      "Uvedení do problematiky",
+      "Cíle práce",
+      "Naznačenou strukturu práce",
+      "Výsledky výzkumu"
+    ],
+    correct: [0, 1, 2],
+    explanation: "Úvod obsahuje uvedení do problematiky, cíle práce a naznačenou strukturu práce. Výsledky výzkumu patří do praktické/analytické části."
+  },
+  {
+    question: "Jaký font a velikost se používá pro text seminární práce?",
+    type: "single",
+    options: ["Arial – 12", "Times New Roman – 12", "Calibri – 11", "Times New Roman – 14"],
+    correct: [1],
+    explanation: "Podle pravidel GJK se pro text používá Times New Roman velikost 12, řádkování 1,5, zarovnání do bloku."
+  },
+  {
+    question: "Jak se správně cituje parafráze v harvardském systému?",
+    type: "single",
+    options: [
+      "(Hampl 1996, s. 13)",
+      "(Hampl, 1996)",
+      "(Blažek 1996)",
+      "[1]"
+    ],
+    correct: [2],
+    explanation: "Při parafrázi (ne doslovné citaci) se uvádí jen příjmení a rok: (Blažek 1996). Číslo strany se uvádí pouze u doslovných citací."
+  },
+  {
+    question: "Jaký je požadovaný rozsah seminární práce pro geokurz?",
+    type: "single",
+    options: ["5–8 normostran", "8–15 normostran", "10–20 normostran", "15–25 normostran"],
+    correct: [1],
+    explanation: "Podle zadání geokurzu je rozsah seminární práce 8–15 normostran. Hodnotí se formální (30 %) i obsahová (70 %) stránka."
+  },
+  {
+    question: "Co je Index kvality života (IKŽ)?",
+    type: "single",
+    options: [
+      "Ukazatel měřící pouze HDP na obyvatele",
+      "Komplexní hodnocení 206 měst ve 3 oblastech na základě 80 datových zdrojů",
+      "Subjektivní dotazníkové šetření obyvatel",
+      "Index OSN pro rozvojové země"
+    ],
+    correct: [1],
+    explanation: "Index kvality života od Obce v datech porovnává 206 českých měst ve třech oblastech: zdraví a životní prostředí, materiální zabezpečení a vzdělání, vztahy a služby – na základě 80 datových zdrojů a 29 sub-indexů."
+  },
+  {
+    question: "Kde se Domažlice umístily v IKŽ 2024 v rámci Plzeňského kraje?",
+    type: "single",
+    options: ["1. místo", "3. místo", "7. místo", "12. místo"],
+    correct: [2],
+    explanation: "Domažlice obsadily 7. místo v rámci Plzeňského kraje. První místo získala Plzeň, druhé Přeštice, třetí Klatovy (skóre 5,3 z 10)."
+  },
+  {
+    question: "Které z těchto zdrojů jsou vhodné pro seminární práci na úrovni gymnázia? (minimum = diplomové práce)",
+    type: "multi",
+    options: [
+      "Bakalářská práce z ČVUT",
+      "Diplomová práce z PřF UK",
+      "Článek v Geografických rozhledech",
+      "Wikipedie"
+    ],
+    correct: [1, 2],
+    explanation: "Podle zadání jsou minimální úrovní zdrojů diplomové práce (ne bakalářské). Geografické rozhledy jsou odborný recenzovaný časopis. Wikipedie není akademický zdroj, bakalářská práce nesplňuje minimum."
+  },
+  {
+    question: "Co patří do teoretické části seminární práce?",
+    type: "single",
+    options: [
+      "Vlastní měření a dotazníky",
+      "Zpracování poznatků jiných autorů, srovnání a kritické hodnocení zdrojů",
+      "Osobní názory na téma",
+      "Pouze citace bez vlastního komentáře"
+    ],
+    correct: [1],
+    explanation: "Teoretická část rozpracovává vybraný problém podle toho, co o něm napsali jiní autoři. Informace z dohledaných zdrojů se navzájem srovnávají, konfrontují a kriticky hodnotí."
+  },
+  {
+    question: "Jakou výzkumnou metodu bys mohl použít pro analýzu kvality života v Domažlicích?",
+    type: "multi",
+    options: [
+      "Dotazníkové šetření mezi obyvateli",
+      "Analýza statistických dat z ČSÚ",
+      "Terénní pozorování infrastruktury",
+      "Rozhovory s představiteli města"
+    ],
+    correct: [0, 1, 2, 3],
+    explanation: "Všechny uvedené metody jsou legitimní výzkumné metody pro analýzu kvality života. V práci je třeba navrhnout metodu a zdůvodnit její výběr. Kombinace kvantitativních (statistiky) a kvalitativních (rozhovory, pozorování) metod je ideální."
+  },
+  {
+    question: "Kolik obyvatel má město Domažlice?",
+    type: "single",
+    options: ["Přibližně 5 000", "Přibližně 11 000", "Přibližně 25 000", "Přibližně 55 000"],
+    correct: [1],
+    explanation: "Město Domažlice má přibližně 11 010 obyvatel, což představuje 19,7 % obyvatel celého okresu Domažlice (55 796 obyvatel)."
+  },
+  {
+    question: "Co znamená pojem „vnitřní periferie“ v české geografii?",
+    type: "single",
+    options: [
+      "Oblasti na hranicích státu",
+      "Území s ekonomickým zaostáváním uvnitř státu, daleko od velkých center",
+      "Pražský okraj",
+      "Horské oblasti nad 800 m n. m."
+    ],
+    correct: [1],
+    explanation: "Vnitřní periferie jsou území uvnitř státu, která ekonomicky zaostávají kvůli vzdálenosti od velkých center, slabé dopravní dostupnosti a odlivu obyvatel. Koncept rozpracovali Musil a Müller (2008)."
+  },
+  {
+    question: "Jak se v textu správně odkazuje na internetový zdroj?",
+    type: "single",
+    options: [
+      "Celá URL adresa v textu",
+      "Pouze název webu v textu, celá URL do seznamu zdrojů",
+      "Poznámka pod čarou s odkazem",
+      "Hypertextový odkaz v textu"
+    ],
+    correct: [1],
+    explanation: "Podle pravidel GJK se do textu uvádí pouze název webu (např. cs.wikipedia.org). Všechny internetové odkazy musí být uvedeny v prosté formě (ne jako hypertextový odkaz) v samostatné kapitole „Seznam internetových zdrojů“."
+  }
+];
+var domazliceData = [
+  { label: "Počet obyvatel", value: "~11 010", detail: "19,7 % obyvatel okresu" },
+  { label: "Okres", value: "Domažlice", detail: "Plzeňský kraj" },
+  { label: "ORP", value: "Domažlice", detail: "+ ORP Horšovský Týn v okrese" },
+  { label: "Rozloha města", value: "2 461 ha", detail: "z toho 1 599 ha zemědělská půda" },
+  { label: "Obyvatelstvo okresu", value: "55 796", detail: "2. nejméně lidnatý v kraji (9,2 %)" },
+  { label: "Uchazeči o zaměstnání", value: "1 074", detail: "0,5 uchazeče na 1 pracovní místo" },
+  { label: "IKŽ 2024 (kraj)", value: "7. místo", detail: "Skóre 4,7 z 10" },
+  { label: "Nadmořská výška", value: "~450 m n. m.", detail: "Čerchov 1 042 m (Český les)" },
+  { label: "Hranice", value: "Německo (Bavorsko)", detail: "Hraniční přechod Folmava" },
+  { label: "Památky", value: "Městská památková rezervace", detail: "Historické centrum, Chodsko" }
+];
+function App() {
+  const [tab, setTab] = useState("osnova");
+  const tabs = [
+    { id: "osnova", label: "Osnova práce" },
+    { id: "profil", label: "Profil Domažlic" },
+    { id: "teorie", label: "Teorie KŽ" },
+    { id: "zdroje", label: "Zdroje" },
+    { id: "metody", label: "Metodika" },
+    { id: "forma", label: "Formální pravidla" },
+    { id: "checklist", label: "Checklist" },
+    { id: "kviz", label: "Kvíz" }
+  ];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { minHeight: "100vh", padding: "20px", maxWidth: "900px", margin: "0 auto", fontFamily: "'Segoe UI', 'Inter', sans-serif" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", marginBottom: "32px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("h1", {
+            style: { color: "#fff", fontSize: "28px", fontWeight: 800, marginBottom: "8px", lineHeight: 1.3 },
+            children: "Seminární práce: Kvalita života v Domažlicích"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { color: "rgba(255,255,255,0.5)", fontSize: "15px", margin: 0 },
+            children: "Geokurz 2026 — Gymnázium Jana Keplera — Odevzdání do 6. 3. 2026"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center", marginBottom: "28px" },
+        children: tabs.map((t) => /* @__PURE__ */ jsxDEV("button", {
+          onClick: () => setTab(t.id),
+          style: {
+            padding: "8px 18px",
+            borderRadius: "20px",
+            border: "1px solid " + (tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.12)"),
+            background: tab === t.id ? "#60a5fa25" : "rgba(255,255,255,0.04)",
+            color: tab === t.id ? "#60a5fa" : "rgba(255,255,255,0.6)",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: tab === t.id ? 600 : 400,
+            transition: "all 0.4s ease"
+          },
+          children: t.label
+        }, t.id, false, undefined, this))
+      }, undefined, false, undefined, this),
+      tab === "osnova" && /* @__PURE__ */ jsxDEV(OsnovaTab, {}, undefined, false, undefined, this),
+      tab === "profil" && /* @__PURE__ */ jsxDEV(ProfilTab, {}, undefined, false, undefined, this),
+      tab === "teorie" && /* @__PURE__ */ jsxDEV(TeorieTab, {}, undefined, false, undefined, this),
+      tab === "zdroje" && /* @__PURE__ */ jsxDEV(ZdrojeTab, {}, undefined, false, undefined, this),
+      tab === "metody" && /* @__PURE__ */ jsxDEV(MetodyTab, {}, undefined, false, undefined, this),
+      tab === "forma" && /* @__PURE__ */ jsxDEV(FormaTab, {}, undefined, false, undefined, this),
+      tab === "checklist" && /* @__PURE__ */ jsxDEV(ChecklistTab, {}, undefined, false, undefined, this),
+      tab === "kviz" && /* @__PURE__ */ jsxDEV(KvizTab, {}, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function OsnovaTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(TipBox, {
+        color: "#60a5fa",
+        children: [
+          "Tvoje téma: ",
+          /* @__PURE__ */ jsxDEV("strong", {
+            children: '„Úroveň kvality života v Domažlicích: jak se žije v regionálním centru?"'
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+          "Cíl: analyzovat, porovnat, navrhnout řešení. Otázky: jak a proč (ne kdy, kde).",
+          /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+          "Rozsah: 8–15 normostran. Hodnocení: formální 30 % + obsahová 70 %."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(OutlineItem, {
+        number: "0",
+        title: "Titulní strana",
+        description: "Gymnázium Jana Keplera, název práce, jméno, třída, rok, předmět",
+        pages: "1 strana",
+        children: /* @__PURE__ */ jsxDEV("div", {
+          children: [
+            /* @__PURE__ */ jsxDEV("strong", {
+              children: "Vzor:"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { background: "rgba(255,255,255,0.05)", borderRadius: "12px", padding: "20px", marginTop: "10px", textAlign: "center", lineHeight: 2 },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "14px" },
+                  children: "Gymnázium Jana Keplera"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "20px", fontWeight: 700, margin: "16px 0" },
+                  children: [
+                    "ÚROVEŇ KVALITY ŽIVOTA V DOMAŽLICÍCH:",
+                    /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                    "JAK SE ŽIJE V REGIONÁLNÍM CENTRU?"
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "14px", fontStyle: "italic" },
+                  children: [
+                    "Seminární práce",
+                    /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                    "k předmětu Zeměpis"
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { marginTop: "24px", fontSize: "14px" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("span", {
+                      children: "Jonas [příjmení]"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("span", {
+                      style: { marginLeft: "40px" },
+                      children: "2.A"
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "14px" },
+                  children: "Praha 2026"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(OutlineItem, {
+        number: "1",
+        title: "Úvod",
+        description: "Uvedení do problematiky, cíle práce, struktura",
+        pages: "1–1,5 strany",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: /* @__PURE__ */ jsxDEV("strong", {
+              children: "Co sem patří:"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: "8px 0" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Proč je téma důležité? — Kvalita života je klíčový ukazatel rozvoje regionů. Malá města jako Domažlice čelí specifickým výzvám (odliv mladých, stárnutí, dostupnost služeb)."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Existují publikace na toto téma? — Index kvality života (Obce v datech), práce Ouředníčka, Temelové a dalších o periferiích."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Cíl práce — Analyzovat kvalitu života v Domažlicích pomocí objektivních indikátorů, porovnat s podobnými regionálními centry, navrhnout opatření pro zlepšení."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Výzkumné otázky (formuluj JAK a PROČ):"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#fbbf24",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Navrhované výzkumné otázky:"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "1. Jak se liší kvalita života v Domažlicích od srovnatelných regionálních center?",
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "2. Jaké faktory nejvíce ovlivňují kvalitu života v Domažlicích?",
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "3. Proč dochází k odlivu mladých lidí z regionu a jak to ovlivňuje kvalitu života?",
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "4. Jak mohou Domažlice zlepšit svou pozici v oblasti kvality života?"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            children: 'Stručně nastínit strukturu práce — „V první kapitole definuji pojem kvalita života..."'
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(OutlineItem, {
+        number: "2",
+        title: "Teoretická část: Kvalita života",
+        description: "Definice, indikátory, přístupy, rešerše literatury",
+        pages: "2–3 strany",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: /* @__PURE__ */ jsxDEV("strong", {
+              children: "Hlavní body:"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: "8px 0" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "2.1 Definice kvality života"
+                  }, undefined, false, undefined, this),
+                  " — pojem je multidimenzionální, subjektivní vs. objektivní složka, historický vývoj konceptu (WHO, UNDP)"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "2.2 Měření kvality života"
+                  }, undefined, false, undefined, this),
+                  " — HDI (Index lidského rozvoje), Index kvality života (Obce v datech), Index prosperity regionů, STEM databáze, objektivní indikátory (zaměstnanost, zdraví, vzdělání) vs. subjektivní (spokojenost, pocit bezpečí)"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "2.3 Kvalita života v regionálních centrech ČR"
+                  }, undefined, false, undefined, this),
+                  " — rozdíly centrum–periferie (Hampl 2000), vnitřní periferie (Musil, Müller 2008), polarizace malých měst (Ouředníček, Temelová), příhraniční oblasti"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#22c55e",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Klíčové:"
+              }, undefined, false, undefined, this),
+              " Nesměšuj vlastní názory s informacemi ze zdrojů. V teoretické části prezentuješ, co zjistili jiní autoři. Konfrontuj různé přístupy — např. objektivní indikátory nemusí odpovídat subjektivnímu vnímání obyvatel."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(OutlineItem, {
+        number: "3",
+        title: "Charakteristika města Domažlice",
+        description: "Geografické, demografické a socioekonomické vymezení",
+        pages: "2–3 strany",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: /* @__PURE__ */ jsxDEV("strong", {
+              children: "Hlavní body:"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: "8px 0" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "3.1 Poloha a administrativní zařazení"
+                  }, undefined, false, undefined, this),
+                  " — Plzeňský kraj, okres Domažlice, ORP Domažlice, příhraniční poloha (Bavorsko), dopravní spojení (Plzeň–Folmava, železnice Praha–Mnichov)"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "3.2 Demografický vývoj"
+                  }, undefined, false, undefined, this),
+                  " — počet obyvatel (~11 000), struktura (věková pyramida, index stáří), přirozený a migrační přírůstek, trend stárnutí"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "3.3 Ekonomika a trh práce"
+                  }, undefined, false, undefined, this),
+                  " — průmyslově-zemědělský charakter, nezaměstnanost (0,5 uchazeče na 1 místo = nízká), zaměstnavatelé, dojížďka"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "3.4 Občanská vybavenost a služby"
+                  }, undefined, false, undefined, this),
+                  " — zdravotnictví, školství, kultura (Chodské slavnosti), sport, doprava"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#60a5fa",
+            children: "Data čerpej z ČSÚ (Statistická ročenka Plzeňského kraje, Charakteristika okresu Domažlice), webu města Domažlice a Strategického plánu města."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(OutlineItem, {
+        number: "4",
+        title: "Analýza kvality života v Domažlicích",
+        description: "Jádro práce — objektivní hodnocení podle indikátorů",
+        pages: "2–3 strany",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: /* @__PURE__ */ jsxDEV("strong", {
+              children: "Hlavní body:"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: "8px 0" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "4.1 Zdraví a životní prostředí"
+                  }, undefined, false, undefined, this),
+                  " — kvalita ovzduší, dostupnost zdravotní péče, čistota přírody (Český les)"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "4.2 Materiální zabezpečení a vzdělání"
+                  }, undefined, false, undefined, this),
+                  " — průměrné příjmy, nezaměstnanost, dostupnost bydlení, školy"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "4.3 Vztahy a služby"
+                  }, undefined, false, undefined, this),
+                  " — komunitní život, kulturní vyžití (Chodské slavnosti), sportovní infrastruktura, bezpečnost"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "4.4 Srovnání"
+                  }, undefined, false, undefined, this),
+                  " — porovnání s podobnými ORP centry (Klatovy, Sušice, Přeštice) v IKŽ, identifikace silných a slabých stránek"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#f472b6",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Metoda porovnání:"
+              }, undefined, false, undefined, this),
+              " Vyber 3–4 srovnatelná města (podobná velikost, periferní poloha) a porovnej klíčové indikátory v tabulce. Vizualizuj formou grafu nebo mapy."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(OutlineItem, {
+        number: "5",
+        title: "Metodika terénního výzkumu",
+        description: "Návrh metod pro praktickou část v terénu",
+        pages: "1 strana",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: /* @__PURE__ */ jsxDEV("strong", {
+              children: "V této kapitole navrhneš, jak budeš zkoumat kvalitu života přímo v Domažlicích při terénním cvičení:"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: "8px 0" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Dotazníkové šetření — 10–15 otázek na spokojenost obyvatel (subjektivní KŽ)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Terénní pozorování — stav infrastruktury, veřejných prostranství, dostupnost služeb"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Polostrukturované rozhovory — s obyvateli, představiteli města, podnikateli"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Analýza dat — porovnání statistik ČSÚ s vlastními zjištěními"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#fbbf24",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Formuluj hypotézy k ověření v terénu:"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "H1: Obyvatelé Domažlic vnímají kvalitu života pozitivněji, než ukazují objektivní indikátory.",
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "H2: Hlavním problémem je omezená dostupnost vyššího vzdělání a specializované zdravotní péče.",
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "H3: Příhraniční poloha přináší ekonomické výhody (pracovní příležitosti v Bavorsku), ale i nevýhody (odliv obyvatel)."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(OutlineItem, {
+        number: "6",
+        title: "Závěr",
+        description: "Shrnutí poznatků, odpovědi na výzkumné otázky",
+        pages: "1 strana",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: "Závěr shrnuje:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: "8px 0" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Hlavní zjištění z teoretické a analytické části"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Odpovědi na výzkumné otázky z úvodu"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Návrhy řešení — konkrétní opatření pro zlepšení kvality života"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Co se ověří v terénu a jak mohou výsledky přispět k diskusi"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(OutlineItem, {
+        number: "7",
+        title: "Seznam použité literatury + Seznam internetových zdrojů",
+        description: "Abecedně řazené, na samostatných stránkách",
+        pages: "1–2 strany",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              "Musí být na ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "samostatných stránkách"
+              }, undefined, false, undefined, this),
+              ":"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: "8px 0" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: '„Seznam použité literatury" — knihy, články, práce (abecedně dle příjmení)'
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: '„Seznam internetových zdrojů" — URL v prosté formě (ne hypertextové odkazy)'
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProfilTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: glassCard,
+        children: [
+          /* @__PURE__ */ jsxDEV("h2", {
+            style: { color: "#fff", fontSize: "22px", fontWeight: 700, marginBottom: "20px", marginTop: 0 },
+            children: "Domažlice v datech"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "12px" },
+            children: domazliceData.map((d, i) => /* @__PURE__ */ jsxDEV("div", {
+              style: { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "14px", padding: "14px 18px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.5)", fontSize: "12px", marginBottom: "4px" },
+                  children: d.label
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "#60a5fa", fontSize: "20px", fontWeight: 700 },
+                  children: d.value
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.4)", fontSize: "12px", marginTop: "2px" },
+                  children: d.detail
+                }, undefined, false, undefined, this)
+              ]
+            }, i, true, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { marginTop: "20px" },
+        children: [
+          /* @__PURE__ */ jsxDEV(Section, {
+            title: "Geografická poloha a doprava",
+            defaultOpen: true,
+            children: /* @__PURE__ */ jsxDEV("ul", {
+              style: { paddingLeft: "20px", margin: 0 },
+              children: [
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Plzeňský kraj, jihozápadní Čechy, přímo na hranici s Německem (Bavorsko)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Silniční spojení: Plzeň–Folmava (E53), dálniční přivaděč na D5"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Železnice: Praha–Plzeň–Domažlice–Furth im Wald–Mnichov (mezinárodní rychlík)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Vzdálenost od Plzně: ~60 km, od Prahy: ~180 km, od Řezna (Regensburg): ~100 km"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Hraniční přechod Folmava — významný obchodní a tranzitní bod"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Section, {
+            title: "Demografie a socioekonomika",
+            children: /* @__PURE__ */ jsxDEV("ul", {
+              style: { paddingLeft: "20px", margin: 0 },
+              children: [
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "~11 000 obyvatel ve městě, ~55 800 v celém okrese"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Trend stárnutí populace — 11 653 obyvatel okresu ve věku 65+ (2022)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Nízká nezaměstnanost — 0,5 uchazeče na 1 pracovní místo (2022)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Průmyslově-zemědělský charakter okresu"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Pozitivní migrační saldo: 27,6 ‰ (2022) — přistěhovalí převyšují vystěhovalé"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Ale: 2. nejméně lidnatý okres v kraji (9,2 % populace kraje)"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Section, {
+            title: "Kultura a cestovní ruch",
+            children: /* @__PURE__ */ jsxDEV("ul", {
+              style: { paddingLeft: "20px", margin: 0 },
+              children: [
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Chodské slavnosti — nejvýznamnější folklorní festival, každoročně v srpnu"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Městská památková rezervace — zachovalé historické centrum"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Tradice Chodska — jedinečný národopisný region (chodský kroj, dudák, Kozina)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Český les — čistá příroda, turistika, cykloturistika, lyžování (Čerchov)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Kulturní infrastruktura: Městské kulturní středisko, kino, muzeum"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Section, {
+            title: "SWOT analýza pro seminární práci",
+            children: /* @__PURE__ */ jsxDEV("div", {
+              style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { background: "rgba(34,197,94,0.08)", borderRadius: "12px", padding: "14px" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "#22c55e", fontWeight: 700, marginBottom: "8px" },
+                      children: "Silné stránky"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("ul", {
+                      style: { paddingLeft: "16px", margin: 0, fontSize: "13px" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Nízká nezaměstnanost"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Čisté životní prostředí"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Bohatá kulturní tradice"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Příhraniční poloha (Bavorsko)"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Železniční spojení Praha–Mnichov"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { background: "rgba(239,68,68,0.08)", borderRadius: "12px", padding: "14px" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "#ef4444", fontWeight: 700, marginBottom: "8px" },
+                      children: "Slabé stránky"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("ul", {
+                      style: { paddingLeft: "16px", margin: 0, fontSize: "13px" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Vzdálenost od velkých center"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Omezené vyšší vzdělávání"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Stárnutí populace"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Nižší IKŽ v rámci kraje (7. místo)"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Omezená specializovaná péče"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { background: "rgba(96,165,250,0.08)", borderRadius: "12px", padding: "14px" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "#60a5fa", fontWeight: 700, marginBottom: "8px" },
+                      children: "Příležitosti"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("ul", {
+                      style: { paddingLeft: "16px", margin: 0, fontSize: "13px" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Přeshraniční spolupráce"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Rozvoj cestovního ruchu"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Remote work — návrat mladých"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "EU fondy pro rozvoj periferie"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Modernizace železnice"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { background: "rgba(251,191,36,0.08)", borderRadius: "12px", padding: "14px" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "#fbbf24", fontWeight: 700, marginBottom: "8px" },
+                      children: "Hrozby"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("ul", {
+                      style: { paddingLeft: "16px", margin: 0, fontSize: "13px" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Pokračující odliv mladých"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Centralizace služeb do Plzně"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Ekonomická závislost na málo odvětvích"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Prohlubování nerovností centrum–periferie"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("li", {
+                          children: "Omezování veřejné dopravy"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function TeorieTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Co je kvalita života?",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              "Kvalita života (KŽ) je ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "multidimenzionální koncept"
+              }, undefined, false, undefined, this),
+              " zahrnující materiální podmínky, zdraví, vzdělání, sociální vztahy, životní prostředí a subjektivní spokojenost jedince či komunity."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            children: "Základní charakteristiky konceptu:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Komplikovanost"
+                  }, undefined, false, undefined, this),
+                  " — neexistuje jednoznačná definice"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Dualita"
+                  }, undefined, false, undefined, this),
+                  " — objektivní měřitelné podmínky vs. subjektivní vnímání"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Multidimenzionalita"
+                  }, undefined, false, undefined, this),
+                  " — zahrnuje ekonomické, sociální, environmentální i kulturní aspekty"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Interdisciplinarita"
+                  }, undefined, false, undefined, this),
+                  " — studuje ji geografie, sociologie, ekonomie, psychologie"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Variabilita"
+                  }, undefined, false, undefined, this),
+                  " — mění se v čase i prostoru"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Objektivní vs. subjektivní indikátory",
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(96,165,250,0.08)", borderRadius: "12px", padding: "16px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#60a5fa", fontWeight: 700, fontSize: "16px", marginBottom: "10px" },
+                    children: "Objektivní indikátory"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("ul", {
+                    style: { paddingLeft: "16px", margin: 0, fontSize: "14px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "HDP na obyvatele / průměrný příjem"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Míra nezaměstnanosti"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Naděje dožití"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Úroveň vzdělání"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Dostupnost služeb"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Kvalita ovzduší"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Kriminalita"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Dopravní dostupnost"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "rgba(255,255,255,0.5)", fontSize: "13px", marginTop: "10px" },
+                    children: "Měří třetí strana, statistiky"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(168,85,247,0.08)", borderRadius: "12px", padding: "16px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#a855f7", fontWeight: 700, fontSize: "16px", marginBottom: "10px" },
+                    children: "Subjektivní indikátory"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("ul", {
+                    style: { paddingLeft: "16px", margin: 0, fontSize: "14px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Spokojenost se životem"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Pocit bezpečí"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Vnímání kvality okolí"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Sounáležitost s komunitou"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Spokojenost se službami"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Hodnocení vlastního zdraví"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Vnímání budoucnosti"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Sociální důvěra"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "rgba(255,255,255,0.5)", fontSize: "13px", marginTop: "10px" },
+                    children: "Dotazníky, rozhovory, šetření"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#fbbf24",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Klíčový argument pro práci:"
+              }, undefined, false, undefined, this),
+              " Objektivní data z ČSÚ a IKŽ nemusí odpovídat tomu, jak obyvatelé Domažlic skutečně vnímají svůj život. To je prostor pro tvůj terénní výzkum!"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Index kvality života (IKŽ) — Obce v datech",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: "Nejpoužívanější český nástroj pro srovnávání kvality života ve 206 městech."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "16px", margin: "12px 0" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { fontWeight: 600, marginBottom: "10px" },
+                children: "3 hlavní oblasti:"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", gap: "12px", flexWrap: "wrap" },
+                children: [
+                  { name: "Zdraví a životní prostředí", items: "naděje dožití, kvalita ovzduší, znečištění, hluk" },
+                  { name: "Materiální zabezpečení a vzdělání", items: "nezaměstnanost, příjmy, dostupnost bydlení, školy" },
+                  { name: "Vztahy a služby", items: "bezpečnost, kultura, sport, komunita, doprava" }
+                ].map((area, i) => /* @__PURE__ */ jsxDEV("div", {
+                  style: { flex: "1 1 200px", background: "rgba(96,165,250,0.06)", borderRadius: "10px", padding: "12px" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "#60a5fa", fontWeight: 600, fontSize: "14px", marginBottom: "6px" },
+                      children: area.name
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "rgba(255,255,255,0.6)", fontSize: "13px" },
+                      children: area.items
+                    }, undefined, false, undefined, this)
+                  ]
+                }, i, true, undefined, this))
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.5)", fontSize: "13px", marginTop: "12px" },
+                children: "Celkem 80 datových zdrojů → 29 sub-indexů → 1 finální skóre (0–10)"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Index lidského rozvoje (HDI)",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: "Mezinárodní měřítko UNDP (od 1990) založené na třech komponentech:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "12px", margin: "12px 0", flexWrap: "wrap" },
+            children: [
+              { name: "Zdraví", desc: "Naděje dožití při narození", icon: "♥" },
+              { name: "Vzdělání", desc: "Průměrná a očekávaná délka školní docházky", icon: "\uD83D\uDCD6" },
+              { name: "Životní úroveň", desc: "HND na osobu (PPP)", icon: "\uD83D\uDCB0" }
+            ].map((c, i) => /* @__PURE__ */ jsxDEV("div", {
+              style: { flex: "1 1 150px", background: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "14px", textAlign: "center" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "28px", marginBottom: "8px" },
+                  children: c.icon
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "#fff", fontWeight: 600, fontSize: "15px" },
+                  children: c.name
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.5)", fontSize: "13px", marginTop: "4px" },
+                  children: c.desc
+                }, undefined, false, undefined, this)
+              ]
+            }, i, true, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#60a5fa",
+            children: "HDI je vhodné zmínit v teoretické části jako mezinárodní referenční rámec, ale pro analýzu Domažlic je relevantnější český IKŽ nebo Index prosperity regionů."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Centrum–periferie v české geografii",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: "Klíčové koncepty pro zasazení Domažlic do širšího kontextu:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "8px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Hampl (2000)"
+                  }, undefined, false, undefined, this),
+                  " — koncept vnějších periferií: příhraniční oblasti jako typické periferie ČR"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "8px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Musil, Müller (2008)"
+                  }, undefined, false, undefined, this),
+                  " — vnitřní periferie: propojení periferality se sociálním vyloučením, ekonomické zaostávání omezuje rozvoj dopravy a vede k odlivu obyvatel"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "8px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Ouředníček, Temelová, Pospíšilová (2011)"
+                  }, undefined, false, undefined, this),
+                  " — Atlas sociálně-prostorové diferenciace ČR, mapování regionálních nerovností"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "8px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "Index prosperity regionů"
+                  }, undefined, false, undefined, this),
+                  " — hodnotí 206 mikroregionů dle 37 indikátorů"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#a855f7",
+            children: "Domažlice jsou zajímavý případ: leží na vnější periferii (hranice), ale díky mezinárodnímu železničnímu spojení a hraniční ekonomice mají specifické výhody, které typické periferie nemají."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ZdrojeTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(TipBox, {
+        color: "#ef4444",
+        children: [
+          /* @__PURE__ */ jsxDEV("strong", {
+            children: "Pravidla zdrojů pro tvou práci:"
+          }, undefined, false, undefined, this),
+          " Minimální úroveň = diplomové práce (ne bakalářské). Upřednostni: Google Scholar, Geografické rozhledy, odborné články, diplomové/disertační práce."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Odborné knihy a monografie",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "kniha",
+            title: "Teorie regionálního rozvoje",
+            author: "BLAŽEK, J., UHLÍŘ, D. (2011)",
+            detail: "Karolinum, Praha, 309 s.",
+            how: "Teoretický rámec pro pochopení regionálních nerovností, centrum-periferie"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "kniha",
+            title: "Regionální struktura a vývoj systému osídlení ČSR",
+            author: "HAMPL, M., GARDAVSKÝ, V., KÜHNL, K. (1987)",
+            detail: "Univerzita Karlova, Praha, 236 s.",
+            how: "Klasické dílo o systému osídlení — kontextualizace role malých měst"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "kniha",
+            title: "Atlas sociálně-prostorové diferenciace ČR",
+            author: "OUŘEDNÍČEK, M., TEMELOVÁ, J., POSPÍŠILOVÁ, L. (2011)",
+            detail: "Karolinum, Praha",
+            how: "Mapy a analýzy regionálních nerovností, vizualizace dat o kvalitě života"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Odborné články",
+        children: [
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "článek",
+            title: "Prostorové vzorce sociálně-ekonomické diferenciace obcí v ČR",
+            author: "Ouředníček, M. a kol.",
+            detail: "ResearchGate / Geografie – Sborník ČGS",
+            how: "Metodika analýzy regionálních rozdílů aplikovatelná na tvé téma"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "článek",
+            title: "Vnitřní periferie ČR jako mechanismus sociální exkluze",
+            author: "MUSIL, J., MÜLLER, J. (2008)",
+            detail: "Sociologický časopis",
+            how: "Klíčový koncept vnitřní periferie — Domažlice jako hraniční případ"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "článek",
+            title: "Geografické rozhledy — různé články",
+            author: "Např. NOVOTNÝ, J. a další",
+            detail: "Odborný časopis ČGS",
+            how: "Hledej články o kvalitě života, regionálním rozvoji, malých městech v ČR"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#60a5fa",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Jak hledat v Geografických rozhledech:"
+              }, undefined, false, undefined, this),
+              ' Jdi na geo.cuni.cz nebo geograficke-rozhledy.cz a prohledej archiv. Klíčová slova: „kvalita života", „regionální rozvoj", „periferie", „malá města".'
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Diplomové a disertační práce",
+        children: [
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "práce",
+            title: "Typologie venkova Plzeňského kraje a hodnocení měkkých faktorů rozvoje",
+            author: "Diplomová práce, PřF UK",
+            detail: "dspace.cuni.cz",
+            how: "Přímo o Plzeňském kraji — metodika hodnocení měkkých faktorů rozvoje"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "práce",
+            title: "Regionální diferenciace populačního vývoje v Plzeňském kraji",
+            author: "Diplomová práce, PedF JČU",
+            detail: "theses.cz",
+            how: "Demografická analýza mikroregionů Plzeňského kraje včetně Domažlicka"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#22c55e",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Kde hledat další práce:"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "• theses.cz — centrální databáze závěrečných prací",
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "• dspace.cuni.cz — repozitář Univerzity Karlovy",
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "• is.muni.cz — Masarykova univerzita",
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              'Hledej: „kvalita života" + „malé město" / „regionální centrum" / „Plzeňský kraj" / „periferie"'
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Datové zdroje a weby",
+        children: [
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "data",
+            title: "Český statistický úřad (ČSÚ)",
+            author: "czso.cz",
+            detail: "Statistická ročenka Plzeňského kraje, Charakteristika okresů, data o obyvatelstvu",
+            how: "Hlavní zdroj tvrdých dat: demografie, zaměstnanost, ekonomika"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "data",
+            title: "Obce v datech — Index kvality života",
+            author: "obcevdatech.cz",
+            detail: "IKŽ 2024: Domažlice = 7. místo v Plzeňském kraji, skóre 4,7/10",
+            how: "Srovnání s ostatními městy, 29 sub-indexů, vizualizace"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "data",
+            title: "Index prosperity regionů",
+            author: "indexprosperity.cz",
+            detail: "206 mikroregionů, 37 indikátorů",
+            how: "Širší kontext prosperity ORP Domažlice"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "data",
+            title: "STEM — Databáze kvality života v obcích",
+            author: "stem.cz",
+            detail: "160+ ukazatelů v 11 oblastech",
+            how: "Alternativní pohled, detailnější data"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "web",
+            title: "Město Domažlice — oficiální web",
+            author: "domazlice.eu",
+            detail: "Domažlice v číslech, strategický plán, zprávy",
+            how: "Lokální pohled, plány rozvoje města"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(SourceCard, {
+            type: "web",
+            title: "Charakteristika okresu Domažlice",
+            author: "ČSÚ (csu.gov.cz)",
+            detail: "PDF dokument — komplexní profil okresu",
+            how: "Souhrnná charakteristika pro kapitolu 3"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Jak citovat — vzory",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { marginBottom: "12px" },
+            children: [
+              "Používej ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "harvardský systém"
+              }, undefined, false, undefined, this),
+              " (jméno–datum). Buď konzistentní v celé práci."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(CitationExample, {
+            type: "Citace knihy v textu (parafráze):",
+            example: "Jedním z klíčových konceptů regionální geografie je polarizace prostoru (Blažek, Uhlíř 2011)."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CitationExample, {
+            type: "Doslovná citace v textu:",
+            example: /* @__PURE__ */ jsxDEV("span", {
+              children: 'Hampl (1996, s. 13) tvrdí, že „vědecké poznání směřuje k vytváření teoretických systémů".'
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CitationExample, {
+            type: "Citace knihy v seznamu literatury:",
+            example: "BLAŽEK, J., UHLÍŘ, D. (2011): Teorie regionálního rozvoje. Karolinum, Praha, 309 s."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CitationExample, {
+            type: "Citace článku v seznamu literatury:",
+            example: "NOVOTNÝ, J. (2018): Strukturální proměny Afriky. Geografické rozhledy, 27, č. 3, s. 4–7"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CitationExample, {
+            type: "Citace internetového zdroje v textu:",
+            example: /* @__PURE__ */ jsxDEV("span", {
+              children: "Nezaměstnanost v okrese Domažlice dosáhla v roce 2022 hodnoty 0,5 uchazeče na 1 pracovní místo (czso.cz)."
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CitationExample, {
+            type: "Internetový zdroj v seznamu:",
+            example: "Český statistický úřad: https://www.czso.cz/"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function MetodyTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(TipBox, {
+        color: "#fbbf24",
+        children: [
+          "V práci je třeba navrhnout ",
+          /* @__PURE__ */ jsxDEV("strong", {
+            children: "metodu, jak problém řešit"
+          }, undefined, false, undefined, this),
+          " (měření, dotazování, pozorování, rozhovory). Tato kapitola ti pomůže navrhnout terénní výzkum."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "1. Analýza sekundárních dat",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Co:"
+              }, undefined, false, undefined, this),
+              " Sběr a vyhodnocení existujících statistických dat"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Zdroje:"
+              }, undefined, false, undefined, this),
+              " ČSÚ, Obce v datech, STEM databáze, Úřad práce"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            children: /* @__PURE__ */ jsxDEV("strong", {
+              children: "Indikátory k porovnání:"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                children: "Míra nezaměstnanosti (Domažlice vs. Klatovy, Sušice, Přeštice)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                children: "Index stáří (poměr 65+ / 0–14)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                children: "Migrační saldo"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                children: "Průměrný příjem"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                children: "Dostupnost zdravotní péče (počet lékařů na 1 000 obyvatel)"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#60a5fa",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Tip:"
+              }, undefined, false, undefined, this),
+              " Udělej srovnávací tabulku 4 měst (Domažlice, Klatovy, Sušice, Horšovský Týn) podle 5–6 indikátorů. Vizualizuj grafem."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "2. Dotazníkové šetření (pro terén)",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Co:"
+              }, undefined, false, undefined, this),
+              " Krátký strukturovaný dotazník pro obyvatele Domažlic"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Vzorek:"
+              }, undefined, false, undefined, this),
+              " 30–50 respondentů, různé věkové skupiny"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            children: /* @__PURE__ */ jsxDEV("strong", {
+              children: "Navrhované otázky:"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "16px", margin: "12px 0" },
+            children: /* @__PURE__ */ jsxDEV("ol", {
+              style: { paddingLeft: "20px", margin: 0, fontSize: "14px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Jak hodnotíte kvalitu života v Domažlicích na škále 1–10?"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Co považujete za největší výhodu života v Domažlicích?"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Co vám v Domažlicích nejvíce chybí?"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Jak hodnotíte dostupnost: zdravotní péče / vzdělání / kultury / dopravy? (1–5)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Plánujete v Domažlicích zůstat dlouhodobě? Proč ano/ne?"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Jak vnímáte blízkost hranice s Německem? (výhoda / nevýhoda / neutrální)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Cítíte se v Domažlicích bezpečně? (1–5)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Jak hodnotíte kulturní a sportovní vyžití? (1–5)"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("li", {
+                  style: { marginBottom: "8px" },
+                  children: "Váš věk, pohlaví, délka pobytu v Domažlicích"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#22c55e",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Metodická poznámka:"
+              }, undefined, false, undefined, this),
+              " V práci uveď typ dotazníku (strukturovaný, uzavřené + otevřené otázky), způsob sběru (osobně na ulici / online), velikost vzorku a způsob vyhodnocení (průměry, grafy)."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "3. Terénní pozorování",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Co:"
+              }, undefined, false, undefined, this),
+              " Systematické pozorování stavu veřejných prostranství a infrastruktury"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            children: /* @__PURE__ */ jsxDEV("strong", {
+              children: "Na co se zaměřit:"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Stav komunikací a chodníků"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Dostupnost obchodů a služeb v centru vs. na okraji"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Stav veřejných prostranství (parky, náměstí, dětská hřiště)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Dopravní infrastruktura (zastávky MHD, parkoviště, cyklostezky)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Stav bytové zástavby (nová výstavba vs. zanedbané oblasti)"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "4. Polostrukturované rozhovory (pro terén)",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "S kým:"
+              }, undefined, false, undefined, this),
+              " 3–5 rozhovorů s klíčovými aktéry"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Představitel města (místostarosta, radní)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Místní podnikatel"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Ředitel školy nebo lékaře"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Mladý člověk (18–25) — pohled na budoucnost v regionu"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "6px" },
+                children: "Senior — srovnání minulost vs. současnost"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(TipBox, {
+            color: "#fbbf24",
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Okruhy pro rozhovor:"
+              }, undefined, false, undefined, this),
+              " Jak vnímáte vývoj města za posledních 10 let? Co je podle vás největší problém? Jaké změny by zlepšily kvalitu života? Jak ovlivňuje hranice s Německem váš život?"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function FormaTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Základní formátování",
+        defaultOpen: true,
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" },
+          children: [
+            { label: "Font textu", value: "Times New Roman – 12" },
+            { label: "Font nadpisů", value: "Arial – 12 až 16" },
+            { label: "Řádkování", value: "1,5" },
+            { label: "Zarovnání", value: "Do bloku" },
+            { label: "Rozsah", value: "8–15 normostran" },
+            { label: "Číslování stran", value: "Ano (titulní strana bez čísla)" },
+            { label: "Úrovně nadpisů", value: "Max. 3" },
+            { label: "Tisk", value: "Možno oboustranně" }
+          ].map((item, i) => /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,255,255,0.04)", borderRadius: "10px", padding: "12px 16px", display: "flex", justifyContent: "space-between" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: "rgba(255,255,255,0.6)", fontSize: "14px" },
+                children: item.label
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: "#60a5fa", fontSize: "14px", fontWeight: 600 },
+                children: item.value
+              }, undefined, false, undefined, this)
+            ]
+          }, i, true, undefined, this))
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Struktura práce (povinné části)",
+        children: /* @__PURE__ */ jsxDEV("ol", {
+          style: { paddingLeft: "20px" },
+          children: [
+            /* @__PURE__ */ jsxDEV("li", {
+              style: { marginBottom: "8px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Titulní strana"
+                }, undefined, false, undefined, this),
+                " — název školy, název práce, jméno, ročník, rok, předmět"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("li", {
+              style: { marginBottom: "8px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Obsah"
+                }, undefined, false, undefined, this),
+                " — s čísly stránek (u rozsáhlejších prací)"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("li", {
+              style: { marginBottom: "8px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Úvod"
+                }, undefined, false, undefined, this),
+                " — problematika, cíle, struktura"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("li", {
+              style: { marginBottom: "8px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Teoretická část"
+                }, undefined, false, undefined, this),
+                " — rešerše zdrojů, kritické hodnocení"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("li", {
+              style: { marginBottom: "8px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Metodika"
+                }, undefined, false, undefined, this),
+                " — popis postupu výzkumu"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("li", {
+              style: { marginBottom: "8px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Praktická/analytická část"
+                }, undefined, false, undefined, this),
+                " — vlastní zjištění, data, interpretace"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("li", {
+              style: { marginBottom: "8px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Závěr"
+                }, undefined, false, undefined, this),
+                " — shrnutí, odpovědi na otázky, návrhy"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("li", {
+              style: { marginBottom: "8px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Seznam použité literatury"
+                }, undefined, false, undefined, this),
+                " — samostatná stránka"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("li", {
+              style: { marginBottom: "8px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("strong", {
+                  children: "Seznam internetových zdrojů"
+                }, undefined, false, undefined, this),
+                " — samostatná stránka"
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Nejčastější chyby (varování z pravidel GJK)",
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: { display: "flex", flexDirection: "column", gap: "8px" },
+          children: [
+            { rule: "Zkratka s tečkou na konci věty", wrong: "Patří sem sport, kultura, atd..", right: "Patří sem sport, kultura, atd." },
+            { rule: "Mezera před závorkou", wrong: "cestovní ruch(CR)", right: "cestovní ruch (CR)" },
+            { rule: "Procenta", wrong: "7% obyvatel, sedmiprocentní", right: "7 % obyvatel, 7% (přídavné jméno)" },
+            { rule: "Viz", wrong: "Viz.", right: "Viz (není zkratka, bez tečky)" },
+            { rule: "Pevná mezera", wrong: "k nim (na konci řádku)", right: "k nim (pevná mezera: Ctrl+Shift+Space)" },
+            { rule: "Nadpis", wrong: "1. Úvod.", right: "1 Úvod (bez tečky za nadpisem)" },
+            { rule: "Internetové odkazy", wrong: "Klikatelný hypertextový odkaz", right: "Prostá URL: https://www.czso.cz/" }
+          ].map((item, i) => /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,255,255,0.04)", borderRadius: "10px", padding: "12px 16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.5)", fontSize: "12px", marginBottom: "6px" },
+                children: item.rule
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", gap: "16px", flexWrap: "wrap" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "#ef4444", fontSize: "13px" },
+                        children: "✗ "
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "rgba(255,255,255,0.6)", fontSize: "14px" },
+                        children: item.wrong
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "#22c55e", fontSize: "13px" },
+                        children: "✓ "
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "rgba(255,255,255,0.8)", fontSize: "14px" },
+                        children: item.right
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, i, true, undefined, this))
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Obrázky, tabulky, grafy",
+        children: [
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "8px" },
+                children: [
+                  "Všechny musí mít ",
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "název a číslo"
+                  }, undefined, false, undefined, this),
+                  " (Tab. 1, Graf 1, Obr. 1)"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "8px" },
+                children: [
+                  "Musí být ",
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "propojené s textem"
+                  }, undefined, false, undefined, this),
+                  " — ne pouze ilustrativní"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "8px" },
+                children: [
+                  "U převzatých uvádět ",
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "zdroj"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: { marginBottom: "8px" },
+                children: "Vysvětlivky do poznámky pod tabulkou"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(CitationExample, {
+            type: "Vzor tabulky:",
+            example: /* @__PURE__ */ jsxDEV("div", {
+              children: [
+                "Tab. 1: Srovnání vybraných indikátorů kvality života (2024)",
+                /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                "| město | IKŽ | nezaměstnanost | index stáří |",
+                /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                "|---|---|---|---|",
+                /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                "| Domažlice | 4,7 | 2,1 % | ... |",
+                /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                "| Klatovy | 5,3 | ... | ... |",
+                /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                "zdroj: Obce v datech (2024), ČSÚ (2024)"
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Section, {
+        title: "Hodnocení práce",
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: { display: "flex", gap: "16px", flexWrap: "wrap" },
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { flex: "1 1 200px", background: "rgba(96,165,250,0.08)", borderRadius: "12px", padding: "16px", textAlign: "center" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "#60a5fa", fontSize: "36px", fontWeight: 800 },
+                  children: "30 %"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.6)", fontSize: "14px" },
+                  children: "Formální stránka"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.4)", fontSize: "12px", marginTop: "4px" },
+                  children: "Formátování, citace, struktura, pravopis"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { flex: "1 1 200px", background: "rgba(168,85,247,0.08)", borderRadius: "12px", padding: "16px", textAlign: "center" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "#a855f7", fontSize: "36px", fontWeight: 800 },
+                  children: "70 %"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.6)", fontSize: "14px" },
+                  children: "Obsahová stránka"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.4)", fontSize: "12px", marginTop: "4px" },
+                  children: "Analýza, argumentace, zdroje, originalita"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ChecklistTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: glassCard,
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: { color: "#fff", fontSize: "18px", fontWeight: 700, marginTop: 0, marginBottom: "16px" },
+            children: "Postup psaní seminární práce"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Checklist, {
+            items: [
+              "Vytvořit osnovu práce (kapitoly + podkapitoly)",
+              "Nasbírat a prostudovat min. 5 odborných zdrojů (knihy, články, dipl. práce)",
+              "Stáhnout data z ČSÚ pro okres Domažlice (demografie, zaměstnanost)",
+              "Zjistit IKŽ skóre Domažlic na obcevdatech.cz a porovnat s dalšími městy",
+              "Napsat teoretickou část — definice KŽ, indikátory, centrum-periferie",
+              "Napsat charakteristiku Domažlic — poloha, demografie, ekonomika",
+              "Napsat analytickou část — hodnocení KŽ podle indikátorů, srovnání měst",
+              "Navrhnout metodiku terénního výzkumu — dotazník, pozorování, rozhovory",
+              "Zformulovat výzkumné otázky a hypotézy pro terén",
+              "Napsat úvod (cíl, otázky, struktura) a závěr (shrnutí, návrhy)",
+              "Sestavit seznam literatury a internetových zdrojů (abecedně)",
+              "Vytvořit titulní stranu dle vzoru GJK",
+              "Zkontrolovat formátování (TNR 12, řádkování 1,5, blok, číslování)",
+              "Zkontrolovat citace — je každý odkaz v textu i v seznamu literatury?",
+              "Zkontrolovat tabulky a grafy — mají čísla, názvy, zdroje?",
+              "Zkontrolovat pravopis a stylistiku — žádná dlouhá souvětí",
+              "Nechat si práci přečíst někým jiným (peer review)",
+              "Finální revize a odevzdání (deadline: 6. 3. 2026)"
+            ]
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glassCard, marginTop: "20px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: { color: "#fff", fontSize: "18px", fontWeight: 700, marginTop: 0, marginBottom: "16px" },
+            children: "Kontrola formálních pravidel před odevzdáním"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Checklist, {
+            items: [
+              "Titulní strana — škola, název, jméno, třída, rok, předmět",
+              "Stránky číslované (první strana bez viditelného čísla)",
+              "Font: Times New Roman 12, nadpisy Arial 12–16",
+              "Řádkování 1,5, zarovnání do bloku",
+              "Max. 3 úrovně nadpisů, číslované kapitoly",
+              "Citace v harvardském systému (příjmení rok) — konzistentně",
+              "Seznam literatury — abecedně dle příjmení, na samostatné stránce",
+              "Seznam internetových zdrojů — prostá URL, samostatná stránka",
+              "Žádné hypertextové odkazy v textu",
+              "Pevné mezery za předložkami (k, v, s, z, u)",
+              "Viz bez tečky, zkratky s tečkou na konci věty (jedna tečka)",
+              "Obrázky/tabulky/grafy — číslo, název, zdroj, propojení s textem"
+            ]
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function KvizTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", marginBottom: "20px", color: "rgba(255,255,255,0.6)", fontSize: "15px" },
+        children: "Ověř si znalosti pravidel psaní prací, kvality života a Domažlic"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(QuizEngine, {
+        questions: quizQuestions,
+        accentColor: "#60a5fa"
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
