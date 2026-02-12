@@ -1,5 +1,5 @@
 // @title Chemie - Reakční kinetika
-// @subject Science
+// @subject Chemistry
 // @topic Chemistry
 // @template practice
 

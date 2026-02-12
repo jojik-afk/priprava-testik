@@ -1,5 +1,5 @@
 // @title Chemie - Chemické rovnováhy
-// @subject Science
+// @subject Chemistry
 // @topic Chemistry
 // @template practice
 

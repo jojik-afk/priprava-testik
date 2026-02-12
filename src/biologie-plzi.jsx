@@ -1,5 +1,5 @@
 // @title Biologie - Plži
-// @subject Science
+// @subject Biology
 // @topic Biology
 // @template quiz
 

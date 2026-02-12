@@ -1,5 +1,5 @@
 // @title Chemie - Ideální plyn
-// @subject Science
+// @subject Chemistry
 // @topic Chemistry
 // @template practice
 

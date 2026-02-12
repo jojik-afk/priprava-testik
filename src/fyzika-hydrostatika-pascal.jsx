@@ -1,5 +1,5 @@
 // @title Hydrostatika — Pascalův zákon, hydraulická zařízení, Archimédův zákon
-// @subject Science
+// @subject Physics
 // @topic Hydrostatika, Pascalův zákon
 // @template practice
 

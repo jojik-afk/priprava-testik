@@ -1,7 +1,7 @@
 [
   {
     "title": "Hydrostatika — Pascalův zákon, hydraulická zařízení, Archimédův zákon",
-    "subject": "Science",
+    "subject": "Physics",
     "topic": "Hydrostatika, Pascalův zákon",
     "template": "practice",
     "date": "2026-02-12",
@@ -25,7 +25,7 @@
   },
   {
     "title": "Biologie - Mlži a hlavonožci",
-    "subject": "Science",
+    "subject": "Biology",
     "topic": "Biology",
     "template": "quiz",
     "date": "2026-02-04",
@@ -33,7 +33,7 @@
   },
   {
     "title": "Biologie - Plži",
-    "subject": "Science",
+    "subject": "Biology",
     "topic": "Biology",
     "template": "quiz",
     "date": "2026-02-04",
@@ -41,7 +41,7 @@
   },
   {
     "title": "Chemie - Ideální plyn",
-    "subject": "Science",
+    "subject": "Chemistry",
     "topic": "Chemistry",
     "template": "practice",
     "date": "2026-02-04",
@@ -49,7 +49,7 @@
   },
   {
     "title": "Chemie - Reakční kinetika",
-    "subject": "Science",
+    "subject": "Chemistry",
     "topic": "Chemistry",
     "template": "practice",
     "date": "2026-02-04",
@@ -57,7 +57,7 @@
   },
   {
     "title": "Chemie - Chemické rovnováhy",
-    "subject": "Science",
+    "subject": "Chemistry",
     "topic": "Chemistry",
     "template": "practice",
     "date": "2026-02-04",
@@ -65,7 +65,7 @@
   },
   {
     "title": "Termochemie - Interaktivní Průvodce",
-    "subject": "Science",
+    "subject": "Chemistry",
     "topic": "Chemistry",
     "template": "practice",
     "date": "2026-02-04",
@@ -129,7 +129,7 @@
   },
   {
     "title": "Stavová rovnice - Kompletní průvodce",
-    "subject": "Science",
+    "subject": "Physics",
     "topic": "Thermodynamics",
     "template": "practice",
     "date": "2026-02-01",

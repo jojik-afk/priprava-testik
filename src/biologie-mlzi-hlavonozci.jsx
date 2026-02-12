@@ -1,5 +1,5 @@
 // @title Biologie - Mlži a hlavonožci
-// @subject Science
+// @subject Biology
 // @topic Biology
 // @template quiz
 
