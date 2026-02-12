@@ -857,12 +857,12 @@ export default function App() {
           100% { transform: perspective(400px) rotateX(60deg) translateY(50px); }
         }
         @keyframes sunPulse {
-          0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
-          50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+          0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+          50% { opacity: 0.75; transform: translate(-50%, -50%) scale(1.02); }
         }
-        @keyframes float1 { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-30px) translateX(15px); } }
-        @keyframes float2 { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(20px) translateX(-20px); } }
-        @keyframes float3 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
+        @keyframes float1 { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-15px) translateX(8px); } }
+        @keyframes float2 { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(10px) translateX(-10px); } }
+        @keyframes float3 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
         @keyframes fadeSlideIn {
           from { opacity: 0; transform: translateY(16px); }
           to { opacity: 1; transform: translateY(0); }
@@ -883,23 +883,23 @@ export default function App() {
       <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
         {/* Grid floor */}
         <div style={{
-          position: "absolute", bottom: 0, left: "-50%", width: "200%", height: "60%",
-          backgroundImage: "linear-gradient(rgba(6,182,212,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.12) 1px, transparent 1px)",
+          position: "absolute", bottom: 0, left: "-50%", width: "200%", height: "55%",
+          backgroundImage: "linear-gradient(rgba(6,182,212,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.06) 1px, transparent 1px)",
           backgroundSize: "50px 50px",
-          animation: "gridMove 4s linear infinite",
+          animation: "gridMove 30s linear infinite",
         }} />
         {/* Neon sun */}
         <div style={{
-          position: "absolute", top: "18%", left: "50%", width: 260, height: 260,
+          position: "absolute", top: "18%", left: "50%", width: 280, height: 280,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(139,92,246,0.5) 0%, rgba(6,182,212,0.3) 40%, transparent 70%)",
-          animation: "sunPulse 20s ease-in-out infinite",
-          filter: "blur(30px)",
+          background: "radial-gradient(circle, rgba(139,92,246,0.25) 0%, rgba(6,182,212,0.15) 40%, transparent 70%)",
+          animation: "sunPulse 30s ease-in-out infinite",
+          filter: "blur(40px)",
         }} />
         {/* Floating particles */}
-        <div style={{ position: "absolute", top: "10%", left: "15%", width: 120, height: 120, borderRadius: "50%", background: "rgba(6,182,212,0.08)", filter: "blur(40px)", animation: "float1 14s ease-in-out infinite" }} />
-        <div style={{ position: "absolute", top: "35%", right: "10%", width: 160, height: 160, borderRadius: "50%", background: "rgba(139,92,246,0.08)", filter: "blur(50px)", animation: "float2 18s ease-in-out infinite" }} />
-        <div style={{ position: "absolute", bottom: "25%", left: "60%", width: 100, height: 100, borderRadius: "50%", background: "rgba(236,72,153,0.06)", filter: "blur(35px)", animation: "float3 16s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", top: "10%", left: "15%", width: 140, height: 140, borderRadius: "50%", background: "rgba(6,182,212,0.04)", filter: "blur(50px)", animation: "float1 18s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", top: "35%", right: "10%", width: 180, height: 180, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(60px)", animation: "float2 22s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", bottom: "25%", left: "60%", width: 120, height: 120, borderRadius: "50%", background: "rgba(236,72,153,0.03)", filter: "blur(45px)", animation: "float3 20s ease-in-out infinite" }} />
       </div>
 
       {/* ── Content ── */}
