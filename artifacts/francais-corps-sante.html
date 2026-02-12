@@ -148,6 +148,60 @@ var vocabulary = {
     { fr: "inquiet, inquiète", cz: "znepokojený/á", hint: "\uD83D\uDE30" },
     { fr: "stressé(e)", cz: "vystresovaný/á", hint: "\uD83D\uDE23" },
     { fr: "triste", cz: "smutný/á", hint: "\uD83D\uDE22" }
+  ],
+  "La salle de sport": [
+    { fr: "l'activité (f.) physique", cz: "fyzická aktivita / cvičení", hint: "\uD83C\uDFC3" },
+    { fr: "l'appareil (m.) de sport", cz: "sportovní přístroj", hint: "\uD83C\uDFCB️" },
+    { fr: "le certificat médical", cz: "lékařský certifikát", hint: "\uD83D\uDCCB" },
+    { fr: "le coach", cz: "trenér", hint: "\uD83D\uDC68‍\uD83C\uDFEB" },
+    { fr: "la douche", cz: "sprcha", hint: "\uD83D\uDEBF" },
+    { fr: "le maillot de bain", cz: "plavky", hint: "\uD83D\uDC59" },
+    { fr: "le sauna", cz: "sauna", hint: "\uD83E\uDDD6" },
+    { fr: "la serviette de bain", cz: "ručník", hint: "\uD83D\uDEC1" },
+    { fr: "le vestiaire", cz: "šatna", hint: "\uD83D\uDEAA" }
+  ],
+  "L'alimentation": [
+    { fr: "l'alimentation (f.)", cz: "strava / výživa", hint: "\uD83C\uDF7D️" },
+    { fr: "la calorie", cz: "kalorie", hint: "\uD83D\uDD25" },
+    { fr: "le produit", cz: "produkt / výrobek", hint: "\uD83D\uDCE6" },
+    { fr: "sain(e)", cz: "zdravý/á", hint: "\uD83E\uDD57" },
+    { fr: "gras(se)", cz: "tučný/á", hint: "\uD83E\uDDC8" },
+    { fr: "salé(e)", cz: "slaný/á", hint: "\uD83E\uDDC2" },
+    { fr: "sucré(e)", cz: "sladký/á", hint: "\uD83C\uDF6C" }
+  ],
+  "Les sports": [
+    { fr: "la corde à sauter", cz: "švihadlo", hint: "\uD83E\uDEA2" },
+    { fr: "la course à pied", cz: "běh", hint: "\uD83C\uDFC3" },
+    { fr: "la gymnastique", cz: "gymnastika", hint: "\uD83E\uDD38" },
+    { fr: "le judo", cz: "judo", hint: "\uD83E\uDD4B" },
+    { fr: "la marche", cz: "chůze", hint: "\uD83D\uDEB6" },
+    { fr: "la musculation", cz: "posilování", hint: "\uD83D\uDCAA" },
+    { fr: "la natation", cz: "plavání", hint: "\uD83C\uDFCA" },
+    { fr: "le rugby", cz: "rugby", hint: "\uD83C\uDFC9" },
+    { fr: "le tennis", cz: "tenis", hint: "\uD83C\uDFBE" },
+    { fr: "le volley(-ball)", cz: "volejbal", hint: "\uD83C\uDFD0" },
+    { fr: "le yoga", cz: "jóga", hint: "\uD83E\uDDD8" }
+  ],
+  "Le pronom Y": [
+    { fr: "J'y vais.", cz: "Jdu tam. (Y nahrazuje místo)", hint: "\uD83D\uDCCD" },
+    { fr: "Je n'y vais pas.", cz: "Nejdu tam. (zápor s Y)", hint: "\uD83D\uDEAB" },
+    { fr: "Tu vas à l'hôpital ? – Oui, j'y vais.", cz: "Jdeš do nemocnice? – Ano, jdu tam.", hint: "\uD83C\uDFE5" },
+    { fr: "Tu vas à l'hôpital ? – Non, je n'y vais pas.", cz: "Jdeš do nemocnice? – Ne, nejdu tam.", hint: "\uD83C\uDFE5" },
+    { fr: "Quand je vais à la pharmacie, j'y vais en bus.", cz: "Když jdu do lékárny, jedu tam autobusem.", hint: "\uD83D\uDE8C" },
+    { fr: "Vous travaillez dans cet hôpital ? – Oui, j'y travaille.", cz: "Pracujete v této nemocnici? – Ano, pracuji tam.", hint: "\uD83D\uDC68‍⚕️" },
+    { fr: "Je n'y travaille pas.", cz: "Nepracuji tam.", hint: "\uD83D\uDEAB" },
+    { fr: "Elle est dans sa chambre ? – Oui, elle y est.", cz: "Je ve svém pokoji? – Ano, je tam.", hint: "\uD83D\uDECF️" },
+    { fr: "Il y habite.", cz: "Bydlí tam.", hint: "\uD83C\uDFE0" },
+    { fr: "On y vend des médicaments. – À la pharmacie.", cz: "Prodávají tam léky. – V lékárně.", hint: "\uD83D\uDC8A" }
+  ],
+  "Le pronom Y - pravidla": [
+    { fr: "Y remplace un complément de lieu", cz: "Y nahrazuje příslovečné určení místa", hint: "\uD83D\uDCCC" },
+    { fr: "Y se place avant le verbe", cz: "Y se klade před sloveso", hint: "⬅️" },
+    { fr: "Forme négative: Je n'y vais pas.", cz: "Zápor: ne + y + sloveso + pas", hint: "\uD83D\uDEAB" },
+    { fr: "à la pharmacie → j'y vais", cz: "do lékárny → jdu tam", hint: "\uD83D\uDD04" },
+    { fr: "à l'hôpital → j'y vais", cz: "do nemocnice → jdu tam", hint: "\uD83D\uDD04" },
+    { fr: "dans sa chambre → elle y est", cz: "ve svém pokoji → je tam", hint: "\uD83D\uDD04" },
+    { fr: "à Nice → il y habite", cz: "v Nice → bydlí tam", hint: "\uD83D\uDD04" }
   ]
 };
 var allWords = Object.entries(vocabulary).flatMap(([category, words]) => words.map((w) => ({ ...w, category })));
