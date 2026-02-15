@@ -153,6 +153,494 @@ const btnStyle = {
 const mono = { fontFamily: "'JetBrains Mono', monospace" };
 
 /* ════════════════════════════════════════════════════════════════
+   ANIMATED SVG DIAGRAMS
+   ════════════════════════════════════════════════════════════════ */
+const RAD = Math.PI / 180;
+const ptOn = (cx, cy, r, deg) => [cx + r * Math.cos(deg * RAD), cy + r * Math.sin(deg * RAD)];
+const svgArc = (cx, cy, r, a1, a2) => {
+  const [x1, y1] = ptOn(cx, cy, r, a1), [x2, y2] = ptOn(cx, cy, r, a2);
+  let d = ((a2 - a1) % 360 + 360) % 360;
+  return `M${x1.toFixed(1)},${y1.toFixed(1)}A${r},${r},0,${d > 180 ? 1 : 0},1,${x2.toFixed(1)},${y2.toFixed(1)}`;
+};
+const angOf = (cx, cy, px, py) => Math.atan2(py - cy, px - cx) / RAD;
+const angleArc = (cx, cy, r, p1x, p1y, p2x, p2y) => {
+  const a1 = angOf(cx, cy, p1x, p1y), a2 = angOf(cx, cy, p2x, p2y);
+  const [x1, y1] = ptOn(cx, cy, r, a1), [x2, y2] = ptOn(cx, cy, r, a2);
+  const cross = (p1x - cx) * (p2y - cy) - (p1y - cy) * (p2x - cx);
+  return `M${x1.toFixed(1)},${y1.toFixed(1)}A${r},${r},0,0,${cross > 0 ? 1 : 0},${x2.toFixed(1)},${y2.toFixed(1)}`;
+};
+const Txt = ({ x, y, children, fill = "#fff", size = 13, anchor = "middle", f }) => (
+  <text x={x} y={y} fill={fill} fontSize={size} textAnchor={anchor} fontFamily="'Exo 2', sans-serif" fontWeight={600} style={f}>{children}</text>
+);
+const MTxt = ({ x, y, children, fill = CYAN, size = 13, anchor = "middle", f }) => (
+  <text x={x} y={y} fill={fill} fontSize={size} textAnchor={anchor} fontFamily="'JetBrains Mono', monospace" fontWeight={500} style={f}>{children}</text>
+);
+const Eq = ({ y, children, f }) => (
+  <g style={f}><rect x={80} y={y - 18} width={240} height={26} rx={8} fill="rgba(0,0,0,0.7)" stroke={PINK} strokeWidth={1} />
+    <MTxt x={200} y={y} fill="#fff" size={12}>{children}</MTxt></g>
+);
+
+function StepDiagram({ maxSteps, labels, children }) {
+  const [step, setStep] = useState(0);
+  const sb = { padding: "4px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.07)", color: "#fff", cursor: "pointer", fontSize: 13, fontFamily: "'Exo 2', sans-serif", transition: "all 0.4s ease" };
+  return (
+    <div style={{ marginBottom: 14, borderRadius: 14, padding: "14px 8px 8px", background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.06)" }}>
+      <svg viewBox="0 0 400 280" style={{ width: "100%", maxWidth: 440, display: "block", margin: "0 auto" }}>{children(step)}</svg>
+      {labels && labels[step] && <div style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 6, fontStyle: "italic", minHeight: 16 }}>{labels[step]}</div>}
+      <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "center", marginTop: 8 }}>
+        <button style={sb} onClick={() => setStep(0)}>⟲</button>
+        <button style={{ ...sb, opacity: step === 0 ? 0.3 : 1 }} onClick={() => setStep(s => Math.max(0, s - 1))} disabled={step === 0}>←</button>
+        <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, fontFamily: "'JetBrains Mono', monospace", minWidth: 48, textAlign: "center" }}>{step + 1}/{maxSteps}</span>
+        <button style={{ ...sb, opacity: step >= maxSteps - 1 ? 0.3 : 1 }} onClick={() => setStep(s => Math.min(maxSteps - 1, s + 1))} disabled={step >= maxSteps - 1}>→</button>
+      </div>
+    </div>
+  );
+}
+const V = (step, min) => ({ opacity: step >= min ? 1 : 0, transition: "all 0.5s ease" });
+
+/* ── Diagram renderers ── */
+const DIAG = {};
+
+// #1 — Součet úhlů trojúhelníku
+DIAG[1] = { steps: 4, labels: ["Trojúhelník ABC s úhly α, β, γ", "Rovnoběžka p ∥ AB bodem C", "Střídavé úhly α a β na rovnoběžce", "α + γ + β = 180° (přímý úhel)"],
+  render: (s) => {
+    const A = [60, 230], B = [340, 230], C = [200, 55];
+    return <g>
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 14} y={A[1] + 18}>A</Txt><Txt x={B[0] + 14} y={B[1] + 18}>B</Txt><Txt x={C[0]} y={C[1] - 12}>C</Txt>
+      <path d={angleArc(A[0], A[1], 32, C[0], C[1], B[0], B[1])} fill="none" stroke={PINK} strokeWidth={2} />
+      <MTxt x={A[0] + 40} y={A[1] - 10} fill={PINK} size={12}>α</MTxt>
+      <path d={angleArc(B[0], B[1], 32, A[0], A[1], C[0], C[1])} fill="none" stroke={PINK} strokeWidth={2} />
+      <MTxt x={B[0] - 40} y={B[1] - 10} fill={PINK} size={12}>β</MTxt>
+      <path d={angleArc(C[0], C[1], 28, B[0], B[1], A[0], A[1])} fill="none" stroke={CYAN} strokeWidth={2} />
+      <MTxt x={C[0]} y={C[1] + 38} fill={CYAN} size={12}>γ</MTxt>
+      <g style={V(s, 1)}><line x1={25} y1={C[1]} x2={375} y2={C[1]} stroke={CYAN} strokeWidth={1.5} strokeDasharray="8,4" /><Txt x={378} y={C[1] - 8} fill={CYAN} size={11} anchor="start">p</Txt></g>
+      <g style={V(s, 2)}>
+        <path d={angleArc(C[0], C[1], 38, A[0], A[1], 25, C[1])} fill="none" stroke={PINK} strokeWidth={2.5} />
+        <MTxt x={C[0] - 52} y={C[1] - 8} fill={PINK} size={12}>α</MTxt>
+        <path d={angleArc(C[0], C[1], 38, 375, C[1], B[0], B[1])} fill="none" stroke={PINK} strokeWidth={2.5} />
+        <MTxt x={C[0] + 52} y={C[1] - 8} fill={PINK} size={12}>β</MTxt>
+      </g>
+      <Eq y={18} f={V(s, 3)}>α + γ + β = 180°</Eq>
+    </g>;
+  }
+};
+
+// #2 — Pythagorova věta
+DIAG[2] = { steps: 4, labels: ["Čtverec o straně (a + b)", "4 pravoúhlé trojúhelníky s odvěsnami a, b", "Vnitřní čtverec o straně c", "(a+b)² = c² + 4·½ab → a²+b²=c²"],
+  render: (s) => {
+    const a = 90, b = 150, L = 80, T = 20, S = a + b;
+    const sq = [[L, T], [L + S, T], [L + S, T + S], [L, T + S]];
+    const m = [[L + a, T + S], [L + S, T + S - a], [L + S - a, T], [L, T + a]];
+    const tris = [[sq[3], m[0], m[3]], [m[0], sq[2], m[1]], [m[1], sq[1], m[2]], [m[2], sq[0], m[3]]];
+    const cols = ["rgba(255,45,149,0.15)", "rgba(0,212,255,0.15)", "rgba(255,45,149,0.15)", "rgba(0,212,255,0.15)"];
+    return <g>
+      <rect x={L} y={T} width={S} height={S} fill="none" stroke="#fff" strokeWidth={2} />
+      <Txt x={L + S / 2} y={T + S + 18} size={11} fill="rgba(255,255,255,0.5)">a + b</Txt>
+      {tris.map((t, i) => <polygon key={i} points={t.map(p => p.join(",")).join(" ")} fill={s >= 1 ? cols[i] : "none"} stroke={s >= 1 ? (i % 2 === 0 ? PINK : CYAN) : "none"} strokeWidth={1.5} style={{ transition: "all 0.5s ease" }} />)}
+      <g style={V(s, 1)}>
+        <Txt x={L + a / 2} y={T + S + 5} size={10} fill={PINK}>a</Txt><Txt x={L + a + b / 2} y={T + S + 5} size={10} fill={CYAN}>b</Txt>
+        <Txt x={L + S + 8} y={T + S - a / 2} size={10} fill={PINK} anchor="start">a</Txt><Txt x={L + S + 8} y={T + a / 2 + 10} size={10} fill={CYAN} anchor="start">b</Txt>
+      </g>
+      <g style={V(s, 2)}>
+        <polygon points={m.map(p => p.join(",")).join(" ")} fill="rgba(255,255,255,0.06)" stroke="#fbbf24" strokeWidth={2} />
+        <MTxt x={200} y={145} fill="#fbbf24" size={14}>c²</MTxt>
+      </g>
+      <Eq y={18} f={V(s, 3)}>a² + b² = c²</Eq>
+    </g>;
+  }
+};
+
+// #3 — Eukleidova věta o výšce
+DIAG[3] = { steps: 5, labels: ["Pravoúhlý △ABC, pravý úhel při C", "Výška v_c z C na AB, pata P", "△APC zvýrazněn (pravoúhlý)", "△BPC zvýrazněn (pravoúhlý)", "Podobnost: c_b/v_c = v_c/c_a → v_c² = c_a·c_b"],
+  render: (s) => {
+    const A = [50, 235], B = [350, 235], C = [130, 60], P = [130, 235];
+    return <g>
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 12} y={A[1] + 18}>A</Txt><Txt x={B[0] + 12} y={B[1] + 18}>B</Txt><Txt x={C[0] - 5} y={C[1] - 12}>C</Txt>
+      <path d={`M${C[0] + 12},${C[1]} L${C[0] + 12},${C[1] + 12} L${C[0]},${C[1] + 12}`} fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth={1} />
+      <g style={V(s, 1)}>
+        <line x1={C[0]} y1={C[1]} x2={P[0]} y2={P[1]} stroke={CYAN} strokeWidth={2} strokeDasharray="6,3" />
+        <Txt x={P[0]} y={P[1] + 18} fill={CYAN}>P</Txt>
+        <path d={`M${P[0] + 10},${P[1]} L${P[0] + 10},${P[1] - 10} L${P[0]},${P[1] - 10}`} fill="none" stroke={CYAN} strokeWidth={1} />
+        <MTxt x={C[0] - 16} y={(C[1] + P[1]) / 2} fill={CYAN} size={11}>v_c</MTxt>
+        <MTxt x={(A[0] + P[0]) / 2} y={P[1] + 18} fill="#fbbf24" size={10}>c_b</MTxt>
+        <MTxt x={(B[0] + P[0]) / 2} y={P[1] + 18} fill="#fbbf24" size={10}>c_a</MTxt>
+      </g>
+      <g style={V(s, 2)}>
+        <polygon points={`${A} ${P} ${C}`} fill="rgba(255,45,149,0.12)" stroke={PINK} strokeWidth={2} />
+        <MTxt x={75} y={155} fill={PINK} size={11}>△APC</MTxt>
+      </g>
+      <g style={V(s, 3)}>
+        <polygon points={`${B} ${P} ${C}`} fill="rgba(0,212,255,0.12)" stroke={CYAN} strokeWidth={2} />
+        <MTxt x={250} y={155} fill={CYAN} size={11}>△BPC</MTxt>
+      </g>
+      <Eq y={18} f={V(s, 4)}>v_c² = c_a · c_b</Eq>
+    </g>;
+  }
+};
+
+// #4 — Eukleidova věta o odvěsně
+DIAG[4] = { steps: 5, labels: ["Pravoúhlý △ABC, pravý úhel při C", "Výška v_c, pata P — úseky c_a, c_b", "△BPC ~ △ABC (sdílejí úhel β)", "Poměr stran → a² = c · c_a", "Analogicky b² = c · c_b"],
+  render: (s) => {
+    const A = [50, 235], B = [350, 235], C = [130, 60], P = [130, 235];
+    return <g>
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 12} y={A[1] + 18}>A</Txt><Txt x={B[0] + 12} y={B[1] + 18}>B</Txt><Txt x={C[0] - 5} y={C[1] - 12}>C</Txt>
+      <MTxt x={(A[0] + B[0]) / 2} y={A[1] + 18} fill="rgba(255,255,255,0.5)" size={11}>c</MTxt>
+      <g style={V(s, 1)}>
+        <line x1={C[0]} y1={C[1]} x2={P[0]} y2={P[1]} stroke={CYAN} strokeWidth={1.5} strokeDasharray="6,3" />
+        <Txt x={P[0]} y={P[1] + 18} fill={CYAN}>P</Txt>
+        <MTxt x={(A[0] + P[0]) / 2} y={P[1] + 18} fill="#fbbf24" size={10}>c_b</MTxt>
+        <MTxt x={(B[0] + P[0]) / 2} y={P[1] + 18} fill="#fbbf24" size={10}>c_a</MTxt>
+        <MTxt x={(B[0] + C[0]) / 2 + 15} y={(B[1] + C[1]) / 2} fill="rgba(255,255,255,0.5)" size={11}>a</MTxt>
+        <MTxt x={(A[0] + C[0]) / 2 - 15} y={(A[1] + C[1]) / 2} fill="rgba(255,255,255,0.5)" size={11}>b</MTxt>
+      </g>
+      <g style={V(s, 2)}>
+        <polygon points={`${B} ${P} ${C}`} fill="rgba(255,45,149,0.12)" stroke={PINK} strokeWidth={2} />
+        <MTxt x={260} y={155} fill={PINK} size={11}>△BPC</MTxt>
+        <polygon points={`${A} ${B} ${C}`} fill="none" stroke={CYAN} strokeWidth={2.5} strokeDasharray="8,4" />
+        <MTxt x={140} y={120} fill={CYAN} size={11}>△ABC</MTxt>
+      </g>
+      <g style={V(s, 3)}><Eq y={18}>a² = c · c_a</Eq></g>
+      <g style={V(s, 4)}>
+        <polygon points={`${A} ${P} ${C}`} fill="rgba(0,212,255,0.12)" stroke={CYAN} strokeWidth={2} />
+        <rect x={80} y={35} width={240} height={26} rx={8} fill="rgba(0,0,0,0.7)" stroke={CYAN} strokeWidth={1} />
+        <MTxt x={200} y={53} fill="#fff" size={12}>b² = c · c_b</MTxt>
+      </g>
+    </g>;
+  }
+};
+
+// #5 — Středový a obvodový úhel
+DIAG[5] = { steps: 5, labels: ["Kružnice k, body A, B, X, střed S", "Středový úhel ∠ASB", "Obvodový úhel ∠AXB", "Pomocná přímka XD přes S", "Rovnoramenné △: ∠ASB = 2·∠AXB"],
+  render: (s) => {
+    const cx = 200, cy = 145, r = 110;
+    const A = ptOn(cx, cy, r, 150), B = ptOn(cx, cy, r, 30), X = ptOn(cx, cy, r, 270), D = ptOn(cx, cy, r, 90);
+    return <g>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth={1.5} />
+      <circle cx={cx} cy={cy} r={3} fill={CYAN} /><Txt x={cx + 10} y={cy - 8} fill={CYAN} size={11}>S</Txt>
+      <circle cx={A[0]} cy={A[1]} r={4} fill={PINK} /><Txt x={A[0] - 16} y={A[1] + 4} fill={PINK} size={12}>A</Txt>
+      <circle cx={B[0]} cy={B[1]} r={4} fill={PINK} /><Txt x={B[0] + 14} y={B[1] + 4} fill={PINK} size={12}>B</Txt>
+      <circle cx={X[0]} cy={X[1]} r={4} fill="#fbbf24" /><Txt x={X[0]} y={X[1] + 18} fill="#fbbf24" size={12}>X</Txt>
+      <g style={V(s, 1)}>
+        <line x1={cx} y1={cy} x2={A[0]} y2={A[1]} stroke={PINK} strokeWidth={2} />
+        <line x1={cx} y1={cy} x2={B[0]} y2={B[1]} stroke={PINK} strokeWidth={2} />
+        <path d={angleArc(cx, cy, 20, A[0], A[1], B[0], B[1])} fill="none" stroke={PINK} strokeWidth={2} />
+      </g>
+      <g style={V(s, 2)}>
+        <line x1={X[0]} y1={X[1]} x2={A[0]} y2={A[1]} stroke="#fbbf24" strokeWidth={1.5} />
+        <line x1={X[0]} y1={X[1]} x2={B[0]} y2={B[1]} stroke="#fbbf24" strokeWidth={1.5} />
+        <path d={angleArc(X[0], X[1], 24, A[0], A[1], B[0], B[1])} fill="none" stroke="#fbbf24" strokeWidth={2} />
+      </g>
+      <g style={V(s, 3)}>
+        <line x1={X[0]} y1={X[1]} x2={D[0]} y2={D[1]} stroke={CYAN} strokeWidth={1.5} strokeDasharray="6,3" />
+        <circle cx={D[0]} cy={D[1]} r={3} fill={CYAN} /><Txt x={D[0]} y={D[1] - 12} fill={CYAN} size={11}>D</Txt>
+      </g>
+      <g style={V(s, 4)}>
+        <line x1={cx} y1={cy} x2={A[0]} y2={A[1]} stroke="rgba(255,255,255,0.3)" strokeWidth={1} strokeDasharray="4,3" />
+        <line x1={cx} y1={cy} x2={B[0]} y2={B[1]} stroke="rgba(255,255,255,0.3)" strokeWidth={1} strokeDasharray="4,3" />
+        <line x1={cx} y1={cy} x2={X[0]} y2={X[1]} stroke="rgba(255,255,255,0.3)" strokeWidth={1} strokeDasharray="4,3" />
+        <Eq y={18}>∠ASB = 2 · ∠AXB</Eq>
+      </g>
+    </g>;
+  }
+};
+
+// #6 — Sinová věta
+DIAG[6] = { steps: 4, labels: ["Trojúhelník ABC", "Výška v_c z C na AB, pata P", "sin α = v_c/b → v_c = b·sin α", "sin β = v_c/a → b·sin α = a·sin β"],
+  render: (s) => {
+    const A = [50, 230], B = [350, 230], C = [220, 50], P = [220, 230];
+    return <g>
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 12} y={A[1] + 18}>A</Txt><Txt x={B[0] + 12} y={B[1] + 18}>B</Txt><Txt x={C[0] + 5} y={C[1] - 12}>C</Txt>
+      <path d={angleArc(A[0], A[1], 30, C[0], C[1], B[0], B[1])} fill="none" stroke={PINK} strokeWidth={2} />
+      <MTxt x={A[0] + 38} y={A[1] - 8} fill={PINK} size={11}>α</MTxt>
+      <path d={angleArc(B[0], B[1], 30, A[0], A[1], C[0], C[1])} fill="none" stroke={CYAN} strokeWidth={2} />
+      <MTxt x={B[0] - 38} y={B[1] - 12} fill={CYAN} size={11}>β</MTxt>
+      <MTxt x={(B[0] + C[0]) / 2 + 14} y={(B[1] + C[1]) / 2} size={11} fill="rgba(255,255,255,0.5)">a</MTxt>
+      <MTxt x={(A[0] + C[0]) / 2 - 14} y={(A[1] + C[1]) / 2 - 5} size={11} fill="rgba(255,255,255,0.5)">b</MTxt>
+      <g style={V(s, 1)}>
+        <line x1={C[0]} y1={C[1]} x2={P[0]} y2={P[1]} stroke="#fbbf24" strokeWidth={2} strokeDasharray="6,3" />
+        <Txt x={P[0]} y={P[1] + 18} fill="#fbbf24">P</Txt>
+        <MTxt x={C[0] + 16} y={(C[1] + P[1]) / 2} fill="#fbbf24" size={11}>v_c</MTxt>
+      </g>
+      <g style={V(s, 2)}>
+        <polygon points={`${A} ${P} ${C}`} fill="rgba(255,45,149,0.1)" stroke={PINK} strokeWidth={1.5} />
+        <MTxt x={135} y={170} fill={PINK} size={10}>v_c = b·sin α</MTxt>
+      </g>
+      <g style={V(s, 3)}>
+        <polygon points={`${B} ${P} ${C}`} fill="rgba(0,212,255,0.1)" stroke={CYAN} strokeWidth={1.5} />
+        <Eq y={18}>a/sin α = b/sin β</Eq>
+      </g>
+    </g>;
+  }
+};
+
+// #7 — Poloměr opsané kružnice
+DIAG[7] = { steps: 4, labels: ["△ABC vepsaný do kružnice k (poloměr r)", "Průměr BD kružnice", "△BDA: pravý úhel při A (Thales), ∠BDA = α", "sin α = a/(2r) → r = a/(2 sin α)"],
+  render: (s) => {
+    const cx = 200, cy = 148, r = 110;
+    const B = ptOn(cx, cy, r, 140), D = ptOn(cx, cy, r, 320);
+    const A = ptOn(cx, cy, r, 10), C = ptOn(cx, cy, r, 220);
+    return <g>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth={1.5} />
+      <circle cx={cx} cy={cy} r={3} fill="rgba(255,255,255,0.4)" />
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] + 14} y={A[1] + 5}>A</Txt><Txt x={B[0] - 16} y={B[1] + 5}>B</Txt><Txt x={C[0] - 14} y={C[1] + 5}>C</Txt>
+      <MTxt x={(B[0] + C[0]) / 2 - 18} y={(B[1] + C[1]) / 2 + 2} size={11} fill="rgba(255,255,255,0.5)">a</MTxt>
+      <g style={V(s, 1)}>
+        <line x1={B[0]} y1={B[1]} x2={D[0]} y2={D[1]} stroke={CYAN} strokeWidth={2} />
+        <circle cx={D[0]} cy={D[1]} r={4} fill={CYAN} /><Txt x={D[0] + 14} y={D[1] - 8} fill={CYAN}>D</Txt>
+        <MTxt x={cx + 8} y={cy - 10} fill={CYAN} size={10}>2r</MTxt>
+      </g>
+      <g style={V(s, 2)}>
+        <polygon points={`${B} ${D} ${A}`} fill="rgba(255,45,149,0.1)" stroke={PINK} strokeWidth={1.5} />
+        <path d={`M${A[0] - 8},${A[1] - 5} L${A[0] - 5},${A[1] - 13} L${A[0] + 3},${A[1] - 10}`} fill="none" stroke="#22c55e" strokeWidth={1.5} />
+        <MTxt x={A[0] - 16} y={A[1] - 14} fill="#22c55e" size={10}>90°</MTxt>
+        <path d={angleArc(D[0], D[1], 20, B[0], B[1], A[0], A[1])} fill="none" stroke={PINK} strokeWidth={2} />
+        <MTxt x={D[0] - 8} y={D[1] + 28} fill={PINK} size={11}>α</MTxt>
+      </g>
+      <Eq y={18} f={V(s, 3)}>r = a / (2·sin α)</Eq>
+    </g>;
+  }
+};
+
+// #8 — Kosinová věta (postup pana profesora)
+DIAG[8] = { steps: 6, labels: ["Trojúhelník ABC", "Výška v_c z C, pata P", "Úseky: |AP| = x, |PB| = c − x", "PV: x²+v_c²=b² a (c−x)²+v_c²=a²", "Odečtení: c²−2cx = a²−b²", "cos α = x/b → b²+c²−2bc·cos α = a²"],
+  render: (s) => {
+    const A = [50, 235], B = [350, 235], C = [140, 50], P = [140, 235];
+    return <g>
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 12} y={A[1] + 18}>A</Txt><Txt x={B[0] + 12} y={B[1] + 18}>B</Txt><Txt x={C[0] - 5} y={C[1] - 12}>C</Txt>
+      <path d={angleArc(A[0], A[1], 28, C[0], C[1], B[0], B[1])} fill="none" stroke={PINK} strokeWidth={2} />
+      <MTxt x={A[0] + 36} y={A[1] - 8} fill={PINK} size={11}>α</MTxt>
+      <MTxt x={(B[0] + C[0]) / 2 + 14} y={(B[1] + C[1]) / 2} size={11} fill="rgba(255,255,255,0.4)">a</MTxt>
+      <MTxt x={(A[0] + C[0]) / 2 - 14} y={(A[1] + C[1]) / 2 - 8} size={11} fill="rgba(255,255,255,0.4)">b</MTxt>
+      <MTxt x={(A[0] + B[0]) / 2} y={A[1] + 18} size={11} fill="rgba(255,255,255,0.4)">c</MTxt>
+      <g style={V(s, 1)}>
+        <line x1={C[0]} y1={C[1]} x2={P[0]} y2={P[1]} stroke="#fbbf24" strokeWidth={2} strokeDasharray="6,3" />
+        <Txt x={P[0]} y={P[1] + 18} fill="#fbbf24">P</Txt>
+        <path d={`M${P[0] + 10},${P[1]} L${P[0] + 10},${P[1] - 10} L${P[0]},${P[1] - 10}`} fill="none" stroke="#fbbf24" strokeWidth={1} />
+        <MTxt x={C[0] + 16} y={(C[1] + P[1]) / 2} fill="#fbbf24" size={11}>v_c</MTxt>
+      </g>
+      <g style={V(s, 2)}>
+        <line x1={A[0]} y1={A[1] - 4} x2={P[0]} y2={P[1] - 4} stroke={PINK} strokeWidth={3} />
+        <MTxt x={(A[0] + P[0]) / 2} y={A[1] - 10} fill={PINK} size={11}>x</MTxt>
+        <line x1={P[0]} y1={A[1] - 4} x2={B[0]} y2={B[1] - 4} stroke={CYAN} strokeWidth={3} />
+        <MTxt x={(P[0] + B[0]) / 2} y={B[1] - 10} fill={CYAN} size={11}>c − x</MTxt>
+      </g>
+      <g style={V(s, 3)}>
+        <polygon points={`${A} ${P} ${C}`} fill="rgba(255,45,149,0.08)" stroke={PINK} strokeWidth={1.5} />
+        <polygon points={`${P} ${B} ${C}`} fill="rgba(0,212,255,0.08)" stroke={CYAN} strokeWidth={1.5} />
+        <MTxt x={85} y={160} fill={PINK} size={9}>x²+v²=b²</MTxt>
+        <MTxt x={260} y={160} fill={CYAN} size={9}>(c−x)²+v²=a²</MTxt>
+      </g>
+      <g style={V(s, 4)}><Eq y={18}>c² − 2cx = a² − b²</Eq></g>
+      <g style={V(s, 5)}>
+        <rect x={55} y={2} width={290} height={26} rx={8} fill="rgba(0,0,0,0.7)" stroke="#22c55e" strokeWidth={1} />
+        <MTxt x={200} y={20} fill="#22c55e" size={12}>b² + c² − 2bc·cos α = a²</MTxt>
+      </g>
+    </g>;
+  }
+};
+
+// #9 — S = ½cv_c
+DIAG[9] = { steps: 3, labels: ["Trojúhelník ABC se základnou c a výškou v_c", "Doplníme na obdélník (c × v_c)", "Trojúhelník = ½ obdélníku → S = ½·c·v_c"],
+  render: (s) => {
+    const A = [70, 235], B = [330, 235], C = [210, 55];
+    const P = [210, 235];
+    return <g>
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.05)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 12} y={A[1] + 18}>A</Txt><Txt x={B[0] + 12} y={B[1] + 18}>B</Txt><Txt x={C[0] + 5} y={C[1] - 12}>C</Txt>
+      <line x1={C[0]} y1={C[1]} x2={P[0]} y2={P[1]} stroke="rgba(255,255,255,0.3)" strokeWidth={1} strokeDasharray="4,3" />
+      <MTxt x={(A[0] + B[0]) / 2} y={A[1] + 18} size={11} fill="rgba(255,255,255,0.5)">c</MTxt>
+      <MTxt x={P[0] + 14} y={(C[1] + P[1]) / 2} size={11} fill="rgba(255,255,255,0.5)">v_c</MTxt>
+      <g style={V(s, 1)}>
+        <rect x={A[0]} y={C[1]} width={B[0] - A[0]} height={A[1] - C[1]} fill="none" stroke={CYAN} strokeWidth={2} strokeDasharray="8,4" />
+        <MTxt x={B[0] + 5} y={(C[1] + A[1]) / 2} fill={CYAN} size={10} anchor="start">c × v_c</MTxt>
+      </g>
+      <g style={V(s, 2)}>
+        <polygon points={`${A} ${B} ${C}`} fill="rgba(255,45,149,0.15)" stroke={PINK} strokeWidth={2} />
+        <Eq y={18}>S = ½ · c · v_c</Eq>
+      </g>
+    </g>;
+  }
+};
+
+// #10 — S = ½ab·sin γ
+DIAG[10] = { steps: 3, labels: ["Trojúhelník ABC se stranami a, b a úhlem γ", "Výška v z B: sin γ = v/a → v = a·sin γ", "S = ½·b·v = ½·a·b·sin γ"],
+  render: (s) => {
+    const A = [70, 235], B = [330, 235], C = [160, 55];
+    const foot = [330, 55];
+    return <g>
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 12} y={A[1] + 18}>A</Txt><Txt x={B[0] + 12} y={B[1] + 18}>B</Txt><Txt x={C[0] - 5} y={C[1] - 12}>C</Txt>
+      <path d={angleArc(C[0], C[1], 28, A[0], A[1], B[0], B[1])} fill="none" stroke="#fbbf24" strokeWidth={2} />
+      <MTxt x={C[0] + 10} y={C[1] + 36} fill="#fbbf24" size={11}>γ</MTxt>
+      <MTxt x={(C[0] + B[0]) / 2 + 14} y={(C[1] + B[1]) / 2} size={11} fill="rgba(255,255,255,0.5)">a</MTxt>
+      <MTxt x={(A[0] + C[0]) / 2 - 14} y={(A[1] + C[1]) / 2 - 5} size={11} fill="rgba(255,255,255,0.5)">b</MTxt>
+      <g style={V(s, 1)}>
+        <line x1={B[0]} y1={B[1]} x2={B[0]} y2={C[1]} stroke={PINK} strokeWidth={2} strokeDasharray="6,3" />
+        <line x1={C[0]} y1={C[1]} x2={B[0]} y2={C[1]} stroke="rgba(255,255,255,0.2)" strokeWidth={1} strokeDasharray="4,3" />
+        <MTxt x={B[0] + 14} y={(B[1] + C[1]) / 2} fill={PINK} size={11} anchor="start">v</MTxt>
+        <MTxt x={250} y={C[1] - 8} fill={PINK} size={10}>v = a·sin γ</MTxt>
+      </g>
+      <Eq y={18} f={V(s, 2)}>S = ½ · a · b · sin γ</Eq>
+    </g>;
+  }
+};
+
+// #11 — S = oρ/2
+DIAG[11] = { steps: 4, labels: ["Trojúhelník ABC s vepsanou kružnicí (ρ)", "Střed I spojen s vrcholy A, B, C", "3 menší trojúhelníky, každý s výškou ρ", "S = ½aρ + ½bρ + ½cρ = oρ/2"],
+  render: (s) => {
+    const A = [60, 250], B = [340, 250], C = [200, 45];
+    const I = [200, 178], rho = 72;
+    return <g>
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 12} y={A[1] + 18}>A</Txt><Txt x={B[0] + 12} y={B[1] + 18}>B</Txt><Txt x={C[0]} y={C[1] - 12}>C</Txt>
+      <circle cx={I[0]} cy={I[1]} r={rho} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth={1.5} />
+      <circle cx={I[0]} cy={I[1]} r={3} fill={CYAN} /><Txt x={I[0] + 12} y={I[1] - 8} fill={CYAN} size={11}>I</Txt>
+      <MTxt x={(A[0] + B[0]) / 2} y={A[1] + 18} size={10} fill="rgba(255,255,255,0.4)">a (= c)</MTxt>
+      <g style={V(s, 1)}>
+        <line x1={I[0]} y1={I[1]} x2={A[0]} y2={A[1]} stroke={PINK} strokeWidth={1.5} />
+        <line x1={I[0]} y1={I[1]} x2={B[0]} y2={B[1]} stroke={PINK} strokeWidth={1.5} />
+        <line x1={I[0]} y1={I[1]} x2={C[0]} y2={C[1]} stroke={PINK} strokeWidth={1.5} />
+      </g>
+      <g style={V(s, 2)}>
+        <polygon points={`${A} ${B} ${I}`} fill="rgba(255,45,149,0.1)" stroke={PINK} strokeWidth={1} />
+        <polygon points={`${B} ${C} ${I}`} fill="rgba(0,212,255,0.1)" stroke={CYAN} strokeWidth={1} />
+        <polygon points={`${C} ${A} ${I}`} fill="rgba(251,191,36,0.1)" stroke="#fbbf24" strokeWidth={1} />
+        <line x1={I[0]} y1={I[1]} x2={I[0]} y2={250} stroke="#22c55e" strokeWidth={1.5} strokeDasharray="4,3" />
+        <MTxt x={I[0] + 12} y={215} fill="#22c55e" size={10}>ρ</MTxt>
+      </g>
+      <Eq y={18} f={V(s, 3)}>S = o · ρ / 2</Eq>
+    </g>;
+  }
+};
+
+// #12 — S = abc/(4r)
+DIAG[12] = { steps: 3, labels: ["△ABC s opsanou kružnicí (poloměr r)", "S = ½ab·sin γ a sin γ = c/(2r)", "Dosadíme → S = abc/(4r)"],
+  render: (s) => {
+    const cx = 200, cy = 148, r = 110;
+    const A = ptOn(cx, cy, r, 200), B = ptOn(cx, cy, r, 330), C = ptOn(cx, cy, r, 80);
+    return <g>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth={1.5} />
+      <polygon points={`${A} ${B} ${C}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 14} y={A[1] + 5}>A</Txt><Txt x={B[0] + 12} y={B[1] + 5}>B</Txt><Txt x={C[0] + 5} y={C[1] - 12}>C</Txt>
+      <MTxt x={(A[0] + B[0]) / 2} y={(A[1] + B[1]) / 2 + 18} size={11} fill="rgba(255,255,255,0.5)">c</MTxt>
+      <MTxt x={(B[0] + C[0]) / 2 + 14} y={(B[1] + C[1]) / 2} size={11} fill="rgba(255,255,255,0.5)">a</MTxt>
+      <MTxt x={(A[0] + C[0]) / 2 - 14} y={(A[1] + C[1]) / 2} size={11} fill="rgba(255,255,255,0.5)">b</MTxt>
+      <g style={V(s, 1)}>
+        <line x1={cx} y1={cy} x2={B[0]} y2={B[1]} stroke={CYAN} strokeWidth={1} strokeDasharray="4,3" />
+        <MTxt x={cx + 8} y={cy - 8} fill={CYAN} size={10}>r</MTxt>
+        <path d={angleArc(C[0], C[1], 22, A[0], A[1], B[0], B[1])} fill="none" stroke="#fbbf24" strokeWidth={2} />
+        <MTxt x={C[0] - 5} y={C[1] + 32} fill="#fbbf24" size={11}>γ</MTxt>
+        <MTxt x={200} y={270} fill="rgba(255,255,255,0.5)" size={10}>sin γ = c/(2r)</MTxt>
+      </g>
+      <Eq y={18} f={V(s, 2)}>S = abc / (4r)</Eq>
+    </g>;
+  }
+};
+
+// #13 — Počet úhlopříček
+DIAG[13] = { steps: 4, labels: ["Šestiúhelník (n = 6)", "Z jednoho vrcholu: (n−3) = 3 úhlopříčky", "Z každého ze 6 vrcholů: 6·3 = 18", "Každá počítána 2× → p = 18/2 = 9"],
+  render: (s) => {
+    const cx = 200, cy = 140, r = 105;
+    const vs = [0, 60, 120, 180, 240, 300].map(a => ptOn(cx, cy, r, a));
+    const pts = vs.map(v => v.join(",")).join(" ");
+    return <g>
+      <polygon points={pts} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      {vs.map((v, i) => <g key={i}><circle cx={v[0]} cy={v[1]} r={4} fill={i === 0 ? PINK : "#fff"} /><Txt x={v[0] + (v[0] > cx ? 12 : -12)} y={v[1] + (v[1] > cy ? 16 : -8)} size={11}>{i + 1}</Txt></g>)}
+      <g style={V(s, 1)}>
+        {[2, 3, 4].map(i => <line key={i} x1={vs[0][0]} y1={vs[0][1]} x2={vs[i][0]} y2={vs[i][1]} stroke={PINK} strokeWidth={2} />)}
+        <MTxt x={340} y={30} fill={PINK} size={11} anchor="end">3 úhlopříčky</MTxt>
+      </g>
+      <g style={V(s, 2)}>
+        {vs.map((v1, i) => vs.filter((_, j) => j !== i && j !== (i + 1) % 6 && j !== (i + 5) % 6).map((v2, k) => <line key={`${i}-${k}`} x1={v1[0]} y1={v1[1]} x2={v2[0]} y2={v2[1]} stroke="rgba(0,212,255,0.3)" strokeWidth={1} />))}
+      </g>
+      <Eq y={265} f={V(s, 3)}>p = n(n−3)/2 = 9</Eq>
+    </g>;
+  }
+};
+
+// #14 — Součet vnitřních úhlů n-úhelníku
+DIAG[14] = { steps: 3, labels: ["Pětiúhelník (n = 5)", "Triangulace z jednoho vrcholu → (n−2) = 3 trojúhelníky", "3 × 180° = 540°"],
+  render: (s) => {
+    const cx = 200, cy = 140, r = 110;
+    const vs = [270, 342, 54, 126, 198].map(a => ptOn(cx, cy, r, a));
+    const cols = ["rgba(255,45,149,0.12)", "rgba(0,212,255,0.12)", "rgba(251,191,36,0.12)"];
+    const strk = [PINK, CYAN, "#fbbf24"];
+    return <g>
+      <polygon points={vs.map(v => v.join(",")).join(" ")} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      {vs.map((v, i) => <circle key={i} cx={v[0]} cy={v[1]} r={3} fill={i === 0 ? PINK : "#fff"} />)}
+      <g style={V(s, 1)}>
+        <line x1={vs[0][0]} y1={vs[0][1]} x2={vs[2][0]} y2={vs[2][1]} stroke={PINK} strokeWidth={1.5} />
+        <line x1={vs[0][0]} y1={vs[0][1]} x2={vs[3][0]} y2={vs[3][1]} stroke={PINK} strokeWidth={1.5} />
+        {[[0, 1, 2], [0, 2, 3], [0, 3, 4]].map((t, i) => <polygon key={i} points={t.map(j => vs[j].join(",")).join(" ")} fill={cols[i]} stroke={strk[i]} strokeWidth={1} />)}
+        {[[0, 1, 2], [0, 2, 3], [0, 3, 4]].map((t, i) => {
+          const mx = (vs[t[0]][0] + vs[t[1]][0] + vs[t[2]][0]) / 3;
+          const my = (vs[t[0]][1] + vs[t[1]][1] + vs[t[2]][1]) / 3;
+          return <MTxt key={i} x={mx} y={my + 4} fill={strk[i]} size={11}>180°</MTxt>;
+        })}
+      </g>
+      <Eq y={265} f={V(s, 2)}>(n−2)·180° = 540°</Eq>
+    </g>;
+  }
+};
+
+// #15 — Obsah pravidelného n-úhelníku
+DIAG[15] = { steps: 4, labels: ["Pravidelný šestiúhelník", "Rozklad na 6 rovnoramenných △ ze středu", "Apotéma v_a = a/(2·tg(30°))", "S jednoho △ = a²/(4·tg(30°)), celkem ×6"],
+  render: (s) => {
+    const cx = 200, cy = 140, r = 105;
+    const vs = [0, 60, 120, 180, 240, 300].map(a => ptOn(cx, cy, r, a));
+    const cols = ["rgba(255,45,149,0.1)", "rgba(0,212,255,0.1)", "rgba(251,191,36,0.1)", "rgba(255,45,149,0.1)", "rgba(0,212,255,0.1)", "rgba(251,191,36,0.1)"];
+    const midA = 30;
+    const ap = ptOn(cx, cy, r * Math.cos(30 * RAD), midA);
+    return <g>
+      <polygon points={vs.map(v => v.join(",")).join(" ")} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <g style={V(s, 1)}>
+        {vs.map((v, i) => <line key={i} x1={cx} y1={cy} x2={v[0]} y2={v[1]} stroke="rgba(255,255,255,0.4)" strokeWidth={1} />)}
+        {vs.map((v, i) => <polygon key={i} points={`${cx},${cy} ${v.join(",")} ${vs[(i + 1) % 6].join(",")}`} fill={cols[i]} stroke="rgba(255,255,255,0.2)" strokeWidth={1} />)}
+        <circle cx={cx} cy={cy} r={3} fill={CYAN} />
+      </g>
+      <g style={V(s, 2)}>
+        <polygon points={`${cx},${cy} ${vs[0].join(",")} ${vs[1].join(",")}`} fill="rgba(255,45,149,0.2)" stroke={PINK} strokeWidth={2} />
+        <line x1={cx} y1={cy} x2={ap[0]} y2={ap[1]} stroke="#22c55e" strokeWidth={2} strokeDasharray="5,3" />
+        <MTxt x={ap[0] + 14} y={ap[1] + 4} fill="#22c55e" size={10}>v_a</MTxt>
+        <MTxt x={(vs[0][0] + vs[1][0]) / 2 + 14} y={(vs[0][1] + vs[1][1]) / 2} fill="rgba(255,255,255,0.6)" size={10}>a</MTxt>
+      </g>
+      <Eq y={265} f={V(s, 3)}>S = n·a²/(4·tg(180°/n))</Eq>
+    </g>;
+  }
+};
+
+// #16 — Obsah lichoběžníku
+DIAG[16] = { steps: 4, labels: ["Lichoběžník ABCD, základny a, c, výška v", "Úhlopříčka AC rozdělí na 2 trojúhelníky", "S₁ = ½av (△ABC), S₂ = ½cv (△ACD)", "S = S₁ + S₂ = (a+c)·v/2"],
+  render: (s) => {
+    const A = [60, 230], B = [340, 230], C2 = [270, 70], D = [130, 70];
+    return <g>
+      <polygon points={`${A} ${B} ${C2} ${D}`} fill="rgba(255,255,255,0.03)" stroke="#fff" strokeWidth={2} />
+      <Txt x={A[0] - 12} y={A[1] + 18}>A</Txt><Txt x={B[0] + 12} y={B[1] + 18}>B</Txt><Txt x={C2[0] + 12} y={C2[1] - 5}>C</Txt><Txt x={D[0] - 12} y={D[1] - 5}>D</Txt>
+      <MTxt x={(A[0] + B[0]) / 2} y={A[1] + 18} size={11} fill="rgba(255,255,255,0.5)">a</MTxt>
+      <MTxt x={(D[0] + C2[0]) / 2} y={D[1] - 12} size={11} fill="rgba(255,255,255,0.5)">c</MTxt>
+      <line x1={350} y1={70} x2={350} y2={230} stroke="rgba(255,255,255,0.2)" strokeWidth={1} strokeDasharray="4,3" />
+      <MTxt x={362} y={150} fill="rgba(255,255,255,0.4)" size={10} anchor="start">v</MTxt>
+      <g style={V(s, 1)}>
+        <line x1={A[0]} y1={A[1]} x2={C2[0]} y2={C2[1]} stroke={CYAN} strokeWidth={2} />
+      </g>
+      <g style={V(s, 2)}>
+        <polygon points={`${A} ${B} ${C2}`} fill="rgba(255,45,149,0.12)" stroke={PINK} strokeWidth={1.5} />
+        <polygon points={`${A} ${C2} ${D}`} fill="rgba(0,212,255,0.12)" stroke={CYAN} strokeWidth={1.5} />
+        <MTxt x={220} y={190} fill={PINK} size={10}>½av</MTxt>
+        <MTxt x={150} y={140} fill={CYAN} size={10}>½cv</MTxt>
+      </g>
+      <Eq y={18} f={V(s, 3)}>S = (a + c) · v / 2</Eq>
+    </g>;
+  }
+};
+
+/* ════════════════════════════════════════════════════════════════
    PROOF DATA — all 16 proofs
    ════════════════════════════════════════════════════════════════ */
 const proofGroups = [
@@ -686,6 +1174,12 @@ export default function App() {
                     {/* Expanded content */}
                     {isOpen && (
                       <div style={{ marginTop: "16px", animation: "fadeIn 0.4s ease" }}>
+                        {/* Animated diagram */}
+                        {DIAG[proof.id] && (
+                          <StepDiagram maxSteps={DIAG[proof.id].steps} labels={DIAG[proof.id].labels}>
+                            {(step) => DIAG[proof.id].render(step)}
+                          </StepDiagram>
+                        )}
                         {/* Statement */}
                         <div style={{ padding: "14px 18px", borderRadius: "14px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", marginBottom: "14px" }}>
                           <div style={{ fontSize: "11px", color: PINK, fontWeight: 700, textTransform: "uppercase", marginBottom: "6px", letterSpacing: "0.5px" }}>Zadání</div>

@@ -277,6 +277,2038 @@ var btnStyle = {
   fontFamily: "'Exo 2', sans-serif"
 };
 var mono = { fontFamily: "'JetBrains Mono', monospace" };
+var RAD = Math.PI / 180;
+var ptOn = (cx, cy, r, deg) => [cx + r * Math.cos(deg * RAD), cy + r * Math.sin(deg * RAD)];
+var angOf = (cx, cy, px, py) => Math.atan2(py - cy, px - cx) / RAD;
+var angleArc = (cx, cy, r, p1x, p1y, p2x, p2y) => {
+  const a1 = angOf(cx, cy, p1x, p1y), a2 = angOf(cx, cy, p2x, p2y);
+  const [x1, y1] = ptOn(cx, cy, r, a1), [x2, y2] = ptOn(cx, cy, r, a2);
+  const cross = (p1x - cx) * (p2y - cy) - (p1y - cy) * (p2x - cx);
+  return `M${x1.toFixed(1)},${y1.toFixed(1)}A${r},${r},0,0,${cross > 0 ? 1 : 0},${x2.toFixed(1)},${y2.toFixed(1)}`;
+};
+var Txt = ({ x, y, children, fill = "#fff", size = 13, anchor = "middle", f }) => /* @__PURE__ */ jsxDEV("text", {
+  x,
+  y,
+  fill,
+  fontSize: size,
+  textAnchor: anchor,
+  fontFamily: "'Exo 2', sans-serif",
+  fontWeight: 600,
+  style: f,
+  children
+}, undefined, false, undefined, this);
+var MTxt = ({ x, y, children, fill = CYAN, size = 13, anchor = "middle", f }) => /* @__PURE__ */ jsxDEV("text", {
+  x,
+  y,
+  fill,
+  fontSize: size,
+  textAnchor: anchor,
+  fontFamily: "'JetBrains Mono', monospace",
+  fontWeight: 500,
+  style: f,
+  children
+}, undefined, false, undefined, this);
+var Eq = ({ y, children, f }) => /* @__PURE__ */ jsxDEV("g", {
+  style: f,
+  children: [
+    /* @__PURE__ */ jsxDEV("rect", {
+      x: 80,
+      y: y - 18,
+      width: 240,
+      height: 26,
+      rx: 8,
+      fill: "rgba(0,0,0,0.7)",
+      stroke: PINK,
+      strokeWidth: 1
+    }, undefined, false, undefined, this),
+    /* @__PURE__ */ jsxDEV(MTxt, {
+      x: 200,
+      y,
+      fill: "#fff",
+      size: 12,
+      children
+    }, undefined, false, undefined, this)
+  ]
+}, undefined, true, undefined, this);
+function StepDiagram({ maxSteps, labels, children }) {
+  const [step, setStep] = useState(0);
+  const sb = { padding: "4px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.07)", color: "#fff", cursor: "pointer", fontSize: 13, fontFamily: "'Exo 2', sans-serif", transition: "all 0.4s ease" };
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { marginBottom: 14, borderRadius: 14, padding: "14px 8px 8px", background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.06)" },
+    children: [
+      /* @__PURE__ */ jsxDEV("svg", {
+        viewBox: "0 0 400 280",
+        style: { width: "100%", maxWidth: 440, display: "block", margin: "0 auto" },
+        children: children(step)
+      }, undefined, false, undefined, this),
+      labels && labels[step] && /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 6, fontStyle: "italic", minHeight: 16 },
+        children: labels[step]
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: 8, alignItems: "center", justifyContent: "center", marginTop: 8 },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: sb,
+            onClick: () => setStep(0),
+            children: "⟲"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...sb, opacity: step === 0 ? 0.3 : 1 },
+            onClick: () => setStep((s) => Math.max(0, s - 1)),
+            disabled: step === 0,
+            children: "←"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: "rgba(255,255,255,0.4)", fontSize: 12, fontFamily: "'JetBrains Mono', monospace", minWidth: 48, textAlign: "center" },
+            children: [
+              step + 1,
+              "/",
+              maxSteps
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...sb, opacity: step >= maxSteps - 1 ? 0.3 : 1 },
+            onClick: () => setStep((s) => Math.min(maxSteps - 1, s + 1)),
+            disabled: step >= maxSteps - 1,
+            children: "→"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var V = (step, min) => ({ opacity: step >= min ? 1 : 0, transition: "all 0.5s ease" });
+var DIAG = {};
+DIAG[1] = {
+  steps: 4,
+  labels: ["Trojúhelník ABC s úhly α, β, γ", "Rovnoběžka p ∥ AB bodem C", "Střídavé úhly α a β na rovnoběžce", "α + γ + β = 180° (přímý úhel)"],
+  render: (s) => {
+    const A = [60, 230], B = [340, 230], C = [200, 55];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 14,
+          y: A[1] + 18,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 14,
+          y: B[1] + 18,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0],
+          y: C[1] - 12,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("path", {
+          d: angleArc(A[0], A[1], 32, C[0], C[1], B[0], B[1]),
+          fill: "none",
+          stroke: PINK,
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: A[0] + 40,
+          y: A[1] - 10,
+          fill: PINK,
+          size: 12,
+          children: "α"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("path", {
+          d: angleArc(B[0], B[1], 32, A[0], A[1], C[0], C[1]),
+          fill: "none",
+          stroke: PINK,
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: B[0] - 40,
+          y: B[1] - 10,
+          fill: PINK,
+          size: 12,
+          children: "β"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("path", {
+          d: angleArc(C[0], C[1], 28, B[0], B[1], A[0], A[1]),
+          fill: "none",
+          stroke: CYAN,
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: C[0],
+          y: C[1] + 38,
+          fill: CYAN,
+          size: 12,
+          children: "γ"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: 25,
+              y1: C[1],
+              x2: 375,
+              y2: C[1],
+              stroke: CYAN,
+              strokeWidth: 1.5,
+              strokeDasharray: "8,4"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: 378,
+              y: C[1] - 8,
+              fill: CYAN,
+              size: 11,
+              anchor: "start",
+              children: "p"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("path", {
+              d: angleArc(C[0], C[1], 38, A[0], A[1], 25, C[1]),
+              fill: "none",
+              stroke: PINK,
+              strokeWidth: 2.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: C[0] - 52,
+              y: C[1] - 8,
+              fill: PINK,
+              size: 12,
+              children: "α"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("path", {
+              d: angleArc(C[0], C[1], 38, 375, C[1], B[0], B[1]),
+              fill: "none",
+              stroke: PINK,
+              strokeWidth: 2.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: C[0] + 52,
+              y: C[1] - 8,
+              fill: PINK,
+              size: 12,
+              children: "β"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 18,
+          f: V(s, 3),
+          children: "α + γ + β = 180°"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[2] = {
+  steps: 4,
+  labels: ["Čtverec o straně (a + b)", "4 pravoúhlé trojúhelníky s odvěsnami a, b", "Vnitřní čtverec o straně c", "(a+b)² = c² + 4·½ab → a²+b²=c²"],
+  render: (s) => {
+    const a = 90, b = 150, L = 80, T = 20, S = a + b;
+    const sq = [[L, T], [L + S, T], [L + S, T + S], [L, T + S]];
+    const m = [[L + a, T + S], [L + S, T + S - a], [L + S - a, T], [L, T + a]];
+    const tris = [[sq[3], m[0], m[3]], [m[0], sq[2], m[1]], [m[1], sq[1], m[2]], [m[2], sq[0], m[3]]];
+    const cols = ["rgba(255,45,149,0.15)", "rgba(0,212,255,0.15)", "rgba(255,45,149,0.15)", "rgba(0,212,255,0.15)"];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("rect", {
+          x: L,
+          y: T,
+          width: S,
+          height: S,
+          fill: "none",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: L + S / 2,
+          y: T + S + 18,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "a + b"
+        }, undefined, false, undefined, this),
+        tris.map((t, i) => /* @__PURE__ */ jsxDEV("polygon", {
+          points: t.map((p) => p.join(",")).join(" "),
+          fill: s >= 1 ? cols[i] : "none",
+          stroke: s >= 1 ? i % 2 === 0 ? PINK : CYAN : "none",
+          strokeWidth: 1.5,
+          style: { transition: "all 0.5s ease" }
+        }, i, false, undefined, this)),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: L + a / 2,
+              y: T + S + 5,
+              size: 10,
+              fill: PINK,
+              children: "a"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: L + a + b / 2,
+              y: T + S + 5,
+              size: 10,
+              fill: CYAN,
+              children: "b"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: L + S + 8,
+              y: T + S - a / 2,
+              size: 10,
+              fill: PINK,
+              anchor: "start",
+              children: "a"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: L + S + 8,
+              y: T + a / 2 + 10,
+              size: 10,
+              fill: CYAN,
+              anchor: "start",
+              children: "b"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: m.map((p) => p.join(",")).join(" "),
+              fill: "rgba(255,255,255,0.06)",
+              stroke: "#fbbf24",
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 200,
+              y: 145,
+              fill: "#fbbf24",
+              size: 14,
+              children: "c²"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 18,
+          f: V(s, 3),
+          children: "a² + b² = c²"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[3] = {
+  steps: 5,
+  labels: ["Pravoúhlý △ABC, pravý úhel při C", "Výška v_c z C na AB, pata P", "△APC zvýrazněn (pravoúhlý)", "△BPC zvýrazněn (pravoúhlý)", "Podobnost: c_b/v_c = v_c/c_a → v_c² = c_a·c_b"],
+  render: (s) => {
+    const A = [50, 235], B = [350, 235], C = [130, 60], P = [130, 235];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 12,
+          y: A[1] + 18,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 12,
+          y: B[1] + 18,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0] - 5,
+          y: C[1] - 12,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("path", {
+          d: `M${C[0] + 12},${C[1]} L${C[0] + 12},${C[1] + 12} L${C[0]},${C[1] + 12}`,
+          fill: "none",
+          stroke: "rgba(255,255,255,0.4)",
+          strokeWidth: 1
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: C[0],
+              y1: C[1],
+              x2: P[0],
+              y2: P[1],
+              stroke: CYAN,
+              strokeWidth: 2,
+              strokeDasharray: "6,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: P[0],
+              y: P[1] + 18,
+              fill: CYAN,
+              children: "P"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("path", {
+              d: `M${P[0] + 10},${P[1]} L${P[0] + 10},${P[1] - 10} L${P[0]},${P[1] - 10}`,
+              fill: "none",
+              stroke: CYAN,
+              strokeWidth: 1
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: C[0] - 16,
+              y: (C[1] + P[1]) / 2,
+              fill: CYAN,
+              size: 11,
+              children: "v_c"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: (A[0] + P[0]) / 2,
+              y: P[1] + 18,
+              fill: "#fbbf24",
+              size: 10,
+              children: "c_b"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: (B[0] + P[0]) / 2,
+              y: P[1] + 18,
+              fill: "#fbbf24",
+              size: 10,
+              children: "c_a"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${A} ${P} ${C}`,
+              fill: "rgba(255,45,149,0.12)",
+              stroke: PINK,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 75,
+              y: 155,
+              fill: PINK,
+              size: 11,
+              children: "△APC"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 3),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${B} ${P} ${C}`,
+              fill: "rgba(0,212,255,0.12)",
+              stroke: CYAN,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 250,
+              y: 155,
+              fill: CYAN,
+              size: 11,
+              children: "△BPC"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 18,
+          f: V(s, 4),
+          children: "v_c² = c_a · c_b"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[4] = {
+  steps: 5,
+  labels: ["Pravoúhlý △ABC, pravý úhel při C", "Výška v_c, pata P — úseky c_a, c_b", "△BPC ~ △ABC (sdílejí úhel β)", "Poměr stran → a² = c · c_a", "Analogicky b² = c · c_b"],
+  render: (s) => {
+    const A = [50, 235], B = [350, 235], C = [130, 60], P = [130, 235];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 12,
+          y: A[1] + 18,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 12,
+          y: B[1] + 18,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0] - 5,
+          y: C[1] - 12,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + B[0]) / 2,
+          y: A[1] + 18,
+          fill: "rgba(255,255,255,0.5)",
+          size: 11,
+          children: "c"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: C[0],
+              y1: C[1],
+              x2: P[0],
+              y2: P[1],
+              stroke: CYAN,
+              strokeWidth: 1.5,
+              strokeDasharray: "6,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: P[0],
+              y: P[1] + 18,
+              fill: CYAN,
+              children: "P"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: (A[0] + P[0]) / 2,
+              y: P[1] + 18,
+              fill: "#fbbf24",
+              size: 10,
+              children: "c_b"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: (B[0] + P[0]) / 2,
+              y: P[1] + 18,
+              fill: "#fbbf24",
+              size: 10,
+              children: "c_a"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: (B[0] + C[0]) / 2 + 15,
+              y: (B[1] + C[1]) / 2,
+              fill: "rgba(255,255,255,0.5)",
+              size: 11,
+              children: "a"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: (A[0] + C[0]) / 2 - 15,
+              y: (A[1] + C[1]) / 2,
+              fill: "rgba(255,255,255,0.5)",
+              size: 11,
+              children: "b"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${B} ${P} ${C}`,
+              fill: "rgba(255,45,149,0.12)",
+              stroke: PINK,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 260,
+              y: 155,
+              fill: PINK,
+              size: 11,
+              children: "△BPC"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${A} ${B} ${C}`,
+              fill: "none",
+              stroke: CYAN,
+              strokeWidth: 2.5,
+              strokeDasharray: "8,4"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 140,
+              y: 120,
+              fill: CYAN,
+              size: 11,
+              children: "△ABC"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 3),
+          children: /* @__PURE__ */ jsxDEV(Eq, {
+            y: 18,
+            children: "a² = c · c_a"
+          }, undefined, false, undefined, this)
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 4),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${A} ${P} ${C}`,
+              fill: "rgba(0,212,255,0.12)",
+              stroke: CYAN,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("rect", {
+              x: 80,
+              y: 35,
+              width: 240,
+              height: 26,
+              rx: 8,
+              fill: "rgba(0,0,0,0.7)",
+              stroke: CYAN,
+              strokeWidth: 1
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 200,
+              y: 53,
+              fill: "#fff",
+              size: 12,
+              children: "b² = c · c_b"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[5] = {
+  steps: 5,
+  labels: ["Kružnice k, body A, B, X, střed S", "Středový úhel ∠ASB", "Obvodový úhel ∠AXB", "Pomocná přímka XD přes S", "Rovnoramenné △: ∠ASB = 2·∠AXB"],
+  render: (s) => {
+    const cx = 200, cy = 145, r = 110;
+    const A = ptOn(cx, cy, r, 150), B = ptOn(cx, cy, r, 30), X = ptOn(cx, cy, r, 270), D = ptOn(cx, cy, r, 90);
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx,
+          cy,
+          r,
+          fill: "none",
+          stroke: "rgba(255,255,255,0.3)",
+          strokeWidth: 1.5
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx,
+          cy,
+          r: 3,
+          fill: CYAN
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: cx + 10,
+          y: cy - 8,
+          fill: CYAN,
+          size: 11,
+          children: "S"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx: A[0],
+          cy: A[1],
+          r: 4,
+          fill: PINK
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 16,
+          y: A[1] + 4,
+          fill: PINK,
+          size: 12,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx: B[0],
+          cy: B[1],
+          r: 4,
+          fill: PINK
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 14,
+          y: B[1] + 4,
+          fill: PINK,
+          size: 12,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx: X[0],
+          cy: X[1],
+          r: 4,
+          fill: "#fbbf24"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: X[0],
+          y: X[1] + 18,
+          fill: "#fbbf24",
+          size: 12,
+          children: "X"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: cx,
+              y1: cy,
+              x2: A[0],
+              y2: A[1],
+              stroke: PINK,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: cx,
+              y1: cy,
+              x2: B[0],
+              y2: B[1],
+              stroke: PINK,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("path", {
+              d: angleArc(cx, cy, 20, A[0], A[1], B[0], B[1]),
+              fill: "none",
+              stroke: PINK,
+              strokeWidth: 2
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: X[0],
+              y1: X[1],
+              x2: A[0],
+              y2: A[1],
+              stroke: "#fbbf24",
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: X[0],
+              y1: X[1],
+              x2: B[0],
+              y2: B[1],
+              stroke: "#fbbf24",
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("path", {
+              d: angleArc(X[0], X[1], 24, A[0], A[1], B[0], B[1]),
+              fill: "none",
+              stroke: "#fbbf24",
+              strokeWidth: 2
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 3),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: X[0],
+              y1: X[1],
+              x2: D[0],
+              y2: D[1],
+              stroke: CYAN,
+              strokeWidth: 1.5,
+              strokeDasharray: "6,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("circle", {
+              cx: D[0],
+              cy: D[1],
+              r: 3,
+              fill: CYAN
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: D[0],
+              y: D[1] - 12,
+              fill: CYAN,
+              size: 11,
+              children: "D"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 4),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: cx,
+              y1: cy,
+              x2: A[0],
+              y2: A[1],
+              stroke: "rgba(255,255,255,0.3)",
+              strokeWidth: 1,
+              strokeDasharray: "4,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: cx,
+              y1: cy,
+              x2: B[0],
+              y2: B[1],
+              stroke: "rgba(255,255,255,0.3)",
+              strokeWidth: 1,
+              strokeDasharray: "4,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: cx,
+              y1: cy,
+              x2: X[0],
+              y2: X[1],
+              stroke: "rgba(255,255,255,0.3)",
+              strokeWidth: 1,
+              strokeDasharray: "4,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Eq, {
+              y: 18,
+              children: "∠ASB = 2 · ∠AXB"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[6] = {
+  steps: 4,
+  labels: ["Trojúhelník ABC", "Výška v_c z C na AB, pata P", "sin α = v_c/b → v_c = b·sin α", "sin β = v_c/a → b·sin α = a·sin β"],
+  render: (s) => {
+    const A = [50, 230], B = [350, 230], C = [220, 50], P = [220, 230];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 12,
+          y: A[1] + 18,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 12,
+          y: B[1] + 18,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0] + 5,
+          y: C[1] - 12,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("path", {
+          d: angleArc(A[0], A[1], 30, C[0], C[1], B[0], B[1]),
+          fill: "none",
+          stroke: PINK,
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: A[0] + 38,
+          y: A[1] - 8,
+          fill: PINK,
+          size: 11,
+          children: "α"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("path", {
+          d: angleArc(B[0], B[1], 30, A[0], A[1], C[0], C[1]),
+          fill: "none",
+          stroke: CYAN,
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: B[0] - 38,
+          y: B[1] - 12,
+          fill: CYAN,
+          size: 11,
+          children: "β"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (B[0] + C[0]) / 2 + 14,
+          y: (B[1] + C[1]) / 2,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "a"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + C[0]) / 2 - 14,
+          y: (A[1] + C[1]) / 2 - 5,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "b"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: C[0],
+              y1: C[1],
+              x2: P[0],
+              y2: P[1],
+              stroke: "#fbbf24",
+              strokeWidth: 2,
+              strokeDasharray: "6,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: P[0],
+              y: P[1] + 18,
+              fill: "#fbbf24",
+              children: "P"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: C[0] + 16,
+              y: (C[1] + P[1]) / 2,
+              fill: "#fbbf24",
+              size: 11,
+              children: "v_c"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${A} ${P} ${C}`,
+              fill: "rgba(255,45,149,0.1)",
+              stroke: PINK,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 135,
+              y: 170,
+              fill: PINK,
+              size: 10,
+              children: "v_c = b·sin α"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 3),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${B} ${P} ${C}`,
+              fill: "rgba(0,212,255,0.1)",
+              stroke: CYAN,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Eq, {
+              y: 18,
+              children: "a/sin α = b/sin β"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[7] = {
+  steps: 4,
+  labels: ["△ABC vepsaný do kružnice k (poloměr r)", "Průměr BD kružnice", "△BDA: pravý úhel při A (Thales), ∠BDA = α", "sin α = a/(2r) → r = a/(2 sin α)"],
+  render: (s) => {
+    const cx = 200, cy = 148, r = 110;
+    const B = ptOn(cx, cy, r, 140), D = ptOn(cx, cy, r, 320);
+    const A = ptOn(cx, cy, r, 10), C = ptOn(cx, cy, r, 220);
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx,
+          cy,
+          r,
+          fill: "none",
+          stroke: "rgba(255,255,255,0.25)",
+          strokeWidth: 1.5
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx,
+          cy,
+          r: 3,
+          fill: "rgba(255,255,255,0.4)"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] + 14,
+          y: A[1] + 5,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] - 16,
+          y: B[1] + 5,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0] - 14,
+          y: C[1] + 5,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (B[0] + C[0]) / 2 - 18,
+          y: (B[1] + C[1]) / 2 + 2,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "a"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: B[0],
+              y1: B[1],
+              x2: D[0],
+              y2: D[1],
+              stroke: CYAN,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("circle", {
+              cx: D[0],
+              cy: D[1],
+              r: 4,
+              fill: CYAN
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: D[0] + 14,
+              y: D[1] - 8,
+              fill: CYAN,
+              children: "D"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: cx + 8,
+              y: cy - 10,
+              fill: CYAN,
+              size: 10,
+              children: "2r"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${B} ${D} ${A}`,
+              fill: "rgba(255,45,149,0.1)",
+              stroke: PINK,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("path", {
+              d: `M${A[0] - 8},${A[1] - 5} L${A[0] - 5},${A[1] - 13} L${A[0] + 3},${A[1] - 10}`,
+              fill: "none",
+              stroke: "#22c55e",
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: A[0] - 16,
+              y: A[1] - 14,
+              fill: "#22c55e",
+              size: 10,
+              children: "90°"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("path", {
+              d: angleArc(D[0], D[1], 20, B[0], B[1], A[0], A[1]),
+              fill: "none",
+              stroke: PINK,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: D[0] - 8,
+              y: D[1] + 28,
+              fill: PINK,
+              size: 11,
+              children: "α"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 18,
+          f: V(s, 3),
+          children: "r = a / (2·sin α)"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[8] = {
+  steps: 6,
+  labels: ["Trojúhelník ABC", "Výška v_c z C, pata P", "Úseky: |AP| = x, |PB| = c − x", "PV: x²+v_c²=b² a (c−x)²+v_c²=a²", "Odečtení: c²−2cx = a²−b²", "cos α = x/b → b²+c²−2bc·cos α = a²"],
+  render: (s) => {
+    const A = [50, 235], B = [350, 235], C = [140, 50], P = [140, 235];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 12,
+          y: A[1] + 18,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 12,
+          y: B[1] + 18,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0] - 5,
+          y: C[1] - 12,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("path", {
+          d: angleArc(A[0], A[1], 28, C[0], C[1], B[0], B[1]),
+          fill: "none",
+          stroke: PINK,
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: A[0] + 36,
+          y: A[1] - 8,
+          fill: PINK,
+          size: 11,
+          children: "α"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (B[0] + C[0]) / 2 + 14,
+          y: (B[1] + C[1]) / 2,
+          size: 11,
+          fill: "rgba(255,255,255,0.4)",
+          children: "a"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + C[0]) / 2 - 14,
+          y: (A[1] + C[1]) / 2 - 8,
+          size: 11,
+          fill: "rgba(255,255,255,0.4)",
+          children: "b"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + B[0]) / 2,
+          y: A[1] + 18,
+          size: 11,
+          fill: "rgba(255,255,255,0.4)",
+          children: "c"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: C[0],
+              y1: C[1],
+              x2: P[0],
+              y2: P[1],
+              stroke: "#fbbf24",
+              strokeWidth: 2,
+              strokeDasharray: "6,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: P[0],
+              y: P[1] + 18,
+              fill: "#fbbf24",
+              children: "P"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("path", {
+              d: `M${P[0] + 10},${P[1]} L${P[0] + 10},${P[1] - 10} L${P[0]},${P[1] - 10}`,
+              fill: "none",
+              stroke: "#fbbf24",
+              strokeWidth: 1
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: C[0] + 16,
+              y: (C[1] + P[1]) / 2,
+              fill: "#fbbf24",
+              size: 11,
+              children: "v_c"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: A[0],
+              y1: A[1] - 4,
+              x2: P[0],
+              y2: P[1] - 4,
+              stroke: PINK,
+              strokeWidth: 3
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: (A[0] + P[0]) / 2,
+              y: A[1] - 10,
+              fill: PINK,
+              size: 11,
+              children: "x"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: P[0],
+              y1: A[1] - 4,
+              x2: B[0],
+              y2: B[1] - 4,
+              stroke: CYAN,
+              strokeWidth: 3
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: (P[0] + B[0]) / 2,
+              y: B[1] - 10,
+              fill: CYAN,
+              size: 11,
+              children: "c − x"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 3),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${A} ${P} ${C}`,
+              fill: "rgba(255,45,149,0.08)",
+              stroke: PINK,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${P} ${B} ${C}`,
+              fill: "rgba(0,212,255,0.08)",
+              stroke: CYAN,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 85,
+              y: 160,
+              fill: PINK,
+              size: 9,
+              children: "x²+v²=b²"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 260,
+              y: 160,
+              fill: CYAN,
+              size: 9,
+              children: "(c−x)²+v²=a²"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 4),
+          children: /* @__PURE__ */ jsxDEV(Eq, {
+            y: 18,
+            children: "c² − 2cx = a² − b²"
+          }, undefined, false, undefined, this)
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 5),
+          children: [
+            /* @__PURE__ */ jsxDEV("rect", {
+              x: 55,
+              y: 2,
+              width: 290,
+              height: 26,
+              rx: 8,
+              fill: "rgba(0,0,0,0.7)",
+              stroke: "#22c55e",
+              strokeWidth: 1
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 200,
+              y: 20,
+              fill: "#22c55e",
+              size: 12,
+              children: "b² + c² − 2bc·cos α = a²"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[9] = {
+  steps: 3,
+  labels: ["Trojúhelník ABC se základnou c a výškou v_c", "Doplníme na obdélník (c × v_c)", "Trojúhelník = ½ obdélníku → S = ½·c·v_c"],
+  render: (s) => {
+    const A = [70, 235], B = [330, 235], C = [210, 55];
+    const P = [210, 235];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.05)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 12,
+          y: A[1] + 18,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 12,
+          y: B[1] + 18,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0] + 5,
+          y: C[1] - 12,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("line", {
+          x1: C[0],
+          y1: C[1],
+          x2: P[0],
+          y2: P[1],
+          stroke: "rgba(255,255,255,0.3)",
+          strokeWidth: 1,
+          strokeDasharray: "4,3"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + B[0]) / 2,
+          y: A[1] + 18,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "c"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: P[0] + 14,
+          y: (C[1] + P[1]) / 2,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "v_c"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("rect", {
+              x: A[0],
+              y: C[1],
+              width: B[0] - A[0],
+              height: A[1] - C[1],
+              fill: "none",
+              stroke: CYAN,
+              strokeWidth: 2,
+              strokeDasharray: "8,4"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: B[0] + 5,
+              y: (C[1] + A[1]) / 2,
+              fill: CYAN,
+              size: 10,
+              anchor: "start",
+              children: "c × v_c"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${A} ${B} ${C}`,
+              fill: "rgba(255,45,149,0.15)",
+              stroke: PINK,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Eq, {
+              y: 18,
+              children: "S = ½ · c · v_c"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[10] = {
+  steps: 3,
+  labels: ["Trojúhelník ABC se stranami a, b a úhlem γ", "Výška v z B: sin γ = v/a → v = a·sin γ", "S = ½·b·v = ½·a·b·sin γ"],
+  render: (s) => {
+    const A = [70, 235], B = [330, 235], C = [160, 55];
+    const foot = [330, 55];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 12,
+          y: A[1] + 18,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 12,
+          y: B[1] + 18,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0] - 5,
+          y: C[1] - 12,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("path", {
+          d: angleArc(C[0], C[1], 28, A[0], A[1], B[0], B[1]),
+          fill: "none",
+          stroke: "#fbbf24",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: C[0] + 10,
+          y: C[1] + 36,
+          fill: "#fbbf24",
+          size: 11,
+          children: "γ"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (C[0] + B[0]) / 2 + 14,
+          y: (C[1] + B[1]) / 2,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "a"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + C[0]) / 2 - 14,
+          y: (A[1] + C[1]) / 2 - 5,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "b"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: B[0],
+              y1: B[1],
+              x2: B[0],
+              y2: C[1],
+              stroke: PINK,
+              strokeWidth: 2,
+              strokeDasharray: "6,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: C[0],
+              y1: C[1],
+              x2: B[0],
+              y2: C[1],
+              stroke: "rgba(255,255,255,0.2)",
+              strokeWidth: 1,
+              strokeDasharray: "4,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: B[0] + 14,
+              y: (B[1] + C[1]) / 2,
+              fill: PINK,
+              size: 11,
+              anchor: "start",
+              children: "v"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 250,
+              y: C[1] - 8,
+              fill: PINK,
+              size: 10,
+              children: "v = a·sin γ"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 18,
+          f: V(s, 2),
+          children: "S = ½ · a · b · sin γ"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[11] = {
+  steps: 4,
+  labels: ["Trojúhelník ABC s vepsanou kružnicí (ρ)", "Střed I spojen s vrcholy A, B, C", "3 menší trojúhelníky, každý s výškou ρ", "S = ½aρ + ½bρ + ½cρ = oρ/2"],
+  render: (s) => {
+    const A = [60, 250], B = [340, 250], C = [200, 45];
+    const I = [200, 178], rho = 72;
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 12,
+          y: A[1] + 18,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 12,
+          y: B[1] + 18,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0],
+          y: C[1] - 12,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx: I[0],
+          cy: I[1],
+          r: rho,
+          fill: "none",
+          stroke: "rgba(255,255,255,0.25)",
+          strokeWidth: 1.5
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx: I[0],
+          cy: I[1],
+          r: 3,
+          fill: CYAN
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: I[0] + 12,
+          y: I[1] - 8,
+          fill: CYAN,
+          size: 11,
+          children: "I"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + B[0]) / 2,
+          y: A[1] + 18,
+          size: 10,
+          fill: "rgba(255,255,255,0.4)",
+          children: "a (= c)"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: I[0],
+              y1: I[1],
+              x2: A[0],
+              y2: A[1],
+              stroke: PINK,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: I[0],
+              y1: I[1],
+              x2: B[0],
+              y2: B[1],
+              stroke: PINK,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: I[0],
+              y1: I[1],
+              x2: C[0],
+              y2: C[1],
+              stroke: PINK,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${A} ${B} ${I}`,
+              fill: "rgba(255,45,149,0.1)",
+              stroke: PINK,
+              strokeWidth: 1
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${B} ${C} ${I}`,
+              fill: "rgba(0,212,255,0.1)",
+              stroke: CYAN,
+              strokeWidth: 1
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${C} ${A} ${I}`,
+              fill: "rgba(251,191,36,0.1)",
+              stroke: "#fbbf24",
+              strokeWidth: 1
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: I[0],
+              y1: I[1],
+              x2: I[0],
+              y2: 250,
+              stroke: "#22c55e",
+              strokeWidth: 1.5,
+              strokeDasharray: "4,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: I[0] + 12,
+              y: 215,
+              fill: "#22c55e",
+              size: 10,
+              children: "ρ"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 18,
+          f: V(s, 3),
+          children: "S = o · ρ / 2"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[12] = {
+  steps: 3,
+  labels: ["△ABC s opsanou kružnicí (poloměr r)", "S = ½ab·sin γ a sin γ = c/(2r)", "Dosadíme → S = abc/(4r)"],
+  render: (s) => {
+    const cx = 200, cy = 148, r = 110;
+    const A = ptOn(cx, cy, r, 200), B = ptOn(cx, cy, r, 330), C = ptOn(cx, cy, r, 80);
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx,
+          cy,
+          r,
+          fill: "none",
+          stroke: "rgba(255,255,255,0.25)",
+          strokeWidth: 1.5
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 14,
+          y: A[1] + 5,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 12,
+          y: B[1] + 5,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C[0] + 5,
+          y: C[1] - 12,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + B[0]) / 2,
+          y: (A[1] + B[1]) / 2 + 18,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "c"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (B[0] + C[0]) / 2 + 14,
+          y: (B[1] + C[1]) / 2,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "a"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + C[0]) / 2 - 14,
+          y: (A[1] + C[1]) / 2,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "b"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: cx,
+              y1: cy,
+              x2: B[0],
+              y2: B[1],
+              stroke: CYAN,
+              strokeWidth: 1,
+              strokeDasharray: "4,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: cx + 8,
+              y: cy - 8,
+              fill: CYAN,
+              size: 10,
+              children: "r"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("path", {
+              d: angleArc(C[0], C[1], 22, A[0], A[1], B[0], B[1]),
+              fill: "none",
+              stroke: "#fbbf24",
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: C[0] - 5,
+              y: C[1] + 32,
+              fill: "#fbbf24",
+              size: 11,
+              children: "γ"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 200,
+              y: 270,
+              fill: "rgba(255,255,255,0.5)",
+              size: 10,
+              children: "sin γ = c/(2r)"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 18,
+          f: V(s, 2),
+          children: "S = abc / (4r)"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[13] = {
+  steps: 4,
+  labels: ["Šestiúhelník (n = 6)", "Z jednoho vrcholu: (n−3) = 3 úhlopříčky", "Z každého ze 6 vrcholů: 6·3 = 18", "Každá počítána 2× → p = 18/2 = 9"],
+  render: (s) => {
+    const cx = 200, cy = 140, r = 105;
+    const vs = [0, 60, 120, 180, 240, 300].map((a) => ptOn(cx, cy, r, a));
+    const pts = vs.map((v) => v.join(",")).join(" ");
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: pts,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        vs.map((v, i) => /* @__PURE__ */ jsxDEV("g", {
+          children: [
+            /* @__PURE__ */ jsxDEV("circle", {
+              cx: v[0],
+              cy: v[1],
+              r: 4,
+              fill: i === 0 ? PINK : "#fff"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(Txt, {
+              x: v[0] + (v[0] > cx ? 12 : -12),
+              y: v[1] + (v[1] > cy ? 16 : -8),
+              size: 11,
+              children: i + 1
+            }, undefined, false, undefined, this)
+          ]
+        }, i, true, undefined, this)),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            [2, 3, 4].map((i) => /* @__PURE__ */ jsxDEV("line", {
+              x1: vs[0][0],
+              y1: vs[0][1],
+              x2: vs[i][0],
+              y2: vs[i][1],
+              stroke: PINK,
+              strokeWidth: 2
+            }, i, false, undefined, this)),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 340,
+              y: 30,
+              fill: PINK,
+              size: 11,
+              anchor: "end",
+              children: "3 úhlopříčky"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: vs.map((v1, i) => vs.filter((_, j) => j !== i && j !== (i + 1) % 6 && j !== (i + 5) % 6).map((v2, k) => /* @__PURE__ */ jsxDEV("line", {
+            x1: v1[0],
+            y1: v1[1],
+            x2: v2[0],
+            y2: v2[1],
+            stroke: "rgba(0,212,255,0.3)",
+            strokeWidth: 1
+          }, `${i}-${k}`, false, undefined, this)))
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 265,
+          f: V(s, 3),
+          children: "p = n(n−3)/2 = 9"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[14] = {
+  steps: 3,
+  labels: ["Pětiúhelník (n = 5)", "Triangulace z jednoho vrcholu → (n−2) = 3 trojúhelníky", "3 × 180° = 540°"],
+  render: (s) => {
+    const cx = 200, cy = 140, r = 110;
+    const vs = [270, 342, 54, 126, 198].map((a) => ptOn(cx, cy, r, a));
+    const cols = ["rgba(255,45,149,0.12)", "rgba(0,212,255,0.12)", "rgba(251,191,36,0.12)"];
+    const strk = [PINK, CYAN, "#fbbf24"];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: vs.map((v) => v.join(",")).join(" "),
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        vs.map((v, i) => /* @__PURE__ */ jsxDEV("circle", {
+          cx: v[0],
+          cy: v[1],
+          r: 3,
+          fill: i === 0 ? PINK : "#fff"
+        }, i, false, undefined, this)),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: vs[0][0],
+              y1: vs[0][1],
+              x2: vs[2][0],
+              y2: vs[2][1],
+              stroke: PINK,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: vs[0][0],
+              y1: vs[0][1],
+              x2: vs[3][0],
+              y2: vs[3][1],
+              stroke: PINK,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            [[0, 1, 2], [0, 2, 3], [0, 3, 4]].map((t, i) => /* @__PURE__ */ jsxDEV("polygon", {
+              points: t.map((j) => vs[j].join(",")).join(" "),
+              fill: cols[i],
+              stroke: strk[i],
+              strokeWidth: 1
+            }, i, false, undefined, this)),
+            [[0, 1, 2], [0, 2, 3], [0, 3, 4]].map((t, i) => {
+              const mx = (vs[t[0]][0] + vs[t[1]][0] + vs[t[2]][0]) / 3;
+              const my = (vs[t[0]][1] + vs[t[1]][1] + vs[t[2]][1]) / 3;
+              return /* @__PURE__ */ jsxDEV(MTxt, {
+                x: mx,
+                y: my + 4,
+                fill: strk[i],
+                size: 11,
+                children: "180°"
+              }, i, false, undefined, this);
+            })
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 265,
+          f: V(s, 2),
+          children: "(n−2)·180° = 540°"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[15] = {
+  steps: 4,
+  labels: ["Pravidelný šestiúhelník", "Rozklad na 6 rovnoramenných △ ze středu", "Apotéma v_a = a/(2·tg(30°))", "S jednoho △ = a²/(4·tg(30°)), celkem ×6"],
+  render: (s) => {
+    const cx = 200, cy = 140, r = 105;
+    const vs = [0, 60, 120, 180, 240, 300].map((a) => ptOn(cx, cy, r, a));
+    const cols = ["rgba(255,45,149,0.1)", "rgba(0,212,255,0.1)", "rgba(251,191,36,0.1)", "rgba(255,45,149,0.1)", "rgba(0,212,255,0.1)", "rgba(251,191,36,0.1)"];
+    const midA = 30;
+    const ap = ptOn(cx, cy, r * Math.cos(30 * RAD), midA);
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: vs.map((v) => v.join(",")).join(" "),
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: [
+            vs.map((v, i) => /* @__PURE__ */ jsxDEV("line", {
+              x1: cx,
+              y1: cy,
+              x2: v[0],
+              y2: v[1],
+              stroke: "rgba(255,255,255,0.4)",
+              strokeWidth: 1
+            }, i, false, undefined, this)),
+            vs.map((v, i) => /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${cx},${cy} ${v.join(",")} ${vs[(i + 1) % 6].join(",")}`,
+              fill: cols[i],
+              stroke: "rgba(255,255,255,0.2)",
+              strokeWidth: 1
+            }, i, false, undefined, this)),
+            /* @__PURE__ */ jsxDEV("circle", {
+              cx,
+              cy,
+              r: 3,
+              fill: CYAN
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${cx},${cy} ${vs[0].join(",")} ${vs[1].join(",")}`,
+              fill: "rgba(255,45,149,0.2)",
+              stroke: PINK,
+              strokeWidth: 2
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("line", {
+              x1: cx,
+              y1: cy,
+              x2: ap[0],
+              y2: ap[1],
+              stroke: "#22c55e",
+              strokeWidth: 2,
+              strokeDasharray: "5,3"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: ap[0] + 14,
+              y: ap[1] + 4,
+              fill: "#22c55e",
+              size: 10,
+              children: "v_a"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: (vs[0][0] + vs[1][0]) / 2 + 14,
+              y: (vs[0][1] + vs[1][1]) / 2,
+              fill: "rgba(255,255,255,0.6)",
+              size: 10,
+              children: "a"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 265,
+          f: V(s, 3),
+          children: "S = n·a²/(4·tg(180°/n))"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
+DIAG[16] = {
+  steps: 4,
+  labels: ["Lichoběžník ABCD, základny a, c, výška v", "Úhlopříčka AC rozdělí na 2 trojúhelníky", "S₁ = ½av (△ABC), S₂ = ½cv (△ACD)", "S = S₁ + S₂ = (a+c)·v/2"],
+  render: (s) => {
+    const A = [60, 230], B = [340, 230], C2 = [270, 70], D = [130, 70];
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("polygon", {
+          points: `${A} ${B} ${C2} ${D}`,
+          fill: "rgba(255,255,255,0.03)",
+          stroke: "#fff",
+          strokeWidth: 2
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: A[0] - 12,
+          y: A[1] + 18,
+          children: "A"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: B[0] + 12,
+          y: B[1] + 18,
+          children: "B"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: C2[0] + 12,
+          y: C2[1] - 5,
+          children: "C"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Txt, {
+          x: D[0] - 12,
+          y: D[1] - 5,
+          children: "D"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (A[0] + B[0]) / 2,
+          y: A[1] + 18,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "a"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: (D[0] + C2[0]) / 2,
+          y: D[1] - 12,
+          size: 11,
+          fill: "rgba(255,255,255,0.5)",
+          children: "c"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("line", {
+          x1: 350,
+          y1: 70,
+          x2: 350,
+          y2: 230,
+          stroke: "rgba(255,255,255,0.2)",
+          strokeWidth: 1,
+          strokeDasharray: "4,3"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(MTxt, {
+          x: 362,
+          y: 150,
+          fill: "rgba(255,255,255,0.4)",
+          size: 10,
+          anchor: "start",
+          children: "v"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 1),
+          children: /* @__PURE__ */ jsxDEV("line", {
+            x1: A[0],
+            y1: A[1],
+            x2: C2[0],
+            y2: C2[1],
+            stroke: CYAN,
+            strokeWidth: 2
+          }, undefined, false, undefined, this)
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("g", {
+          style: V(s, 2),
+          children: [
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${A} ${B} ${C2}`,
+              fill: "rgba(255,45,149,0.12)",
+              stroke: PINK,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("polygon", {
+              points: `${A} ${C2} ${D}`,
+              fill: "rgba(0,212,255,0.12)",
+              stroke: CYAN,
+              strokeWidth: 1.5
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 220,
+              y: 190,
+              fill: PINK,
+              size: 10,
+              children: "½av"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV(MTxt, {
+              x: 150,
+              y: 140,
+              fill: CYAN,
+              size: 10,
+              children: "½cv"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          y: 18,
+          f: V(s, 3),
+          children: "S = (a + c) · v / 2"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this);
+  }
+};
 var proofGroups = [
   {
     title: "Trojúhelník — základní",
@@ -847,6 +2879,11 @@ function App() {
                       isOpen && /* @__PURE__ */ jsxDEV("div", {
                         style: { marginTop: "16px", animation: "fadeIn 0.4s ease" },
                         children: [
+                          DIAG[proof.id] && /* @__PURE__ */ jsxDEV(StepDiagram, {
+                            maxSteps: DIAG[proof.id].steps,
+                            labels: DIAG[proof.id].labels,
+                            children: (step) => DIAG[proof.id].render(step)
+                          }, undefined, false, undefined, this),
                           /* @__PURE__ */ jsxDEV("div", {
                             style: { padding: "14px 18px", borderRadius: "14px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", marginBottom: "14px" },
                             children: [
