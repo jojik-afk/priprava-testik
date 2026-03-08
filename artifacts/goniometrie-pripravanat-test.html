@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goniometrické funkce — příprava na test</title>
+    <meta name="subject" content="Math">
+    <meta name="topic" content="Goniometrie: orientovaný úhel, oblouková míra, jednotková kružnice">
+    <meta name="template" content="study">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/goniometrie-pripravanat-test.jsx
+import { useState, useCallback, useMemo } from "react";
+import { jsxDEV, Fragment } from "react/jsx-dev-runtime";
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function shuffleQs(qs) {
+  return qs.map((q) => {
+    const si = shuffleArray(q.options.map((_, i) => i));
+    return { ...q, options: si.map((i) => q.options[i]), correct: q.correct.map((o) => si.indexOf(o)) };
+  });
+}
+function arrEq(a, b) {
+  if (!a || !b)
+    return false;
+  const sa = [...a].sort((x, y) => x - y), sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+function QuizEngine({ questions, accentColor = "#ff2d9b" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pending, setPending] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [sk, setSk] = useState(0);
+  const sqs = useMemo(() => shuffleQs(questions), [questions, sk]);
+  const q = sqs[idx];
+  const isMulti = q.type === "multi";
+  const isRev = !!revealed[idx];
+  const myAns = answers[idx] || [];
+  const isOk = isRev && arrEq(myAns, q.correct);
+  const score = sqs.filter((_, i) => revealed[i] && arrEq(answers[i] || [], sqs[i].correct)).length;
+  const pct = Math.round(score / sqs.length * 100);
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPending(sqs[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, sqs]);
+  const handleSingle = useCallback((oi) => {
+    if (isRev)
+      return;
+    setAnswers((p) => ({ ...p, [idx]: [oi] }));
+    setRevealed((p) => ({ ...p, [idx]: true }));
+  }, [idx, isRev]);
+  const toggleMulti = useCallback((oi) => {
+    if (isRev)
+      return;
+    setPending((p) => p.includes(oi) ? p.filter((i) => i !== oi) : [...p, oi]);
+  }, [isRev]);
+  const submitMulti = useCallback(() => {
+    if (!pending.length)
+      return;
+    setAnswers((p) => ({ ...p, [idx]: [...pending] }));
+    setRevealed((p) => ({ ...p, [idx]: true }));
+  }, [idx, pending]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPending([]);
+    setShowResults(false);
+    setSk((k) => k + 1);
+  }, []);
+  const active = isMulti ? isRev ? myAns : pending : myAns;
+  if (showResults) {
+    const msg = pct >= 90 ? "Výborně! Perfektně zvládnuté!" : pct >= 70 ? "Dobře! Téměř vše správně." : pct >= 50 ? "Slušný výkon, je co zlepšovat." : "Potřebuješ více procvičovat!";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "300px" },
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "24px", padding: "40px 48px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "52px", fontWeight: 800 },
+            children: [
+              score,
+              "/",
+              sqs.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+            children: [
+              pct,
+              "%"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.8)", fontSize: "17px", lineHeight: 1.5, marginBottom: "24px" },
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { padding: "10px 22px", background: accentColor + "55", border: `1px solid ${accentColor}`, borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
+            onClick: restart,
+            children: "Začít znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "700px", margin: "0 auto", padding: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" },
+        children: sqs.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEq(answers[i] || [], sqs[i].correct) ? "#22c55e" : "#ef4444";
+          return /* @__PURE__ */ jsxDEV("div", {
+            onClick: () => goTo(i),
+            title: `Otázka ${i + 1}`,
+            style: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", background: bg, transition: "background 0.4s ease" }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "24px", transition: "all 0.4s ease" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
+            children: [
+              "Otázka ",
+              idx + 1,
+              " / ",
+              sqs.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", flexDirection: "column", gap: "10px" },
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(255,255,255,0.12)", bg = "rgba(255,255,255,0.04)";
+              if (isRev) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(34,197,94,0.15)";
+                  border = "1px solid #22c55e";
+                } else if (active.includes(i)) {
+                  bg = "rgba(239,68,68,0.15)";
+                  border = "1px solid #ef4444";
+                }
+              } else if (active.includes(i)) {
+                bg = accentColor + "18";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("div", {
+                style: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", background: bg, border, display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px" },
+                onClick: () => isMulti ? toggleMulti(i) : handleSingle(i),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: { fontSize: "18px", minWidth: "20px" },
+                    children: active.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRev && /* @__PURE__ */ jsxDEV("button", {
+            style: { marginTop: "12px", padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", opacity: pending.length ? 1 : 0.4, transition: "all 0.4s ease" },
+            onClick: submitMulti,
+            disabled: !pending.length,
+            children: "Potvrdit"
+          }, undefined, false, undefined, this),
+          isRev && /* @__PURE__ */ jsxDEV("div", {
+            style: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: `1px solid ${isOk ? "#22c55e" : "#ef4444"}`, background: "rgba(255,255,255,0.03)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+                children: isOk ? "✓ Správně!" : "✗ Špatně"
+              }, undefined, false, undefined, this),
+              !isOk && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+                children: [
+                  "Správná odpověď: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 },
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+                children: [
+                  "\uD83D\uDCA1 ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          idx < sqs.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: { padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
+            onClick: () => goTo(idx + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: { padding: "10px 22px", background: accentColor + "55", border: `1px solid ${accentColor}`, borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
+            onClick: () => setShowResults(true),
+            children: "Výsledky →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var ANGLES = [
+  { deg: 0, rad: "0", rv: 0, sin: "0", cos: "1", tg: "0", cotg: "—" },
+  { deg: 30, rad: "π/6", rv: Math.PI / 6, sin: "1/2", cos: "√3/2", tg: "√3/3", cotg: "√3" },
+  { deg: 45, rad: "π/4", rv: Math.PI / 4, sin: "√2/2", cos: "√2/2", tg: "1", cotg: "1" },
+  { deg: 60, rad: "π/3", rv: Math.PI / 3, sin: "√3/2", cos: "1/2", tg: "√3", cotg: "√3/3" },
+  { deg: 90, rad: "π/2", rv: Math.PI / 2, sin: "1", cos: "0", tg: "—", cotg: "0" },
+  { deg: 120, rad: "2π/3", rv: 2 * Math.PI / 3, sin: "√3/2", cos: "−1/2", tg: "−√3", cotg: "−√3/3" },
+  { deg: 135, rad: "3π/4", rv: 3 * Math.PI / 4, sin: "√2/2", cos: "−√2/2", tg: "−1", cotg: "−1" },
+  { deg: 150, rad: "5π/6", rv: 5 * Math.PI / 6, sin: "1/2", cos: "−√3/2", tg: "−√3/3", cotg: "−√3" },
+  { deg: 180, rad: "π", rv: Math.PI, sin: "0", cos: "−1", tg: "0", cotg: "—" },
+  { deg: 210, rad: "7π/6", rv: 7 * Math.PI / 6, sin: "−1/2", cos: "−√3/2", tg: "√3/3", cotg: "√3" },
+  { deg: 225, rad: "5π/4", rv: 5 * Math.PI / 4, sin: "−√2/2", cos: "−√2/2", tg: "1", cotg: "1" },
+  { deg: 240, rad: "4π/3", rv: 4 * Math.PI / 3, sin: "−√3/2", cos: "−1/2", tg: "√3", cotg: "√3/3" },
+  { deg: 270, rad: "3π/2", rv: 3 * Math.PI / 2, sin: "−1", cos: "0", tg: "—", cotg: "0" },
+  { deg: 300, rad: "5π/3", rv: 5 * Math.PI / 3, sin: "−√3/2", cos: "1/2", tg: "−√3", cotg: "−√3/3" },
+  { deg: 315, rad: "7π/4", rv: 7 * Math.PI / 4, sin: "−√2/2", cos: "√2/2", tg: "−1", cotg: "−1" },
+  { deg: 330, rad: "11π/6", rv: 11 * Math.PI / 6, sin: "−1/2", cos: "√3/2", tg: "−√3/3", cotg: "−√3" }
+];
+function UnitCircle() {
+  const [sel, setSel] = useState(null);
+  const cx = 175, cy = 175, r = 130;
+  const a = sel !== null ? ANGLES[sel] : null;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.5)", fontSize: "14px", textAlign: "center" },
+        children: "Klikni na bod pro zobrazení hodnot"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center", alignItems: "flex-start" },
+        children: [
+          /* @__PURE__ */ jsxDEV("svg", {
+            width: "350",
+            height: "350",
+            viewBox: "0 0 350 350",
+            style: { flexShrink: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("line", {
+                x1: "20",
+                y1: cy,
+                x2: "330",
+                y2: cy,
+                stroke: "rgba(255,255,255,0.2)",
+                strokeWidth: "1.5"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("line", {
+                x1: cx,
+                y1: "20",
+                x2: cx,
+                y2: "330",
+                stroke: "rgba(255,255,255,0.2)",
+                strokeWidth: "1.5"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("polygon", {
+                points: `330,${cy} 322,${cy - 5} 322,${cy + 5}`,
+                fill: "rgba(255,255,255,0.3)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("polygon", {
+                points: `${cx},20 ${cx - 5},28 ${cx + 5},28`,
+                fill: "rgba(255,255,255,0.3)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: "332",
+                y: cy + 4,
+                fill: "rgba(255,255,255,0.4)",
+                fontSize: "13",
+                children: "x"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: cx + 5,
+                y: "17",
+                fill: "rgba(255,255,255,0.4)",
+                fontSize: "13",
+                children: "y"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: cx + r + 3,
+                y: cy - 5,
+                fill: "rgba(255,255,255,0.35)",
+                fontSize: "10",
+                children: "1"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: cx - r - 14,
+                y: cy - 5,
+                fill: "rgba(255,255,255,0.35)",
+                fontSize: "10",
+                children: "−1"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: cx + 3,
+                y: cy - r - 3,
+                fill: "rgba(255,255,255,0.35)",
+                fontSize: "10",
+                children: "1"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: cx + 3,
+                y: cy + r + 12,
+                fill: "rgba(255,255,255,0.35)",
+                fontSize: "10",
+                children: "−1"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: cx + 35,
+                y: cy - 42,
+                fill: "rgba(255,220,80,0.45)",
+                fontSize: "14",
+                fontWeight: "bold",
+                children: "I."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: cx - 52,
+                y: cy - 42,
+                fill: "rgba(80,200,255,0.45)",
+                fontSize: "14",
+                fontWeight: "bold",
+                children: "II."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: cx - 57,
+                y: cy + 58,
+                fill: "rgba(200,100,255,0.45)",
+                fontSize: "14",
+                fontWeight: "bold",
+                children: "III."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: cx + 30,
+                y: cy + 58,
+                fill: "rgba(80,255,180,0.45)",
+                fontSize: "14",
+                fontWeight: "bold",
+                children: "IV."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("circle", {
+                cx,
+                cy,
+                r,
+                fill: "none",
+                stroke: "rgba(255,255,255,0.2)",
+                strokeWidth: "1.5"
+              }, undefined, false, undefined, this),
+              a && /* @__PURE__ */ jsxDEV(Fragment, {
+                children: [
+                  /* @__PURE__ */ jsxDEV("line", {
+                    x1: cx,
+                    y1: cy,
+                    x2: cx + r * Math.cos(a.rv),
+                    y2: cy - r * Math.sin(a.rv),
+                    stroke: "#ff2d9b",
+                    strokeWidth: "2.5",
+                    opacity: "0.9"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("line", {
+                    x1: cx + r * Math.cos(a.rv),
+                    y1: cy - r * Math.sin(a.rv),
+                    x2: cx + r * Math.cos(a.rv),
+                    y2: cy,
+                    stroke: "#ff2d9b",
+                    strokeWidth: "1",
+                    strokeDasharray: "5,3",
+                    opacity: "0.5"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("line", {
+                    x1: cx + r * Math.cos(a.rv),
+                    y1: cy - r * Math.sin(a.rv),
+                    x2: cx,
+                    y2: cy - r * Math.sin(a.rv),
+                    stroke: "#00c8ff",
+                    strokeWidth: "1",
+                    strokeDasharray: "5,3",
+                    opacity: "0.5"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("text", {
+                    x: cx + 5,
+                    y: cy - r * Math.sin(a.rv) + 4,
+                    fill: "#00c8ff",
+                    fontSize: "10",
+                    children: "sin"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("text", {
+                    x: cx + r * Math.cos(a.rv) - 6,
+                    y: cy + 14,
+                    fill: "#ff2d9b",
+                    fontSize: "10",
+                    children: "cos"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              ANGLES.map((ag, i) => {
+                const px = cx + r * Math.cos(ag.rv);
+                const py = cy - r * Math.sin(ag.rv);
+                const isSel = sel === i;
+                return /* @__PURE__ */ jsxDEV("g", {
+                  onClick: () => setSel(isSel ? null : i),
+                  style: { cursor: "pointer" },
+                  children: /* @__PURE__ */ jsxDEV("circle", {
+                    cx: px,
+                    cy: py,
+                    r: isSel ? 9 : 6,
+                    fill: isSel ? "#ff2d9b" : "rgba(0,200,255,0.85)",
+                    stroke: isSel ? "#ff90cc" : "rgba(0,200,255,0.3)",
+                    strokeWidth: "2",
+                    style: { transition: "all 0.4s ease" }
+                  }, undefined, false, undefined, this)
+                }, i, false, undefined, this);
+              }),
+              ANGLES.map((ag, i) => {
+                const lr = r + 24;
+                const px = cx + lr * Math.cos(ag.rv);
+                const py = cy - lr * Math.sin(ag.rv);
+                const isSel = sel === i;
+                return /* @__PURE__ */ jsxDEV("text", {
+                  x: px,
+                  y: py,
+                  textAnchor: "middle",
+                  dominantBaseline: "middle",
+                  fill: isSel ? "#ff2d9b" : "rgba(255,255,255,0.45)",
+                  fontSize: "9.5",
+                  style: { cursor: "pointer", userSelect: "none", transition: "fill 0.4s ease" },
+                  onClick: () => setSel(isSel ? null : i),
+                  children: ag.rad
+                }, i, false, undefined, this);
+              })
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { minWidth: "220px", display: "flex", flexDirection: "column", gap: "12px" },
+            children: [
+              a ? /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(255,45,155,0.1)", border: "1px solid rgba(255,45,155,0.45)", borderRadius: "16px", padding: "20px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#ff2d9b", fontWeight: 700, fontSize: "22px", marginBottom: "4px", fontFamily: "'Audiowide',sans-serif" },
+                    children: a.rad
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "14px" },
+                    children: [
+                      a.deg,
+                      "°"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "grid", gridTemplateColumns: "auto 1fr", gap: "8px 14px", fontFamily: "'JetBrains Mono',monospace", fontSize: "15px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "rgba(255,200,200,0.7)" },
+                        children: "sin ="
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "#ffb0cc", fontWeight: 700 },
+                        children: a.sin
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "rgba(200,200,255,0.7)" },
+                        children: "cos ="
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "#b0c8ff", fontWeight: 700 },
+                        children: a.cos
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "rgba(200,255,200,0.7)" },
+                        children: "tg ="
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "#b0ffcc", fontWeight: 700 },
+                        children: a.tg
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "rgba(255,255,200,0.7)" },
+                        children: "cotg ="
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "#ffffb0", fontWeight: 700 },
+                        children: a.cotg
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { marginTop: "12px", padding: "8px 10px", background: "rgba(0,0,0,0.25)", borderRadius: "8px", fontFamily: "'JetBrains Mono',monospace", fontSize: "12px", color: "rgba(255,255,255,0.45)" },
+                    children: [
+                      "P = [",
+                      a.cos,
+                      ", ",
+                      a.sin,
+                      "]"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this) : /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "20px", color: "rgba(255,255,255,0.35)", textAlign: "center", fontSize: "14px", lineHeight: 1.6 },
+                children: [
+                  "Klikni na modrý bod",
+                  /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                  "pro zobrazení hodnot"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", padding: "14px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "rgba(255,255,255,0.55)", fontSize: "12px", marginBottom: "10px", fontWeight: 600 },
+                    children: "Znaménka v kvadrantech"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("table", {
+                    style: { width: "100%", borderCollapse: "collapse", fontSize: "12px", fontFamily: "'JetBrains Mono',monospace" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("thead", {
+                        children: /* @__PURE__ */ jsxDEV("tr", {
+                          children: ["", "I.", "II.", "III.", "IV."].map((h, i) => /* @__PURE__ */ jsxDEV("th", {
+                            style: { padding: "3px 4px", color: "rgba(255,255,255,0.5)", fontWeight: 600, textAlign: "center" },
+                            children: h
+                          }, i, false, undefined, this))
+                        }, undefined, false, undefined, this)
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("tbody", {
+                        children: [["sin", "+", "+", "−", "−"], ["cos", "+", "−", "−", "+"], ["tg", "+", "−", "+", "−"], ["cotg", "+", "−", "+", "−"]].map((row) => /* @__PURE__ */ jsxDEV("tr", {
+                          children: row.map((cell, i) => /* @__PURE__ */ jsxDEV("td", {
+                            style: { padding: "3px 4px", textAlign: "center", color: i === 0 ? "rgba(255,255,255,0.6)" : cell === "+" ? "#4ade80" : "#f87171", fontWeight: i === 0 ? 600 : 500 },
+                            children: cell
+                          }, i, false, undefined, this))
+                        }, row[0], false, undefined, this))
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { width: "100%", overflowX: "auto" },
+        children: /* @__PURE__ */ jsxDEV("table", {
+          style: { width: "100%", borderCollapse: "collapse", fontFamily: "'JetBrains Mono',monospace", fontSize: "13px", minWidth: "500px" },
+          children: [
+            /* @__PURE__ */ jsxDEV("thead", {
+              children: /* @__PURE__ */ jsxDEV("tr", {
+                style: { borderBottom: "1px solid rgba(255,255,255,0.15)" },
+                children: ["°", "rad", "sin", "cos", "tg", "cotg"].map((h) => /* @__PURE__ */ jsxDEV("th", {
+                  style: { padding: "8px 6px", color: "rgba(255,255,255,0.55)", fontWeight: 600, textAlign: "center" },
+                  children: h
+                }, h, false, undefined, this))
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("tbody", {
+              children: ANGLES.map((ag, i) => /* @__PURE__ */ jsxDEV("tr", {
+                onClick: () => setSel(sel === i ? null : i),
+                style: { cursor: "pointer", background: sel === i ? "rgba(255,45,155,0.12)" : i % 2 === 0 ? "rgba(255,255,255,0.02)" : "transparent", transition: "background 0.4s ease" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("td", {
+                    style: { padding: "6px", textAlign: "center", color: sel === i ? "#ff2d9b" : "rgba(255,255,255,0.6)" },
+                    children: [
+                      ag.deg,
+                      "°"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("td", {
+                    style: { padding: "6px", textAlign: "center", color: sel === i ? "#ff2d9b" : "rgba(255,255,255,0.8)", fontWeight: 600 },
+                    children: ag.rad
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("td", {
+                    style: { padding: "6px", textAlign: "center", color: "rgba(255,180,200,0.9)" },
+                    children: ag.sin
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("td", {
+                    style: { padding: "6px", textAlign: "center", color: "rgba(180,200,255,0.9)" },
+                    children: ag.cos
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("td", {
+                    style: { padding: "6px", textAlign: "center", color: "rgba(180,255,200,0.9)" },
+                    children: ag.tg
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("td", {
+                    style: { padding: "6px", textAlign: "center", color: "rgba(255,255,180,0.9)" },
+                    children: ag.cotg
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this))
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function TeorieTab() {
+  const [open, setOpen] = useState({ orientovany: true });
+  const toggle = (k) => setOpen((p) => ({ ...p, [k]: !p[k] }));
+  const sections = [
+    {
+      id: "orientovany",
+      title: "\uD83D\uDCD0 Orientovaný úhel",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", flexDirection: "column", gap: "12px", color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7 },
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: "#ff2d9b" },
+                children: "Orientovaný úhel"
+              }, undefined, false, undefined, this),
+              " je úhel, u kterého rozlišujeme ",
+              /* @__PURE__ */ jsxDEV("em", {
+                children: "počáteční rameno"
+              }, undefined, false, undefined, this),
+              " (fixní — kladná poloosa osy x) a ",
+              /* @__PURE__ */ jsxDEV("em", {
+                children: "koncové rameno"
+              }, undefined, false, undefined, this),
+              " a také ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "směr otáčení"
+              }, undefined, false, undefined, this),
+              "."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.3)", borderRadius: "12px", padding: "12px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#4ade80", fontWeight: 700, marginBottom: "6px" },
+                    children: "\uD83D\uDD04 Kladný úhel"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { fontSize: "14px" },
+                    children: [
+                      "Otáčíme ",
+                      /* @__PURE__ */ jsxDEV("em", {
+                        children: "proti"
+                      }, undefined, false, undefined, this),
+                      " směru hodinových ručiček"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(248,113,113,0.1)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: "12px", padding: "12px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#f87171", fontWeight: 700, marginBottom: "6px" },
+                    children: "\uD83D\uDD50 Záporný úhel"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { fontSize: "14px" },
+                    children: [
+                      "Otáčíme ",
+                      /* @__PURE__ */ jsxDEV("em", {
+                        children: "ve"
+                      }, undefined, false, undefined, this),
+                      " směru hodinových ručiček"
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(0,200,255,0.07)", border: "1px solid rgba(0,200,255,0.2)", borderRadius: "12px", padding: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#00c8ff", fontWeight: 700, marginBottom: "8px" },
+                children: "Koterminalní úhly"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: { margin: 0, fontSize: "14px" },
+                children: "Tentýž geometrický úhel lze vyjádřit nekonečně mnoha orientovanými úhly — lišícími se o celé násobky 360° (nebo 2π):"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { fontFamily: "'JetBrains Mono',monospace", fontSize: "14px", marginTop: "8px", background: "rgba(0,0,0,0.25)", padding: "10px", borderRadius: "8px" },
+                children: "α = α₀ + k·360° = α₀ + k·2π,  k ∈ ℤ"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,45,155,0.08)", border: "1px solid rgba(255,45,155,0.2)", borderRadius: "12px", padding: "14px", fontSize: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: "#ff2d9b" },
+                children: "Příklady:"
+              }, undefined, false, undefined, this),
+              " Úhly 30°, 390°, −330° jsou všechny koterminalní (končí ve stejné poloze)."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    },
+    {
+      id: "oblourova",
+      title: "\uD83D\uDD35 Oblouková míra (radiány)",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", flexDirection: "column", gap: "12px", color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7 },
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: "#ff2d9b" },
+                children: "Oblouková míra (radián)"
+              }, undefined, false, undefined, this),
+              " vyjadřuje úhel jako délku oblouku na jednotkové kružnici (r = 1). Plný úhel = obvod = 2π."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,45,155,0.1)", border: "1px solid rgba(255,45,155,0.3)", borderRadius: "12px", padding: "16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#ff2d9b", fontWeight: 700, marginBottom: "10px", fontFamily: "'Audiowide',sans-serif", fontSize: "15px" },
+                children: "Převodní vzorce"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "8px", fontFamily: "'JetBrains Mono',monospace", fontSize: "14px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "rgba(0,0,0,0.2)", padding: "8px 12px", borderRadius: "8px" },
+                    children: "stupně → radiány:  α[rad] = α[°] · π / 180"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "rgba(0,0,0,0.2)", padding: "8px 12px", borderRadius: "8px" },
+                    children: "radiány → stupně:  α[°] = α[rad] · 180 / π"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", fontFamily: "'JetBrains Mono',monospace", fontSize: "13px" },
+            children: [["360°", "2π"], ["180°", "π"], ["90°", "π/2"], ["60°", "π/3"], ["45°", "π/4"], ["30°", "π/6"]].map(([d, r]) => /* @__PURE__ */ jsxDEV("div", {
+              style: { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" },
+              children: [
+                /* @__PURE__ */ jsxDEV("span", {
+                  style: { color: "rgba(255,255,255,0.5)" },
+                  children: d
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("span", {
+                  style: { color: "#ff2d9b", fontWeight: 700 },
+                  children: [
+                    "= ",
+                    r
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, d, true, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(0,200,255,0.07)", border: "1px solid rgba(0,200,255,0.2)", borderRadius: "12px", padding: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#00c8ff", fontWeight: 700, marginBottom: "6px" },
+                children: "Příklad — 300° na radiány (Wayground úloha 1)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { fontFamily: "'JetBrains Mono',monospace", fontSize: "14px" },
+                children: "300° · π/180 = 300π/180 = 5π/3 ≈ 5,236 rad"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    },
+    {
+      id: "zakladni",
+      title: "\uD83C\uDFAF Základní velikost úhlu",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", flexDirection: "column", gap: "12px", color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7 },
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: "#ff2d9b" },
+                children: "Základní velikost úhlu α₀"
+              }, undefined, false, undefined, this),
+              " je zástupce z intervalu ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "⟨0; 2π)"
+              }, undefined, false, undefined, this),
+              " resp. ⟨0°; 360°), koterminalní s daným úhlem."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,45,155,0.1)", border: "1px solid rgba(255,45,155,0.3)", borderRadius: "12px", padding: "16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#ff2d9b", fontWeight: 700, marginBottom: "10px" },
+                children: "Postup — jak najít α₀"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "8px" },
+                children: ["Zapiš úhel ve tvaru: α = α₀ + k·2π", "Urči k ∈ ℤ tak, aby α₀ = α − k·2π patřilo do ⟨0; 2π)", "Ověř dosazením zpět"].map((s, i) => /* @__PURE__ */ jsxDEV("div", {
+                  style: { display: "flex", gap: "12px", alignItems: "flex-start" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("span", {
+                      style: { color: "#ff2d9b", fontWeight: 700, minWidth: "20px" },
+                      children: [
+                        i + 1,
+                        "."
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("span", {
+                      style: { fontSize: "14px" },
+                      children: s
+                    }, undefined, false, undefined, this)
+                  ]
+                }, i, true, undefined, this))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(0,200,255,0.07)", border: "1px solid rgba(0,200,255,0.2)", borderRadius: "12px", padding: "16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#00c8ff", fontWeight: 700, marginBottom: "10px" },
+                children: "Příklad ze sešitu: α = −22π/3"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { fontFamily: "'JetBrains Mono',monospace", fontSize: "14px", display: "flex", flexDirection: "column", gap: "5px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "Hledáme α₀ ∈ ⟨0; 2π), k ∈ ℤ"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "−22π/3 ÷ 2π ≈ −3,67 → zkusíme k = −4"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "α₀ = −22π/3 − (−4)·2π = −22π/3 + 8π"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "     = −22π/3 + 24π/3 = 2π/3  ✓ (∈ ⟨0; 2π))"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#00c8ff", fontWeight: 700, marginTop: "4px" },
+                    children: "α = 2π/3 + (−4)·2π"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "rgba(255,255,255,0.4)", fontSize: "12px" },
+                    children: "Ověření: 2π/3 − 4·2π = 2π/3 − 24π/3 = −22π/3 ✓"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(74,222,128,0.07)", border: "1px solid rgba(74,222,128,0.2)", borderRadius: "12px", padding: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#4ade80", fontWeight: 700, marginBottom: "6px" },
+                children: "Příklad: −750° (ve stupních)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { fontFamily: "'JetBrains Mono',monospace", fontSize: "14px" },
+                children: "−750° + 3·360° = −750° + 1080° = 330°  ✓"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    },
+    {
+      id: "gon-def",
+      title: "\uD83D\uDCCA Goniometrické funkce — definice",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", flexDirection: "column", gap: "12px", color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7 },
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            children: [
+              "Pro bod P = [x, y] na ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "jednotkové kružnici"
+              }, undefined, false, undefined, this),
+              " (r = 1), odpovídající úhlu α:"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", fontFamily: "'JetBrains Mono',monospace" },
+            children: [
+              ["sin α", "= y  (y-souřadnice P)", "#ffb0cc"],
+              ["cos α", "= x  (x-souřadnice P)", "#b0c8ff"],
+              ["tg α", "= sin α / cos α", "#b0ffcc"],
+              ["cotg α", "= cos α / sin α = 1/tg α", "#ffffb0"]
+            ].map(([fn, def, color]) => /* @__PURE__ */ jsxDEV("div", {
+              style: { background: "rgba(255,255,255,0.04)", border: `1px solid ${color}33`, borderRadius: "10px", padding: "12px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color, fontWeight: 700, fontSize: "16px", marginBottom: "4px" },
+                  children: fn
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "13px", color: "rgba(255,255,255,0.65)" },
+                  children: def
+                }, undefined, false, undefined, this)
+              ]
+            }, fn, true, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,45,155,0.1)", border: "1px solid rgba(255,45,155,0.3)", borderRadius: "12px", padding: "16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#ff2d9b", fontWeight: 700, marginBottom: "10px" },
+                children: "Základní identity (musíš znát nazpaměť!)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "6px", fontFamily: "'JetBrains Mono',monospace", fontSize: "14px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "rgba(0,0,0,0.3)", padding: "8px 12px", borderRadius: "8px", color: "#fff", fontWeight: 600 },
+                    children: "sin²α + cos²α = 1"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "rgba(0,0,0,0.2)", padding: "8px 12px", borderRadius: "8px", color: "rgba(255,255,255,0.8)" },
+                    children: "tg α = sin α / cos α"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "rgba(0,0,0,0.2)", padding: "8px 12px", borderRadius: "8px", color: "rgba(255,255,255,0.8)" },
+                    children: "cotg α = cos α / sin α = 1 / tg α"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "rgba(0,0,0,0.2)", padding: "8px 12px", borderRadius: "8px", color: "rgba(255,255,255,0.6)" },
+                    children: "sin(−α) = −sin α  (lichá)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "rgba(0,0,0,0.2)", padding: "8px 12px", borderRadius: "8px", color: "rgba(255,255,255,0.6)" },
+                    children: "cos(−α) = cos α   (sudá)"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    },
+    {
+      id: "dopocitavani",
+      title: "\uD83D\uDD22 Dopočítávání hodnot bez určení úhlu",
+      content: /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", flexDirection: "column", gap: "12px", color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7 },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,200,80,0.08)", border: "1px solid rgba(255,200,80,0.25)", borderRadius: "12px", padding: "12px", fontSize: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: "#fbbf24" },
+                children: "Klíčový typ testové úlohy:"
+              }, undefined, false, undefined, this),
+              " Znáš jednu hodnotu + kvadrant (nebo interval) → spočítáš všechny ostatní bez hledání úhlu."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,45,155,0.1)", border: "1px solid rgba(255,45,155,0.3)", borderRadius: "12px", padding: "16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#ff2d9b", fontWeight: 700, marginBottom: "10px" },
+                children: "Metoda A — znáš sin nebo cos (přímá)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "6px", fontSize: "14px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "1. Z kvadrantu urči znaménka (sin, cos, tg, cotg)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: [
+                      "2. Použij: ",
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { fontFamily: "'JetBrains Mono',monospace", color: "#ff2d9b" },
+                        children: "sin²x + cos²x = 1"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "3. Dopočítej chybějící hodnotu s správným znaménkem"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "4. tg x = sin x / cos x,  cotg x = 1 / tg x"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(0,200,255,0.07)", border: "1px solid rgba(0,200,255,0.2)", borderRadius: "12px", padding: "16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#00c8ff", fontWeight: 700, marginBottom: "10px" },
+                children: "Metoda B — znáš tg (nepřímá)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "6px", fontSize: "14px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: [
+                      "1. Zapiš: ",
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { fontFamily: "'JetBrains Mono',monospace" },
+                        children: "sin x = tg x · cos x"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: [
+                      "2. Dosaď do Pythagorovy identity: ",
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { fontFamily: "'JetBrains Mono',monospace" },
+                        children: "(tg x · cos x)² + cos²x = 1"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "3. Vyřeš cos²x = 1 / (tg²x + 1)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "4. Urči znaménko cos z kvadrantu, spočítej sin x = tg x · cos x"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(74,222,128,0.07)", border: "1px solid rgba(74,222,128,0.2)", borderRadius: "12px", padding: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#4ade80", fontWeight: 700, marginBottom: "8px" },
+                children: "Ze sešitu: tg x = −√2, x ∈ II. kvadrant"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { fontFamily: "'JetBrains Mono',monospace", fontSize: "13px", display: "flex", flexDirection: "column", gap: "4px", color: "rgba(255,255,255,0.8)" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "sin x = −√2 · cos x  →  dosaď do sin² + cos² = 1"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "2cos²x + cos²x = 1  →  3cos²x = 1  →  cos²x = 1/3"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#4ade80" },
+                    children: "II. kv.: cos x = −√3/3,  sin x = √6/3"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }
+  ];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", gap: "8px", maxWidth: "800px", margin: "0 auto" },
+    children: sections.map((sec) => /* @__PURE__ */ jsxDEV("div", {
+      style: { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", overflow: "hidden" },
+      children: [
+        /* @__PURE__ */ jsxDEV("button", {
+          onClick: () => toggle(sec.id),
+          style: { width: "100%", padding: "16px 20px", background: "transparent", border: "none", color: "#fff", textAlign: "left", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "16px", fontWeight: 600, fontFamily: "'Exo 2',sans-serif", transition: "background 0.4s ease" },
+          children: [
+            /* @__PURE__ */ jsxDEV("span", {
+              children: sec.title
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("span", {
+              style: { color: "rgba(255,255,255,0.4)", transition: "transform 0.4s ease", display: "inline-block", transform: open[sec.id] ? "rotate(180deg)" : "rotate(0deg)" },
+              children: "▼"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        open[sec.id] && /* @__PURE__ */ jsxDEV("div", {
+          style: { padding: "0 20px 20px" },
+          children: sec.content
+        }, undefined, false, undefined, this)
+      ]
+    }, sec.id, true, undefined, this))
+  }, undefined, false, undefined, this);
+}
+function PrikladyTab() {
+  const [showSol, setShowSol] = useState({});
+  const toggle = (k) => setShowSol((p) => ({ ...p, [k]: !p[k] }));
+  const problems = [
+    {
+      id: 0,
+      badge: "⚡ Medium",
+      badgeColor: "#f59e0b",
+      title: "Výpočet výrazu s goniometrickými funkcemi",
+      note: "Přesný typ z testu nanečisto!",
+      task: "(sin(11π/3) + cos(3π/4))²",
+      steps: [
+        {
+          label: "Zjednodušení sin(11π/3)",
+          text: `11π/3 je velké → odečteme násobek 2π (= 6π/3):
+11π/3 − 2·2π = 11π/3 − 12π/3 = −π/3
+
+sin(11π/3) = sin(−π/3) = −sin(π/3) = −√3/2`
+        },
+        {
+          label: "Hodnota cos(3π/4)",
+          text: `3π/4 = 135° je ve II. kvadrantu:
+cos(3π/4) = cos(π − π/4) = −cos(π/4) = −√2/2`
+        },
+        {
+          label: "Součet v závorce",
+          text: "−√3/2 + (−√2/2) = −√3/2 − √2/2 = −(√3 + √2)/2"
+        },
+        {
+          label: "Kvadrát výrazu",
+          text: `[−(√3 + √2)/2]² = (√3 + √2)² / 4
+= (3 + 2√6 + 2) / 4
+= (5 + 2√6) / 4`
+        }
+      ],
+      result: "(5 + 2√6) / 4"
+    },
+    {
+      id: 1,
+      badge: "✨ Easy",
+      badgeColor: "#22c55e",
+      title: "Základní velikost úhlu",
+      note: "Přesný typ z testu nanečisto!",
+      task: "Zapište α = −22π/3 ve tvaru α = α₀ + k·2π,  α₀ ∈ ⟨0; 2π),  k ∈ ℤ",
+      steps: [
+        {
+          label: "Odhadneme k",
+          text: `−22π/3 ÷ 2π = −22π/(3·2π) = −11/3 ≈ −3,67
+
+Potřebujeme k celé, aby α₀ ≥ 0 → zkusíme k = −4`
+        },
+        {
+          label: "Výpočet α₀",
+          text: `α₀ = α − k·2π = −22π/3 − (−4)·2π
+    = −22π/3 + 8π
+    = −22π/3 + 24π/3
+    = 2π/3`
+        },
+        {
+          label: "Ověření α₀ ∈ ⟨0; 2π)",
+          text: `2π/3 ≈ 2,09 ∈ ⟨0; 6,28) ✓
+
+α₀ = 2π/3 je ve II. kvadrantu (120°)`
+        },
+        {
+          label: "Ověření dosazením",
+          text: "2π/3 + (−4)·2π = 2π/3 − 8π = 2π/3 − 24π/3 = −22π/3 ✓"
+        }
+      ],
+      result: "α = 2π/3 + (−4)·2π   →   α₀ = 2π/3, k = −4"
+    },
+    {
+      id: 2,
+      badge: "⚡ Medium",
+      badgeColor: "#f59e0b",
+      title: "Doplnění tabulky — znám cos, IV. kvadrant",
+      note: "Přesný typ z testu nanečisto!",
+      task: "cos x = √10/10, x ∈ IV. kvadrant. Doplňte: sin x, tg x, cotg x.",
+      steps: [
+        {
+          label: "Znaménka ve IV. kvadrantu",
+          text: `IV. kvadrant (3π/2 < x < 2π):
+sin x < 0,  cos x > 0,  tg x < 0,  cotg x < 0`
+        },
+        {
+          label: "Výpočet sin x",
+          text: `sin²x + cos²x = 1
+sin²x + (√10/10)² = 1
+sin²x + 10/100 = 1
+sin²x = 1 − 1/10 = 9/10
+|sin x| = 3/√10 = 3√10/10
+→ IV. kv.: sin x = −3√10/10`
+        },
+        {
+          label: "Výpočet tg x",
+          text: `tg x = sin x / cos x
+     = (−3√10/10) / (√10/10)
+     = −3`
+        },
+        {
+          label: "Výpočet cotg x",
+          text: "cotg x = 1 / tg x = 1 / (−3) = −1/3"
+        }
+      ],
+      result: "sin x = −3√10/10,   tg x = −3,   cotg x = −1/3"
+    },
+    {
+      id: 3,
+      badge: "\uD83D\uDD25 Hard",
+      badgeColor: "#ef4444",
+      title: "Dopočítávání — znám tg, II. kvadrant",
+      note: "Ze sešitu p. profesora — Metoda B",
+      task: "tg x = −√2, x ∈ II. kvadrant. Najděte sin x, cos x, cotg x.",
+      steps: [
+        {
+          label: "Znaménka — kontrola konzistence",
+          text: `II. kvadrant: sin > 0, cos < 0, tg < 0
+tg x = −√2 < 0 ✓ konzistentní s II. kv.`
+        },
+        {
+          label: "Vyjádříme sin přes cos",
+          text: `tg x = sin x / cos x = −√2
+sin x = −√2 · cos x`
+        },
+        {
+          label: "Dosadíme do Pythagorovy identity",
+          text: `sin²x + cos²x = 1
+(−√2 · cos x)² + cos²x = 1
+2cos²x + cos²x = 1
+3cos²x = 1
+cos²x = 1/3
+|cos x| = 1/√3 = √3/3
+→ II. kv.: cos x = −√3/3`
+        },
+        {
+          label: "Výpočet sin x",
+          text: `sin x = −√2 · cos x = −√2 · (−√3/3) = √6/3
+(kladné ✓ — konzistentní s II. kv.)`
+        },
+        {
+          label: "Výpočet cotg x",
+          text: "cotg x = 1 / tg x = 1 / (−√2) = −1/√2 = −√2/2"
+        }
+      ],
+      result: "cos x = −√3/3,   sin x = √6/3,   cotg x = −√2/2"
+    },
+    {
+      id: 4,
+      badge: "\uD83D\uDD25 Hard",
+      badgeColor: "#ef4444",
+      title: "Dopočítávání — znám cos, III. kvadrant",
+      note: "Typ z Wayground cvičení (úloha 10)",
+      task: "cos x = −√14/4,  π < x < 3π/2 (III. kvadrant). Najděte tg x.",
+      steps: [
+        {
+          label: "Znaménka ve III. kvadrantu",
+          text: `III. kv.: sin < 0, cos < 0, tg > 0
+cos x = −√14/4 < 0 ✓`
+        },
+        {
+          label: "Výpočet sin x",
+          text: `sin²x = 1 − cos²x = 1 − 14/16 = 2/16 = 1/8
+|sin x| = 1/(2√2) = √2/4
+→ III. kv.: sin x = −√2/4`
+        },
+        {
+          label: "Výpočet tg x",
+          text: `tg x = sin x / cos x
+     = (−√2/4) / (−√14/4)
+     = √2/√14 = √2/(√2·√7) = 1/√7 = √7/7
+(kladné ✓ — konzistentní s III. kv.)`
+        }
+      ],
+      result: "tg x = √7/7"
+    }
+  ];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "800px", margin: "0 auto" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { background: "rgba(255,200,80,0.08)", border: "1px solid rgba(255,200,80,0.2)", borderRadius: "12px", padding: "12px 16px", fontSize: "14px", color: "rgba(255,255,255,0.7)" },
+        children: [
+          "\uD83D\uDCA1 Řešení jsou skrytá — zkus nejdřív sám, pak klikni na ",
+          /* @__PURE__ */ jsxDEV("strong", {
+            style: { color: "#fbbf24" },
+            children: "Zobrazit řešení"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      problems.map((p) => /* @__PURE__ */ jsxDEV("div", {
+        style: { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "24px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "10px", alignItems: "flex-start", flexWrap: "wrap", marginBottom: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { padding: "3px 10px", background: p.badgeColor + "22", border: `1px solid ${p.badgeColor}55`, borderRadius: "20px", color: p.badgeColor, fontSize: "12px", fontWeight: 700, whiteSpace: "nowrap" },
+                children: p.badge
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "3px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#fff", fontWeight: 700, fontSize: "16px" },
+                    children: p.title
+                  }, undefined, false, undefined, this),
+                  p.note && /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#ff2d9b", fontSize: "12px" },
+                    children: [
+                      "↳ ",
+                      p.note
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(0,0,0,0.35)", borderRadius: "12px", padding: "16px", fontFamily: "'JetBrains Mono',monospace", fontSize: "15px", color: "rgba(255,255,255,0.9)", marginBottom: "16px", lineHeight: 1.6 },
+            children: p.task
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            onClick: () => toggle(p.id),
+            style: { padding: "10px 20px", background: "rgba(255,45,155,0.1)", border: "1px solid rgba(255,45,155,0.4)", borderRadius: "10px", color: "#ff2d9b", cursor: "pointer", fontSize: "14px", fontWeight: 600, transition: "all 0.4s ease", marginBottom: showSol[p.id] ? "16px" : "0" },
+            children: showSol[p.id] ? "▲ Skrýt řešení" : "▼ Zobrazit řešení"
+          }, undefined, false, undefined, this),
+          showSol[p.id] && /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", flexDirection: "column", gap: "10px" },
+            children: [
+              p.steps.map((step, i) => /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", padding: "12px 14px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#ff2d9b", fontWeight: 600, fontSize: "13px", marginBottom: "6px" },
+                    children: [
+                      "Krok ",
+                      i + 1,
+                      ": ",
+                      step.label
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { fontFamily: "'JetBrains Mono',monospace", fontSize: "13px", color: "rgba(255,255,255,0.82)", whiteSpace: "pre-line", lineHeight: 1.6 },
+                    children: step.text
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this)),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.45)", borderRadius: "12px", padding: "14px 16px", fontFamily: "'JetBrains Mono',monospace", fontSize: "15px", color: "#4ade80", fontWeight: 700 },
+                children: [
+                  "✓ Výsledek: ",
+                  p.result
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, p.id, true, undefined, this))
+    ]
+  }, undefined, true, undefined, this);
+}
+var CARDS = [
+  { f: "Co je orientovaný úhel?", b: `Úhel s určeným počátečním a koncovým ramenem a směrem otáčení.
+
+Kladný = proti hodinovým ručičkám
+Záporný = po hodinových ručičkách` },
+  { f: "Jak převedeš stupně na radiány?", b: `α[rad] = α[°] · π / 180
+
+Příklad: 300° = 300 · π/180 = 5π/3` },
+  { f: "Jak převedeš radiány na stupně?", b: `α[°] = α[rad] · 180 / π
+
+Příklad: 3π/4 = 3 · 180/4 = 135°` },
+  { f: "Co je základní velikost úhlu α₀?", b: `Zástupce z ⟨0; 2π) takový, že:
+α = α₀ + k·2π,  k ∈ ℤ` },
+  { f: "Jak najdeš α₀ pro α = −22π/3?", b: `k = −4
+α₀ = −22π/3 + 4·2π = −22π/3 + 24π/3 = 2π/3
+
+Ověření: 2π/3 − 4·2π = −22π/3 ✓` },
+  { f: "Jak najdeš α₀ pro α = −750°?", b: `−750° + 3·360° = −750° + 1080° = 330°
+α₀ = 330°` },
+  { f: "Jaký je bod P na jednotkové kružnici?", b: `P = [cos α, sin α]
+
+sin α = y-souřadnice
+cos α = x-souřadnice` },
+  { f: "Pythagorova identita?", b: `sin²α + cos²α = 1
+
+(Platí pro každý úhel!)` },
+  { f: "Znaménka goniometrických funkcí v kvadrantech?", b: `I.:   sin+  cos+  tg+  cotg+
+II.:  sin+  cos−  tg−  cotg−
+III.: sin−  cos−  tg+  cotg+
+IV.:  sin−  cos+  tg−  cotg−
+
+Pomůcka: Všichni Studenti Tancují Cotg` },
+  { f: "sin(11π/3) = ?", b: `11π/3 − 2·2π = 11π/3 − 12π/3 = −π/3
+sin(−π/3) = −sin(π/3) = −√3/2` },
+  { f: "cos(3π/4) = ?", b: `3π/4 = 135° → II. kvadrant
+cos(3π/4) = −cos(π/4) = −√2/2` },
+  { f: "cos x = √10/10, IV. kvadrant → sin x, tg x, cotg x?", b: `sin²x = 1 − 1/10 = 9/10
+IV.: sin x = −3√10/10
+
+tg x = −3
+cotg x = −1/3` },
+  { f: "tg x = −√2, II. kvadrant → cos x, sin x?", b: `3cos²x = 1 → cos x = −√3/3 (II. kv.)
+sin x = −√2 · (−√3/3) = √6/3` },
+  { f: "Je sinus lichá nebo sudá funkce?", b: `LICHÁ: sin(−α) = −sin α
+Graf je středově souměrný (rot. 180° okolo O)
+
+Kosinus je SUDÁ: cos(−α) = cos α` },
+  { f: "Perioda sin a cos? Perioda tg a cotg?", b: `sin, cos:   T = 2π = 360°
+tg, cotg:   T = π = 180°` }
+];
+function FlashcardsTab() {
+  const [idx, setIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const card = CARDS[idx];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", alignItems: "center", gap: "20px", maxWidth: "600px", margin: "0 auto", padding: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.45)", fontSize: "14px" },
+        children: [
+          idx + 1,
+          " / ",
+          CARDS.length
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { width: "100%", cursor: "pointer", perspective: "1000px" },
+        onClick: () => setFlipped((f) => !f),
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: { position: "relative", width: "100%", minHeight: "220px", transformStyle: "preserve-3d", transition: "transform 0.4s ease", transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" },
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { position: "absolute", top: 0, left: 0, right: 0, backfaceVisibility: "hidden", background: "rgba(255,45,155,0.1)", border: "1px solid rgba(255,45,155,0.4)", borderRadius: "20px", padding: "32px 24px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "220px", textAlign: "center" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.35)", fontSize: "12px", marginBottom: "12px", letterSpacing: "2px" },
+                  children: "OTÁZKA"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.6 },
+                  children: card.f
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { position: "absolute", top: 0, left: 0, right: 0, backfaceVisibility: "hidden", transform: "rotateY(180deg)", background: "rgba(0,200,255,0.07)", border: "1px solid rgba(0,200,255,0.4)", borderRadius: "20px", padding: "32px 24px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "220px", textAlign: "center" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.35)", fontSize: "12px", marginBottom: "12px", letterSpacing: "2px" },
+                  children: "ODPOVĚĎ"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "#fff", fontSize: "15px", lineHeight: 1.8, fontFamily: "'JetBrains Mono',monospace", whiteSpace: "pre-line" },
+                  children: card.b
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.35)", fontSize: "13px" },
+        children: "Klikni pro otočení"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "12px", alignItems: "center" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            onClick: () => {
+              setIdx((i) => Math.max(0, i - 1));
+              setFlipped(false);
+            },
+            disabled: idx === 0,
+            style: { padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", opacity: idx === 0 ? 0.4 : 1, transition: "all 0.4s ease" },
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            onClick: () => {
+              setIdx((i) => Math.min(CARDS.length - 1, i + 1));
+              setFlipped(false);
+            },
+            disabled: idx === CARDS.length - 1,
+            style: { padding: "10px 22px", background: "rgba(255,45,155,0.2)", border: "1px solid rgba(255,45,155,0.5)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", opacity: idx === CARDS.length - 1 ? 0.4 : 1, transition: "all 0.4s ease" },
+            children: "Další →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "center" },
+        children: CARDS.map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+          onClick: () => {
+            setIdx(i);
+            setFlipped(false);
+          },
+          style: { width: "10px", height: "10px", borderRadius: "50%", cursor: "pointer", background: i === idx ? "#ff2d9b" : "rgba(255,255,255,0.2)", transition: "background 0.4s ease" }
+        }, i, false, undefined, this))
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function FormulyTab() {
+  const sections = [
+    {
+      title: "\uD83D\uDCD0 Oblouková míra",
+      color: "#ff2d9b",
+      items: [
+        ["stupně → rad", "α[rad] = α[°] · π/180"],
+        ["rad → stupně", "α[°] = α[rad] · 180/π"],
+        ["360° =", "2π ≈ 6,283"],
+        ["180° =", "π ≈ 3,142"],
+        ["90° =", "π/2 ≈ 1,571"],
+        ["60° =", "π/3 ≈ 1,047"],
+        ["45° =", "π/4 ≈ 0,785"],
+        ["30° =", "π/6 ≈ 0,524"]
+      ]
+    },
+    {
+      title: "\uD83D\uDD35 Základní identity",
+      color: "#00c8ff",
+      items: [
+        ["Pythagorova", "sin²α + cos²α = 1"],
+        ["Tangens", "tg α = sin α / cos α"],
+        ["Kotangens", "cotg α = cos α / sin α"],
+        ["Vztah tg-cotg", "tg α · cotg α = 1"],
+        ["Lichá funkce", "sin(−α) = −sin α"],
+        ["Sudá funkce", "cos(−α) = cos α"]
+      ]
+    },
+    {
+      title: "\uD83C\uDFAF Základní velikost úhlu",
+      color: "#fbbf24",
+      items: [
+        ["Tvar", "α = α₀ + k·2π,  k ∈ ℤ"],
+        ["Interval α₀", "⟨0; 2π) tj. ⟨0°; 360°)"],
+        ["−22π/3", "α₀ = 2π/3, k = −4"],
+        ["−750°", "α₀ = 330°, k = −3 (v °)"]
+      ]
+    },
+    {
+      title: "\uD83D\uDCCA Znaménka v kvadrantech",
+      color: "#4ade80",
+      items: [
+        ["I. (0–π/2)", "sin+ cos+ tg+ cotg+"],
+        ["II. (π/2–π)", "sin+ cos− tg− cotg−"],
+        ["III. (π–3π/2)", "sin− cos− tg+ cotg+"],
+        ["IV. (3π/2–2π)", "sin− cos+ tg− cotg−"],
+        ["Pomůcka", "Všichni Studenti Tancují Cotg"]
+      ]
+    },
+    {
+      title: "⭐ Tabulka hodnot — I. kvadrant",
+      color: "#a855f7",
+      wide: true,
+      items: [
+        ["0° = 0", "sin=0,  cos=1,  tg=0,  cotg=—"],
+        ["30° = π/6", "sin=1/2,  cos=√3/2,  tg=√3/3,  cotg=√3"],
+        ["45° = π/4", "sin=√2/2,  cos=√2/2,  tg=1,  cotg=1"],
+        ["60° = π/3", "sin=√3/2,  cos=1/2,  tg=√3,  cotg=√3/3"],
+        ["90° = π/2", "sin=1,  cos=0,  tg=—,  cotg=0"]
+      ]
+    },
+    {
+      title: "⭐ Tabulka hodnot — II.–IV. kvadrant",
+      color: "#f87171",
+      wide: true,
+      items: [
+        ["120° = 2π/3", "sin=√3/2,  cos=−1/2,  tg=−√3,  cotg=−√3/3"],
+        ["135° = 3π/4", "sin=√2/2,  cos=−√2/2,  tg=−1,  cotg=−1"],
+        ["150° = 5π/6", "sin=1/2,  cos=−√3/2,  tg=−√3/3,  cotg=−√3"],
+        ["180° = π", "sin=0,  cos=−1,  tg=0,  cotg=—"],
+        ["270° = 3π/2", "sin=−1,  cos=0,  tg=—,  cotg=0"],
+        ["300° = 5π/3", "sin=−√3/2,  cos=1/2,  tg=−√3,  cotg=−√3/3"],
+        ["315° = 7π/4", "sin=−√2/2,  cos=√2/2,  tg=−1,  cotg=−1"],
+        ["330° = 11π/6", "sin=−1/2,  cos=√3/2,  tg=−√3/3,  cotg=−√3"]
+      ]
+    },
+    {
+      title: "\uD83D\uDD22 Dopočítávání bez úhlu",
+      color: "#fb923c",
+      wide: true,
+      items: [
+        ["Znám cos → sin", "sin²x = 1 − cos²x,  znaménko z kvadrantu"],
+        ["Znám sin → cos", "cos²x = 1 − sin²x,  znaménko z kvadrantu"],
+        ["Znám tg → cos", "cos²x = 1/(tg²x + 1),  znaménko z kvadrantu"],
+        ["cos x = √10/10, IV", "sin x = −3√10/10,  tg x = −3,  cotg x = −1/3"],
+        ["tg x = −√2, II", "cos x = −√3/3,  sin x = √6/3,  cotg x = −√2/2"]
+      ]
+    }
+  ];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "900px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "14px" },
+    children: sections.map((sec) => /* @__PURE__ */ jsxDEV("div", {
+      style: { background: "rgba(255,255,255,0.04)", border: `1px solid ${sec.color}33`, borderRadius: "16px", padding: "18px 20px" },
+      children: [
+        /* @__PURE__ */ jsxDEV("div", {
+          style: { color: sec.color, fontWeight: 700, fontSize: "15px", marginBottom: "12px", fontFamily: "'Audiowide',sans-serif" },
+          children: sec.title
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("div", {
+          style: { display: "flex", flexDirection: "column", gap: "5px" },
+          children: sec.items.map(([label, formula]) => /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "12px", alignItems: "baseline", flexWrap: "wrap" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: "rgba(255,255,255,0.45)", fontSize: "13px", minWidth: sec.wide ? "130px" : "120px", flexShrink: 0 },
+                children: label
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: "#fff", fontFamily: "'JetBrains Mono',monospace", fontSize: "13px", fontWeight: 500 },
+                children: formula
+              }, undefined, false, undefined, this)
+            ]
+          }, label, true, undefined, this))
+        }, undefined, false, undefined, this)
+      ]
+    }, sec.title, true, undefined, this))
+  }, undefined, false, undefined, this);
+}
+var QUESTIONS = [
+  {
+    question: "Jaká je základní velikost úhlu α = −750°?",
+    type: "single",
+    options: ["−30°", "30°", "330°", "−60°"],
+    correct: [2],
+    explanation: "−750° + 3·360° = −750° + 1080° = 330°. Přičítáme 360° tak dlouho, až jsme v ⟨0°; 360°).",
+    tip: "Přičítej 360° (nebo odečítej), dokud nejsi v ⟨0°; 360°)."
+  },
+  {
+    question: "Převeďte 300° na radiány.",
+    type: "single",
+    options: ["5π/4", "5π/3", "4π/3", "7π/6"],
+    correct: [1],
+    explanation: "300° · π/180 = 300π/180 = 5π/3.",
+    tip: "Zkrácení: 300/60 = 5, 180/60 = 3 → 5π/3"
+  },
+  {
+    question: "α = −22π/3. Jaká je základní velikost α₀ a hodnota k?",
+    type: "single",
+    options: ["α₀ = 2π/3, k = −4", "α₀ = 2π/3, k = 4", "α₀ = 4π/3, k = −4", "α₀ = π/3, k = −4"],
+    correct: [0],
+    explanation: "−22π/3 = 2π/3 + k·2π → k·2π = −8π → k = −4. Ověření: 2π/3 − 4·2π = 2π/3 − 24π/3 = −22π/3 ✓"
+  },
+  {
+    question: "sin(11π/3) = ?",
+    type: "single",
+    options: ["√3/2", "−√3/2", "1/2", "−1/2"],
+    correct: [1],
+    explanation: "11π/3 − 2·2π = 11π/3 − 12π/3 = −π/3. sin(−π/3) = −sin(π/3) = −√3/2.",
+    tip: "Odečti násobky 2π (= 6π/3) tak, aby výsledek byl v ⟨−π; π⟩."
+  },
+  {
+    question: "(sin(11π/3) + cos(3π/4))² = ?",
+    type: "single",
+    options: ["(5+2√6)/4", "(5−2√6)/4", "(3+2√6)/4", "5/4"],
+    correct: [0],
+    explanation: "sin(11π/3) = −√3/2, cos(3π/4) = −√2/2. Součet = −(√3+√2)/2. Kvadrát = (√3+√2)²/4 = (3+2√6+2)/4 = (5+2√6)/4."
+  },
+  {
+    question: "sin(2π/3) = ?",
+    type: "single",
+    options: ["1/2", "√3/2", "−1/2", "−√3/2"],
+    correct: [1],
+    explanation: "2π/3 = 120° je ve II. kvadrantu. sin(120°) = sin(180°−60°) = sin(60°) = √3/2. V II. kv. je sin kladný."
+  },
+  {
+    question: "cos(7π/4) = ?",
+    type: "single",
+    options: ["1/2", "−1/2", "√2/2", "−√2/2"],
+    correct: [2],
+    explanation: "7π/4 = 315° je ve IV. kvadrantu. cos(315°) = cos(360°−45°) = cos(45°) = √2/2. V IV. kv. je cos kladný."
+  },
+  {
+    question: "sin(17π/2) = ?",
+    type: "single",
+    options: ["−1", "1", "0", "−√3/2"],
+    correct: [1],
+    explanation: "17π/2 = 8·2π/2 + π/2 = 4·2π + π/2. Tedy sin(17π/2) = sin(π/2) = 1.",
+    tip: "Odečti násobky 2π: 17π/2 − 4·2π = 17π/2 − 8π = π/2."
+  },
+  {
+    question: "V jakém kvadrantu platí: sin > 0 a cos < 0?",
+    type: "single",
+    options: ["I.", "II.", "III.", "IV."],
+    correct: [1],
+    explanation: "II. kvadrant (π/2 < α < π): y-souřadnice kladná (sin > 0), x-souřadnice záporná (cos < 0).",
+    tip: "Pomůcka: Všichni Studenti Tancují Cotg — II. kv. = Studenti = jen sin kladný."
+  },
+  {
+    question: "cos x = √10/10, x ∈ IV. kvadrant. Jaká je hodnota tg x?",
+    type: "single",
+    options: ["3", "−3", "1/3", "−1/3"],
+    correct: [1],
+    explanation: `sin²x = 1 − (√10/10)² = 9/10 → sin x = −3√10/10 (IV. kv.).
+tg x = sin x / cos x = (−3√10/10)/(√10/10) = −3.`
+  },
+  {
+    question: "Doplňte: cos x = √10/10, IV. kvadrant. cotg x = ?",
+    type: "single",
+    options: ["3", "−3", "1/3", "−1/3"],
+    correct: [3],
+    explanation: "tg x = −3 (z předchozího výpočtu). cotg x = 1/tg x = 1/(−3) = −1/3."
+  },
+  {
+    question: "Pokud tg x = √8, potom cotg x = ?",
+    type: "single",
+    options: ["√2/4", "−2√2", "√2", "√2/2"],
+    correct: [0],
+    explanation: "cotg x = 1/tg x = 1/√8 = 1/(2√2) = √2/(2·2) = √2/4."
+  },
+  {
+    question: "Která tvrzení jsou správná pro II. kvadrant (π/2 < x < π)?",
+    type: "multi",
+    options: ["sin x > 0", "cos x > 0", "tg x < 0", "cotg x < 0"],
+    correct: [0, 2, 3],
+    explanation: "Ve II. kv.: sin > 0 (bod na horní polorovině), cos < 0 (záporná x-souřadnice), tg = sin/cos < 0, cotg = cos/sin < 0."
+  },
+  {
+    question: "Funkce cosinus je:",
+    type: "single",
+    options: ["lichá (cos(−α) = −cos α)", "sudá (cos(−α) = cos α)", "ani lichá, ani sudá", "periodická s T = π"],
+    correct: [1],
+    explanation: "Kosinus je sudá funkce: cos(−α) = cos α. Graf je osově souměrný podle osy y. Perioda je 2π, ne π."
+  },
+  {
+    question: "tg x = −√2, x ∈ II. kvadrant. Jaká je hodnota cos x?",
+    type: "single",
+    options: ["√3/3", "−√3/3", "√6/3", "−√6/3"],
+    correct: [1],
+    explanation: `3cos²x = 1 (po dosazení sin x = −√2·cos x do Pythagorovy identity).
+cos²x = 1/3 → cos x = −√3/3 (záporné v II. kv.).`
+  },
+  {
+    question: "tg x = −√2, II. kv. → sin x = ?",
+    type: "single",
+    options: ["√6/3", "−√6/3", "√3/3", "−√3/3"],
+    correct: [0],
+    explanation: "cos x = −√3/3 (z předchozího). sin x = −√2 · cos x = −√2 · (−√3/3) = √6/3. Kladné — správně pro II. kv."
+  },
+  {
+    question: "Kolik radiánů je 45°?",
+    type: "single",
+    options: ["π/6", "π/4", "π/3", "π/2"],
+    correct: [1],
+    explanation: "45° · π/180 = 45π/180 = π/4 ≈ 0,785 rad.",
+    tip: "Zapamatuj: 30°=π/6, 45°=π/4, 60°=π/3, 90°=π/2"
+  },
+  {
+    question: "cos x = −√14/4 a π < x < 3π/2. Jaká je hodnota tg x?",
+    type: "single",
+    options: ["√7/14", "√7/7", "√2/8", "−√7/7"],
+    correct: [1],
+    explanation: `III. kv.: tg > 0. sin²x = 1 − 14/16 = 2/16 → sin x = −√2/4.
+tg x = (−√2/4)/(−√14/4) = √2/√14 = 1/√7 = √7/7.`
+  },
+  {
+    question: "Která tvrzení o jednotkové kružnici jsou správná?",
+    type: "multi",
+    options: ["Poloměr je 1", "sin α je x-souřadnice bodu P", "cos α je x-souřadnice bodu P", "P = [cos α, sin α]"],
+    correct: [0, 2, 3],
+    explanation: "Na jednotkové kružnici P = [cos α, sin α]: cos α = x-souřadnice, sin α = y-souřadnice (NE x!). Poloměr = 1."
+  },
+  {
+    question: "Perioda funkce sinus a kosinus je:",
+    type: "single",
+    options: ["π", "2π", "π/2", "4π"],
+    correct: [1],
+    explanation: "Perioda sinu a kosinu je 2π (= 360°). Perioda tangens a kotangens je π (= 180°)."
+  }
+];
+function Background() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" },
+    children: [
+      /* @__PURE__ */ jsxDEV("svg", {
+        style: { position: "absolute", bottom: 0, left: 0, width: "100%", height: "55%", opacity: 0.12 },
+        viewBox: "0 0 800 440",
+        preserveAspectRatio: "none",
+        children: [
+          /* @__PURE__ */ jsxDEV("defs", {
+            children: /* @__PURE__ */ jsxDEV("pattern", {
+              id: "grid",
+              width: "40",
+              height: "40",
+              patternUnits: "userSpaceOnUse",
+              children: /* @__PURE__ */ jsxDEV("path", {
+                d: "M 40 0 L 0 0 0 40",
+                fill: "none",
+                stroke: "#ff2d9b",
+                strokeWidth: "0.7"
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("rect", {
+            width: "800",
+            height: "440",
+            fill: "url(#grid)"
+          }, undefined, false, undefined, this),
+          [...Array(11)].map((_, i) => /* @__PURE__ */ jsxDEV("line", {
+            x1: i * 80,
+            y1: 0,
+            x2: 400,
+            y2: 440,
+            stroke: "#ff2d9b",
+            strokeWidth: "0.4",
+            opacity: "0.6"
+          }, i, false, undefined, this)),
+          [...Array(9)].map((_, i) => /* @__PURE__ */ jsxDEV("line", {
+            x1: 0,
+            y1: i * 52,
+            x2: 800,
+            y2: i * 52,
+            stroke: "#ff2d9b",
+            strokeWidth: "0.4",
+            opacity: "0.6"
+          }, i, false, undefined, this))
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "absolute", bottom: "38%", left: "50%", transform: "translateX(-50%)", width: "220px", height: "110px", background: "linear-gradient(to bottom, #ff2d9b, transparent)", borderRadius: "50% 50% 0 0", opacity: 0.12, boxShadow: "0 0 80px 40px rgba(255,45,155,0.08)" }
+      }, undefined, false, undefined, this),
+      [...Array(14)].map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "absolute", width: `${4 + i % 4 * 3}px`, height: `${4 + i % 4 * 3}px`, borderRadius: "50%", background: i % 3 === 0 ? "#ff2d9b" : i % 3 === 1 ? "#00c8ff" : "#a855f7", left: `${(i * 73 + 5) % 95}%`, top: `${(i * 61 + 10) % 75}%`, opacity: 0.25 + i % 3 * 0.1, animation: `fl${i % 3} ${14 + i % 7}s infinite ease-in-out`, animationDelay: `${i * 0.8}s` }
+      }, i, false, undefined, this)),
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @keyframes fl0 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-22px)} }
+        @keyframes fl1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-32px)} }
+        @keyframes fl2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
+      `
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function App() {
+  const [tab, setTab] = useState(0);
+  const TABS = [
+    "\uD83D\uDCD0 Teorie",
+    "\uD83D\uDD35 Kružnice",
+    "\uD83E\uDDEE Příklady",
+    "❓ Kvíz",
+    "\uD83C\uDCCF Kartičky",
+    "\uD83D\uDCCB Tahák"
+  ];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { minHeight: "100vh", background: "#0a0a1a", fontFamily: "'Exo 2',sans-serif", position: "relative" },
+    children: [
+      /* @__PURE__ */ jsxDEV("link", {
+        href: "https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Audiowide&family=JetBrains+Mono:wght@400;500;700&display=swap",
+        rel: "stylesheet"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(Background, {}, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "relative", zIndex: 1, maxWidth: "1000px", margin: "0 auto", padding: "24px 16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { textAlign: "center", marginBottom: "28px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("h1", {
+                style: { fontFamily: "'Audiowide',sans-serif", fontSize: "clamp(18px,4vw,28px)", fontWeight: 700, background: "linear-gradient(135deg,#ff2d9b,#00c8ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: "0 0 8px" },
+                children: "Goniometrické funkce"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.45)", fontSize: "14px", letterSpacing: "0.5px" },
+                children: "Orientovaný úhel · Oblouková míra · Základní velikost · Jednotková kružnice"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "center", marginBottom: "28px" },
+            children: TABS.map((t, i) => /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => setTab(i),
+              style: { padding: "8px 16px", borderRadius: "20px", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: 600, fontFamily: "'Exo 2',sans-serif", transition: "all 0.4s ease", background: tab === i ? "linear-gradient(135deg,#ff2d9b,#be185d)" : "rgba(255,255,255,0.06)", color: tab === i ? "#fff" : "rgba(255,255,255,0.55)", boxShadow: tab === i ? "0 0 24px rgba(255,45,155,0.4)" : "none" },
+              children: t
+            }, i, false, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { animation: "fadeIn 0.5s ease" },
+            children: [
+              tab === 0 && /* @__PURE__ */ jsxDEV(TeorieTab, {}, undefined, false, undefined, this),
+              tab === 1 && /* @__PURE__ */ jsxDEV(UnitCircle, {}, undefined, false, undefined, this),
+              tab === 2 && /* @__PURE__ */ jsxDEV(PrikladyTab, {}, undefined, false, undefined, this),
+              tab === 3 && /* @__PURE__ */ jsxDEV(QuizEngine, {
+                questions: QUESTIONS,
+                accentColor: "#ff2d9b"
+              }, undefined, false, undefined, this),
+              tab === 4 && /* @__PURE__ */ jsxDEV(FlashcardsTab, {}, undefined, false, undefined, this),
+              tab === 5 && /* @__PURE__ */ jsxDEV(FormulyTab, {}, undefined, false, undefined, this)
+            ]
+          }, tab, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        * { box-sizing: border-box; }
+        button:disabled { cursor: not-allowed; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,45,155,0.35); border-radius: 3px; }
+      `
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
