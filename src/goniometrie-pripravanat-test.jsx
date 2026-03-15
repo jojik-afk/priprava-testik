@@ -608,6 +608,149 @@ function PrikladyTab() {
       ],
       result: "tg x = √7/7"
     },
+    {
+      id: 5,
+      badge: "⚡ Medium",
+      badgeColor: "#f59e0b",
+      title: "Výpočet výrazu — varianta A, úloha 1a",
+      note: "Z fotky skutečného testu — varianta A",
+      task: "(sin(31π/6) + cos(9π/4))²",
+      steps: [
+        {
+          label: "Zjednodušení sin(31π/6)",
+          text: "31π/6 ÷ 2π = 31/12 ≈ 2,58  →  odečteme 2·2π = 4π:\n31π/6 − 4π = 31π/6 − 24π/6 = 7π/6\n\nsin(31π/6) = sin(7π/6) = sin(π + π/6) = −sin(π/6) = −1/2"
+        },
+        {
+          label: "Hodnota cos(9π/4)",
+          text: "9π/4 − 2π = 9π/4 − 8π/4 = π/4\n\ncos(9π/4) = cos(π/4) = √2/2"
+        },
+        {
+          label: "Součet v závorce",
+          text: "−1/2 + √2/2 = (−1 + √2)/2 = (√2 − 1)/2"
+        },
+        {
+          label: "Kvadrát výrazu",
+          text: "[(√2 − 1)/2]² = (√2 − 1)² / 4\n= (2 − 2√2 + 1) / 4\n= (3 − 2√2) / 4"
+        },
+      ],
+      result: "(3 − 2√2) / 4"
+    },
+    {
+      id: 6,
+      badge: "🔥 Hard",
+      badgeColor: "#ef4444",
+      title: "Výpočet zlomkového výrazu — varianta A, úloha 1b",
+      note: "Z fotky skutečného testu — varianta A",
+      task: "(sin(−13π/2) − cos(5π/2)) / cotg(3π/4)",
+      steps: [
+        {
+          label: "Zjednodušení sin(−13π/2)",
+          text: "−13π/2 ÷ 2π = −13/4 = −3,25  →  přičteme 4·2π = 8π:\n−13π/2 + 8π = −13π/2 + 16π/2 = 3π/2\n\nsin(−13π/2) = sin(3π/2) = −1"
+        },
+        {
+          label: "Hodnota cos(5π/2)",
+          text: "5π/2 − 2π = π/2\n\ncos(5π/2) = cos(π/2) = 0"
+        },
+        {
+          label: "Hodnota cotg(3π/4)",
+          text: "3π/4 je ve II. kvadrantu (135°):\ncotg(3π/4) = cos(3π/4)/sin(3π/4) = (−√2/2)/(√2/2) = −1"
+        },
+        {
+          label: "Dosazení do zlomku",
+          text: "(sin(−13π/2) − cos(5π/2)) / cotg(3π/4)\n= (−1 − 0) / (−1)\n= (−1) / (−1)\n= 1"
+        },
+      ],
+      result: "1"
+    },
+    {
+      id: 7,
+      badge: "✨ Easy",
+      badgeColor: "#22c55e",
+      title: "Základní velikost úhlu — α = 27π/4",
+      note: "Z fotky skutečného testu — varianta A, úloha 2a",
+      task: "Zapište α = 27π/4 ve tvaru α = α₀ + k·2π,  α₀ ∈ ⟨0; 2π),  k ∈ ℤ",
+      steps: [
+        {
+          label: "Odhadneme k",
+          text: "27π/4 ÷ 2π = 27/8 = 3,375\nK zaokrouhlení dolů: k = 3  (odebereme 3 plné otočky)"
+        },
+        {
+          label: "Výpočet α₀",
+          text: "α₀ = 27π/4 − 3·2π\n    = 27π/4 − 6π\n    = 27π/4 − 24π/4\n    = 3π/4"
+        },
+        {
+          label: "Ověření α₀ ∈ ⟨0; 2π)",
+          text: "3π/4 ≈ 2,36 ∈ ⟨0; 6,28) ✓\nα₀ = 3π/4 je ve II. kvadrantu (135°)"
+        },
+        {
+          label: "Ověření dosazením",
+          text: "3π/4 + 3·2π = 3π/4 + 24π/4 = 27π/4 ✓"
+        },
+      ],
+      result: "α = 3π/4 + 3·2π   →   α₀ = 3π/4, k = 3"
+    },
+    {
+      id: 8,
+      badge: "✨ Easy",
+      badgeColor: "#22c55e",
+      title: "Základní velikost úhlu — α = −17π/2",
+      note: "Z fotky skutečného testu — varianta A, úloha 2b",
+      task: "Zapište α = −17π/2 ve tvaru α = α₀ + k·2π,  α₀ ∈ ⟨0; 2π),  k ∈ ℤ",
+      steps: [
+        {
+          label: "Odhadneme k",
+          text: "−17π/2 ÷ 2π = −17/4 = −4,25\nPotřebujeme α₀ ≥ 0, volíme k = −5 (přičteme 5 plných otáček)"
+        },
+        {
+          label: "Výpočet α₀",
+          text: "α₀ = −17π/2 − (−5)·2π\n    = −17π/2 + 10π\n    = −17π/2 + 20π/2\n    = 3π/2"
+        },
+        {
+          label: "Ověření α₀ ∈ ⟨0; 2π)",
+          text: "3π/2 ≈ 4,71 ∈ ⟨0; 6,28) ✓\nα₀ = 3π/2 je ve IV. kvadrantu (270°)"
+        },
+        {
+          label: "Ověření dosazením",
+          text: "3π/2 + (−5)·2π = 3π/2 − 10π = 3π/2 − 20π/2 = −17π/2 ✓"
+        },
+      ],
+      result: "α = 3π/2 + (−5)·2π   →   α₀ = 3π/2, k = −5"
+    },
+    {
+      id: 9,
+      badge: "⚡ Medium",
+      badgeColor: "#f59e0b",
+      title: "Doplnění tabulky — dva řádky najednou",
+      note: "Z fotky skutečného testu — varianta A, úloha 3",
+      task: "Doplňte tabulku, aniž spočítáte úhel x.\nŘádek 1: I. kvadrant, sin x = √3/6\nŘádek 2: IV. kvadrant, tg x = −1/2",
+      steps: [
+        {
+          label: "Řádek 1 — znaménka v I. kvadrantu",
+          text: "I. kvadrant: sin > 0, cos > 0, tg > 0, cotg > 0\nDáno: sin x = √3/6"
+        },
+        {
+          label: "Řádek 1 — výpočet cos x",
+          text: "cos²x = 1 − sin²x = 1 − 3/36 = 1 − 1/12 = 11/12\n|cos x| = √(11/12) = √11/(2√3) = √33/6\nI. kv. → cos x = √33/6"
+        },
+        {
+          label: "Řádek 1 — tg x a cotg x",
+          text: "tg x = sin x / cos x = (√3/6) / (√33/6) = √3/√33 = √(1/11) = √11/11\ncotg x = 1/tg x = √11"
+        },
+        {
+          label: "Řádek 2 — znaménka v IV. kvadrantu",
+          text: "IV. kvadrant: sin < 0, cos > 0, tg < 0, cotg < 0\nDáno: tg x = −1/2 < 0 ✓"
+        },
+        {
+          label: "Řádek 2 — výpočet cos x a sin x",
+          text: "sin x = tg x · cos x = −1/2 · cos x\n(−1/2 · cos x)² + cos²x = 1\n1/4 · cos²x + cos²x = 1\n5/4 · cos²x = 1  →  cos²x = 4/5\nIV. kv. → cos x = 2/√5 = 2√5/5\nsin x = −1/2 · 2√5/5 = −1/√5 = −√5/5"
+        },
+        {
+          label: "Řádek 2 — cotg x",
+          text: "cotg x = 1/tg x = 1/(−1/2) = −2"
+        },
+      ],
+      result: "Řádek 1: cos = √33/6, tg = √11/11, cotg = √11\nŘádek 2: sin = −√5/5, cos = 2√5/5, cotg = −2"
+    },
   ];
 
   return (
