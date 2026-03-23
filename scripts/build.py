@@ -87,6 +87,7 @@ def extract_html_metadata(filepath: Path) -> dict:
         "subject": parser.meta.get("subject", "General"),
         "topic": parser.meta.get("topic", ""),
         "template": parser.meta.get("template", ""),
+        "collection": parser.meta.get("collection", ""),
     }
 
 
@@ -107,6 +108,7 @@ def extract_jsx_metadata(filepath: Path) -> dict:
         "subject": meta.get("subject", "General"),
         "topic": meta.get("topic", ""),
         "template": meta.get("template", ""),
+        "collection": meta.get("collection", ""),
     }
 
 
@@ -235,6 +237,7 @@ def build():
             "subject": meta["subject"],
             "topic": meta["topic"],
             "template": meta["template"],
+            "collection": meta["collection"],
             "date": date_str,
             "file": f"artifacts/{out_name}",
         })

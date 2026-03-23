@@ -440,6 +440,7 @@
       <input type="text" id="search" placeholder="Search topics..." autocomplete="off">
     </div>
     <div class="filters" id="filters"></div>
+    <div class="filters" id="collections" style="display:none"></div>
   </div>
 
   <div class="card-list" id="cards"></div>
@@ -476,6 +477,7 @@
 
   let manifest = [];
   let activeSubject = null;
+  let activeCollection = null;
   let currentFile = null;
 
   async function init() {
@@ -493,6 +495,7 @@
       : `${count} artifact${count !== 1 ? 's' : ''} and counting`;
 
     buildFilters();
+    buildCollectionFilters();
     renderCards();
     document.getElementById('search').addEventListener('input', renderCards);
 
@@ -529,7 +532,7 @@
     const allBtn = document.createElement('button');
     allBtn.className = 'filter-chip active';
     allBtn.textContent = 'All';
-    allBtn.onclick = () => { activeSubject = null; updateFilters(); renderCards(); };
+    allBtn.onclick = () => { activeSubject = null; activeCollection = null; buildCollectionFilters(); updateFilters(); renderCards(); };
     el.appendChild(allBtn);
 
     subjects.forEach(s => {
@@ -539,6 +542,8 @@
       btn.dataset.subject = s;
       btn.onclick = () => {
         activeSubject = activeSubject === s ? null : s;
+        activeCollection = null;
+        buildCollectionFilters();
         updateFilters();
         renderCards();
       };
@@ -546,12 +551,54 @@
     });
   }
 
+  function buildCollectionFilters() {
+    const el = document.getElementById('collections');
+    el.innerHTML = '';
+
+    const collections = activeSubject
+      ? [...new Set(manifest.filter(m => m.subject === activeSubject && m.collection).map(m => m.collection))].sort()
+      : [];
+
+    if (collections.length === 0) { el.style.display = 'none'; return; }
+
+    el.style.display = 'flex';
+
+    const allBtn = document.createElement('button');
+    allBtn.className = 'filter-chip active';
+    allBtn.textContent = 'Vše';
+    allBtn.onclick = () => { activeCollection = null; updateCollectionFilters(); renderCards(); };
+    el.appendChild(allBtn);
+
+    collections.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-chip';
+      btn.textContent = c;
+      btn.dataset.collection = c;
+      btn.onclick = () => {
+        activeCollection = activeCollection === c ? null : c;
+        updateCollectionFilters();
+        renderCards();
+      };
+      el.appendChild(btn);
+    });
+  }
+
   function updateFilters() {
-    document.querySelectorAll('.filter-chip').forEach(btn => {
+    document.querySelectorAll('#filters .filter-chip').forEach(btn => {
       if (!btn.dataset.subject) {
         btn.classList.toggle('active', !activeSubject);
       } else {
         btn.classList.toggle('active', btn.dataset.subject === activeSubject);
+      }
+    });
+  }
+
+  function updateCollectionFilters() {
+    document.querySelectorAll('#collections .filter-chip').forEach(btn => {
+      if (!btn.dataset.collection) {
+        btn.classList.toggle('active', !activeCollection);
+      } else {
+        btn.classList.toggle('active', btn.dataset.collection === activeCollection);
       }
     });
   }
@@ -562,11 +609,13 @@
 
     let items = manifest;
     if (activeSubject) items = items.filter(m => m.subject === activeSubject);
+    if (activeCollection) items = items.filter(m => m.collection === activeCollection);
     if (query) items = items.filter(m =>
       m.title.toLowerCase().includes(query) ||
       m.subject.toLowerCase().includes(query) ||
       m.topic.toLowerCase().includes(query) ||
-      (m.template || '').toLowerCase().includes(query)
+      (m.template || '').toLowerCase().includes(query) ||
+      (m.collection || '').toLowerCase().includes(query)
     );
 
     if (items.length === 0) {
@@ -588,6 +637,7 @@
             <div class="card-title">${escHtml(item.title)}</div>
             <div class="card-meta">
               <span class="tag">${escHtml(item.subject)}</span>
+              ${item.collection ? `<span class="dot"></span><span class="tag" style="background:#FFF4E5;color:#C07520">${escHtml(item.collection)}</span>` : ''}
               ${item.topic ? `<span class="dot"></span><span>${escHtml(item.topic)}</span>` : ''}
               <span class="dot"></span>
               <span>${dateStr}</span>

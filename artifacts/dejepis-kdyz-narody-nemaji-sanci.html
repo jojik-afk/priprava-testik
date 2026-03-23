@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="subject" content="History">
+    <meta name="topic" content="SSSR, Pakt tří, Druhá světová válka, Molotov-Ribbentrop">
+    <meta name="template" content="practice">
+    <meta name="collection" content="Texty pro Peška">
+    <title>Když národy nemají šanci – text s odpověďmi</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            line-height: 1.8;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .text-column {
+            padding-right: 20px;
+            border-right: 2px solid #e0e0e0;
+        }
+        .answers-column {
+            padding-left: 20px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            grid-column: 1 / -1;
+        }
+        h2 {
+            color: #e74c3c;
+            font-size: 1.2em;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        .highlight-1 { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-2 { background-color: #d1ecf1; border-left: 4px solid #17a2b8; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-3 { background-color: #d4edda; border-left: 4px solid #28a745; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-4 { background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-5 { background-color: #e2e3e5; border-left: 4px solid #6c757d; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-6 { background-color: #d6d8f5; border-left: 4px solid #6610f2; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-7 { background-color: #d1f2eb; border-left: 4px solid #20c997; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-8 { background-color: #fde2e4; border-left: 4px solid #fd7e14; padding: 8px 10px; margin: 5px 0; display: block; }
+
+        span.highlight-1 { background-color: #fff3cd; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-2 { background-color: #d1ecf1; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-3 { background-color: #d4edda; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-4 { background-color: #f8d7da; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-5 { background-color: #e2e3e5; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-6 { background-color: #d6d8f5; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-7 { background-color: #d1f2eb; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-8 { background-color: #fde2e4; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+
+        .answer-box {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .answer-box h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+        .answer-box p, .answer-box ul {
+            margin: 8px 0;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        .answer-box ul {
+            padding-left: 20px;
+        }
+
+        .legend {
+            grid-column: 1 / -1;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+        .legend h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            border-radius: 3px;
+            border-left: 4px solid transparent;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .text-column {
+                border-right: none;
+                padding-right: 0;
+            }
+            .answers-column {
+                padding-left: 0;
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Když národy nemají šanci</h1>
+        <p style="grid-column: 1 / -1; font-style: italic; color: #666;">Jan Rychlík; Lidové noviny, Orientace, 23. 9. 2023</p>
+        
+        <div class="legend">
+            <h3>Legenda barev pro jednotlivé otázky:</h3>
+            <div class="legend-item"><span class="legend-color" style="background-color: #fff3cd; border-left-color: #ffc107;"></span> Otázka 1: Pakt tří a role SSSR</div>
+            <div class="legend-item"><span class="legend-color" style="background-color: #d1ecf1; border-left-color: #17a2b8;"></span> Otázka 2: Sporné země obou mocností</div>
+            <div class="legend-item"><span class="legend-color" style="background-color: #d4edda; border-left-color: #28a745;"></span> Otázka 3: Směr expanze SSSR dle Německa</div>
+            <div class="legend-item"><span class="legend-color" style="background-color: #f8d7da; border-left-color: #dc3545;"></span> Otázka 4: Důvody spojenců k útoku na SSSR</div>
+            <div class="legend-item"><span class="legend-color" style="background-color: #e2e3e5; border-left-color: #6c757d;"></span> Otázka 5: Nacistická správa vs. místní obyvatelstvo</div>
+            <div class="legend-item"><span class="legend-color" style="background-color: #d6d8f5; border-left-color: #6610f2;"></span> Otázka 6: Ozbrojené složky v regionech</div>
+            <div class="legend-item"><span class="legend-color" style="background-color: #d1f2eb; border-left-color: #20c997;"></span> Otázka 7: Specifické postavení Poláků</div>
+            <div class="legend-item"><span class="legend-color" style="background-color: #fde2e4; border-left-color: #fd7e14;"></span> Otázka 8: Narativy kremelské propagandy</div>
+        </div>
+
+        <div class="text-column">
+            <p style="font-style: italic;">Evropa už byla naporcovaná, sféry vlivu rozdělené, zbývalo rozdělit si zbytek světa. Anebo ne? V závěrečném dílu našeho seriálu o bratrské spolupráci mezi nacistickým Německem a SSSR zjistíme, proč se Sověti nestali členem Paktu tří a proč nevznikla osa Berlín–Řím–Tokio–Moskva.</p>
+
+            <p class="highlight-1">Dne 27. září 1940 byl v Berlíně podepsán tzv. Pakt tří mezi Německem, Itálií a Japonskem, který rozděloval sféry vlivu ve světě. Japonsko uznávalo vedoucí roli Německa a Itálie při zavádění nového pořádku v Evropě, Německo a Itálie zase uznávaly vedoucí roli Japonska při zavádění nového pořádku ve východoasijském prostoru. Podle článku 5 pakt neměl vliv na politické vztahy, které Německo, Itálie a Japonsko měly k SSSR. Tak vznikla „osa" Berlín–Řím–Tokio. Šlo nyní o to, zda se jako čtvrtá mocnost připojí i SSSR.</p>
+
+            <p><span class="highlight-2">Jenže už v létě 1940 začalo být zřejmé, že sovětské a německé zájmy se začínají křížit.</span> S přicházejícím podzimem byly rozpory stále zřetelnější, <span class="highlight-2">třeba když se Finsko ve snaze získat zpět území ztracená v zimní válce začalo sbližovat s Německem. 12. září 1940 byla mezi Finskem a Německem podepsána tajná dohoda o vojenské spolupráci a dodávkách německých zbraní Finsku.</span> Její součástí bylo, že v případě války mělo Finsko povolit tranzit německých vojsk přes své území. Do Finska byl hned poslán menší vojenský kontingent. <span class="highlight-2">Zájmy Německa a SSSR se křížily rovněž na Balkáně, kde se obě mocnosti snažily získat pozice v Bulharsku a v Jugoslávii.</span></p>
+
+            <p>I když Adolf Hitler už 31. července 1940 vydal pokyn zpracovat plány možného útoku na SSSR, zatím se ještě nevzdával myšlenky připojení Sovětského svazu k Paktu tří. <span class="highlight-1">Sondážní jednání o možné účasti Sovětského svazu proběhla na diplomatické úrovni v říjnu 1940 a vyvrcholila návštěvou sovětského ministra zahraničí a předsedy „rady lidových komisařů" (sovětské vlády) Vjačeslava Molotova v Berlíně 12.–14. listopadu téhož roku.</span> <span class="highlight-3">Molotov jednal nejen s Ribbentropem, ale byl přijat osobně i Hitlerem, který se jej snažil přesvědčit, aby Sovětský svaz zaměřil své expanzivní snahy místo na Balkán jižním směrem – do oblasti Íránu, případně do Indie.</span></p>
+
+            <h2>Když to začne skřípat</h2>
+
+            <p class="highlight-1">Molotovovi 13. listopadu 1940 předložili návrh smlouvy koncipované jako dohoda mezi třemi státy tripartitního paktu a SSSR. V čl. 1 smlouvy zaznělo, že SSSR souhlasí s cíli paktu a bude s ním spolupracovat při jejich naplňování. V čl. 2 se Německo, Itálie, Japonsko a SSSR zavazovaly vzájemně respektovat své sféry vlivu a čl. 3 zavazoval signatáře nevstupovat do spolku s žádnou mocností či nepodporovat spolek mocností, který je namířen proti jednomu ze čtveřice Německo, Itálie, Japonsko a SSSR. Státy se měly vzájemně hospodářsky podporovat a uzavírat mezi sebou další vhodné dohody. SSSR se tak fakticky stával čtvrtým členem „osy" a tripartitní (trojstranný) pakt se tak měnil ve čtyřstranný. Smlouva měla obsahovat i tajný dodatek o rozdělení sfér vlivu čtyř mocností.</p>
+
+            <p class="highlight-3">Důvod, proč se Hitler snažil usměrnit sovětskou expanzi na jih, byl jasný a Molotov jej nepochybně ihned pochopil: stála za ním snaha oslabit britské impérium, tehdy jediného efektivního protivníka Německa.</p>
+
+            <p><span class="highlight-2">Sověti ale především chtěli zůstat evropskou mocností, tudíž se nehodlali svých snah o pronikání na Balkán vzdát, a Molotov se proto konečné odpovědi vyhýbal. Navíc Ribbentrop kritizoval Moskvu za anexi severní Bukoviny, protože ta nebyla zmíněna v tajném protokolu k paktu o neútočení z 23. srpna 1939. Molotov kontroval námitkou proti přítomnosti německých vojsk ve Finsku.</span> Jednání skončila bez konkrétních závěrů s tím, že budou ještě pokračovat.</p>
+
+            <p class="highlight-1">Podle sovětského historika Alexandra Nekriče zaslal SSSR Německu 25. listopadu 1940 protinávrh vyjadřující ochotu přistoupit k trojpaktu, ale za podmínky, že mu bude přenechán vliv v Bulharsku a že sféra vlivu při dělení světa bude zahrnovat Írán a Irák. Text tohoto protinávrhu se ovšem nikdy nenašel a není jasné, zda byl vůbec formulován písemně, či pouze sdělen ústně. Datum jeho odevzdání koresponduje přibližně se dny, kdy k Paktu tří přistupovali spojenci Německa: Maďarsko (20. listopadu), Rumunsko (23. listopadu) a Slovensko (24. listopadu). Hitler se už ale v té době definitivně rozhodl k válce proti SSSR a na přistoupení SSSR k paktu ztratil zájem.</p>
+
+            <h2>Konec námluv</h2>
+
+            <p class="highlight-4">Dne 22. června 1941 Německo bez vypovězení války zaútočilo na Sovětský svaz. K útoku se připojilo Maďarsko, Rumunsko a Slovensko a také Finsko, které sice formálně členem Paktu tří nebylo, ale považovalo se ve vojenském smyslu za německého spojence. Důvod účasti Finska a Rumunska byl jednoznačný: snaha získat zpět území ztracená v roce 1940. To se oběma státům přechodně podařilo, byť je třeba říci, že ve válce na straně Německa pokračovaly i po splnění tohoto cíle. Finsko začalo uvažovat o získání východní Karélie, Rumunsko zase dospělo k názoru, že účast ve válce přiměje Německo zasadit se v Budapešti o vrácení severního Sedmihradska. Tím se Finsko a Rumunsko jednoznačně zapojily do agresivní války, která byla neospravedlnitelná.</p>
+
+            <p class="highlight-5">Obyvatelstvo západní Ukrajiny, západního Běloruska a Pobaltí ve své většině nepovažovalo Sovětský svaz za svůj stát, a nevidělo žádný důvod, proč by jej mělo bránit. Na mnoha místech obyvatelstvo německou armádu naopak vítalo jako osvoboditelku od bolševiků. Ukrajinci a příslušníci baltských národů od Německa logicky očekávali pomoc při obnově vlastní národní státnosti, v tom se ovšem velmi zklamali.</p>
+
+            <p class="highlight-5">První učinili tuhle negativní zkušenost Ukrajinci: když Organizace ukrajinských nacionalistů 30. června 1941 vyhlásila ve Lvově obnovení samostatnosti Ukrajiny, byli hlavní protagonisté tohoto aktu pozatýkáni a posláni do koncentračního tábora. Stejně odmítavě se Německo postavilo k obdobným pokusům Litvy, Lotyšska a Estonska. Německá správa ráda využila ochoty místních nacionalistů k provádění „špinavé práce", tedy především k perzekuci židovského obyvatelstva a později nebránila ani vytváření kolaborantských vojenských dobrovolnických jednotek, a to dokonce ani v rámci SS, ale ohledně budoucnosti dávala jen neurčité sliby.</p>
+
+            <p class="highlight-5">Území někdejších pobaltských republik a západní část Běloruska byly začleněny do Říšského komisariátu „východ" (Reichskommissariat Ostland RKO) s centrem v lotyšské Rize, na Ukrajině byl zřízen Říšský komisariát Ukrajina s centrem v Rivném. Východní Halič pak Německo připojilo ke Generálnímu gouvernementu okupovaného Polska.</p>
+
+            <p class="highlight-5">Obyvatelstvo oblastí, které se v letech 1939–1941 při příchodu německé armády domnívalo, že nic horšího, než byl sovětský režim, je už potkat nemůže, se brzy přesvědčilo, že nikdy není tak zle, aby nemohlo být ještě hůř. Židovské obyvatelstvo na okupovaných územích bylo prakticky vyhubeno a dodejme, že často za aktivní pomoci místních kolaborantů. Otevřený teror německých úřadů byl obzvláště silný na Ukrajině, kde německá správa nemilosrdně rekvírovala potraviny a posílala Ukrajince na nucené práce do Německa.</p>
+
+            <p class="highlight-5">Ani v Pobaltí nebyla situace o mnoho lepší. Místní obyvatelé se dostali do situace, která neměla řešení: podpora Němců žádné pozitivní výsledky nepřinesla, německé úřady se odvděčily terorem, navíc tato spolupráce Ukrajince, Litevce, Lotyše a Estonce v očích Spojenců diskreditovala jako kolaboranty. A naopak boj proti německým okupantům sice vedl k osvobození od nacistického teroru, ale současně přibližoval návrat do SSSR. A ani to si většina obyvatelstva nepřála.</p>
+
+            <h2>Povstalecký chaos</h2>
+
+            <p class="highlight-6">Žádný z těchto národů navíc nemohl počítat s pomocí západních Spojenců. Ti se totiž, pokud chtěli vyhrát válku, nemohli postavit proti svému sovětskému spojenci. V důsledku toho existovala na uvedených územích ojedinělá situace: bojovali zde proti sobě „rudí" partyzáni, usilující o vyhnání okupantů a znovunastolení sovětské moci, oddíly nejrůznějšího politického zabarvení, bojující za samostatnost jak proti německým okupantů, tak proti „rudým", a kolaborantské jednotky bojující na straně Němců.</p>
+
+            <p class="highlight-6">Na západní Ukrajině a na Volyni byla situace ještě složitější: vedle Ukrajinské povstalecké armády (UPA) bojující za samostatnou Ukrajinu a „rudých" partyzánů tu operovaly ještě polské jednotky podzemní Domácí armády (Armija krajowa, AK) podřízené polské vládě v Londýně.</p>
+
+            <p class="highlight-7">Polská situace byla vůbec specifická. Polská vláda sídlící v Londýně po vypuknutí německo-sovětské války 30. července 1941 uzavřela se SSSR spojeneckou smlouvu, známou podle jejich signatářů jako dohoda Sikorski–Majskij (Władysław Sikorski byl polským předsedou vlády, Ivan Majskij sovětským velvyslancem v Londýně). Tato dohoda nechávala otázku polsko-sovětských hranic otevřenou, jen obecně konstatovala, že německosovětské smlouvy vypuknutím války ztratily svou platnost. Jenže to si každý mohl vykládat, jak chtěl.</p>
+
+            <p class="highlight-7">Polská vláda se samozřejmě nehodlala vzdát více než poloviny území polského státu, na druhé straně zde nebyla žádná síla, jež by donutila Sovětský svaz na tato území rezignovat. V dubnu 1943 odhalily německé vojenské úřady na udání místních obyvatel masový hrob polských důstojníků v Katyni; tyto důstojníky již od podpisu dohody Sikorski–Majskij polská vláda hledala a její velvyslanec v Moskvě Stanisław Kot se opakovaně marně dotazoval na jejich osud.</p>
+
+            <p class="highlight-7">Polská vláda požádala Mezinárodní červený kříž v Ženevě o vyslání komise expertů k prozkoumání nalezených hrobů, na což SSSR reagoval přerušením diplomatických vztahů s polskou vládou a v roce 1944 ustavením „vlastní" prosovětské polské vlády z polských komunistů a levicových socialistů. Ta samozřejmě celkem bez odporu akceptovala novou sovětsko-polskou hranici výměnou za odškodnění na úkor Německa na západě. Západním spojencům pod tlakem reality nezbylo než tuto novou polskou vládu rovněž uznat. Za předválečnou polskou východní hranici se jak Velká Británie, tak USA odmítly jakkoli angažovat. A pokud jde o katyňský masakr, Moskva se samozřejmě pokusila svalit vinu na německé okupanty. Zodpovědnost NKVD za povraždění polských důstojníků přiznal SSSR teprve v roce 1990.</p>
+
+            <h2>Ruské oběti, ruské sebeklamy</h2>
+
+            <p class="highlight-8">Jak jsme si řekli už v prvním díle tohoto seriálu, je třeba znovu zdůraznit, že nelze znevažovat hrdinství sovětských vojáků a důstojníků všech národností, protože bez nich by vítězství nad nacionálně socialistickým Německem nebylo možné. Na druhou světovou válku je ale nutné se dívat jako na celek, nelze z ní uměle vytrhávat „Velkou vlasteneckou válku" z let 1941–1945, jak to činí v Rusku.</p>
+
+            <p class="highlight-8">A pokud vidíme druhou světovou válku jako celek, zjistíme, že role SSSR ve válce rozhodně nebyla jen pozitivní, ale naopak značně rozporná. Ne pro všechny národy východní Evropy znamenal příchod Rudé armády v letech 1944–1945 skutečné osvobození. Bylo jasné, že v případě vítězství si SSSR ponechá všechna území nabytá v letech 1939–1941 a národů žijících na tomto území se na názor nikdo ptát nebude. Bylo přitom od počátku jasné, že znovuzískaná území Pobaltí a západní Ukrajiny bude muset SSSR dobýt silou. Nebylo to zdaleka jednoduché: až do počátku 50. let operovala v lesích Litvy, Lotyšska a Estonska „lesní bratrstva" a v Haliči jednotky Ukrajinské povstalecké armády.</p>
+
+            <p class="highlight-8">Podíváme-li se na poválečnou Evropu z pohledu Moskvy, zjistíme, že původní cíl z druhé poloviny třicátých let – získání území ztracených po první světové válce – byl nejen splněn, ale i vysoce překročen. Sovětské impérium po roce 1945 zahrnovalo celou střední Evropu a celý Balkán kromě Řecka. Anexí Podkarpatské Rusi na konci roku 1944 se poprvé v dějinách splnil jeden z „ruských snů" – posunutí hranice Ruska za Karpaty. A Sovětský svaz se stal skutečnou supervelmocí: svět byl rozdělen mezi SSSR a USA, bez dohody těchto dvou hráčů se na planetě nemohlo stát nic zásadního.</p>
+
+            <p class="highlight-8">Je lidsky pochopitelné, že obrovské lidské a materiální ztráty SSSR během války a následné vítězství přispěly k jakémusi kultu „velké vlastenecké války", který je cílevědomě pěstován i v dnešním Rusku. Není také nic divného na tom, že mnoho dnešních Rusů hledí na dobu poválečné existence SSSR s určitou nostalgií, asi jako ve Velké Británii vzpomínají na „staré dobré časy" Britské říše. Jenže žádné impérium netrvá věčně a každá říše se časem v důsledku vnitřních rozporů rozpadne.</p>
+
+            <p class="highlight-8">Rozpad SSSR v roce 1991 nebyl důsledkem nějaké rusofobie či činnosti „USA a Západu", jak dnes tvrdí kremelská propaganda. Byl to přirozený a logický proces, protože po diskreditaci samotné myšlenky komunismu tady nebyla žádná idea, jež by mohla udržet národy SSSR pohromadě. Říše přicházejí a odcházejí, ale život jde dál. I obyvatelé zaniklé říše časem zjistí, že se dá žít i bez toho, aby se před nimi okolní svět třásl. Je v nejvlastnějším zájmu samotných Rusů, aby tuto jednoduchou poučku dějin pochopili. Čím dříve, tím lépe.</p>
+        </div>
+
+        <div class="answers-column">
+            <div class="answer-box">
+                <h3>📜 Otázka 1: Co to byl Pakt tří a jakou roli v něm hrál SSSR?</h3>
+                <p><strong>Pakt tří:</strong> Podepsán 27. 9. 1940 v Berlíně mezi Německem, Itálií a Japonskem — rozděloval sféry vlivu ve světě (Evropa pro Německo+Itálii, východní Asie pro Japonsko).</p>
+                <p><strong>Další přistoupivší země:</strong></p>
+                <ul>
+                    <li>Maďarsko (20. 11. 1940)</li>
+                    <li>Rumunsko (23. 11. 1940)</li>
+                    <li>Slovensko (24. 11. 1940)</li>
+                </ul>
+                <p><strong>Role SSSR:</strong></p>
+                <ul>
+                    <li>Jednání o přistoupení (Molotov v Berlíně 12.–14. 11. 1940)</li>
+                    <li>Návrh smlouvy — SSSR by se stal 4. členem „osy"</li>
+                    <li>Sovětský protinávrh (25. 11. 1940) — ochota vstoupit za podmínek (vliv v Bulharsku, sféra vlivu zahrnující Írán a Irák)</li>
+                    <li><strong>Výsledek:</strong> Hitler ztratil zájem — rozhodl se pro válku</li>
+                </ul>
+            </div>
+
+            <div class="answer-box">
+                <h3>🌍 Otázka 2: Sporné země obou totalitních mocností</h3>
+                <p><strong>Země, o které soupeřily Německo a SSSR:</strong></p>
+                <ul>
+                    <li><strong>Finsko</strong> — sbližovalo se s Německem (tajná dohoda 12. 9. 1940), SSSR mu zabral území v zimní válce</li>
+                    <li><strong>Bulharsko</strong> — obě mocnosti se snažily získat pozice</li>
+                    <li><strong>Jugoslávie</strong> — obě mocnosti se snažily získat pozice</li>
+                    <li><strong>Severní Bukovina</strong> — anexe SSSR, Ribbentrop protestoval (nebyla v tajném protokolu z 23. 8. 1939)</li>
+                    <li><strong>Rumunsko</strong> — přistoupilo k Paktu tří</li>
+                </ul>
+            </div>
+
+            <div class="answer-box">
+                <h3>🧭 Otázka 3: Kam měla směřovat expanze SSSR dle Německa?</h3>
+                <p><strong>Směr:</strong> Jižním směrem — do oblasti <strong>Íránu</strong>, případně do <strong>Indie</strong> (místo na Balkán)</p>
+                <p><strong>Proč:</strong> Cílem bylo <strong>oslabit britské impérium</strong>, tehdy jediného efektivního protivníka Německa.</p>
+                <p><strong>Reakce SSSR:</strong> Sověti chtěli zůstat evropskou mocností a nehodlali se snah o pronikání na Balkán vzdát.</p>
+            </div>
+
+            <div class="answer-box">
+                <h3>⚔️ Otázka 4: Důvody spojenců pro útok na SSSR</h3>
+                <p><strong>Finsko:</strong></p>
+                <ul>
+                    <li>Snaha získat zpět území ztracená v zimní válce (1940)</li>
+                    <li>Později navíc ambice na východní Karélii</li>
+                </ul>
+                <p><strong>Rumunsko:</strong></p>
+                <ul>
+                    <li>Snaha získat zpět území ztracená v roce 1940</li>
+                    <li>Později naděje, že Německo pomůže s vrácením severního Sedmihradska (od Maďarska)</li>
+                </ul>
+                <p><strong>Maďarsko, Slovensko:</strong> Připojily se k útoku jako spojenci Německa (členové Paktu tří)</p>
+                <p><strong>Hodnocení:</strong> Pokračováním ve válce i po splnění původních cílů se Finsko a Rumunsko zapojily do neospravedlnitelné agresivní války.</p>
+            </div>
+
+            <div class="answer-box">
+                <h3>🏚️ Otázka 5: Nacistická správa vs. místní obyvatelstvo</h3>
+                <p><strong>Počáteční reakce:</strong> Obyvatelstvo vítalo Němce jako osvoboditele od bolševiků, očekávalo obnovu národní státnosti.</p>
+                <p><strong>Zklamání:</strong></p>
+                <ul>
+                    <li>Německo odmítlo obnovit státnost (Ukrajina, Litva, Lotyšsko, Estonsko)</li>
+                    <li>Protagonisté nezávislosti zatýkáni (Lvov, 30. 6. 1941)</li>
+                    <li>Využití místních k „špinavé práci" (perzekuce Židů), kolaborantské jednotky vč. SS</li>
+                </ul>
+                <p><strong>Správní uspořádání:</strong></p>
+                <ul>
+                    <li>RKO (Reichskommissariat Ostland) — Pobaltí + záp. Bělorusko, centrum Riga</li>
+                    <li>Říšský komisariát Ukrajina — centrum Rivné</li>
+                    <li>Východní Halič → Generální gouvernement</li>
+                </ul>
+                <p><strong>Teror:</strong> Vyhubení židovského obyvatelstva (za pomoci místních kolaborantů), rekvírování potravin, nucené práce (zvl. Ukrajina)</p>
+                <p><strong>Bezvýchodná situace:</strong> Spolupráce s Němci = teror + diskreditace; boj proti Němcům = návrat SSSR</p>
+            </div>
+
+            <div class="answer-box">
+                <h3>🗡️ Otázka 6: Ozbrojené složky v regionech</h3>
+                <p><strong>Tři hlavní typy:</strong></p>
+                <ul>
+                    <li><strong>„Rudí" partyzáni</strong> — za vyhnání Němců a znovunastolení sovětské moci</li>
+                    <li><strong>Oddíly za samostatnost</strong> — bojovaly proti Němcům i proti „rudým" (různé politické zabarvení)</li>
+                    <li><strong>Kolaborantské jednotky</strong> — bojovaly na straně Němců</li>
+                </ul>
+                <p><strong>Západní Ukrajina a Volyň (nejsložitější):</strong></p>
+                <ul>
+                    <li><strong>UPA</strong> (Ukrajinská povstalecká armáda) — za samostatnou Ukrajinu</li>
+                    <li><strong>Rudí partyzáni</strong></li>
+                    <li><strong>Armija krajowa (AK)</strong> — polská Domácí armáda, podřízená londýnské vládě</li>
+                </ul>
+                <p><strong>Klíčový fakt:</strong> Žádný z národů nemohl počítat s pomocí západních Spojenců — ti se nemohli postavit proti SSSR.</p>
+            </div>
+
+            <div class="answer-box">
+                <h3>🇵🇱 Otázka 7: Specifické postavení Poláků</h3>
+                <p><strong>Dohoda Sikorski–Majskij (30. 7. 1941):</strong></p>
+                <ul>
+                    <li>Spojenecká smlouva Polska (londýnská vláda) se SSSR</li>
+                    <li>Otázka hranic ponechána otevřená</li>
+                </ul>
+                <p><strong>Katyňský masakr (duben 1943):</strong></p>
+                <ul>
+                    <li>Objeven masový hrob polských důstojníků</li>
+                    <li>Polsko požádalo Červený kříž o vyšetření</li>
+                    <li>SSSR přerušil diplomatické styky s polskou vládou</li>
+                    <li>Zodpovědnost NKVD přiznána až v roce 1990</li>
+                </ul>
+                <p><strong>Stalin:</strong> Ustavil „vlastní" prosovětskou polskou vládu (1944) → akceptovala novou hranici výměnou za německé území na západě</p>
+                <p><strong>Západní spojenci:</strong> Pod tlakem reality uznali novou polskou vládu; odmítli se angažovat za předválečné východní hranice</p>
+            </div>
+
+            <div class="answer-box">
+                <h3>📢 Otázka 8: Narativy kremelské propagandy</h3>
+                <p><strong>Sovětské narativy:</strong></p>
+                <ul>
+                    <li>Koncept „Velké vlastenecké války" 1941–1945 — uměle vytržen z kontextu celé WWII</li>
+                    <li>Role SSSR prezentována jako výhradně pozitivní</li>
+                    <li>Katyňský masakr svalen na Němce</li>
+                    <li>Příchod Rudé armády = „osvobození" pro všechny</li>
+                </ul>
+                <p><strong>Současné ruské narativy:</strong></p>
+                <ul>
+                    <li>Cílevědomě pěstovaný kult „velké vlastenecké války"</li>
+                    <li>Nostalgie po poválečném SSSR a jeho velmocenském postavení</li>
+                    <li>Rozpad SSSR (1991) = dílo „rusofobie" a „USA a Západu"</li>
+                </ul>
+                <p><strong>Autorova odpověď:</strong> Rozpad SSSR byl přirozený proces po diskreditaci komunismu — žádná idea nemohla udržet národy pohromadě.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

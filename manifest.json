@@ -1,9 +1,19 @@
 [
   {
+    "title": "Když národy nemají šanci – text s odpověďmi",
+    "subject": "History",
+    "topic": "SSSR, Pakt tří, Druhá světová válka, Molotov-Ribbentrop",
+    "template": "practice",
+    "collection": "Texty pro Peška",
+    "date": "2026-03-23",
+    "file": "artifacts/dejepis-kdyz-narody-nemaji-sanci.html"
+  },
+  {
     "title": "Bernoulliho rovnice — Hydrodynamika",
     "subject": "Physics",
     "topic": "Bernoulliho rovnice, Rovnice kontinuity, Hydrodynamika",
     "template": "study",
+    "collection": "",
     "date": "2026-03-23",
     "file": "artifacts/fyzika-bernoulliho-rovnice.html"
   },
@@ -12,6 +22,7 @@
     "subject": "Languages",
     "topic": "Anglické členy (Articles)",
     "template": "study-app",
+    "collection": "",
     "date": "2026-03-10",
     "file": "artifacts/anglictina-cleny-articles.html"
   },
@@ -20,6 +31,7 @@
     "subject": "Math",
     "topic": "Goniometrie: orientovaný úhel, oblouková míra, jednotková kružnice",
     "template": "study",
+    "collection": "",
     "date": "2026-03-08",
     "file": "artifacts/goniometrie-pripravanat-test.html"
   },
@@ -28,6 +40,7 @@
     "subject": "Drony",
     "topic": "Meteorologie · Zmírnění rizik · Letové charakteristiky",
     "template": "quiz",
+    "collection": "",
     "date": "2026-02-18",
     "file": "artifacts/dron-a2-zkouska.html"
   },
@@ -36,6 +49,7 @@
     "subject": "Chemistry",
     "topic": "Acidobazické reakce",
     "template": "mixed",
+    "collection": "",
     "date": "2026-02-15",
     "file": "artifacts/chemie-acidobazicke-reakce.html"
   },
@@ -44,6 +58,7 @@
     "subject": "History",
     "topic": "Meziválečné období, fašismus, nacismus",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-12",
     "file": "artifacts/dejak-1918-39.html"
   },
@@ -52,6 +67,7 @@
     "subject": "Physics",
     "topic": "Hydrostatika, Pascalův zákon",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-12",
     "file": "artifacts/fyzika-hydrostatika-pascal.html"
   },
@@ -60,6 +76,7 @@
     "subject": "Math",
     "topic": "Planimetrické důkazy",
     "template": "study-app",
+    "collection": "",
     "date": "2026-02-12",
     "file": "artifacts/matematika-planimetricke-dukazy.html"
   },
@@ -68,6 +85,7 @@
     "subject": "Geography",
     "topic": "Kvalita života, regionální geografie, Domažlice",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-06",
     "file": "artifacts/geokurz-seminarni-prace-kvalita-zivota-domazlice.html"
   },
@@ -76,6 +94,7 @@
     "subject": "Math",
     "topic": "Konstrukční úlohy - trojúhelníky a čtyřúhelníky",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-05",
     "file": "artifacts/konstrukcni-ulohy.html"
   },
@@ -84,6 +103,7 @@
     "subject": "Biology",
     "topic": "Biology",
     "template": "quiz",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/biologie-mlzi-hlavonozci.html"
   },
@@ -92,6 +112,7 @@
     "subject": "Biology",
     "topic": "Biology",
     "template": "quiz",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/biologie-plzi.html"
   },
@@ -100,6 +121,7 @@
     "subject": "Chemistry",
     "topic": "Chemistry",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/chemie-idealni-plyn.html"
   },
@@ -108,6 +130,7 @@
     "subject": "Chemistry",
     "topic": "Chemistry",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/chemie-kinetika.html"
   },
@@ -116,6 +139,7 @@
     "subject": "Chemistry",
     "topic": "Chemistry",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/chemie-rovnovahy.html"
   },
@@ -124,6 +148,7 @@
     "subject": "Chemistry",
     "topic": "Chemistry",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/chemie-termochemie.html"
   },
@@ -132,6 +157,7 @@
     "subject": "History",
     "topic": "WWI",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/dejak-wwi.html"
   },
@@ -140,6 +166,7 @@
     "subject": "History",
     "topic": "Korporativismus",
     "template": "practice",
+    "collection": "Texty pro Peška",
     "date": "2026-02-04",
     "file": "artifacts/dejepis-korporativismus.html"
   },
@@ -148,6 +175,7 @@
     "subject": "Languages",
     "topic": "French",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/francais-corps-sante.html"
   },
@@ -156,6 +184,7 @@
     "subject": "Languages",
     "topic": "French",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/francais-verbs.html"
   },
@@ -164,6 +193,7 @@
     "subject": "Math",
     "topic": "Pololetní test",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/matematika-pololetka.html"
   },
@@ -172,6 +202,7 @@
     "subject": "Geography",
     "topic": "Hydrosféra",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/zemepis-hydrosfera.html"
   },
@@ -180,6 +211,7 @@
     "subject": "Geography",
     "topic": "Meteorologie",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-04",
     "file": "artifacts/zemepis-meteorologie.html"
   },
@@ -188,6 +220,7 @@
     "subject": "Physics",
     "topic": "Thermodynamics",
     "template": "practice",
+    "collection": "",
     "date": "2026-02-01",
     "file": "artifacts/stavova_rovnice_kompletni.html"
   }
