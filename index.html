@@ -110,6 +110,43 @@
     flex-wrap: wrap;
   }
 
+  #collections {
+    padding-left: 1.25rem;
+    gap: 0.4rem;
+  }
+
+  .collection-chip {
+    padding: 0.25rem 0.7rem;
+    border-radius: 99px;
+    border: 1.5px dashed var(--border);
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .collection-chip::before {
+    content: '↳ ';
+    opacity: 0.5;
+  }
+
+  .collection-chip:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    border-style: solid;
+  }
+
+  .collection-chip.active {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    border-style: solid;
+    color: var(--accent);
+  }
+
   .filter-chip {
     padding: 0.35rem 0.85rem;
     border-radius: 99px;
@@ -563,15 +600,9 @@
 
     el.style.display = 'flex';
 
-    const allBtn = document.createElement('button');
-    allBtn.className = 'filter-chip active';
-    allBtn.textContent = 'Vše';
-    allBtn.onclick = () => { activeCollection = null; updateCollectionFilters(); renderCards(); };
-    el.appendChild(allBtn);
-
     collections.forEach(c => {
       const btn = document.createElement('button');
-      btn.className = 'filter-chip';
+      btn.className = 'collection-chip';
       btn.textContent = c;
       btn.dataset.collection = c;
       btn.onclick = () => {
@@ -594,12 +625,8 @@
   }
 
   function updateCollectionFilters() {
-    document.querySelectorAll('#collections .filter-chip').forEach(btn => {
-      if (!btn.dataset.collection) {
-        btn.classList.toggle('active', !activeCollection);
-      } else {
-        btn.classList.toggle('active', btn.dataset.collection === activeCollection);
-      }
+    document.querySelectorAll('#collections .collection-chip').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.collection === activeCollection);
     });
   }
 
@@ -608,8 +635,12 @@
     const container = document.getElementById('cards');
 
     let items = manifest;
-    if (activeSubject) items = items.filter(m => m.subject === activeSubject);
-    if (activeCollection) items = items.filter(m => m.collection === activeCollection);
+    if (activeCollection) {
+      items = items.filter(m => m.collection === activeCollection);
+    } else {
+      items = items.filter(m => !m.collection);
+      if (activeSubject) items = items.filter(m => m.subject === activeSubject);
+    }
     if (query) items = items.filter(m =>
       m.title.toLowerCase().includes(query) ||
       m.subject.toLowerCase().includes(query) ||
