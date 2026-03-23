@@ -1,5 +1,23 @@
 [
   {
+    "title": "Dekolonizace s odpověďmi",
+    "subject": "History",
+    "topic": "",
+    "template": "practice",
+    "collection": "Texty pro Peška",
+    "date": "2026-03-23",
+    "file": "artifacts/dejepis-dekolonizace.html"
+  },
+  {
+    "title": "Horká studená válka s odpověďmi",
+    "subject": "History",
+    "topic": "",
+    "template": "practice",
+    "collection": "Texty pro Peška",
+    "date": "2026-03-23",
+    "file": "artifacts/dejepis-horkastudenav-valka.html"
+  },
+  {
     "title": "Když národy nemají šanci – text s odpověďmi",
     "subject": "History",
     "topic": "SSSR, Pakt tří, Druhá světová válka, Molotov-Ribbentrop",
@@ -7,6 +25,15 @@
     "collection": "Texty pro Peška",
     "date": "2026-03-23",
     "file": "artifacts/dejepis-kdyz-narody-nemaji-sanci.html"
+  },
+  {
+    "title": "Slepě kráčíme do Velké války - Zvýrazněné odpovědi",
+    "subject": "History",
+    "topic": "",
+    "template": "practice",
+    "collection": "Texty pro Peška",
+    "date": "2026-03-23",
+    "file": "artifacts/dejepis-slepekracime-velka-valka.html"
   },
   {
     "title": "Bernoulliho rovnice — Hydrodynamika",
