@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Světový realismus — příprava na test</title>
+    <meta name="subject" content="Literature">
+    <meta name="topic" content="Světový realismus, naturalismus, autoři">
+    <meta name="template" content="study">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/svetovy-realismus.jsx
+import { useState, useCallback, useMemo } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+function shuffleArray(array) {
+  const s = [...array];
+  for (let i = s.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [s[i], s[j]] = [s[j], s[i]];
+  }
+  return s;
+}
+function shuffleQuestions(questions) {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    const si = shuffleArray(indices);
+    return { ...q, options: si.map((i) => q.options[i]), correct: q.correct.map((o) => si.indexOf(o)) };
+  });
+}
+function arrEqual(a, b) {
+  if (!a || !b)
+    return false;
+  const sa = [...a].sort((x, y) => x - y), sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+function QuizEngine({ questions, accentColor = "#f59e0b" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  const shuffled = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = shuffled[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffled.filter((_, i) => revealed[i] && arrEqual(answers[i] || [], shuffled[i].correct)).length;
+  const pct = Math.round(score / shuffled.length * 100);
+  const activeSet = isMulti ? isRevealed ? myAnswer : pendingMulti : myAnswer;
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffled[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, shuffled]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPendingMulti([]);
+    setShowResults(false);
+    setShuffleKey((k) => k + 1);
+  }, []);
+  const QS = {
+    wrap: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "720px", margin: "0 auto" },
+    dotBar: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "4px" },
+    dot: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease" },
+    card: { background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "24px" },
+    qNum: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
+    qText: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+    opts: { display: "flex", flexDirection: "column", gap: "10px" },
+    opt: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px" },
+    btn: { marginTop: "12px", padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
+    fb: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: "1px solid", background: "rgba(255,255,255,0.03)" },
+    navRow: { display: "flex", justifyContent: "space-between" },
+    resWrap: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
+    resCard: { textAlign: "center", background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "24px", padding: "40px 48px" }
+  };
+  if (showResults) {
+    const msg = pct >= 90 ? "Vyborne! Na test jsi pripraven/a!" : pct >= 70 ? "Dobre! Jeste trochu zopakovat." : pct >= 50 ? "Jdes spravnym smerem, ale opakuj dal." : "Vrat se k teorii a zkus znovu.";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: QS.resWrap,
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: QS.resCard,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "52px", fontWeight: 800 },
+            children: [
+              score,
+              " / ",
+              shuffled.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+            children: [
+              pct,
+              " %"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.8)", fontSize: "17px", marginBottom: "24px" },
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...QS.btn, background: accentColor + "66", border: `1px solid ${accentColor}` },
+            onClick: restart,
+            children: "Zacit znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: QS.wrap,
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: QS.dotBar,
+        children: shuffled.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEqual(answers[i] || [], shuffled[i].correct) ? "#22c55e" : "#ef4444";
+          return /* @__PURE__ */ jsxDEV("div", {
+            onClick: () => goTo(i),
+            title: `Otazka ${i + 1}`,
+            style: { ...QS.dot, background: bg }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: QS.card,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: QS.qNum,
+            children: [
+              "Otazka ",
+              idx + 1,
+              " / ",
+              shuffled.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: QS.qText,
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: QS.opts,
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(255,255,255,0.12)", bg = "rgba(255,255,255,0.04)";
+              if (isRevealed) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(34,197,94,0.15)";
+                  border = "1px solid #22c55e";
+                } else if (activeSet.includes(i)) {
+                  bg = "rgba(239,68,68,0.15)";
+                  border = "1px solid #ef4444";
+                }
+              } else if (activeSet.includes(i)) {
+                bg = accentColor + "18";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("div", {
+                style: { ...QS.opt, background: bg, border },
+                onClick: () => isMulti ? setPendingMulti((p) => p.includes(i) ? p.filter((x) => x !== i) : [...p, i]) : !isRevealed && (setAnswers((a) => ({ ...a, [idx]: [i] })), setRevealed((r) => ({ ...r, [idx]: true }))),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: { fontSize: "18px" },
+                    children: activeSet.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRevealed && /* @__PURE__ */ jsxDEV("button", {
+            style: { ...QS.btn, opacity: pendingMulti.length === 0 ? 0.4 : 1 },
+            onClick: () => {
+              if (pendingMulti.length > 0) {
+                setAnswers((a) => ({ ...a, [idx]: [...pendingMulti] }));
+                setRevealed((r) => ({ ...r, [idx]: true }));
+              }
+            },
+            disabled: pendingMulti.length === 0,
+            children: "Potvrdit"
+          }, undefined, false, undefined, this),
+          isRevealed && /* @__PURE__ */ jsxDEV("div", {
+            style: { ...QS.fb, borderColor: isCorrect ? "#22c55e" : "#ef4444" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+                children: isCorrect ? "✓ Správně!" : "✗ Špatně"
+              }, undefined, false, undefined, this),
+              !isCorrect && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+                children: [
+                  "Správná odpověď: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 },
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+                children: [
+                  "\uD83D\uDCA1 ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: QS.navRow,
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: QS.btn,
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          idx < shuffled.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: QS.btn,
+            onClick: () => goTo(idx + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: { ...QS.btn, background: accentColor + "55", border: `1px solid ${accentColor}` },
+            onClick: () => setShowResults(true),
+            children: "Výsledky →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var authors = [
+  {
+    name: "Honoré de Balzac",
+    dates: "1799–1850",
+    flag: "\uD83C\uDDEB\uD83C\uDDF7",
+    country: "Francie",
+    style: "Kritický realismus",
+    desc: "Zakladatel moderního románu. Zobrazoval francouzskou společnost po napoleonských válkách se všemi jejími vrstvami — od šlechty přes měšťanstvo až po chudinu. Postavy se prolínají napříč celým cyklem.",
+    key: "Lidská komedie (La Comédie humaine) — cyklus asi 90 románů, encyklopedie francouzské společnosti",
+    works: [
+      { title: "Otec Goriot (Père Goriot)", year: "1835", desc: "Starý Goriot obětuje vše pro sobecké dcery. Mladý student Rastignac přijíždí do Paříže a učí se, jak funguje společnost. Goriot umírá opuštěn — dcery na pohřeb nepřijdou." },
+      { title: "Eugénie Grandetová", year: "1833", desc: "Příběh skrblíka Grandeta a jeho dcery Eugénie, která miluje bratrance. Kritika chamtivosti a moci peněz." },
+      { title: "Ztracené iluze", year: "1837–43", desc: "Básník Lucien přichází do Paříže s iluzemi o slávě. Postupně je ztrácí — odhalení pokrytectví tisku a literárního světa." }
+    ]
+  },
+  {
+    name: "Gustave Flaubert",
+    dates: "1821–1880",
+    flag: "\uD83C\uDDEB\uD83C\uDDF7",
+    country: "Francie",
+    style: "Realismus / předchůdce naturalismu",
+    desc: "Perfekcionista — každou větu přepisoval desítkrát, hledal jediné správné slovo (le mot juste). Odmítal romantismus a sentimentalitu. Z jeho románu pochází pojem BOVARISMUS.",
+    key: "Bovarismus — tendence snít o lepším romantičtějším životě a odmítat přijmout realitu",
+    works: [
+      { title: "Paní Bovaryová (Madame Bovary)", year: "1857", desc: "Emma, vychovaná na romantických románech, se provdá za nudného venkovského lékaře Charlese. Zklamaná realitou bere si milence, dělá dluhy. Končí sebevraždou. Odtud BOVARISMUS." },
+      { title: "Citová výchova", year: "1869", desc: "Mladý Frédéric Moreau marně miluje vdanou ženu. Zobrazení generace, která ztratila iluze po revoluci 1848." },
+      { title: "Salammbo", year: "1862", desc: "Historický román z kartaginského prostředí — žoldnéřské války. Exotika, krutost, precizní historický výzkum." }
+    ]
+  },
+  {
+    name: "Émile Zola",
+    dates: "1840–1902",
+    flag: "\uD83C\uDDEB\uD83C\uDDF7",
+    country: "Francie",
+    style: "Naturalismus",
+    desc: "Hlavní teoretik a zakladatel naturalismu. Psal romány jako vědecké experimenty — ukazoval vliv dědičnosti a prostředí na člověka. Odvážně obhajoval nevinně odsouzeného Dreyfuse v článku J'Accuse.",
+    key: "Série Rougon-Macquart — 20 románů sledujících jednu rodinu přes 5 generací; vliv dědičnosti (alkoholismus, nervové choroby)",
+    works: [
+      { title: "Germinal", year: "1885", desc: "Mladý Étienne Lantier přijde pracovat do uhelných dolů. Zobrazení bídy dělníků, stávky, beznaděje. Jedno z nejvlivnějších sociálních děl světové literatury." },
+      { title: "Nana", year: "1880", desc: "Prostitutka Nana ničí muže z vyšší společnosti. Kritika pokrytecké morálky druhého císařství. Nana jako symbol zkázy." },
+      { title: "Zabiják (L'Assommoir)", year: "1877", desc: "Gervaise postupně propadá alkoholu a bídě. Krutý obraz dělnické čtvrti Paříže. Primární predestinace: dědičný alkoholismus v rodině Rougon-Macquart." },
+      { title: "Štěstí dam (Au Bonheur des Dames)", year: "1883", desc: "Vznik prvního moderního obchodního domu — kapitalismus ničí malé obchodníky. Denise přežije díky pracovitosti." }
+    ]
+  },
+  {
+    name: "Nikolaj Vasiljevič Gogol",
+    dates: "1809–1852",
+    flag: "\uD83C\uDDF7\uD83C\uDDFA",
+    country: "Rusko (rodák z Ukrajiny)",
+    style: "Kritický realismus (groteskní)",
+    desc: "Zakladatel kritického realismu v ruské literatuře. Používal grotesku, humor a satiru k odhalení korupce a prázdnoty carského Ruska. Inspiroval všechny pozdější ruské realisty (Dostojevskij, Turgeněv).",
+    key: "Naturalní škola — Gogol inspiroval generaci ruských realistů; motiv malého člověka (Akakij v Plášti)",
+    works: [
+      { title: "Mrtvé duše", year: "1842", desc: "Podvodník Čičikov jezdí po Rusku a kupuje mrtvé duše — zemřelé nevolníky stále vedené v evidenci — aby je zastavil a získal půjčku. Satirická encyklopedie ruské provinční šlechty." },
+      { title: "Revizor", year: "1836", desc: "Komedie: úředníci v provinčním městě si spletou bezvýznamného úředníčka Chlestakova s obávaným revizorem. Vynikající satira na korupci a zbabělost." },
+      { title: "Plášť", year: "1842", desc: "Ubohý opisovač Akakij Akakijevič si šetří celý rok na nový plášť — ihned mu ho ukradnou a on zemře žalem. Symbol malého člověka v ruské literatuře." },
+      { title: "Nos", year: "1836", desc: "Fantastická satira: majorovi zmizí nos a začne žít jako důstojník. Groteska na ruský byrokratický svět." }
+    ]
+  },
+  {
+    name: "Fjodor M. Dostojevskij",
+    dates: "1821–1881",
+    flag: "\uD83C\uDDF7\uD83C\uDDFA",
+    country: "Rusko",
+    style: "Kritický realismus (psychologický)",
+    desc: "Mistr psychologické analýzy. Sám prošel vězením a trestaneckými pracemi na Sibiři — to formovalo jeho pohled na utrpení, vinu a vykoupení. Předchůdce existencialismu.",
+    key: "Raskolnikovova teorie — nadčlověk má právo překročit morální zákon — experiment ztroskotá, vina ho drtí",
+    works: [
+      { title: "Zločin a trest", year: "1866", desc: "Student Raskolnikov zabije chamtivou lichvářku — myslí si, že jako nadčlověk má právo. Ale svědomí ho drtí. Sonia ho přivede k přiznání a vykoupení." },
+      { title: "Bratři Karamazovi", year: "1880", desc: "Tři bratři — věřící Aljoša, intelektuál Ivan, zhýralý Dmitrij. Otec je zavražděn. Román o Bohu, svobodě a vině. Dostojevského poslední dílo." },
+      { title: "Idiot", year: "1869", desc: "Kníže Myškin — dobrý, čistý člověk — přijíždí do Petrohradu. Svou naivitou a upřímností naráží na pokryteckou společnost." },
+      { title: "Besy", year: "1872", desc: "Nihilisté a revolucionáři ničí provinční město. Kritika radikálního nihilismu, varování před terorismem." },
+      { title: "Zápisky z mrtvého domu", year: "1861", desc: "Autobiografické: líčení života v sibiřském trestaneckém táboře. Dostojevského osobní zkušenost." }
+    ]
+  },
+  {
+    name: "Lev Nikolajevič Tolstoj",
+    dates: "1828–1910",
+    flag: "\uD83C\uDDF7\uD83C\uDDFA",
+    country: "Rusko",
+    style: "Kritický realismus (epický)",
+    desc: "Aristokrat, který se zřekl majetku a hledal duchovní obrodu. Psal obrovské eposy zachycující celou společnost. Filosof neprotivení se zlu násilím. Exkomunikován z pravoslavné církve.",
+    key: "Vojna a mír je nejrozsáhlejší román světové literatury (cca 1300 stran). Filosofie: neprotivení se zlu násilím — ovlivnil Gándhího.",
+    works: [
+      { title: "Vojna a mír", year: "1869", desc: "Napoleonské války 1805–1812 v Rusku. Osud aristokratických rodin Bolkonských a Rostových. Nejrozsáhlejší román světové literatury. Hlavní otázka: co řídí dějiny?" },
+      { title: "Anna Karenina", year: "1878", desc: "Anna opustí manžela kvůli důstojníku Vronskému. Společnost ji odsoudí. Končí sebevraždou pod vlakem. Paralela: statkář Levin hledá smysl života." },
+      { title: "Vzkříšení", year: "1899", desc: "Kníže Nechljudov pozná ve věznici ženu, kterou kdysi svedl a zničil. Snaží se napravit křivdu. Kritika církve, soudu, vězení — Tolstoj za to byl exkomunikován." }
+    ]
+  },
+  {
+    name: "Henryk Sienkiewicz",
+    dates: "1846–1916",
+    flag: "\uD83C\uDDF5\uD83C\uDDF1",
+    country: "Polsko",
+    style: "Historický realismus",
+    desc: "Polský spisovatel, laureát Nobelovy ceny za literaturu (1905). Psal historické romány posilující polské národní vědomí v době, kdy Polsko bylo rozděleno mezi Rusko, Prusko a Rakousko.",
+    key: "Nobelova cena za literaturu 1905 — za vynikající zásluhy v oblasti epiky",
+    works: [
+      { title: "Quo vadis", year: "1896", desc: "Řím za vlády Nerona — láska římského patricije Vinicia k křesťance Ligii. Pronásledování křesťanů. Název Quo vadis = Pane, kam kráčíš? Mezinárodní bestseller, zfilmován." },
+      { title: "Trilogie (Ohněm a mečem / Potopa / Pan Wolodyjowski)", year: "1884–88", desc: "Historická epopej o Polsku 17. století — války se Švédy, Kozáky, Turky. Posílení polského národního sebevědomí." }
+    ]
+  }
+];
+var flashcards = [
+  { front: "Realismus (kdy, kde)", back: "Cca 1830–1900, vznikl v Evropě (Francie, Rusko, Anglie) jako reakce na romantismus. Věrné zobrazení skutečnosti, každodenního života, všech společenských vrstev." },
+  { front: "Kritický realismus", back: "Forma realismu, která kritizuje společenské poměry — chudobu, nerovnost, korupci, pokrytectví měšťanstva. Hlavní autoři: Balzac, Gogol, Dickens, Tolstoj, Dostojevskij." },
+  { front: "Naturalismus — definice", back: "Krajní forma realismu (Zola). Člověk je determinován (předurčen) třemi faktory: dědičností, prostředím a dobou. Vědecký přístup k literatuře — román = experiment." },
+  { front: "Predestinace primární", back: "Předurčení dané od narození — dědičnost, biologické faktory (rasa, pohlaví, nervová soustava). Příklad: alkoholismus přecházející v rodině Rougon-Macquart z generace na generaci." },
+  { front: "Predestinace sekundární", back: "Předurčení dané prostředím, výchovou, společností, sociálním zázemím. Člověk nemůže uniknout sociálním podmínkám, ve kterých vyrostl." },
+  { front: "Bovarismus", back: "Pojem z románu Paní Bovaryová (Flaubert, 1857). Tendence snít o ideálním romantickém životě a odmítat šedou každodenní realitu. Emma Bovaryová — venkovská žena, která se ničí iluzemi o lepším životě." },
+  { front: "Rougon-Macquart (Zola)", back: "Cyklus 20 románů sledující jednu rodinu přes 5 generací. Ukazuje, jak se dědičné choroby (alkoholismus, nervové poruchy) přenášejí. Nejznámější: Germinal, Nana, Zabiják." },
+  { front: "Lidská komedie (Balzac)", back: "Cyklus asi 90 románů a povídek Honoré de Balzaca. Encyklopedie francouzské společnosti 1815–1848. Postavy se prolínají napříč díly (Rastignac, Goriot)." },
+  { front: "Mrtvé duše — o čem?", back: "Čičikov jezdí po Rusku a kupuje od statkářů zemřelé nevolníky stále vedené v evidenci. Plánuje je zastavit jako živé a získat půjčku. Satirická freska ruské provinční šlechty (Gogol, 1842)." },
+  { front: "Zločin a trest — hlavní myšlenka", back: "Student Raskolnikov si myslí, že jako nadčlověk má právo zabít bezcennou lichvářku. Po vraždě ho drtí svědomí. Sonia ho přivede k přiznání. Dostojevskij vyvrací teorii nadčlověka." },
+  { front: "Anna Karenina vs. Vojna a mír", back: "Anna Karenina (1878): psychologický román o nevěře a společenském odsouzení. Vojna a mír (1869): epický román o napoleonských válkách — panorama celé ruské společnosti. Oba: Tolstoj." },
+  { front: "Quo vadis — autor a téma", back: "Henryk Sienkiewicz, 1896. Řím za Nerona. Patricij Vinicius miluje křesťanku Ligii. Pronásledování křesťanů. Název = Pane, kam kráčíš? Nobelova cena 1905." },
+  { front: "Gogolova Naturalní škola", back: "Gogol inspiroval generaci ruských realistů (Turgeněv, mladý Dostojevskij). Tzv. naturalní škola = věrné zobrazení malých lidí a každodenní reality, humor a satira." },
+  { front: "Le mot juste (Flaubert)", back: "Jediné správné slovo — Flaubertův umělecký princip. Každou větu přepisoval mnohokrát, hledal dokonalé vyjádření. Reakce na romantickou bombastičnost. Flaubert mohl pracovat celý den na jednom odstavci." },
+  { front: "Hlavní rozdíl: realismus vs. naturalismus", back: "Realismus: věrné zobrazení skutečnosti, důraz na společenské vztahy, psychologii. Naturalismus: přidává determinismus (člověk je oběť dědičnosti a prostředí), vědecký pohled, nezastavuje se před tím nejkrutějším." }
+];
+var questions = [
+  {
+    question: "Co je naturalismus v literatuře?",
+    type: "single",
+    options: [
+      "Zobrazení přírody a venkovského života bez kritiky společnosti",
+      "Krajní forma realismu zdůrazňující determinismus — vliv dědičnosti, prostředí a doby na člověka",
+      "Literární směr oslavující přirozené instinkty člověka mimo civilizaci",
+      "Romantická reakce na průmyslovou revoluci"
+    ],
+    correct: [1],
+    explanation: "Naturalismus (hlavní představitel Zola) chápe lidský osud jako výsledek dědičnosti, prostředí a historického momentu. Literární dílo má být jako vědecký experiment — autor pozoruje, jak tyto faktory tvarují postavy.",
+    tip: "Naturalismus = realismus + determinismus (věda, dědičnost)"
+  },
+  {
+    question: "Co je primární predestinace?",
+    type: "single",
+    options: [
+      "Předurčení dané výchovou a sociálním prostředím",
+      "Náboženské předurčení ke spáse nebo zatracení",
+      "Předurčení dané biologickými faktory — dědičností, rasou, nervovou soustavou",
+      "Předurčení dané historickou dobou a politickým systémem"
+    ],
+    correct: [2],
+    explanation: "Primární predestinace = biologická determinace (od narození) — dědičné nemoci, nervová soustava, fyzická konstituce. Sekundární predestinace = vliv prostředí a výchovy. Oba typy jsou klíčové v naturalismu.",
+    tip: "Primární = PŘI ROZENÍ (biologie); Sekundární = Společnost (prostředí)"
+  },
+  {
+    question: "Z jakého románu pochází pojem bovarismus a co znamená?",
+    type: "single",
+    options: [
+      "Z Balzacova Otce Goriota — touha po penězích a vyšším společenském postavení",
+      "Z Flaubertovy Paní Bovaryové — tendence snít o romantickém ideálním životě místo přijetí reality",
+      "Ze Zolovy Nany — střet mezi ideály a prostitucí",
+      "Z Tolstojovy Anny Kareniny — únik z manželství do milostného dobrodružství"
+    ],
+    correct: [1],
+    explanation: "Bovarismus pochází od Emmy Bovaryové (Flaubert, 1857) — venkovská žena vychovaná na romantických románech odmítá přijmout šedou realitu manželství s nudným lékařem. Jejími iluzemi se zničí a zemře sebevraždou.",
+    tip: "Bovary → Bovarismus. Emma četla příliš mnoho romantických románů."
+  },
+  {
+    question: "Kdo napsal Germinal a o čem kniha pojednává?",
+    type: "single",
+    options: [
+      "Balzac — o vzestupu a pádu pařížského bankéře",
+      "Dostojevskij — o stávce dělníků v Petrohradě",
+      "Zola — o bídě horníků v uhelných dolech a jejich stávce",
+      "Tolstoj — o selském povstání v carském Rusku"
+    ],
+    correct: [2],
+    explanation: "Germinal (Zola, 1885) sleduje Étienna Lantiera, který přichází pracovat do severofranciouzských uhelných dolů. Zobrazuje krutou bídu dělníků, organizaci stávky a její porážku. Jeden z nejdůležitějších sociálních románů světové literatury.",
+    tip: "Germinal = jaro (v revolučním kalendáři) = naděje narůstající pod zemí"
+  },
+  {
+    question: "Co si kupoval Čičikov v Gogolových Mrtvých duších?",
+    type: "single",
+    options: [
+      "Opuštěné statky od zkrachovalých šlechticů",
+      "Zemřelé nevolníky stále vedené v censusové evidenci — aby je zastavil jako živé",
+      "Falešné dokumenty šlechtického původu",
+      "Tajné informace o carských úřednících"
+    ],
+    correct: [1],
+    explanation: "Čičikov jezdí po ruské provincii a přesvědčuje statkáře, aby mu prodali mrtvé duše — zemřelé nevolníky, kteří stále figurují v daňové evidenci. Plánoval je zastavit jako záruku půjčky. Gogolova satira na ruskou byrokracii a šlechtickou prázdnotu.",
+    tip: "Mrtvé duše = mrtvé nevolníky + metaforicky mrtvé duše šlechty"
+  },
+  {
+    question: "Raskolnikovova teorie v románu Zločin a trest říká, že...",
+    type: "single",
+    options: [
+      "Chudí mají právo krást od bohatých pro přežití",
+      "Nadlidé mají právo překročit morální zákon, protože slouží vyššímu cíli",
+      "Stát má právo popravovat zločince bez soudu",
+      "Bůh neexistuje, proto je vše dovoleno"
+    ],
+    correct: [1],
+    explanation: "Raskolnikov rozdělil lidi na obyčejné (musí dodržovat zákon) a mimořádné — nadlidi jako Napoleon nebo Caesar, kteří mají právo zákon překročit pro vyšší cíl. Sebe zařadil mezi nadlidi a zabil lichvářku jako experiment. Dostojevskij tuto teorii vyvrací — svědomí ho drtí a on se přizná.",
+    tip: "Raskolnikov = raskolnik (rusky rozkolník, rebel)"
+  },
+  {
+    question: "Jaký cyklus románů napsal Honoré de Balzac?",
+    type: "single",
+    options: ["Rougon-Macquart", "Lidská komedie", "Trilogie", "Zápisky z mrtvého domu"],
+    correct: [1],
+    explanation: "Balzac psal cyklus Lidská komedie (La Comédie humaine) — přibližně 90 románů a povídek zachycujících francouzskou společnost po napoleonských válkách. Rougon-Macquart je Zolův cyklus.",
+    tip: "Balzac = Lidská KOMEDIE (jak tragi-komická ta společnost je!)"
+  },
+  {
+    question: "Kdo z autorů napsal Quo vadis a jaká je jeho národnost?",
+    type: "single",
+    options: [
+      "Lev Tolstoj — Rus",
+      "Gustave Flaubert — Francouz",
+      "Henryk Sienkiewicz — Polák",
+      "Fjodor Dostojevskij — Rus"
+    ],
+    correct: [2],
+    explanation: "Quo vadis (1896) napsal polský spisovatel Henryk Sienkiewicz. Román z doby Nerona o lásce Římana a křesťanky. Sienkiewicz získal Nobelovu cenu za literaturu v roce 1905.",
+    tip: "Sienkiewicz = Polák, Nobelova cena 1905, Quo vadis"
+  },
+  {
+    question: "Co je hlavním tématem Tolstého románu Vojna a mír?",
+    type: "single",
+    options: [
+      "Psychologické drama ženy, která zradí manžela a je odsouzena společností",
+      "Osudy ruských aristokratických rodin za napoleonských válek 1805–1812 a otázka historických sil",
+      "Kněz, který hledá Boha v sibiřském vyhnanství",
+      "Dělnické povstání v Moskvě na počátku 20. století"
+    ],
+    correct: [1],
+    explanation: "Vojna a mír (Tolstoj, 1869) sleduje osudy rodin Bolkonských a Rostových na pozadí napoleonských válek. Klíčová otázka: co řídí dějiny — velcí jedinci (Napoleon) nebo anonymní síla mas? Tolstoj věří v druhou možnost.",
+    tip: "Vojna a mír = Bolkonští + Rostovové + Napoleon + otázka dějin"
+  },
+  {
+    question: "Které dílo Gogola je satirou na strach z revize v provinčním ruském městě?",
+    type: "single",
+    options: ["Mrtvé duše", "Plášť", "Nos", "Revizor"],
+    correct: [3],
+    explanation: "Revizor (1836) — úředníci v provinčním městě se dozví, že přijede revizor. Ze strachu začnou uplácet Chlestakova, bezvýznamného úředníčka z Petrohradu, kterého si s revizorem spletou. Skvělá satira na korupci a zbabělost ruské byrokracie.",
+    tip: "Revizor = satira na strach z kontroly (a na uplácení)"
+  },
+  {
+    question: "Série románů Rougon-Macquart od Zoly sleduje...",
+    type: "single",
+    options: [
+      "Šest generací francouzských králů",
+      "Jednu rodinu přes 5 generací — ukazuje vliv dědičnosti (alkoholismus, nervové choroby)",
+      "Různé francouzské dělnické rodiny bez vzájemné příbuznosti",
+      "Jednu ženu v různých fázích jejího života"
+    ],
+    correct: [1],
+    explanation: "Zolův cyklus Rougon-Macquart (20 románů) sleduje jednu rodinu s dědičnými sklony k alkoholismu a nervovým chorobám přes 5 generací za 2. francouzského císařství. Každý román se věnuje jiné postavě a jiné vrstvě společnosti.",
+    tip: "Rougon-Macquart = jedna rodina, dědičnost, 20 románů, Zola"
+  },
+  {
+    question: "Co mají společného Dostojevskij a Tolstoj? (vyber vše správné)",
+    type: "multi",
+    options: [
+      "Oba jsou ruští realisté 19. století",
+      "Oba zobrazovali různé společenské vrstvy ruské společnosti",
+      "Oba byli naturalisté jako Zola",
+      "Oba dostali Nobelovu cenu za literaturu"
+    ],
+    correct: [0, 1],
+    explanation: "Dostojevskij a Tolstoj jsou oba ruští kritičtí realisté 19. století, kteří zobrazovali různé společenské vrstvy. Naturalismus (Zola) je ale francouzský směr — ruský realismus má jinou tradici. Nobelovu cenu za literaturu nedostal ani jeden."
+  },
+  {
+    question: "Který autor a dílo se spojuje s pojmem malý člověk v ruské literatuře?",
+    type: "single",
+    options: [
+      "Tolstoj — Karenin v Anně Kareniné",
+      "Gogol — Akakij Akakijevič v Plášti",
+      "Dostojevskij — Ivan Karamazov",
+      "Zola — Étienne Lantier v Germinálu"
+    ],
+    correct: [1],
+    explanation: "Gogolův Plášť (1842) — opisovač Akakij Akakijevič si šetří celý rok na nový plášť, ihned mu ho ukradnou a on zemře žalem. Symbol malého člověka — bezvýznamného jedince drtěného neosobním státním strojem.",
+    tip: "Plášť → malý člověk → Gogol → Dostojevskij navázal"
+  },
+  {
+    question: "Jaký je rozdíl mezi realismem a naturalismem?",
+    type: "single",
+    options: [
+      "Realismus je starší a naturalismus je novější — jinak jsou totéž",
+      "Realismus věrně zobrazuje skutečnost; naturalismus přidává determinismus a vědecký přístup k člověku jako oběti dědičnosti",
+      "Naturalismus se zabývá přírodou, realismus společností",
+      "Realismus je francouzský, naturalismus ruský směr"
+    ],
+    correct: [1],
+    explanation: "Realismus (1830–) = věrné zobrazení skutečnosti, psychologie postav, kritika společnosti. Naturalismus (1860s–, Zola) = realismus + determinismus: člověk nemá svobodnou vůli, je předurčen dědičností a prostředím. Vědecký přístup k románu jako k experimentu.",
+    tip: "Naturalismus = realismus + determinismus + věda"
+  },
+  {
+    question: "Flaubertův umělecký princip le mot juste znamená...",
+    type: "single",
+    options: [
+      "Spravedlivé slovo — literatura musí hájit slabé",
+      "Jediné správné slovo — hledání dokonalého výrazu, přepisování každé věty",
+      "Přirozené slovo — psát tak, jak lidé mluví",
+      "První slovo — improvizace bez oprav"
+    ],
+    correct: [1],
+    explanation: "Le mot juste (jediné správné slovo) byl Flaubertův umělecký ideál — každou větu přepisoval mnohokrát, hledal dokonalou formu. Byl reakcí na romantickou bombastičnost. Flaubert mohl pracovat celý den na jednom odstavci.",
+    tip: "Juste = správné (francouzsky) → le mot juste = to jediné správné slovo"
+  }
+];
+function App() {
+  const [tab, setTab] = useState("teorie");
+  const [theoryTab, setTheoryTab] = useState("realismus");
+  const [openAuthor, setOpenAuthor] = useState(null);
+  const [openWork, setOpenWork] = useState(null);
+  const [cardIdx, setCardIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const accent = "#f59e0b";
+  const tabs = [
+    { id: "teorie", label: "\uD83D\uDCD6 Teorie" },
+    { id: "autori", label: "✍️ Autoři" },
+    { id: "karticky", label: "\uD83C\uDCCF Kartičky" },
+    { id: "kviz", label: "\uD83E\uDDE0 Kvíz" },
+    { id: "tahak", label: "\uD83D\uDCCB Tahák" }
+  ];
+  const S = {
+    app: { minHeight: "100vh", background: "#0a0a1a", fontFamily: "'Segoe UI', Inter, sans-serif", color: "#fff", position: "relative", overflowX: "hidden" },
+    bg: { position: "fixed", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none" },
+    content: { position: "relative", zIndex: 1, maxWidth: "900px", margin: "0 auto", padding: "20px 16px 60px" },
+    header: { textAlign: "center", marginBottom: "28px" },
+    title: { fontSize: "clamp(22px,4vw,34px)", fontWeight: 800, background: "linear-gradient(135deg, #f59e0b, #ef4444, #f97316)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "6px" },
+    subtitle: { color: "rgba(255,255,255,0.45)", fontSize: "14px" },
+    tabBar: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "28px" },
+    tabBtn: (active) => ({ padding: "10px 18px", borderRadius: "50px", border: `1px solid ${active ? accent : "rgba(255,255,255,0.12)"}`, background: active ? accent + "22" : "rgba(255,255,255,0.04)", color: active ? accent : "rgba(255,255,255,0.6)", cursor: "pointer", fontSize: "14px", fontWeight: active ? 600 : 400, transition: "all 0.4s ease" }),
+    card: { background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "24px", marginBottom: "16px", transition: "all 0.4s ease" },
+    sectionTitle: { fontSize: "20px", fontWeight: 700, marginBottom: "14px", color: accent },
+    subTabBar: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "20px" },
+    subTabBtn: (active) => ({ padding: "7px 14px", borderRadius: "30px", border: `1px solid ${active ? accent : "rgba(255,255,255,0.1)"}`, background: active ? accent + "18" : "transparent", color: active ? accent : "rgba(255,255,255,0.55)", cursor: "pointer", fontSize: "13px", transition: "all 0.4s ease" }),
+    chip: (color) => ({ display: "inline-block", padding: "2px 10px", borderRadius: "20px", fontSize: "12px", background: color + "22", color, border: `1px solid ${color}44`, marginLeft: "8px" }),
+    authorCard: (open) => ({ background: open ? "rgba(245,158,11,0.07)" : "rgba(255,255,255,0.04)", border: `1px solid ${open ? accent + "44" : "rgba(255,255,255,0.08)"}`, borderRadius: "16px", marginBottom: "12px", overflow: "hidden", transition: "all 0.4s ease" }),
+    authorHeader: { padding: "16px 20px", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px" },
+    workCard: (open) => ({ background: open ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)", border: `1px solid ${open ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.06)"}`, borderRadius: "12px", marginBottom: "8px", overflow: "hidden", transition: "all 0.4s ease" }),
+    workHeader: { padding: "10px 16px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" },
+    tag: (color) => ({ fontSize: "11px", padding: "2px 8px", borderRadius: "20px", background: color + "22", color, border: `1px solid ${color}44` })
+  };
+  const theoryContent = {
+    realismus: /* @__PURE__ */ jsxDEV("div", {
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { ...S.card, borderColor: accent + "33" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: S.sectionTitle,
+            children: "Realismus (cca 1830–1900)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { color: "rgba(255,255,255,0.8)", lineHeight: 1.7, marginBottom: "14px" },
+            children: [
+              "Reakce na romantismus — místo idealizace a citového úniku přišel požadavek ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: accent },
+                children: "věrného zobrazení skutečnosti"
+              }, undefined, false, undefined, this),
+              ". Literatura se zaměřila na každodenní život, všechny společenské vrstvy, psychologii postav a příčinnost (kauzalitu) událostí."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px" },
+            children: [
+              { icon: "\uD83D\uDD0D", title: "Věrnost skutečnosti", text: "Přesné zobrazení prostředí, dialogů, zvyků — žádná idealizace" },
+              { icon: "\uD83E\uDDD1‍\uD83E\uDD1D‍\uD83E\uDDD1", title: "Všechny vrstvy", text: "Chudina, měšťanstvo, aristokracie — všichni mají místo v románu" },
+              { icon: "\uD83E\uDDE0", title: "Psychologie", text: "Důraz na vnitřní pohnutky postav, jejich vývoj a proměnu" },
+              { icon: "\uD83D\uDD17", title: "Kauzalita", text: "Každá událost má příčinu — skutky mají důsledky, neexistuje náhoda" }
+            ].map((i) => /* @__PURE__ */ jsxDEV("div", {
+              style: { background: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "14px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "24px", marginBottom: "6px" },
+                  children: i.icon
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: accent, fontWeight: 600, fontSize: "14px", marginBottom: "4px" },
+                  children: i.title
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.6)", fontSize: "13px" },
+                  children: i.text
+                }, undefined, false, undefined, this)
+              ]
+            }, i.title, true, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this),
+    kriticky: /* @__PURE__ */ jsxDEV("div", {
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { ...S.card, borderColor: "#ef444433" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { ...S.sectionTitle, color: "#ef4444" },
+            children: "Kritický realismus"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { color: "rgba(255,255,255,0.8)", lineHeight: 1.7, marginBottom: "14px" },
+            children: [
+              "Forma realismu, která aktivně ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: "#ef4444" },
+                children: "kritizuje společenské poměry"
+              }, undefined, false, undefined, this),
+              " — chudobu, sociální nerovnost, korupci, chamtivost a pokrytectví měšťanstva. Autoři nevystupují jako reformátoři — zobrazují a čtenář si má vyvodit závěr sám."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(239,68,68,0.07)", borderRadius: "14px", padding: "16px", marginBottom: "14px", border: "1px solid rgba(239,68,68,0.2)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#ef4444", fontWeight: 600, marginBottom: "8px" },
+                children: "Hlavní témata kritiky:"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("ul", {
+                style: { color: "rgba(255,255,255,0.75)", lineHeight: 2, margin: 0, paddingLeft: "20px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("li", {
+                    children: "Moc peněz a chamtivost (Balzac)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("li", {
+                    children: "Korupce státního aparátu (Gogol)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("li", {
+                    children: "Pokrytectví aristokracie a církve (Tolstoj)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("li", {
+                    children: "Vina, svědomí a vykoupení (Dostojevskij)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("li", {
+                    children: "Bída a sociální nerovnost (Dickens, Zola)"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.55)", fontSize: "13px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: "rgba(255,255,255,0.8)" },
+                children: "Klíčoví autoři:"
+              }, undefined, false, undefined, this),
+              " Balzac, Flaubert, Gogol, Dostojevskij, Tolstoj, Dickens (Anglie)"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this),
+    naturalismus: /* @__PURE__ */ jsxDEV("div", {
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { ...S.card, borderColor: "#8b5cf633" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { ...S.sectionTitle, color: "#8b5cf6" },
+            children: "Naturalismus"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { color: "rgba(255,255,255,0.8)", lineHeight: 1.7, marginBottom: "16px" },
+            children: [
+              "Krajní forma realismu. Hlavní teoretik a zakladatel: ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: "#8b5cf6" },
+                children: "Émile Zola"
+              }, undefined, false, undefined, this),
+              ". Román je jako vědecký experiment — autor pozoruje, jak tři faktory formují lidský osud. Člověk ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "nemá svobodnou vůli"
+              }, undefined, false, undefined, this),
+              " — je předurčen."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "14px", marginBottom: "16px" },
+            children: [
+              { color: "#ef4444", icon: "\uD83E\uDDEC", title: "Dědičnost", sub: "Biologické dispozice přenášené z rodičů — alkoholismus, nervové choroby, fyzická konstituce" },
+              { color: "#3b82f6", icon: "\uD83C\uDFED", title: "Prostředí", sub: "Sociální a fyzické prostředí, ve kterém postava vyrůstá a žije — chudinská čtvrť, továrna, salon" },
+              { color: "#f59e0b", icon: "⏳", title: "Historický moment", sub: "Konkrétní historická doba a politický systém — 2. císařství, průmyslová revoluce" }
+            ].map((f) => /* @__PURE__ */ jsxDEV("div", {
+              style: { background: f.color + "11", border: `1px solid ${f.color}33`, borderRadius: "14px", padding: "16px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "28px", marginBottom: "8px" },
+                  children: f.icon
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: f.color, fontWeight: 700, fontSize: "15px", marginBottom: "6px" },
+                  children: f.title
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.65)", fontSize: "13px", lineHeight: 1.5 },
+                  children: f.sub
+                }, undefined, false, undefined, this)
+              ]
+            }, f.title, true, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(139,92,246,0.08)", borderRadius: "14px", padding: "16px", border: "1px solid rgba(139,92,246,0.2)", marginBottom: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#8b5cf6", fontWeight: 700, marginBottom: "10px", fontSize: "15px" },
+                children: "Predestinace (předurčení)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "rgba(239,68,68,0.08)", borderRadius: "10px", padding: "12px", border: "1px solid rgba(239,68,68,0.2)" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { color: "#ef4444", fontWeight: 600, marginBottom: "6px" },
+                        children: "\uD83E\uDDEC PRIMÁRNÍ"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { color: "rgba(255,255,255,0.7)", fontSize: "13px", lineHeight: 1.5 },
+                        children: [
+                          "Dána ",
+                          /* @__PURE__ */ jsxDEV("strong", {
+                            children: "od narození"
+                          }, undefined, false, undefined, this),
+                          " — biologická determinace.",
+                          /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                          "Dědičnost, rasa, pohlaví, nervová soustava.",
+                          /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("em", {
+                            style: { color: "rgba(255,255,255,0.45)" },
+                            children: "Příklad: dědičný alkoholismus v rodině Rougon-Macquart"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "rgba(59,130,246,0.08)", borderRadius: "10px", padding: "12px", border: "1px solid rgba(59,130,246,0.2)" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { color: "#3b82f6", fontWeight: 600, marginBottom: "6px" },
+                        children: "\uD83C\uDFED SEKUNDÁRNÍ"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { color: "rgba(255,255,255,0.7)", fontSize: "13px", lineHeight: 1.5 },
+                        children: [
+                          "Dána ",
+                          /* @__PURE__ */ jsxDEV("strong", {
+                            children: "prostředím a výchovou"
+                          }, undefined, false, undefined, this),
+                          " — sociální determinace.",
+                          /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                          "Chudinská čtvrť, továrna, sociální zázemí.",
+                          /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("em", {
+                            style: { color: "rgba(255,255,255,0.45)" },
+                            children: "Příklad: dělník v dolech nemůže uniknout své třídě"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.55)", fontSize: "13px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                style: { color: "rgba(255,255,255,0.8)" },
+                children: "Hlavní představitelé:"
+              }, undefined, false, undefined, this),
+              " Émile Zola \uD83C\uDDEB\uD83C\uDDF7, Guy de Maupassant \uD83C\uDDEB\uD83C\uDDF7, bratři Goncourtové \uD83C\uDDEB\uD83C\uDDF7"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this),
+    bovarismus: /* @__PURE__ */ jsxDEV("div", {
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { ...S.card, borderColor: "#ec489933" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { ...S.sectionTitle, color: "#ec4899" },
+            children: "Bovarismus"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(236,72,153,0.08)", borderRadius: "14px", padding: "16px", marginBottom: "16px", border: "1px solid rgba(236,72,153,0.2)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#ec4899", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+                children: "Definice"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: { color: "rgba(255,255,255,0.8)", lineHeight: 1.7, margin: 0 },
+                children: [
+                  "Tendence ",
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    style: { color: "#ec4899" },
+                    children: "snít o ideálním, romantickém životě"
+                  }, undefined, false, undefined, this),
+                  " a odmítat přijmout šedou každodenní realitu. Únik do iluzí, fantasií a romantických představ místo konfrontace se skutečností."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { ...S.card, background: "rgba(255,255,255,0.03)", marginBottom: "12px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#ec4899", fontWeight: 600, marginBottom: "10px" },
+                children: "\uD83D\uDCDA Původ pojmu: Emma Bovaryová"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.75)", lineHeight: 1.7, fontSize: "14px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("p", {
+                    children: "Gustave Flaubert — Paní Bovaryová (1857)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    children: "Emma vyrůstala v klášterní škole a četla romantické romány o velké lásce a vznešeném životě. Provdala se za nudného venkovského lékaře Charlese Bovaryho."
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    children: "Reálný venkovský život — každodenní rutina, prostí lidé, šedivé okolí — absolutně neodpovídal jejím romantickým snům."
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    children: "Emma si bere milence (Rodolphe, Léon), dělá dluhy na luxusní věci, uniká do iluze. Nakonec se zadluží natolik, že si vezme jed a zemře."
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: { color: accent, fontWeight: 500 },
+                    children: "Flaubert prý o sobě řekl: Madame Bovary, c'est moi. (Paní Bovaryová, to jsem já.)"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "14px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#ec4899", fontWeight: 600, marginBottom: "6px" },
+                    children: "Příznaky bovarismu"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("ul", {
+                    style: { color: "rgba(255,255,255,0.65)", fontSize: "13px", lineHeight: 1.8, margin: 0, paddingLeft: "16px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Nespokojenost s reálným životem"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Romantické fantasie o jiném životě"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Neustálé zklamání z reality"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "Únik — knihy, milenci, luxus"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "14px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: accent, fontWeight: 600, marginBottom: "6px" },
+                    children: "Flaubert vs. romantismus"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "rgba(255,255,255,0.65)", fontSize: "13px", lineHeight: 1.6 },
+                    children: "Emma Bovaryová je obětí romantismu — přečetla příliš mnoho romantických románů. Flaubert tím kritizuje romantismus jako nebezpečnou iluzi."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this)
+  };
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: S.app,
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: S.bg,
+        children: [
+          [
+            { w: 500, h: 500, top: "10%", left: "15%", c1: "rgba(245,158,11,0.12)", c2: "rgba(239,68,68,0.08)", dur: "22s" },
+            { w: 400, h: 400, top: "50%", left: "60%", c1: "rgba(139,92,246,0.1)", c2: "rgba(245,158,11,0.07)", dur: "30s" },
+            { w: 300, h: 300, top: "75%", left: "10%", c1: "rgba(236,72,153,0.08)", c2: "rgba(59,130,246,0.06)", dur: "18s" }
+          ].map((b, i) => /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", width: b.w, height: b.h, top: b.top, left: b.left, borderRadius: "50%", background: `radial-gradient(circle, ${b.c1}, ${b.c2})`, filter: "blur(60px)", animation: `pulse ${b.dur} ease-in-out infinite alternate` }
+          }, i, false, undefined, this)),
+          /* @__PURE__ */ jsxDEV("style", {
+            children: `@keyframes pulse { 0%{transform:scale(1) translateY(0)} 100%{transform:scale(1.15) translateY(-20px)} }`
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: S.content,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: S.header,
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: S.title,
+                children: "Světový realismus"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: S.subtitle,
+                children: "Příprava na test z češtiny · Literatura 19. století"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: S.tabBar,
+            children: tabs.map((t) => /* @__PURE__ */ jsxDEV("button", {
+              style: S.tabBtn(tab === t.id),
+              onClick: () => setTab(t.id),
+              children: t.label
+            }, t.id, false, undefined, this))
+          }, undefined, false, undefined, this),
+          tab === "teorie" && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: S.subTabBar,
+                children: [
+                  { id: "realismus", label: "\uD83D\uDCD6 Realismus" },
+                  { id: "kriticky", label: "⚡ Kritický realismus" },
+                  { id: "naturalismus", label: "\uD83D\uDD2C Naturalismus" },
+                  { id: "bovarismus", label: "\uD83D\uDCAD Bovarismus" }
+                ].map((t) => /* @__PURE__ */ jsxDEV("button", {
+                  style: S.subTabBtn(theoryTab === t.id),
+                  onClick: () => setTheoryTab(t.id),
+                  children: t.label
+                }, t.id, false, undefined, this))
+              }, undefined, false, undefined, this),
+              theoryContent[theoryTab]
+            ]
+          }, undefined, true, undefined, this),
+          tab === "autori" && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.45)", fontSize: "13px", marginBottom: "16px" },
+                children: "Klikni na autora pro detail, klikni na dílo pro popis."
+              }, undefined, false, undefined, this),
+              authors.map((a, ai) => {
+                const isOpen = openAuthor === ai;
+                return /* @__PURE__ */ jsxDEV("div", {
+                  style: S.authorCard(isOpen),
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: S.authorHeader,
+                      onClick: () => {
+                        setOpenAuthor(isOpen ? null : ai);
+                        setOpenWork(null);
+                      },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { fontSize: "28px" },
+                          children: a.flag
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { flex: 1 },
+                          children: [
+                            /* @__PURE__ */ jsxDEV("div", {
+                              style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: "6px" },
+                              children: [
+                                /* @__PURE__ */ jsxDEV("span", {
+                                  style: { fontWeight: 700, fontSize: "16px" },
+                                  children: a.name
+                                }, undefined, false, undefined, this),
+                                /* @__PURE__ */ jsxDEV("span", {
+                                  style: S.chip("#94a3b8"),
+                                  children: a.dates
+                                }, undefined, false, undefined, this),
+                                /* @__PURE__ */ jsxDEV("span", {
+                                  style: S.chip(accent),
+                                  children: a.style
+                                }, undefined, false, undefined, this)
+                              ]
+                            }, undefined, true, undefined, this),
+                            /* @__PURE__ */ jsxDEV("div", {
+                              style: { color: "rgba(255,255,255,0.45)", fontSize: "13px", marginTop: "2px" },
+                              children: a.country
+                            }, undefined, false, undefined, this)
+                          ]
+                        }, undefined, true, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "rgba(255,255,255,0.3)", fontSize: "20px" },
+                          children: isOpen ? "▲" : "▼"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    isOpen && /* @__PURE__ */ jsxDEV("div", {
+                      style: { padding: "0 20px 20px" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("p", {
+                          style: { color: "rgba(255,255,255,0.75)", lineHeight: 1.65, marginBottom: "12px", fontSize: "14px" },
+                          children: a.desc
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { background: accent + "11", border: `1px solid ${accent}33`, borderRadius: "10px", padding: "10px 14px", marginBottom: "16px", fontSize: "13px", color: "rgba(255,255,255,0.7)" },
+                          children: [
+                            /* @__PURE__ */ jsxDEV("span", {
+                              style: { color: accent, fontWeight: 600 },
+                              children: "Klíč: "
+                            }, undefined, false, undefined, this),
+                            a.key
+                          ]
+                        }, undefined, true, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "rgba(255,255,255,0.45)", fontSize: "12px", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.08em" },
+                          children: "Díla"
+                        }, undefined, false, undefined, this),
+                        a.works.map((w, wi) => {
+                          const wKey = `${ai}-${wi}`;
+                          const wOpen = openWork === wKey;
+                          return /* @__PURE__ */ jsxDEV("div", {
+                            style: S.workCard(wOpen),
+                            children: [
+                              /* @__PURE__ */ jsxDEV("div", {
+                                style: S.workHeader,
+                                onClick: () => setOpenWork(wOpen ? null : wKey),
+                                children: [
+                                  /* @__PURE__ */ jsxDEV("div", {
+                                    children: [
+                                      /* @__PURE__ */ jsxDEV("span", {
+                                        style: { fontWeight: 600, fontSize: "14px" },
+                                        children: w.title
+                                      }, undefined, false, undefined, this),
+                                      /* @__PURE__ */ jsxDEV("span", {
+                                        style: { ...S.tag("#94a3b8"), marginLeft: "8px" },
+                                        children: w.year
+                                      }, undefined, false, undefined, this)
+                                    ]
+                                  }, undefined, true, undefined, this),
+                                  /* @__PURE__ */ jsxDEV("span", {
+                                    style: { color: "rgba(255,255,255,0.3)", fontSize: "16px" },
+                                    children: wOpen ? "−" : "+"
+                                  }, undefined, false, undefined, this)
+                                ]
+                              }, undefined, true, undefined, this),
+                              wOpen && /* @__PURE__ */ jsxDEV("div", {
+                                style: { padding: "0 16px 12px", color: "rgba(255,255,255,0.7)", fontSize: "13px", lineHeight: 1.65 },
+                                children: w.desc
+                              }, undefined, false, undefined, this)
+                            ]
+                          }, wi, true, undefined, this);
+                        })
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, ai, true, undefined, this);
+              })
+            ]
+          }, undefined, true, undefined, this),
+          tab === "karticky" && /* @__PURE__ */ jsxDEV("div", {
+            style: { maxWidth: "680px", margin: "0 auto" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { textAlign: "center", color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "20px" },
+                children: [
+                  cardIdx + 1,
+                  " / ",
+                  flashcards.length,
+                  " · Klikni na kartičku pro otočení"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                onClick: () => setFlipped((f) => !f),
+                style: { perspective: "1200px", cursor: "pointer", marginBottom: "24px", height: "220px" },
+                children: /* @__PURE__ */ jsxDEV("div", {
+                  style: { position: "relative", width: "100%", height: "100%", transformStyle: "preserve-3d", transition: "transform 0.4s ease", transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { position: "absolute", inset: 0, backfaceVisibility: "hidden", background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: `1px solid ${accent}44`, borderRadius: "20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "28px", textAlign: "center" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "rgba(255,255,255,0.3)", fontSize: "12px", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "0.1em" },
+                          children: "Otázka"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "#fff", fontSize: "20px", fontWeight: 700, lineHeight: 1.4 },
+                          children: flashcards[cardIdx].front
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "rgba(255,255,255,0.25)", fontSize: "12px", marginTop: "16px" },
+                          children: "klikni pro odpověď →"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { position: "absolute", inset: 0, backfaceVisibility: "hidden", transform: "rotateY(180deg)", background: "rgba(245,158,11,0.08)", backdropFilter: "blur(20px)", border: `1px solid ${accent}66`, borderRadius: "20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "28px", textAlign: "center" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: accent, fontSize: "12px", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "0.1em" },
+                          children: "Odpověď"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.6 },
+                          children: flashcards[cardIdx].back
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginBottom: "20px" },
+                children: flashcards.map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+                  onClick: () => {
+                    setCardIdx(i);
+                    setFlipped(false);
+                  },
+                  style: { width: "16px", height: "16px", borderRadius: "50%", cursor: "pointer", background: i === cardIdx ? accent : "rgba(255,255,255,0.18)", transition: "background 0.4s ease" }
+                }, i, false, undefined, this))
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", gap: "12px", justifyContent: "center" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("button", {
+                    style: { padding: "10px 24px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.06)", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
+                    onClick: () => {
+                      setCardIdx((i) => Math.max(0, i - 1));
+                      setFlipped(false);
+                    },
+                    disabled: cardIdx === 0,
+                    children: "← Předchozí"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("button", {
+                    style: { padding: "10px 24px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.06)", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
+                    onClick: () => {
+                      setCardIdx((i) => Math.min(flashcards.length - 1, i + 1));
+                      setFlipped(false);
+                    },
+                    disabled: cardIdx === flashcards.length - 1,
+                    children: "Další →"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          tab === "kviz" && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.45)", fontSize: "13px", marginBottom: "20px", textAlign: "center" },
+                children: [
+                  questions.length,
+                  " otázek · Možnosti jsou vždy zamíchány"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV(QuizEngine, {
+                questions,
+                accentColor: accent
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          tab === "tahak" && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: S.card,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: S.sectionTitle,
+                    children: "Klíčové pojmy"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "10px" },
+                    children: [
+                      { term: "Realismus", def: "Věrné zobrazení skutečnosti, všechny vrstvy, psychologie, kauzalita. Cca 1830–1900." },
+                      { term: "Kritický realismus", def: "Realismus + kritika společenských poměrů (chudoba, korupce, pokrytectví)." },
+                      { term: "Naturalismus", def: "Krajní realismus. Zola. Determinismus = dědičnost + prostředí + historická doba." },
+                      { term: "Predestinace primární", def: "Biologická determinace — dědičnost, rasa. Od narození." },
+                      { term: "Predestinace sekundární", def: "Sociální determinace — prostředí, výchova, sociální zázemí." },
+                      { term: "Bovarismus", def: "Snění o lepším romantickém životě místo přijetí reality. Flaubert / Emma Bovaryová." },
+                      { term: "Le mot juste", def: "Flaubertův princip — jediné správné slovo. Perfekcionismus stylu." },
+                      { term: "Rougon-Macquart", def: "Zolův cyklus 20 románů — 1 rodina, 5 generací, dědičnost. Germinal, Nana, Zabiják." },
+                      { term: "Lidská komedie", def: "Balzacův cyklus asi 90 románů — encyklopedie francouzské společnosti 1815–1848." },
+                      { term: "Malý člověk", def: "Gogolův motiv — bezvýznamný jedinec drcený státním strojem. Plášť (Akakij)." }
+                    ].map((i) => /* @__PURE__ */ jsxDEV("div", {
+                      style: { background: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "12px 14px", border: "1px solid rgba(255,255,255,0.07)" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: accent, fontWeight: 600, fontSize: "14px", marginBottom: "4px" },
+                          children: i.term
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "rgba(255,255,255,0.65)", fontSize: "13px", lineHeight: 1.5 },
+                          children: i.def
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, i.term, true, undefined, this))
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: S.card,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: S.sectionTitle,
+                    children: "Autoři — rychlý přehled"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { overflowX: "auto" },
+                    children: /* @__PURE__ */ jsxDEV("table", {
+                      style: { width: "100%", borderCollapse: "collapse", fontSize: "13px" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("thead", {
+                          children: /* @__PURE__ */ jsxDEV("tr", {
+                            children: ["Autor", "Země", "Styl", "Klíčové dílo", "Poznámka"].map((h) => /* @__PURE__ */ jsxDEV("th", {
+                              style: { color: accent, fontWeight: 600, padding: "8px 12px", textAlign: "left", borderBottom: "1px solid rgba(245,158,11,0.3)" },
+                              children: h
+                            }, h, false, undefined, this))
+                          }, undefined, false, undefined, this)
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("tbody", {
+                          children: [
+                            ["Balzac", "\uD83C\uDDEB\uD83C\uDDF7 Francie", "Kritický realismus", "Otec Goriot", "Lidská komedie (asi 90 románů)"],
+                            ["Flaubert", "\uD83C\uDDEB\uD83C\uDDF7 Francie", "Realismus", "Paní Bovaryová", "Bovarismus, le mot juste"],
+                            ["Zola", "\uD83C\uDDEB\uD83C\uDDF7 Francie", "Naturalismus", "Germinal", "Rougon-Macquart, J'Accuse"],
+                            ["Gogol", "\uD83C\uDDF7\uD83C\uDDFA Rusko", "Kritický realismus", "Mrtvé duše", "Satira, Revizor, malý člověk"],
+                            ["Dostojevskij", "\uD83C\uDDF7\uD83C\uDDFA Rusko", "Kritický realismus", "Zločin a trest", "Psychologie, vina, vykoupení"],
+                            ["Tolstoj", "\uD83C\uDDF7\uD83C\uDDFA Rusko", "Kritický realismus", "Vojna a mír", "Epika, Anna Karenina"],
+                            ["Sienkiewicz", "\uD83C\uDDF5\uD83C\uDDF1 Polsko", "Historický realismus", "Quo vadis", "Nobelova cena 1905"]
+                          ].map((row, i) => /* @__PURE__ */ jsxDEV("tr", {
+                            style: { borderBottom: "1px solid rgba(255,255,255,0.05)" },
+                            children: row.map((cell, ci) => /* @__PURE__ */ jsxDEV("td", {
+                              style: { padding: "10px 12px", color: ci === 0 ? "#fff" : "rgba(255,255,255,0.65)", fontWeight: ci === 0 ? 600 : 400 },
+                              children: cell
+                            }, ci, false, undefined, this))
+                          }, i, false, undefined, this))
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: S.card,
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: S.sectionTitle,
+                    children: "Díla — musíš vědět"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "10px" },
+                    children: [
+                      { title: "Paní Bovaryová", author: "Flaubert, 1857", note: "Emma snívá → dluhy → smrt jedem → BOVARISMUS" },
+                      { title: "Mrtvé duše", author: "Gogol, 1842", note: "Čičikov kupuje mrtvé nevolníky → satira na šlechtu" },
+                      { title: "Zločin a trest", author: "Dostojevskij, 1866", note: "Raskolnikov zabije lichvářku → svědomí → přiznání" },
+                      { title: "Vojna a mír", author: "Tolstoj, 1869", note: "Napoleonské války, Bolkonští, Rostovové — nejdelší román" },
+                      { title: "Anna Karenina", author: "Tolstoj, 1878", note: "Nevěra → společenské odsouzení → sebevražda pod vlakem" },
+                      { title: "Germinal", author: "Zola, 1885", note: "Horníci, stávka, bída — naturalismus, predestinace" },
+                      { title: "Otec Goriot", author: "Balzac, 1835", note: "Goriot obětuje vše dcerám → zemře opuštěn; Rastignac" },
+                      { title: "Quo vadis", author: "Sienkiewicz, 1896", note: "Nero, křesťané, Vinicius + Ligia. Nobelova cena 1905" },
+                      { title: "Revizor", author: "Gogol, 1836", note: "Chlestakov — korupce a strach v provinčním Rusku" },
+                      { title: "Bratři Karamazovi", author: "Dostojevskij, 1880", note: "Aljoša, Ivan, Dmitrij — otec zavražděn, Bůh a vina" }
+                    ].map((d) => /* @__PURE__ */ jsxDEV("div", {
+                      style: { background: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "12px 14px", border: "1px solid rgba(255,255,255,0.07)" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "#fff", fontWeight: 600, fontSize: "14px" },
+                          children: d.title
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: accent, fontSize: "12px", marginBottom: "4px" },
+                          children: d.author
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "rgba(255,255,255,0.55)", fontSize: "12px", lineHeight: 1.5 },
+                          children: d.note
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, d.title, true, undefined, this))
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
