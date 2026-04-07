@@ -1050,6 +1050,216 @@ function TabDemoRevoluce() {
     ]
   }, undefined, true, undefined, this);
 }
+function RaceMap() {
+  const W = 700, H = 340;
+  const races = [
+    {
+      label: "Europoidní",
+      color: "#60a5fa",
+      regions: [
+        "M330,57 L390,38 L428,47 L428,94 L398,104 L340,104 L332,87 Z",
+        "M315,104 L428,94 L476,98 L476,142 L428,147 L321,142 Z",
+        "M476,98 L525,104 L505,161 L476,161 Z"
+      ]
+    },
+    {
+      label: "Mongoloidní",
+      color: "#fbbf24",
+      regions: [
+        "M23,47 L232,40 L236,92 L206,132 L168,150 L120,113 L38,68 Z",
+        "M195,147 L281,155 L278,246 L224,274 L195,237 Z",
+        "M428,47 L700,19 L700,76 L544,66 L476,98 L428,94 Z",
+        "M544,66 L630,66 L622,123 L573,132 L544,104 Z",
+        "M527,123 L622,123 L622,179 L564,185 L527,151 Z"
+      ]
+    },
+    {
+      label: "Negroidní",
+      color: "#f97316",
+      regions: [
+        "M315,142 L456,142 L456,185 L437,236 L389,236 L315,200 Z",
+        "M630,168 L660,163 L663,193 L633,197 Z"
+      ]
+    },
+    {
+      label: "Australoidní",
+      color: "#a78bfa",
+      regions: [
+        "M572,198 L648,198 L646,245 L572,236 Z"
+      ]
+    }
+  ];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { margin: "16px 0" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: GREY, fontSize: "13px", fontWeight: 600, marginBottom: "8px" },
+        children: "Rozšíření lidských ras — schematická mapa"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("svg", {
+        viewBox: `0 0 ${W} ${H}`,
+        style: { width: "100%", maxWidth: `${W}px`, display: "block", borderRadius: "12px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("rect", {
+            width: W,
+            height: H,
+            fill: "rgba(10,20,50,0.55)",
+            rx: "12"
+          }, undefined, false, undefined, this),
+          [1, 2, 3].map((i) => /* @__PURE__ */ jsxDEV("line", {
+            x1: "0",
+            y1: H * i / 4,
+            x2: W,
+            y2: H * i / 4,
+            stroke: "rgba(255,255,255,0.04)",
+            strokeWidth: "1"
+          }, `h${i}`, false, undefined, this)),
+          [1, 2, 3, 4, 5, 6, 7].map((i) => /* @__PURE__ */ jsxDEV("line", {
+            x1: W * i / 8,
+            y1: "0",
+            x2: W * i / 8,
+            y2: H,
+            stroke: "rgba(255,255,255,0.04)",
+            strokeWidth: "1"
+          }, `v${i}`, false, undefined, this)),
+          /* @__PURE__ */ jsxDEV("line", {
+            x1: "0",
+            y1: H / 2,
+            x2: W,
+            y2: H / 2,
+            stroke: "rgba(255,255,255,0.12)",
+            strokeWidth: "1",
+            strokeDasharray: "5,4"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("text", {
+            x: "6",
+            y: H / 2 - 4,
+            fill: "rgba(255,255,255,0.22)",
+            fontSize: "8",
+            fontFamily: "Inter,sans-serif",
+            children: "ROVNÍK"
+          }, undefined, false, undefined, this),
+          races.map((race) => race.regions.map((d, j) => /* @__PURE__ */ jsxDEV("path", {
+            d,
+            fill: race.color,
+            fillOpacity: "0.38",
+            stroke: race.color,
+            strokeWidth: "1.5",
+            strokeOpacity: "0.7"
+          }, `${race.label}-${j}`, false, undefined, this))),
+          [
+            [120, 85, "SEVERNÍ AMERIKA"],
+            [235, 205, "JIŽNÍ AMERIKA"],
+            [378, 73, "EVROPA"],
+            [383, 190, "AFRIKA"],
+            [570, 88, "ASIE"],
+            [610, 224, "AUSTRÁLIE"]
+          ].map(([x, y, t]) => /* @__PURE__ */ jsxDEV("text", {
+            x,
+            y,
+            fill: "rgba(255,255,255,0.22)",
+            fontSize: "9",
+            textAnchor: "middle",
+            fontFamily: "Inter,sans-serif",
+            children: t
+          }, t, false, undefined, this)),
+          races.map((race, i) => /* @__PURE__ */ jsxDEV("g", {
+            transform: `translate(${8 + i * 170}, ${H - 26})`,
+            children: [
+              /* @__PURE__ */ jsxDEV("rect", {
+                width: "12",
+                height: "12",
+                fill: race.color,
+                fillOpacity: "0.6",
+                stroke: race.color,
+                strokeWidth: "1",
+                rx: "2"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: "16",
+                y: "10",
+                fill: "rgba(255,255,255,0.78)",
+                fontSize: "11",
+                fontFamily: "Inter,sans-serif",
+                children: race.label
+              }, undefined, false, undefined, this)
+            ]
+          }, race.label, true, undefined, this))
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function PieChartNabozenstvi() {
+  const data = [
+    { label: "Křesťanství", pct: 31.5, color: "#60a5fa" },
+    { label: "Islám", pct: 23.2, color: "#34d399" },
+    { label: "Bez vyznání", pct: 16.3, color: "#94a3b8" },
+    { label: "Hinduismus", pct: 15, color: "#fb923c" },
+    { label: "Buddhismus", pct: 7.1, color: "#a78bfa" },
+    { label: "Lidové víry", pct: 5.9, color: "#fbbf24" },
+    { label: "Ostatní", pct: 0.8, color: "#f472b6" },
+    { label: "Judaismus", pct: 0.2, color: "#6ee7b7" }
+  ];
+  const cx = 115, cy = 115, r = 96;
+  let cum = 0;
+  const slices = data.map((d) => {
+    const a0 = cum / 100 * 2 * Math.PI - Math.PI / 2;
+    cum += d.pct;
+    const a1 = cum / 100 * 2 * Math.PI - Math.PI / 2;
+    const x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0);
+    const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+    const large = d.pct > 50 ? 1 : 0;
+    return { ...d, path: `M${cx},${cy} L${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 ${large} 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z` };
+  });
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { margin: "0 0 20px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: GREY, fontSize: "13px", fontWeight: 600, marginBottom: "10px" },
+        children: "Podíl světové populace dle náboženství (zdroj: Worldometers)"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center" },
+        children: [
+          /* @__PURE__ */ jsxDEV("svg", {
+            viewBox: "0 0 230 230",
+            style: { width: "200px", flexShrink: 0 },
+            children: slices.map((s, i) => /* @__PURE__ */ jsxDEV("path", {
+              d: s.path,
+              fill: s.color,
+              fillOpacity: "0.82",
+              stroke: "#0a0a1a",
+              strokeWidth: "1.5"
+            }, i, false, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { flex: 1, minWidth: "170px" },
+            children: data.map((d, i) => /* @__PURE__ */ jsxDEV("div", {
+              style: { display: "flex", alignItems: "center", gap: "8px", marginBottom: "7px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { width: "12px", height: "12px", borderRadius: "3px", background: d.color, flexShrink: 0 }
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.72)", fontSize: "13px", flex: 1 },
+                  children: d.label
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: d.color, fontWeight: 700, fontSize: "13px" },
+                  children: [
+                    d.pct,
+                    "%"
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, i, true, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
 function TabStruktura() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
@@ -1079,8 +1289,9 @@ function TabStruktura() {
               ]
             }, r.rasa, true, undefined, this))
           }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(RaceMap, {}, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("p", {
-            style: { color: "rgba(255,255,255,0.35)", fontSize: "12px", margin: "10px 0 0" },
+            style: { color: "rgba(255,255,255,0.35)", fontSize: "12px", margin: "4px 0 0" },
             children: "Poznámka: Rasová kategorizace je vědecky zpochybňovaná — genetické variace jsou kontinuální."
           }, undefined, false, undefined, this)
         ]
@@ -1185,6 +1396,7 @@ function TabNabozenstvi() {
   const rel = sel !== null ? RELIGIONS[sel] : null;
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
+      /* @__PURE__ */ jsxDEV(PieChartNabozenstvi, {}, undefined, false, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
         style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px", marginBottom: "20px" },
         children: RELIGIONS.map((r, i) => /* @__PURE__ */ jsxDEV("button", {

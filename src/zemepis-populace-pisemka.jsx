@@ -513,6 +513,141 @@ function TabDemoRevoluce() {
   );
 }
 
+// ─── RaceMap SVG ──────────────────────────────────────────────
+function RaceMap() {
+  const W = 700, H = 340;
+  // Coordinate helpers: equirectangular projection
+  // x = (lon + 180) * W / 360,  y = (90 - lat) * H / 180
+  const races = [
+    {
+      label: "Europoidní", color: "#60a5fa",
+      regions: [
+        // Europe
+        "M330,57 L390,38 L428,47 L428,94 L398,104 L340,104 L332,87 Z",
+        // N Africa + Middle East
+        "M315,104 L428,94 L476,98 L476,142 L428,147 L321,142 Z",
+        // South Asia
+        "M476,98 L525,104 L505,161 L476,161 Z",
+      ],
+    },
+    {
+      label: "Mongoloidní", color: "#fbbf24",
+      regions: [
+        // N America (indigenous)
+        "M23,47 L232,40 L236,92 L206,132 L168,150 L120,113 L38,68 Z",
+        // S America
+        "M195,147 L281,155 L278,246 L224,274 L195,237 Z",
+        // Russia + Siberia
+        "M428,47 L700,19 L700,76 L544,66 L476,98 L428,94 Z",
+        // East Asia (China, Korea, Japan)
+        "M544,66 L630,66 L622,123 L573,132 L544,104 Z",
+        // SE Asia
+        "M527,123 L622,123 L622,179 L564,185 L527,151 Z",
+      ],
+    },
+    {
+      label: "Negroidní", color: "#f97316",
+      regions: [
+        // Sub-Saharan Africa
+        "M315,142 L456,142 L456,185 L437,236 L389,236 L315,200 Z",
+        // Papua / Melanesia
+        "M630,168 L660,163 L663,193 L633,197 Z",
+      ],
+    },
+    {
+      label: "Australoidní", color: "#a78bfa",
+      regions: [
+        // Australia
+        "M572,198 L648,198 L646,245 L572,236 Z",
+      ],
+    },
+  ];
+
+  return (
+    <div style={{ margin: "16px 0" }}>
+      <div style={{ color: GREY, fontSize: "13px", fontWeight: 600, marginBottom: "8px" }}>Rozšíření lidských ras — schematická mapa</div>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", maxWidth: `${W}px`, display: "block", borderRadius: "12px" }}>
+        <rect width={W} height={H} fill="rgba(10,20,50,0.55)" rx="12" />
+        {/* Subtle grid */}
+        {[1,2,3].map(i => <line key={`h${i}`} x1="0" y1={H*i/4} x2={W} y2={H*i/4} stroke="rgba(255,255,255,0.04)" strokeWidth="1" />)}
+        {[1,2,3,4,5,6,7].map(i => <line key={`v${i}`} x1={W*i/8} y1="0" x2={W*i/8} y2={H} stroke="rgba(255,255,255,0.04)" strokeWidth="1" />)}
+        {/* Equator */}
+        <line x1="0" y1={H/2} x2={W} y2={H/2} stroke="rgba(255,255,255,0.12)" strokeWidth="1" strokeDasharray="5,4" />
+        <text x="6" y={H/2-4} fill="rgba(255,255,255,0.22)" fontSize="8" fontFamily="Inter,sans-serif">ROVNÍK</text>
+        {/* Regions */}
+        {races.map(race => race.regions.map((d, j) => (
+          <path key={`${race.label}-${j}`} d={d} fill={race.color} fillOpacity="0.38" stroke={race.color} strokeWidth="1.5" strokeOpacity="0.7" />
+        )))}
+        {/* Continent labels */}
+        {[
+          [120, 85, "SEVERNÍ AMERIKA"],
+          [235, 205, "JIŽNÍ AMERIKA"],
+          [378, 73, "EVROPA"],
+          [383, 190, "AFRIKA"],
+          [570, 88, "ASIE"],
+          [610, 224, "AUSTRÁLIE"],
+        ].map(([x, y, t]) => (
+          <text key={t} x={x} y={y} fill="rgba(255,255,255,0.22)" fontSize="9" textAnchor="middle" fontFamily="Inter,sans-serif">{t}</text>
+        ))}
+        {/* Legend */}
+        {races.map((race, i) => (
+          <g key={race.label} transform={`translate(${8 + i * 170}, ${H - 26})`}>
+            <rect width="12" height="12" fill={race.color} fillOpacity="0.6" stroke={race.color} strokeWidth="1" rx="2" />
+            <text x="16" y="10" fill="rgba(255,255,255,0.78)" fontSize="11" fontFamily="Inter,sans-serif">{race.label}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+// ─── PieChartNabozenstvi SVG ───────────────────────────────────
+function PieChartNabozenstvi() {
+  const data = [
+    { label: "Křesťanství",  pct: 31.5, color: "#60a5fa" },
+    { label: "Islám",         pct: 23.2, color: "#34d399" },
+    { label: "Bez vyznání",   pct: 16.3, color: "#94a3b8" },
+    { label: "Hinduismus",    pct: 15.0, color: "#fb923c" },
+    { label: "Buddhismus",    pct:  7.1, color: "#a78bfa" },
+    { label: "Lidové víry",   pct:  5.9, color: "#fbbf24" },
+    { label: "Ostatní",       pct:  0.8, color: "#f472b6" },
+    { label: "Judaismus",     pct:  0.2, color: "#6ee7b7" },
+  ];
+  const cx = 115, cy = 115, r = 96;
+  let cum = 0;
+  const slices = data.map(d => {
+    const a0 = (cum / 100) * 2 * Math.PI - Math.PI / 2;
+    cum += d.pct;
+    const a1 = (cum / 100) * 2 * Math.PI - Math.PI / 2;
+    const x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0);
+    const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+    const large = d.pct > 50 ? 1 : 0;
+    return { ...d, path: `M${cx},${cy} L${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 ${large} 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z` };
+  });
+
+  return (
+    <div style={{ margin: "0 0 20px" }}>
+      <div style={{ color: GREY, fontSize: "13px", fontWeight: 600, marginBottom: "10px" }}>Podíl světové populace dle náboženství (zdroj: Worldometers)</div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center" }}>
+        <svg viewBox="0 0 230 230" style={{ width: "200px", flexShrink: 0 }}>
+          {slices.map((s, i) => (
+            <path key={i} d={s.path} fill={s.color} fillOpacity="0.82" stroke="#0a0a1a" strokeWidth="1.5" />
+          ))}
+        </svg>
+        <div style={{ flex: 1, minWidth: "170px" }}>
+          {data.map((d, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "7px" }}>
+              <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: d.color, flexShrink: 0 }} />
+              <div style={{ color: "rgba(255,255,255,0.72)", fontSize: "13px", flex: 1 }}>{d.label}</div>
+              <div style={{ color: d.color, fontWeight: 700, fontSize: "13px" }}>{d.pct}%</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── TAB: Struktura ───────────────────────────────────────────
 function TabStruktura() {
   return (
@@ -531,7 +666,8 @@ function TabStruktura() {
             </div>
           ))}
         </div>
-        <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "12px", margin: "10px 0 0" }}>Poznámka: Rasová kategorizace je vědecky zpochybňovaná — genetické variace jsou kontinuální.</p>
+        <RaceMap />
+        <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "12px", margin: "4px 0 0" }}>Poznámka: Rasová kategorizace je vědecky zpochybňovaná — genetické variace jsou kontinuální.</p>
       </Collapsible>
 
       <Collapsible title="Jazyková struktura — rodiny a písma" defaultOpen accent={ACCENT}>
@@ -596,6 +732,7 @@ function TabNabozenstvi() {
 
   return (
     <div>
+      <PieChartNabozenstvi />
       {/* religion cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px", marginBottom: "20px" }}>
         {RELIGIONS.map((r, i) => (
