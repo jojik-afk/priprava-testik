@@ -308,15 +308,131 @@ function TabRozlozeni() {
 }
 
 // ─── TAB: Demografická revoluce ───────────────────────────────
+// ─── Demographic transition chart ────────────────────────────
+function DemoRevoluceChart() {
+  const W = 580, H = 268;
+  const PL = 44, PR = 10, PT = 38, PB = 46;
+  const PW = W - PL - PR, PH = H - PT - PB;
+  const MAX_V = 44;
+  const rc = n => Math.round(n * 10) / 10;
+  const vx = f => PL + f * PW;
+  const vy = v => PT + PH - (v / MAX_V) * PH;
+  const toXY = data => data.map(([f, v]) => [vx(f), vy(v)]);
+
+  // Catmull-Rom body (no leading M)
+  const body = pts => {
+    let d = "";
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i-1)], p1 = pts[i], p2 = pts[i+1], p3 = pts[Math.min(pts.length-1, i+2)];
+      const c1x = p1[0]+(p2[0]-p0[0])/6, c1y = p1[1]+(p2[1]-p0[1])/6;
+      const c2x = p2[0]-(p3[0]-p1[0])/6, c2y = p2[1]-(p3[1]-p1[1])/6;
+      d += ` C ${rc(c1x)} ${rc(c1y)},${rc(c2x)} ${rc(c2y)},${rc(p2[0])} ${rc(p2[1])}`;
+    }
+    return d;
+  };
+  const mkPath = pts => `M ${rc(pts[0][0])} ${rc(pts[0][1])}${body(pts)}`;
+
+  // Curve data [fraction 0–1, value ‰]
+  const bFV = [[0,40],[0.18,40],[0.27,39],[0.36,34],[0.47,24],[0.57,16],[0.67,12],[0.79,10.5],[1,10]];
+  const dFV = [[0,36],[0.14,35],[0.24,28],[0.34,18],[0.44,12],[0.52,10],[0.68,10],[1,10]];
+  const pFV = [[0,2],[0.18,3],[0.33,7],[0.5,17],[0.65,28],[0.8,36],[1,40]];
+
+  const bPts = toXY(bFV), dPts = toXY(dFV), pPts = toXY(pFV);
+  const dRev = [...dPts].reverse();
+
+  const birthLine = mkPath(bPts);
+  const deathLine = mkPath(dPts);
+  const popLine   = mkPath(pPts);
+
+  // Filled areas
+  const popFill = `${popLine} L ${rc(vx(1))} ${rc(vy(0))} L ${rc(vx(0))} ${rc(vy(0))} Z`;
+  const niPath  = `M ${rc(bPts[0][0])} ${rc(bPts[0][1])}${body(bPts)} L ${rc(dRev[0][0])} ${rc(dRev[0][1])}${body(dRev)} Z`;
+
+  const phaseBounds = [0.25, 0.5, 0.75];
+  const phaseBg = ["rgba(148,163,184,0.06)","rgba(251,146,60,0.07)","rgba(56,189,248,0.07)","rgba(167,139,250,0.06)"];
+  const phaseNames = ["1. FÁZE","2. FÁZE","3. FÁZE","4. FÁZE"];
+
+  return (
+    <div style={{ width:"100%", overflowX:"auto", marginBottom:"4px" }}>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", minWidth:"380px", height:"auto", display:"block" }}>
+        {/* Phase background bands */}
+        {phaseNames.map((_, i) => {
+          const x1 = i===0 ? vx(0) : vx(phaseBounds[i-1]);
+          const x2 = i===3 ? vx(1) : vx(phaseBounds[i]);
+          return <rect key={i} x={rc(x1)} y={PT} width={rc(x2-x1)} height={PH} fill={phaseBg[i]} />;
+        })}
+
+        {/* Y gridlines + tick labels */}
+        {[0,10,20,30,40].map(v => (
+          <g key={v}>
+            <line x1={PL} y1={rc(vy(v))} x2={PL+PW} y2={rc(vy(v))} stroke="rgba(255,255,255,0.07)" strokeWidth="1"/>
+            <text x={PL-5} y={rc(vy(v))+4} fill="rgba(255,255,255,0.3)" fontSize="9.5" textAnchor="end">{v}</text>
+          </g>
+        ))}
+
+        {/* Phase dividers */}
+        {phaseBounds.map(f => (
+          <line key={f} x1={rc(vx(f))} y1={PT} x2={rc(vx(f))} y2={PT+PH} stroke="rgba(255,255,255,0.22)" strokeWidth="1" strokeDasharray="4,3"/>
+        ))}
+
+        {/* Fills */}
+        <path d={popFill} fill="rgba(251,191,36,0.15)"/>
+        <path d={niPath}  fill="rgba(56,189,248,0.13)"/>
+
+        {/* Population dashed line */}
+        <path d={popLine} fill="none" stroke="#fbbf24" strokeWidth="1.5" strokeDasharray="5,3" opacity="0.7"/>
+        {/* Birth rate */}
+        <path d={birthLine} fill="none" stroke="#4ade80" strokeWidth="2.5"/>
+        {/* Death rate */}
+        <path d={deathLine} fill="none" stroke="#fb923c" strokeWidth="2.5"/>
+
+        {/* Axes */}
+        <line x1={PL} y1={PT} x2={PL} y2={PT+PH} stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
+        <line x1={PL} y1={PT+PH} x2={PL+PW} y2={PT+PH} stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
+
+        {/* Y-axis label */}
+        <text transform={`translate(13,${PT+PH/2}) rotate(-90)`} fill="rgba(255,255,255,0.28)" fontSize="9" textAnchor="middle">
+          NA 1000 OBYVATEL / ROK
+        </text>
+
+        {/* Phase labels */}
+        {phaseNames.map((name, i) => {
+          const x1 = i===0 ? vx(0) : vx(phaseBounds[i-1]);
+          const x2 = i===3 ? vx(1) : vx(phaseBounds[i]);
+          return <text key={name} x={rc((x1+x2)/2)} y={H-8} fill="rgba(255,255,255,0.62)" fontSize="11" textAnchor="middle" fontWeight="700">{name}</text>;
+        })}
+
+        {/* Legend */}
+        {[
+          [0,    "#4ade80",                 false, "PORODNOST"],
+          [115,  "#fb923c",                 false, "ÚMRTNOST"],
+          [226,  "rgba(56,189,248,0.45)",   true,  "PŘIROZENÝ PŘÍRŮSTEK"],
+          [406,  "rgba(251,191,36,0.45)",   true,  "SVĚTOVÁ POPULACE"],
+        ].map(([xOff, clr, isRect, lbl]) => (
+          <g key={lbl}>
+            {isRect
+              ? <rect x={PL+xOff} y={6} width={13} height={10} fill={clr} rx="2"/>
+              : <line x1={PL+xOff} y1={11} x2={PL+xOff+18} y2={11} stroke={clr} strokeWidth="2.5"/>
+            }
+            <text x={PL+xOff+(isRect?17:22)} y={16} fill="rgba(255,255,255,0.62)" fontSize="9.5">{lbl}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
 function TabDemoRevoluce() {
   return (
     <div>
-      <div style={{ background: ACCENT+"12", border: `1px solid ${ACCENT}44`, borderRadius: "16px", padding: "16px 18px", marginBottom: "18px" }}>
+      <div style={{ background: ACCENT+"12", border: `1px solid ${ACCENT}44`, borderRadius: "16px", padding: "16px 18px", marginBottom: "14px" }}>
         <div style={{ color: ACCENT, fontWeight: 700, fontSize: "15px", marginBottom: "6px" }}>Demografická revoluce</div>
         <p style={{ margin: 0, color: "rgba(255,255,255,0.75)", fontSize: "14px", lineHeight: 1.7 }}>
           Přechod od <b>vysoké porodnosti + vysoké úmrtnosti</b> k <b>nízkým hodnotám obou</b>, provázející industrializaci a modernizaci. Populace nejprve exploduje (fáze 2), poté se stabilizuje (fáze 4).
         </p>
       </div>
+
+      <DemoRevoluceChart />
 
       <Collapsible title="Klíčové pojmy" defaultOpen accent={ACCENT}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: "8px" }}>
