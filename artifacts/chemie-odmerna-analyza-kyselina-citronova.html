@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odměrná analýza — kyselina citronová v 7-Up</title>
+    <meta name="subject" content="Chemie">
+    <meta name="topic" content="Laboratorní praktikum — alkalimetrická titrace">
+    <meta name="template" content="mixed">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/chemie-odmerna-analyza-kyselina-citronova.jsx
+import { useState, useCallback, useMemo } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function shuffleQuestions(questions) {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const shuffledOptions = shuffledIndices.map((i) => q.options[i]);
+    const newCorrect = q.correct.map((oldIdx) => shuffledIndices.indexOf(oldIdx));
+    return { ...q, options: shuffledOptions, correct: newCorrect };
+  });
+}
+function arrEqual(a, b) {
+  if (!a || !b)
+    return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+function QuizEngine({ questions, accentColor = "#06b6d4" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  const shuffledQuestions = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = shuffledQuestions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffledQuestions.filter((q2, i) => revealed[i] && arrEqual(answers[i] || [], q2.correct)).length;
+  const pct = Math.round(score / shuffledQuestions.length * 100);
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, shuffledQuestions]);
+  const handleSingleSelect = useCallback((o) => {
+    if (isRevealed)
+      return;
+    setAnswers((p) => ({ ...p, [idx]: [o] }));
+    setRevealed((p) => ({ ...p, [idx]: true }));
+  }, [idx, isRevealed]);
+  const toggleMulti = useCallback((o) => {
+    if (isRevealed)
+      return;
+    setPendingMulti((p) => p.includes(o) ? p.filter((i) => i !== o) : [...p, o]);
+  }, [isRevealed]);
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0)
+      return;
+    setAnswers((p) => ({ ...p, [idx]: [...pendingMulti] }));
+    setRevealed((p) => ({ ...p, [idx]: true }));
+  }, [idx, pendingMulti]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPendingMulti([]);
+    setShowResults(false);
+    setShuffleKey((k) => k + 1);
+  }, []);
+  if (showResults) {
+    const msg = pct >= 90 ? "Výborně! Máš to perfektně zvládnuté!" : pct >= 70 ? "Dobře! Téměř máš vše zvládnuté." : pct >= 50 ? "Mohlo by to být lepší." : "Potřebuješ více přípravy!";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", ...glass, padding: "40px 48px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "52px", fontWeight: 800 },
+            children: [
+              score,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+            children: [
+              pct,
+              " %"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.8)", fontSize: "17px", marginBottom: "24px", maxWidth: "340px" },
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, background: accentColor + "66", border: `1px solid ${accentColor}` },
+            onClick: restart,
+            children: "Začít znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  const activeSet = isMulti ? isRevealed ? myAnswer : pendingMulti : myAnswer;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "680px", margin: "0 auto", padding: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" },
+        children: shuffledQuestions.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
+          return /* @__PURE__ */ jsxDEV("div", {
+            onClick: () => goTo(i),
+            title: `Otázka ${i + 1}`,
+            style: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: bg }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "24px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
+            children: [
+              "Otázka ",
+              idx + 1,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", flexDirection: "column", gap: "10px" },
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(255,255,255,0.12)";
+              let bg = "rgba(255,255,255,0.04)";
+              if (isRevealed) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(34,197,94,0.15)";
+                  border = "1px solid #22c55e";
+                } else if (activeSet.includes(i)) {
+                  bg = "rgba(239,68,68,0.15)";
+                  border = "1px solid #ef4444";
+                }
+              } else if (activeSet.includes(i)) {
+                bg = accentColor + "18";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("div", {
+                style: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px", background: bg, border },
+                onClick: () => isMulti ? toggleMulti(i) : handleSingleSelect(i),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: { fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" },
+                    children: activeSet.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRevealed && /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, opacity: pendingMulti.length === 0 ? 0.4 : 1, marginTop: "12px" },
+            onClick: submitMulti,
+            disabled: pendingMulti.length === 0,
+            children: "Potvrdit"
+          }, undefined, false, undefined, this),
+          isRevealed && /* @__PURE__ */ jsxDEV("div", {
+            style: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: `1px solid ${isCorrect ? "#22c55e" : "#ef4444"}`, background: "rgba(255,255,255,0.03)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+                children: isCorrect ? "Správně!" : "Špatně"
+              }, undefined, false, undefined, this),
+              !isCorrect && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+                children: [
+                  "Správná odpověď: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 },
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+                children: [
+                  "Tip: ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnStyle,
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          idx < shuffledQuestions.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: btnStyle,
+            onClick: () => goTo(idx + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, background: accentColor + "55", border: `1px solid ${accentColor}` },
+            onClick: () => setShowResults(true),
+            children: "Výsledky →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var glass = { background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", transition: "all 0.4s ease" };
+var btnStyle = { padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" };
+var accent = "#06b6d4";
+var theoryTabs = [
+  {
+    title: "Odměrná analýza",
+    content: [
+      { heading: "Co je odměrná analýza?", text: "Kvantitativní analytická metoda založená na přesném měření objemu spotřebovaného roztoku činidla o známé koncentraci (titrantu), který reaguje se stanovovanou látkou ve vzorku. Technika provedení se nazývá titrace." },
+      { heading: "Druhy titrací", text: "Podle typu chemického děje: 1) acidobazické (neutralizační) — přenos protonu, 2) srážecí (argentometrie), 3) komplexometrické (stanovení tvrdosti vody chelatonem 3), 4) redoxní / oxidometrické (manganometrie — přenos elektronů)." },
+      { heading: "Tato úloha", text: "Acidobazická titrace, konkrétně alkalimetrie — stanovujeme kyselinu pomocí odměrného roztoku silné zásady (NaOH). Bod ekvivalence detekujeme zároveň dvěma způsoby: vizuálně fenolftaleinem a potenciometricky pH sondou Vernier." }
+    ]
+  },
+  {
+    title: "Základní pojmy",
+    content: [
+      { heading: "Titrant (odměrný roztok)", text: "Roztok o přesně známé koncentraci (standard), který přidáváme z byrety. V této úloze: NaOH o c = 0,1000 mol·dm⁻³ (čtyři platné cifry — standardizovaný roztok)." },
+      { heading: "Titrand (stanovovaná látka)", text: "Vzorek o neznámé koncentraci, který je v titrační baňce nebo kádince. V této úloze: 20,0 cm³ dekarbonizovaného nápoje 7-Up." },
+      { heading: "Bod ekvivalence (BE)", text: "Teoretický okamžik, kdy látkové množství přidaného titrantu odpovídá stechiometrickému množství titrandu. U této reakce (slabá kyselina + silná zásada) nastává v mírně zásadité oblasti, přibližně při pH 8,5." },
+      { heading: "Titrační aparatura", text: "Stojan s byretou zakončenou kohoutem, byretová nálevka pro plnění, pod byretou titrační baňka (případně kádinka s pH sondou) na magnetické míchačce. Spodní meniskus hladiny titrantu se nastavuje přesně na nulovou rysku v rovině očí." }
+    ]
+  },
+  {
+    title: "Kyselina citronová",
+    content: [
+      { heading: "Co titrujeme", text: "Kyselina citronová = kyselina 2-hydroxypropan-1,2,3-trikarboxylová, sumární vzorec C₆H₈O₇. Je to slabá organická kyselina, trojsytná (triprotická) — obsahuje tři karboxylové skupiny −COOH schopné odštěpit proton." },
+      { heading: "Rovnice neutralizace", text: "C₆H₈O₇ + 3 NaOH → Na₃C₆H₅O₇ + 3 H₂O. Na 1 mol kyseliny citronové tedy spotřebujeme právě 3 moly NaOH. Produktem je citronan sodný (Na₃C₆H₅O₇) a voda." },
+      { heading: "Stechiometrický klíč", text: "n(kys. citronová) = n(NaOH) / 3. Tato trojka je klíčová pro výpočet — bez ní bychom koncentraci kyseliny nadhodnotili trojnásobně." },
+      { heading: "Proč jeden skok a ne tři?", text: "Ačkoliv je kyselina trojsytná, pKₐ jejích tří disociačních stupňů jsou si velmi blízké (pKₐ₁ ≈ 3,1; pKₐ₂ ≈ 4,8; pKₐ₃ ≈ 6,4). Disociace jednotlivých stupňů se překrývají, proto na titrační křivce vidíme pouze jeden výrazný společný skok při celkové neutralizaci všech tří protonů." }
+    ]
+  },
+  {
+    title: "Detekce bodu ekvivalence",
+    content: [
+      { heading: "Vizuální indikace — fenolftalein", text: "Fenolftalein je bezbarvý v kyselém prostředí a přechází do karmínově růžové v oblasti pH 8,2–10,0. Na začátek se do baňky přidávají 2 kapky 1% roztoku v ethanolu. Okamžik, kdy se objeví první trvalé narůžovělé zbarvení, které se již při promíchání nevrátí k čiré, odpovídá objemu V_VIZ." },
+      { heading: "Potenciometrická indikace — pH sonda Vernier", text: "pH sonda průběžně měří pH roztoku a data se zaznamenávají softwarem Graphical Analysis na rozhraní LabQuest/PC. Získáváme titrační křivku — závislost pH na objemu přidaného NaOH." },
+      { heading: "Metoda první derivace", text: "Bod ekvivalence odpovídá inflexnímu bodu titrační křivky, kde pH roste nejrychleji. Graficky jej najdeme jako maximum (pík) křivky první derivace dpH/dV. Objem X-ové souřadnice tohoto maxima je V_EKV (na dvě desetinná místa)." },
+      { heading: "Rozdíl ΔV a přesnost", text: "ΔV = V_EKV − V_VIZ. Fenolftalein mění barvu s mírným nadbytkem titrantu (pH 8,2–10,0), zatímco derivace určí objektivní inflexní bod. Proto je přístrojová metoda přesnější — eliminuje subjektivitu lidského oka." }
+    ]
+  }
+];
+var procedures = [
+  {
+    title: "A. Příprava",
+    subtitle: "Software, byreta a vzorek",
+    steps: [
+      "Odplynění vzorku: 100 ml nápoje 7-Up je povařeno po dobu 5 minut a poté ochlazeno v ledové lázni. CO₂ musí být odstraněn, aby nezkresloval výsledek (působí jako slabá kyselina).",
+      "Spuštění SW: Graphical Analysis → Sběr dat ze senzorů. Vlevo dole nastavit Režim: Časová závislost → Režim jednotlivých událostí → Události a hodnoty.",
+      "Typ událostí: Události se zadáváním hodnot. Veličina: Objem, Jednotky: ml. Kliknout na Hotovo.",
+      "Do čisté kádinky je odlito přibližně 100 cm³ odměrného roztoku NaOH (c = 0,1000 mol·dm⁻³).",
+      "Do horního ústí byrety je vložena byretová nálevka a byreta je opatrně naplněna mírně nad nulovou rysku.",
+      "Nálevka je ihned sundána a odložena na čistý filtrační papír.",
+      "Pod hrot byrety je umístěna odpadní kádinka a prudkým otevřením kohoutu je část roztoku vystříknuta tak, aby v hrotu nezůstala žádná vzduchová bublina.",
+      "Pomalým odpouštěním je dolní meniskus hladiny nastaven přesně na nulovou rysku (při pohledu v rovině očí).",
+      "Pomocí nedělené pipety třídy A s propipetou je přesně odměřeno 20,0 cm³ dekarbonizovaného vzorku 7-Up.",
+      "Vzorek je vypuštěn do kádinky 250 cm³ (pozor: pipetu nevyfukujeme — zbytek kapaliny v špičce je kalibrace na výtok).",
+      "Do kádinky jsou přidány 2 kapky roztoku fenolftaleinu a opatrně magnetické míchadélko.",
+      "Kádinka je postavena na střed magnetické míchačky. Otáčky jsou nastaveny tak, aby se tvořil malý vír, ale roztok nestříkal na stěny. Do roztoku je ponořena pH sonda Vernier."
+    ]
+  },
+  {
+    title: "B. Realizace titrace",
+    subtitle: "Tři fáze + vizuální odečet",
+    steps: [
+      "Je kliknuto na tlačítko Zahájit měření (zelené).",
+      "Bod 0: Před otevřením kohoutu byrety je kliknuto na Zachovat, zadána hodnota 0 a Zachovat hodnotu.",
+      "FÁZE 1 (rychlá): NaOH je přidáván po 1,0 ml. Po každém přídavku a ustálení pH je kliknuto na Zachovat a zadán celkový objem na byretě (1, 2, 3...).",
+      "FÁZE 2 (přesná): Jakmile pH dosáhne 6,0, přídavky jsou zmenšeny na 0,2 cm³ (cca 4 kapky).",
+      "DŮLEŽITÉ — vizuální indikace: Barva roztoku je pozorně sledována proti bílé podložce. V okamžiku prvního trvalého narůžovělého zbarvení, které se již odbarvením nevrátí, je odečten okamžitý objem na byretě.",
+      "Tento objem je ihned zapsán do poznámek jako V_VIZ. Pozor: v softwaru pokračujeme v měření dál — V_VIZ je údaj pouze pro pozdější porovnání!",
+      "FÁZE 3 (dojezd): Nad pH 10,0 je opět přidáváno po 1,0 ml až do pH cca 11,5. Poté je kliknuto na Zastavit.",
+      "Výsledky měření jsou zaznamenány do Tabulky 1 (V_VZOREK = 20,00; V_VIZ; V_EKV; ΔV)."
+    ]
+  },
+  {
+    title: "C. Vyhodnocení (1. derivace)",
+    subtitle: "Graphical Analysis",
+    steps: [
+      "Vpravo nahoře je kliknuto na ikonu Možnosti zobrazení grafu (obdélníček) a je zapnuta Tabulka.",
+      "V záhlaví sloupce pH je kliknuto na tři tečky → Přidat vypočítávanou veličinu.",
+      "Název: Derivace, Jednotky: pH/ml.",
+      "Vložit výraz → Kalkulus → Derivace. Jako proměnná je zvolena pH.",
+      "V grafu je kliknuto na levou osu Y a je zaškrtnuto zobrazení sloupce Derivace. Objeví se druhá křivka s výrazným maximem.",
+      "Odečet V_EKV: Je nalezen nejvyšší bod (pík) křivky první derivace. Hodnota na ose X (objem) odpovídající tomuto maximu je bod ekvivalence V_EKV.",
+      "Hodnota je zapsána do Tabulky 1 na dvě desetinná místa.",
+      "Pro obě paralely je vypočtena průměrná hodnota V̄_EKV, která vstoupí do výpočtu koncentrace."
+    ]
+  }
+];
+var calculations = [
+  {
+    title: "Látkové množství NaOH",
+    problem: "Kolik molů NaOH bylo spotřebováno, pokud V̄_EKV = 11,50 cm³ a c(NaOH) = 0,1000 mol·dm⁻³?",
+    solution: `n(NaOH) = c(NaOH) · V̄_EKV
+V̄_EKV = 11,50 cm³ = 0,01150 dm³
+n(NaOH) = 0,1000 · 0,01150
+n(NaOH) = 1,150 · 10⁻³ mol = 0,001150 mol`
+  },
+  {
+    title: "Koncentrace kyseliny citronové",
+    problem: "Jaká je látková koncentrace kyseliny citronové v 7-Up? (V_VZOREK = 20,00 cm³, n(NaOH) = 1,150·10⁻³ mol)",
+    solution: `Ze stechiometrie: n(kys.) = n(NaOH) / 3
+Rovnice: C₆H₈O₇ + 3 NaOH → Na₃C₆H₅O₇ + 3 H₂O
+
+c(kys.) = n(NaOH) / (3 · V_VZOREK)
+c(kys.) = (0,1000 · 0,01150) / (3 · 0,02000)
+c(kys.) = 0,001150 / 0,06000
+c(kys.) ≈ 0,01917 mol·dm⁻³
+
+POZOR: Nesmíme zapomenout dělit třemi! Jinak výsledek přestřelíme trojnásobně.`
+  },
+  {
+    title: "Obecný vzorec",
+    problem: "Odvoďte obecný vzorec pro koncentraci kyseliny citronové přímo z naměřených veličin.",
+    solution: `c_kys = n(NaOH) / (3 · V_vzorek)
+c_kys = [c(NaOH) · V̄_EKV] / (3 · V_vzorek)
+
+Kde:
+  c(NaOH)  = 0,1000 mol·dm⁻³
+  V̄_EKV   = průměrná spotřeba [dm³]
+  V_vzorek = 0,02000 dm³ (= 20,00 cm³)
+  3        = stechiometrický poměr (trojsytná kyselina)`
+  },
+  {
+    title: "ΔV — rozdíl metod",
+    problem: "V_VIZ = 11,75 cm³, V_EKV = 11,50 cm³. Vypočtěte ΔV a vysvětlete znaménko.",
+    solution: `ΔV = V_EKV − V_VIZ
+ΔV = 11,50 − 11,75 = −0,25 cm³
+
+Záporná hodnota znamená, že vizuální detekce nastala AŽ ZA bodem ekvivalence
+(objev růžového zbarvení vyžaduje mírný přebytek NaOH, protože fenolftalein
+mění barvu v pH 8,2–10,0 — tedy už v zásaditější oblasti než přesný inflex).
+
+V protokolu se obvykle uvádí ΔV = V_EKV − V_VIZ jak definováno v zadání.
+Kladné i záporné hodnoty jsou v praxi možné dle konkrétního vzorku a pozornosti.`
+  },
+  {
+    title: "Ba(OH)₂ místo NaOH",
+    problem: "Co kdybychom místo NaOH použili Ba(OH)₂ o stejné koncentraci 0,1000 mol·dm⁻³? Jak se změní spotřeba?",
+    solution: `Rovnice: 2 C₆H₈O₇ + 3 Ba(OH)₂ → Ba₃(C₆H₅O₇)₂ + 6 H₂O
+
+Ba(OH)₂ uvolňuje 2 OH⁻ z každé molekuly, tedy nese dvakrát více bazických ekvivalentů
+než NaOH. Na neutralizaci stejného množství kyseliny tedy stačí POLOVIČNÍ
+látkové množství Ba(OH)₂, a protože obě koncentrace jsou stejné, stačí
+POLOVIČNÍ OBJEM.
+
+V̄(Ba(OH)₂) = V̄(NaOH) / 2
+
+Stechiometrický přepočet:
+n(kys.) = (2/3) · n(Ba(OH)₂)   — nebo obecně: n(H⁺) = n(OH⁻) v BE.`
+  }
+];
+var questions = [
+  {
+    question: "Proč musí být nápoj 7-Up před titrací důkladně zbaven CO₂?",
+    type: "single",
+    options: [
+      "CO₂ by rozpouštěl sklo baňky a zkreslil výsledek",
+      "CO₂ tvoří ve vodě kyselinu uhličitou, která by reagovala s NaOH a falešně zvýšila spotřebu",
+      "CO₂ blokuje pH sondu Vernier, která pak neměří",
+      "CO₂ reaguje s fenolftaleinem a maže jeho barevný přechod"
+    ],
+    correct: [1],
+    explanation: "CO₂ + H₂O ⇌ H₂CO₃. Kyselina uhličitá by se titrovala společně s kys. citronovou, spotřeba NaOH by byla vyšší a výsledná c(kys. citronové) nadhodnocena. Proto se nápoj 5 min povaří.",
+    tip: "Bublinky v kolí = slabá kyselina navíc. Musí pryč."
+  },
+  {
+    question: "Jaká je stechiometrie reakce kyseliny citronové s NaOH?",
+    type: "single",
+    options: [
+      "C₆H₈O₇ + NaOH → NaC₆H₇O₇ + H₂O",
+      "C₆H₈O₇ + 2 NaOH → Na₂C₆H₆O₇ + 2 H₂O",
+      "C₆H₈O₇ + 3 NaOH → Na₃C₆H₅O₇ + 3 H₂O",
+      "2 C₆H₈O₇ + 3 NaOH → Na₃(C₆H₇O₇)₂ + 3 H₂O"
+    ],
+    correct: [2],
+    explanation: "Kyselina citronová je TROJSYTNÁ — má tři COOH skupiny. Na její úplnou neutralizaci je tedy potřeba přesně 3 moly NaOH na 1 mol kyseliny. Produktem je citronan sodný Na₃C₆H₅O₇.",
+    tip: "Trojka je klíčová — při výpočtu c_kys dělíme třemi!"
+  },
+  {
+    question: "Proč na titrační křivce kys. citronové vidíme POUZE JEDEN výrazný skok, ačkoliv je to trojsytná kyselina?",
+    type: "single",
+    options: [
+      "Protože dva ze tří protonů jsou příliš slabé a nereagují",
+      "Protože hodnoty pKₐ₁, pKₐ₂ a pKₐ₃ jsou si blízké, jednotlivé disociační stupně se překrývají do jednoho společného skoku",
+      "Protože fenolftalein barví jen při úplné neutralizaci",
+      "Protože NaOH reaguje pouze s nejsilnější karboxylovou skupinou"
+    ],
+    correct: [1],
+    explanation: "pKₐ₁ ≈ 3,1; pKₐ₂ ≈ 4,8; pKₐ₃ ≈ 6,4 — hodnoty leží blízko sebe (Δ<2), takže jednotlivé stupně disociace se neoddělí. Tři malé skoky by vyžadovaly, aby se pKₐ lišily alespoň o 4 jednotky. Na křivce proto pozorujeme jen jeden souhrnný skok."
+  },
+  {
+    question: "Jakou funkci plní fenolftalein v této titraci?",
+    type: "single",
+    options: [
+      "Je katalyzátorem neutralizace",
+      "Vizuální indikátor bodu ekvivalence — mění barvu v oblasti pH 8,2–10,0",
+      "Pufruje roztok, aby bylo měření pH stabilnější",
+      "Váže CO₂, který zbyl ve vzorku"
+    ],
+    correct: [1],
+    explanation: "Fenolftalein je acidobazický indikátor. V kyselé oblasti je bezbarvý, v pH 8,2–10,0 přechází do karmínově růžové. BE slabé kyseliny se silnou zásadou leží přibližně při pH 8,5, takže fenolftalein je vhodný."
+  },
+  {
+    question: "Proč je přístrojové určení bodu ekvivalence (derivace) přesnější než vizuální detekce fenolftaleinem?",
+    type: "single",
+    options: [
+      "Počítač měří s větším počtem desetinných míst",
+      "Fenolftalein mění barvu až s mírným nadbytkem NaOH; derivace hledá objektivní inflexní bod bez subjektivní chyby oka",
+      "Fenolftalein nereaguje s kys. citronovou",
+      "pH sonda eliminuje potřebu kalibrace byrety"
+    ],
+    correct: [1],
+    explanation: "Fenolftalein přechází v rozsahu pH 8,2–10,0, tedy AŽ ZA přesným BE — proto V_VIZ bývá větší než V_EKV. První derivace titrační křivky identifikuje maximum směrnice dpH/dV, což je objektivní matematický bod bez lidské subjektivity."
+  },
+  {
+    question: "Jaký je vzorec pro výpočet koncentrace kys. citronové z naměřeného V̄_EKV?",
+    type: "single",
+    options: [
+      "c_kys = c(NaOH) · V̄_EKV / V_vzorek",
+      "c_kys = 3 · c(NaOH) · V̄_EKV / V_vzorek",
+      "c_kys = c(NaOH) · V̄_EKV / (3 · V_vzorek)",
+      "c_kys = V_vzorek / (3 · c(NaOH) · V̄_EKV)"
+    ],
+    correct: [2],
+    explanation: "n(NaOH) = c(NaOH)·V̄_EKV. Ze stechiometrie 1 : 3 je n(kys.) = n(NaOH)/3. Po dělení objemem vzorku dostaneme c_kys = c(NaOH)·V̄_EKV / (3·V_vzorek)."
+  },
+  {
+    question: "Co kdybychom místo NaOH použili Ba(OH)₂ o STEJNÉ koncentraci 0,1000 mol·dm⁻³? Jak se změní spotřeba?",
+    type: "single",
+    options: [
+      "Spotřeba bude stejná — koncentrace je stejná",
+      "Spotřeba bude poloviční, protože Ba(OH)₂ uvolňuje 2 OH⁻ na molekulu",
+      "Spotřeba bude dvojnásobná, protože Ba²⁺ se neúčastní reakce",
+      "Spotřeba bude trojnásobná kvůli trojsytné kyselině"
+    ],
+    correct: [1],
+    explanation: "2 C₆H₈O₇ + 3 Ba(OH)₂ → Ba₃(C₆H₅O₇)₂ + 6 H₂O. Každá molekula Ba(OH)₂ poskytuje 2 OH⁻, takže na neutralizaci stejného množství H⁺ stačí poloviční látkové množství — a při stejné koncentraci poloviční objem."
+  },
+  {
+    question: "Co odečítáme jako V_VIZ?",
+    type: "single",
+    options: [
+      "Objem NaOH při prvním náznaku změny barvy, i kdyby se zase ztratila",
+      "Objem NaOH v okamžiku prvního TRVALÉHO narůžovělého zbarvení, které se již odbarvením nevrátí k čiré",
+      "Objem NaOH, při kterém pH dosáhne přesně 7,00",
+      "Objem, kdy vymizí veškerá růžová barva"
+    ],
+    correct: [1],
+    explanation: "Platný odečet je až první TRVALÉ zbarvení — tedy takové, které při dalším promíchání neodbarví. Předčasné odečtení krátkodobého záblesku růžové by vedlo k chybě."
+  },
+  {
+    question: "V jaké fázi titrace se přídavky NaOH ZMENŠUJÍ z 1,0 ml na 0,2 cm³?",
+    type: "single",
+    options: [
+      "Hned na začátku měření, od 0,0 ml",
+      "Jakmile pH dosáhne hodnoty 6,0",
+      "Až po objevení růžového zbarvení",
+      "Nad pH 10,0"
+    ],
+    correct: [1],
+    explanation: "Fáze 1 (rychlá) — přídavky 1,0 ml až do pH 6,0. Fáze 2 (přesná) — od pH 6,0 přídavky 0,2 cm³ (cca 4 kapky), protože jsme blízko BE a potřebujeme jemné rozlišení. Fáze 3 (dojezd) — nad pH 10,0 opět 1,0 ml až do pH ~11,5."
+  },
+  {
+    question: "Proč se pipeta po vypuštění vzorku NEVYFUKUJE?",
+    type: "single",
+    options: [
+      "Protože by se rozbila",
+      "Protože analytická pipeta třídy A je kalibrována NA VÝTOK — zbytek v špičce je již započítán",
+      "Protože by došlo k odpaření vzorku",
+      "Protože vzorek obsahuje CO₂ a vyfouknutím by vzniklo riziko úniku"
+    ],
+    correct: [1],
+    explanation: "Nedělená pipeta třídy A je kalibrována na výtok (TD — to deliver). Výrobce při kalibraci počítá s tím, že drobný zbytek kapaliny v hrotu tam zůstane. Vyfouknutím bychom odměřili o tento zbytek víc, než je nominální objem."
+  },
+  {
+    question: "Co musí obsahovat záhlaví Tabulky 1?",
+    type: "multi",
+    options: [
+      "V_VZOREK / cm³",
+      "V_VIZ / cm³",
+      "V_EKV / cm³",
+      "ΔV / cm³",
+      "Hmotnost vzorku / g",
+      "Tlak nad roztokem / kPa"
+    ],
+    correct: [0, 1, 2, 3],
+    explanation: "Tabulka 1 má čtyři sloupce: V_VZOREK (=20,00), V_VIZ (vizuální odečet), V_EKV (z derivace, na 2 des. místa) a ΔV = V_EKV − V_VIZ. Hmotnost a tlak zde nejsou relevantní."
+  },
+  {
+    question: "Které z následujících jsou ZDROJE CHYB této titrace?",
+    type: "multi",
+    options: [
+      "Neúplné odstranění CO₂ z nápoje",
+      "Chyba v odečtu menisku na byretě",
+      "Subjektivita lidského oka při detekci prvního růžového zbarvení",
+      "Vliv dalších aditiv v nápoji (citronany jako pufr)",
+      "Gravitační zrychlení na konkrétním místě laboratoře",
+      "Barva stěn laboratoře"
+    ],
+    correct: [0, 1, 2, 3],
+    explanation: "Zbytkový CO₂, přesnost odečtu byrety (±0,05 cm³), subjektivita oka a přítomnost pufrujících aditiv jsou reálné chybové zdroje. Gravitace a barva stěn na výsledek nemají vliv.",
+    tip: "V závěru protokolu vždy diskutujte konkrétní zdroje chyb."
+  },
+  {
+    question: "Proč při plnění byrety prudce otevřeme kohout a vystříkneme část roztoku do odpadní kádinky?",
+    type: "single",
+    options: [
+      "Abychom otestovali, že kohout těsní",
+      "Abychom odstranili vzduchovou bublinu z hrotu byrety",
+      "Abychom propláchli byretu destilovanou vodou",
+      "Abychom zahřáli kapalinu"
+    ],
+    correct: [1],
+    explanation: "Bublina vzduchu v hrotu by při titraci způsobila systematickou chybu — objem odečtený na stupnici by neodpovídal skutečně vytečenému množství roztoku. Prudkým otevřením kohoutu bublinu vyženeme."
+  },
+  {
+    question: "Co je první derivace titrační křivky a k čemu slouží?",
+    type: "single",
+    options: [
+      "Druhý graf spotřeby vzorku v čase",
+      "Funkce dpH/dV — její maximum odpovídá inflexnímu bodu křivky, tj. bodu ekvivalence",
+      "Průměr všech naměřených pH hodnot",
+      "Rozdíl mezi V_VIZ a V_EKV"
+    ],
+    correct: [1],
+    explanation: "První derivace = rychlost změny pH při přidávání titrantu. V BE se pH mění nejrychleji (inflexní bod), takže derivace dpH/dV dosahuje maxima. Hodnota objemu na ose X v tomto píku je hledaný V_EKV."
+  },
+  {
+    question: "Přibližně jakou hodnotu bychom měli získat pro c(kys. citronové) v 7-Up?",
+    type: "single",
+    options: [
+      "~0,002 mol·dm⁻³",
+      "~0,02 mol·dm⁻³",
+      "~0,2 mol·dm⁻³",
+      "~2 mol·dm⁻³"
+    ],
+    correct: [1],
+    explanation: "Reálný 7-Up obsahuje kyselinu citronovou řádově v jednotkách g/l, což odpovídá ~0,01–0,03 mol·dm⁻³. Při V_EKV ≈ 11–12 cm³ a V_vzorek = 20 cm³ vychází c ≈ 0,019 mol·dm⁻³.",
+    tip: "Orientační kontrola: pokud vám vyjde 0,2 nebo 0,002, pravděpodobně jste se spletli o řád nebo zapomněli na trojku."
+  }
+];
+var flashcards = [
+  { front: "Odměrná analýza", back: "Kvantitativní metoda založená na přesném měření objemu titrantu o známé koncentraci, který reaguje se stanovovanou látkou. Technika: titrace." },
+  { front: "Titrant", back: "Odměrný roztok o přesně známé koncentraci, který přidáváme z byrety. Zde: NaOH, c = 0,1000 mol·dm⁻³." },
+  { front: "Titrand", back: "Vzorek o neznámé koncentraci v titrační baňce. Zde: 20,0 cm³ dekarbonizovaného 7-Up." },
+  { front: "Bod ekvivalence (BE)", back: "Okamžik, kdy látkové množství přidaného titrantu odpovídá stechiometrickému množství titrandu." },
+  { front: "Alkalimetrie", back: "Acidobazická titrace, kdy titrantem je silná zásada (NaOH, KOH) a stanovujeme kyselinu." },
+  { front: "Rovnice reakce", back: "C₆H₈O₇ + 3 NaOH → Na₃C₆H₅O₇ + 3 H₂O. Poměr 1 : 3." },
+  { front: "Stechiometrický klíč", back: "n(kys. citronová) = n(NaOH) / 3. Trojsytná kyselina = dělíme třemi!" },
+  { front: "Kyselina citronová", back: "Kys. 2-hydroxypropan-1,2,3-trikarboxylová, C₆H₈O₇. Slabá, trojsytná (tři −COOH)." },
+  { front: "Fenolftalein", back: "Acidobazický indikátor. Bezbarvý v kyselém, růžový v zásaditém (pH 8,2–10,0). 2 kapky 1% roztoku v ethanolu." },
+  { front: "V_VIZ", back: "Objem NaOH v okamžiku prvního trvalého narůžovělého zbarvení fenolftaleinu. Subjektivní, lehce přestřelí BE." },
+  { front: "V_EKV", back: "Objem NaOH odečtený z maxima první derivace titrační křivky v softwaru Graphical Analysis. Zapisuje se na 2 desetinná místa." },
+  { front: "ΔV", back: "ΔV = V_EKV − V_VIZ. Slouží k diskusi chyby lidského oka vs. přístrojové detekce." },
+  { front: "První derivace", back: "dpH/dV. Její maximum (pík) odpovídá inflexnímu bodu titrační křivky = bodu ekvivalence." },
+  { front: "Proč 1 skok?", back: "pKₐ₁ ≈ 3,1; pKₐ₂ ≈ 4,8; pKₐ₃ ≈ 6,4. Hodnoty jsou si blízké, jednotlivé stupně disociace se překrývají do jediného skoku." },
+  { front: "Proč odplynit?", back: "CO₂ tvoří ve vodě H₂CO₃, která by se také titrovala NaOH a zvýšila spotřebu → nadhodnocená c(kys. citronové)." },
+  { front: "Proč nevyfukovat pipetu?", back: "Analytická pipeta třídy A je kalibrována NA VÝTOK. Zbytek v hrotu je již započten výrobcem." },
+  { front: "Fáze 1 titrace", back: "Rychlá. Přídavky po 1,0 ml až do pH 6,0." },
+  { front: "Fáze 2 titrace", back: "Přesná. Od pH 6,0 přídavky po 0,2 cm³ (cca 4 kapky). V této fázi odečítáme V_VIZ." },
+  { front: "Fáze 3 titrace", back: "Dojezd. Nad pH 10,0 opět po 1,0 ml až do pH cca 11,5." },
+  { front: "Ba(OH)₂ místo NaOH", back: "Ba(OH)₂ nese 2 OH⁻ na molekulu → na stejnou kyselinu stačí poloviční n i V. Rovnice: 2 C₆H₈O₇ + 3 Ba(OH)₂ → Ba₃(C₆H₅O₇)₂ + 6 H₂O." }
+];
+var formulas = [
+  { label: "Látkové množství NaOH", formula: "n(NaOH) = c(NaOH) · V̄_EKV", unit: "[mol]" },
+  { label: "Stechiometrie", formula: "n(kys.) = n(NaOH) / 3", unit: "trojsytná kys." },
+  { label: "Koncentrace kys. citronové", formula: "c_kys = c(NaOH)·V̄_EKV / (3·V_vzorek)", unit: "[mol·dm⁻³]" },
+  { label: "Rozdíl metod detekce", formula: "ΔV = V_EKV − V_VIZ", unit: "[cm³]" },
+  { label: "c(NaOH)", formula: "0,1000 mol·dm⁻³", unit: "standardizovaný" },
+  { label: "V_vzorek", formula: "20,00 cm³ = 0,02000 dm³", unit: "pipeta A" },
+  { label: "Mₘ C₆H₈O₇", formula: "192,12 g/mol", unit: "" },
+  { label: "pKₐ kys. citronové", formula: "3,13 / 4,76 / 6,40", unit: "(tři stupně)" },
+  { label: "pH přechod fenolftaleinu", formula: "8,2 – 10,0", unit: "bezbarvý → růžový" },
+  { label: "pH v BE", formula: "≈ 8,5", unit: "slabá kys. + silná zás." }
+];
+var reactions = [
+  { label: "Neutralizace (s NaOH)", eq: "C₆H₈O₇ + 3 NaOH → Na₃C₆H₅O₇ + 3 H₂O" },
+  { label: "Alternativa (s Ba(OH)₂)", eq: "2 C₆H₈O₇ + 3 Ba(OH)₂ → Ba₃(C₆H₅O₇)₂ + 6 H₂O" },
+  { label: "Zbytkový CO₂ (nežádoucí)", eq: "CO₂ + H₂O ⇌ H₂CO₃  →  +NaOH  →  NaHCO₃" }
+];
+var tabs = ["Teorie", "Postup", "Výpočty", "Kvíz", "Kartičky", "Vzorce"];
+function App() {
+  const [tab, setTab] = useState(0);
+  const [theoryTab, setTheoryTab] = useState(0);
+  const [procTab, setProcTab] = useState(0);
+  const [openCalc, setOpenCalc] = useState(null);
+  const [openSteps, setOpenSteps] = useState({});
+  const [fcIdx, setFcIdx] = useState(0);
+  const [fcFlipped, setFcFlipped] = useState(false);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { minHeight: "100vh", background: "#0a0a1a", color: "#fff", fontFamily: "'Exo 2', 'Segoe UI', sans-serif", position: "relative", overflow: "hidden" },
+    children: [
+      /* @__PURE__ */ jsxDEV("link", {
+        href: "https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap",
+        rel: "stylesheet"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle, rgba(6,182,212,0.15), transparent 70%)", top: "-10%", left: "-10%", animation: "float1 22s ease-in-out infinite" }
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle, rgba(124,58,237,0.12), transparent 70%)", bottom: "-10%", right: "-10%", animation: "float2 28s ease-in-out infinite" }
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", width: "400px", height: "400px", borderRadius: "50%", background: "radial-gradient(circle, rgba(251,191,36,0.08), transparent 70%)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", animation: "float3 34s ease-in-out infinite" }
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(60px,40px); } }
+        @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-50px,-30px); } }
+        @keyframes float3 { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(1.15); } }
+        @keyframes flipIn { from { opacity:0; transform:rotateY(90deg); } to { opacity:1; transform:rotateY(0); } }
+        * { box-sizing: border-box; }
+        button:disabled { opacity: 0.4; cursor: default; }
+      `
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "relative", zIndex: 1, maxWidth: "900px", margin: "0 auto", padding: "24px 16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { textAlign: "center", marginBottom: "28px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("h1", {
+                style: { fontSize: "28px", fontWeight: 800, background: "linear-gradient(135deg, #06b6d4, #7c3aed)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 },
+                children: "Odměrná analýza — kys. citronová v 7-Up"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: { color: "rgba(255,255,255,0.4)", fontSize: "14px", marginTop: "6px" },
+                children: "LP 7 — alkalimetrická titrace, domácí příprava"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { ...glass, padding: "16px 20px", marginBottom: "24px", borderColor: "rgba(251,191,36,0.3)", background: "rgba(251,191,36,0.05)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fbbf24", fontWeight: 700, fontSize: "14px", marginBottom: "8px" },
+                children: "Tři hlavní body pětiminutového testu"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.75)", fontSize: "14px", lineHeight: 1.6 },
+                children: [
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "1."
+                  }, undefined, false, undefined, this),
+                  " Rovnice C₆H₈O₇ + 3 NaOH → Na₃C₆H₅O₇ + 3 H₂O a stechiometrický poměr 1 : 3 (dělit třemi!).",
+                  /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "2."
+                  }, undefined, false, undefined, this),
+                  " Vzorec c_kys = c(NaOH)·V̄_EKV / (3·V_vzorek) a pracovní postup — tři fáze titrace.",
+                  /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("strong", {
+                    children: "3."
+                  }, undefined, false, undefined, this),
+                  " Rozdíl fenolftalein (V_VIZ) vs. první derivace (V_EKV) a proč je derivace objektivnější."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "24px" },
+            children: tabs.map((t, i) => /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => setTab(i),
+              style: { padding: "8px 20px", borderRadius: "999px", border: tab === i ? `1px solid ${accent}` : "1px solid rgba(255,255,255,0.12)", background: tab === i ? accent + "33" : "rgba(255,255,255,0.05)", color: tab === i ? "#67e8f9" : "rgba(255,255,255,0.5)", cursor: "pointer", fontSize: "14px", fontWeight: 600, transition: "all 0.4s ease" },
+              children: t
+            }, i, false, undefined, this))
+          }, undefined, false, undefined, this),
+          tab === 0 && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" },
+                children: theoryTabs.map((t, i) => /* @__PURE__ */ jsxDEV("button", {
+                  onClick: () => setTheoryTab(i),
+                  style: { padding: "6px 14px", borderRadius: "10px", border: theoryTab === i ? `1px solid ${accent}` : "1px solid rgba(255,255,255,0.1)", background: theoryTab === i ? accent + "22" : "transparent", color: theoryTab === i ? "#67e8f9" : "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: "13px", fontWeight: 600, transition: "all 0.4s ease" },
+                  children: t.title
+                }, i, false, undefined, this))
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { ...glass, padding: "24px" },
+                children: theoryTabs[theoryTab].content.map((item, i) => /* @__PURE__ */ jsxDEV("div", {
+                  style: { marginBottom: i < theoryTabs[theoryTab].content.length - 1 ? "20px" : 0 },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("h3", {
+                      style: { color: "#67e8f9", fontSize: "16px", fontWeight: 700, margin: 0 },
+                      children: item.heading
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("p", {
+                      style: { color: "rgba(255,255,255,0.75)", fontSize: "15px", lineHeight: 1.65, margin: "6px 0 0 0" },
+                      children: item.text
+                    }, undefined, false, undefined, this)
+                  ]
+                }, i, true, undefined, this))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          tab === 1 && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" },
+                children: procedures.map((p, i) => /* @__PURE__ */ jsxDEV("button", {
+                  onClick: () => setProcTab(i),
+                  style: { padding: "6px 14px", borderRadius: "10px", border: procTab === i ? `1px solid ${accent}` : "1px solid rgba(255,255,255,0.1)", background: procTab === i ? accent + "22" : "transparent", color: procTab === i ? "#67e8f9" : "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: "13px", fontWeight: 600, transition: "all 0.4s ease" },
+                  children: p.title
+                }, i, false, undefined, this))
+              }, undefined, false, undefined, this),
+              (() => {
+                const p = procedures[procTab];
+                return /* @__PURE__ */ jsxDEV("div", {
+                  style: { ...glass, padding: "24px" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("h3", {
+                      style: { color: "#c4b5fd", fontSize: "18px", fontWeight: 700, margin: "0 0 4px 0" },
+                      children: p.title
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "rgba(255,255,255,0.55)", fontSize: "14px", marginBottom: "16px" },
+                      children: p.subtitle
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("button", {
+                      onClick: () => setOpenSteps((s) => ({ ...s, [procTab]: !s[procTab] })),
+                      style: { ...btnStyle, marginBottom: "12px", width: "100%", textAlign: "left" },
+                      children: [
+                        openSteps[procTab] ? "▼" : "▶",
+                        " Zobrazit kroky postupu"
+                      ]
+                    }, undefined, true, undefined, this),
+                    openSteps[procTab] && /* @__PURE__ */ jsxDEV("div", {
+                      style: { display: "flex", flexDirection: "column", gap: "8px" },
+                      children: p.steps.map((s, i) => /* @__PURE__ */ jsxDEV("div", {
+                        style: { display: "flex", gap: "12px", alignItems: "flex-start", padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.06)" },
+                        children: [
+                          /* @__PURE__ */ jsxDEV("span", {
+                            style: { color: accent, fontWeight: 700, minWidth: "28px", fontSize: "15px" },
+                            children: [
+                              i + 1,
+                              "."
+                            ]
+                          }, undefined, true, undefined, this),
+                          /* @__PURE__ */ jsxDEV("span", {
+                            style: { color: "rgba(255,255,255,0.8)", fontSize: "14px", lineHeight: 1.5 },
+                            children: s
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, i, true, undefined, this))
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this);
+              })()
+            ]
+          }, undefined, true, undefined, this),
+          tab === 2 && /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", flexDirection: "column", gap: "12px" },
+            children: calculations.map((c, i) => /* @__PURE__ */ jsxDEV("div", {
+              style: { ...glass, padding: "20px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { flex: 1, minWidth: "200px" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "#c4b5fd", fontWeight: 700, fontSize: "15px" },
+                          children: c.title
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "rgba(255,255,255,0.55)", fontSize: "14px", marginTop: "4px" },
+                          children: c.problem
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("button", {
+                      onClick: () => setOpenCalc(openCalc === i ? null : i),
+                      style: { ...btnStyle, fontSize: "13px", padding: "6px 14px" },
+                      children: openCalc === i ? "Skrýt" : "Řešení"
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                openCalc === i && /* @__PURE__ */ jsxDEV("pre", {
+                  style: { fontFamily: "'JetBrains Mono', monospace", color: "#67e8f9", fontSize: "13px", background: "rgba(6,182,212,0.06)", padding: "14px", borderRadius: "12px", marginTop: "12px", whiteSpace: "pre-wrap", lineHeight: 1.6, margin: "12px 0 0 0" },
+                  children: c.solution
+                }, undefined, false, undefined, this)
+              ]
+            }, i, true, undefined, this))
+          }, undefined, false, undefined, this),
+          tab === 3 && /* @__PURE__ */ jsxDEV(QuizEngine, {
+            questions,
+            accentColor: accent
+          }, undefined, false, undefined, this),
+          tab === 4 && /* @__PURE__ */ jsxDEV("div", {
+            style: { maxWidth: "520px", margin: "0 auto" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { textAlign: "center", color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "12px" },
+                children: [
+                  fcIdx + 1,
+                  " / ",
+                  flashcards.length
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                onClick: () => setFcFlipped(!fcFlipped),
+                style: { ...glass, padding: "40px 28px", minHeight: "200px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", animation: "flipIn 0.4s ease", textAlign: "center" },
+                children: /* @__PURE__ */ jsxDEV("div", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: fcFlipped ? "#67e8f9" : "#fbbf24", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" },
+                      children: fcFlipped ? "Odpověď" : "Pojem"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "#fff", fontSize: "18px", lineHeight: 1.6, fontWeight: fcFlipped ? 400 : 700 },
+                      children: fcFlipped ? flashcards[fcIdx].back : flashcards[fcIdx].front
+                    }, `${fcIdx}-${fcFlipped}`, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", justifyContent: "space-between", marginTop: "16px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("button", {
+                    style: btnStyle,
+                    disabled: fcIdx === 0,
+                    onClick: () => {
+                      setFcIdx(fcIdx - 1);
+                      setFcFlipped(false);
+                    },
+                    children: "← Předchozí"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("button", {
+                    style: { ...btnStyle, background: "rgba(255,255,255,0.05)" },
+                    onClick: () => setFcFlipped(!fcFlipped),
+                    children: "Otočit"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("button", {
+                    style: btnStyle,
+                    disabled: fcIdx === flashcards.length - 1,
+                    onClick: () => {
+                      setFcIdx(fcIdx + 1);
+                      setFcFlipped(false);
+                    },
+                    children: "Další →"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          tab === 5 && /* @__PURE__ */ jsxDEV("div", {
+            style: { ...glass, padding: "24px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("h3", {
+                style: { color: "#c4b5fd", fontSize: "18px", fontWeight: 700, margin: "0 0 16px 0" },
+                children: "Vzorce & konstanty"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "10px" },
+                children: formulas.map((f, i) => /* @__PURE__ */ jsxDEV("div", {
+                  style: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: "rgba(255,255,255,0.03)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.06)", flexWrap: "wrap", gap: "8px" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("span", {
+                      style: { color: "rgba(255,255,255,0.6)", fontSize: "14px", minWidth: "180px" },
+                      children: f.label
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("span", {
+                      style: { fontFamily: "'JetBrains Mono', monospace", color: "#67e8f9", fontSize: "15px", fontWeight: 600 },
+                      children: f.formula
+                    }, undefined, false, undefined, this),
+                    f.unit && /* @__PURE__ */ jsxDEV("span", {
+                      style: { color: "rgba(255,255,255,0.3)", fontSize: "12px" },
+                      children: f.unit
+                    }, undefined, false, undefined, this)
+                  ]
+                }, i, true, undefined, this))
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("h3", {
+                style: { color: "#c4b5fd", fontSize: "16px", fontWeight: 700, margin: "28px 0 12px 0" },
+                children: "Chemické rovnice"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "10px" },
+                children: reactions.map((r, i) => /* @__PURE__ */ jsxDEV("div", {
+                  style: { padding: "12px 16px", background: "rgba(124,58,237,0.08)", borderRadius: "12px", border: "1px solid rgba(124,58,237,0.2)" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "#c4b5fd", fontSize: "13px", marginBottom: "4px" },
+                      children: r.label
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { fontFamily: "'JetBrains Mono', monospace", color: "#fff", fontSize: "14px" },
+                      children: r.eq
+                    }, undefined, false, undefined, this)
+                  ]
+                }, i, true, undefined, this))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
