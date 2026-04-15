@@ -1,0 +1,534 @@
+// @title Amminkomplexy přechodných kovů — laboratorní praktikum
+// @subject Chemistry
+// @topic Koordinační sloučeniny, syntéza komplexů Cu a Ni
+// @template mixed
+
+import { useState, useCallback } from "react";
+
+// ── Quiz Engine ──────────────────────────────────────────────
+function QuizEngine({ questions, accentColor = "#a855f7" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+
+  const q = questions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = questions.filter((q, i) => revealed[i] && arrEqual(answers[i] || [], q.correct)).length;
+  const pct = Math.round((score / questions.length) * 100);
+
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(questions[i].type === "multi" ? (answers[i] || []) : []);
+  }, [answers, questions]);
+
+  const handleSingleSelect = useCallback((optionIdx) => {
+    if (isRevealed) return;
+    setAnswers(prev => ({ ...prev, [idx]: [optionIdx] }));
+    setRevealed(prev => ({ ...prev, [idx]: true }));
+  }, [idx, isRevealed]);
+
+  const toggleMulti = useCallback((optionIdx) => {
+    if (isRevealed) return;
+    setPendingMulti(prev => prev.includes(optionIdx) ? prev.filter(i => i !== optionIdx) : [...prev, optionIdx]);
+  }, [isRevealed]);
+
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0) return;
+    setAnswers(prev => ({ ...prev, [idx]: [...pendingMulti] }));
+    setRevealed(prev => ({ ...prev, [idx]: true }));
+  }, [idx, pendingMulti]);
+
+  const restart = useCallback(() => {
+    setIdx(0); setAnswers({}); setRevealed({}); setPendingMulti([]); setShowResults(false);
+  }, []);
+
+  if (showResults) {
+    const msg = pct >= 90 ? "🎉 Výborně! Máš to perfektně zvládnuté!" : pct >= 70 ? "👍 Dobře! Téměř máš vše zvládnuté." : pct >= 50 ? "😐 Mohlo by to být lepší." : "📚 Potřebuješ více přípravy!";
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" }}>
+        <div style={{ textAlign: "center", ...glass, padding: "40px 48px" }}>
+          <div style={{ color: "#fff", fontSize: "52px", fontWeight: 800 }}>{score} / {questions.length}</div>
+          <div style={{ color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" }}>{pct} %</div>
+          <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "17px", marginBottom: "24px", maxWidth: "340px" }}>{msg}</div>
+          <button style={{ ...btnStyle, background: accentColor + "66", border: `1px solid ${accentColor}` }} onClick={restart}>Začít znovu</button>
+        </div>
+      </div>
+    );
+  }
+
+  const activeSet = isMulti ? (isRevealed ? myAnswer : pendingMulti) : myAnswer;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "680px", margin: "0 auto", padding: "16px" }}>
+      <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" }}>
+        {questions.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx) bg = accentColor;
+          else if (revealed[i]) bg = arrEqual(answers[i] || [], questions[i].correct) ? "#22c55e" : "#ef4444";
+          return <div key={i} onClick={() => goTo(i)} title={`Otázka ${i + 1}`} style={{ width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: bg }} />;
+        })}
+      </div>
+      <div style={{ ...glass, padding: "24px" }}>
+        <div style={{ color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" }}>Otázka {idx + 1} / {questions.length}</div>
+        <div style={{ color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" }}>{q.question}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {q.options.map((opt, i) => {
+            let border = "1px solid rgba(255,255,255,0.12)";
+            let bg = "rgba(255,255,255,0.04)";
+            if (isRevealed) {
+              if (q.correct.includes(i)) { bg = "rgba(34,197,94,0.15)"; border = "1px solid #22c55e"; }
+              else if (activeSet.includes(i)) { bg = "rgba(239,68,68,0.15)"; border = "1px solid #ef4444"; }
+            } else if (activeSet.includes(i)) {
+              bg = accentColor + "18"; border = `1px solid ${accentColor}`;
+            }
+            return (
+              <div key={i} style={{ padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px", background: bg, border }} onClick={() => isMulti ? toggleMulti(i) : handleSingleSelect(i)}>
+                {isMulti && <span style={{ fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" }}>{activeSet.includes(i) ? "☑" : "☐"}</span>}
+                <span>{opt}</span>
+              </div>
+            );
+          })}
+        </div>
+        {isMulti && !isRevealed && <button style={{ ...btnStyle, opacity: pendingMulti.length === 0 ? 0.4 : 1, marginTop: "12px" }} onClick={submitMulti} disabled={pendingMulti.length === 0}>Potvrdit</button>}
+        {isRevealed && (
+          <div style={{ marginTop: "20px", padding: "16px", borderRadius: "14px", border: `1px solid ${isCorrect ? "#22c55e" : "#ef4444"}`, background: "rgba(255,255,255,0.03)" }}>
+            <div style={{ color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" }}>{isCorrect ? "✅ Správně!" : "❌ Špatně"}</div>
+            {!isCorrect && <div style={{ color: "#86efac", fontSize: "14px", marginBottom: "6px" }}>Správná odpověď: {q.correct.map(i => q.options[i]).join(", ")}</div>}
+            <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 }}>{q.explanation}</div>
+            {q.tip && <div style={{ color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" }}>💡 {q.tip}</div>}
+          </div>
+        )}
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <button style={btnStyle} onClick={() => goTo(idx - 1)} disabled={idx === 0}>← Předchozí</button>
+        {idx < questions.length - 1
+          ? <button style={btnStyle} onClick={() => goTo(idx + 1)}>Další →</button>
+          : <button style={{ ...btnStyle, background: accentColor + "55", border: `1px solid ${accentColor}` }} onClick={() => setShowResults(true)}>Výsledky →</button>}
+      </div>
+    </div>
+  );
+}
+
+function arrEqual(a, b) {
+  if (!a || !b) return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+
+// ── Styles ────────────────────────────────────────────────────
+const glass = { background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", transition: "all 0.4s ease" };
+const btnStyle = { padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" };
+const accent = "#7c3aed";
+const accentCyan = "#06b6d4";
+
+// ── Data ──────────────────────────────────────────────────────
+const theoryTabs = [
+  {
+    title: "Co jsou komplexy?",
+    content: [
+      { heading: "Koordinační sloučeniny", text: "Komplexy (koordinační sloučeniny) jsou částice, v nichž je na centrální atom (CA) donor-akceptorovou vazbou navázáno několik ligandů. Zapisujeme je v hranatých závorkách: [CA(ligandy)]." },
+      { heading: "Centrální atom (CA)", text: "Většinou přechodný kov — jeho valenční vrstva obsahuje (n−1)d elektrony, takže má volné orbitaly ns, np a nd, do kterých může přijímat elektronové páry. Funguje jako akceptor volného elektronového páru." },
+      { heading: "Ligandy", text: "Částice s volným elektronovým párem, které ho darují centrálnímu atomu — jsou tedy donory. Příklady: H₂O, OH⁻, CN⁻, NH₃, F⁻, Cl⁻, ethylendiamin (en)." },
+      { heading: "Donor-akceptorová (koordinačně-kovalentní) vazba", text: "Oba sdílené elektrony pocházejí od jednoho partnera (ligandu). Ligand = donor, CA = akceptor. Jinak se chová jako normální kovalentní vazba." },
+    ]
+  },
+  {
+    title: "Stabilita komplexů",
+    content: [
+      { heading: "Aquakomplexy", text: "Při rozpouštění solí ve vodě vznikají aquakomplexy — voda se jako ligand váže na CA. Např. Cu²⁺ + 4H₂O → [Cu(H₂O)₄]²⁺ (světle modrý)." },
+      { heading: "Substituce ligandů", text: "Molekuly vody mohou být nahrazeny silnějšími ligandy (NH₃, en). Proces je termodynamicky výhodný: ΔH < 0 (exotermní) a ΔS > 0 (roste entropie)." },
+      { heading: "Konstanta stability Kₖ", text: "Kvantitativně vyjadřuje stabilitu komplexu. Čím větší Kₖ, tím stabilnější komplex. Platí: Kₖ(aquakomplex) < Kₖ(amminkomplex) < Kₖ(ethylendiaminový komplex)." },
+      { heading: "Řada stability (v praktiku)", text: "[Cu(H₂O)₄]²⁺ (nejméně stabilní) → [Cu(NH₃)₄]²⁺ → [Cu(en)₂]²⁺ → [Cu(en)₃]²⁺ (nejstabilnější). Totéž platí analogicky pro nikl." },
+    ]
+  },
+  {
+    title: "Ethylendiamin",
+    content: [
+      { heading: "Co je ethylendiamin (en)?", text: "Systematický název: ethan-1,2-diamin. Vzorec: H₂N−CH₂−CH₂−NH₂. Má dva atomy dusíku, každý s volným elektronovým párem." },
+      { heading: "Bidentátní ligand", text: "Ethylendiamin se váže na CA oběma atomy N současně — je tedy bidentátní (= dvouzubý) ligand. Tvoří s CA pětičlenný chelatový cyklus, což zvyšuje stabilitu komplexu (chelátový efekt)." },
+      { heading: "Chelátový efekt", text: "Komplexy s chelátovými (polydentátními) ligandy jsou stabilnější než s monodentátními — proto en-komplexy mají vyšší Kₖ než NH₃-komplexy. Důvod: při navázání en se uvolní více malých molekul (H₂O), čímž roste entropie systému." },
+    ]
+  },
+  {
+    title: "Barevné změny",
+    content: [
+      { heading: "Proč jsou komplexy barevné?", text: "Přechodné kovy mají d-elektrony. V komplexu se d-orbitaly štěpí na energeticky odlišné hladiny. Absorpce viditelného světla při přechodu elektronů mezi těmito hladinami způsobuje barvu." },
+      { heading: "Měď — barevná řada", text: "CuSO₄ ve vodě → [Cu(H₂O)₄]²⁺ = světle modrý. Přidání NH₃ → nejprve Cu(OH)₂↓ (sraženina), pak se rozpouští → [Cu(NH₃)₄]²⁺ = tmavě modrý. S ethylendiaminem → [Cu(en)₂]SO₄ = temně modrý krystalický prášek." },
+      { heading: "Nikl", text: "NiCl₂ ve vodě → zelený roztok (aquakomplex). Po přidání en → [Ni(en)₃]Cl₂ = fialový krystalický prášek." },
+      { heading: "Cu(en)₃", text: "[Cu(en)₃]SO₄ = modré krystaly. Pozor: špatně rozpustný ve vodě, při promývání vodou/alkoholem ztrácí jeden en → vzniká bis(ethylendiamin)." },
+    ]
+  }
+];
+
+const procedures = [
+  {
+    title: "1. [Cu(en)₂]SO₄",
+    fullName: "Síran bis(ethylendiamin)měďnatý",
+    equation: "CuSO₄ + 2 en → [Cu(en)₂]SO₄",
+    eqEn: "2,2 ekvivalentu en vůči Cu",
+    solvent: "ethanol (90 ml)",
+    product: "Temně modrý krystalický prášek, rozpustný ve vodě",
+    steps: [
+      "Odvažte 5 g CuSO₄·5H₂O do kádinky.",
+      "Přidejte vodu → 20% roztok (tj. 5 g skalice + 20 g vody = 25 g roztoku celkem).",
+      "Vložte magnetické míchadlo, míchejte do úplného rozpuštění.",
+      "Za stálého míchání pomalu přikapejte 50% roztok ethylendiaminu (2,2 ekv. vůči mědi).",
+      "Tvoří se tmavě modrý roztok cílového komplexu.",
+      "Za míchání pomalu přikapejte 90 ml ethanolu.",
+      "Ponechte 5 minut v klidu → krystalizace.",
+      "Odsajte na fritě (vakuová filtrace).",
+      "Naplňte fritu ethanolem, rozmíchejte produkt, odsajte znovu (promytí).",
+      "Sušte prosáváním vzduchem na fritě.",
+      "Vysypte na předem zvážené hodinové sklo, zvažte.",
+      "Vypočtěte teoretický a procentuální výtěžek."
+    ]
+  },
+  {
+    title: "2. [Ni(en)₃]Cl₂·2H₂O",
+    fullName: "Dihydrát chloridu tris(ethylendiamin)nikelnatého",
+    equation: "NiCl₂ + 3 en → [Ni(en)₃]Cl₂",
+    eqEn: "6 ekvivalentů en vůči Ni",
+    solvent: "aceton (100 ml)",
+    product: "Fialový krystalický prášek, rozpustný ve vodě, nerozpustný v acetonu",
+    steps: [
+      "Odvažte 5 g NiCl₂·6H₂O do kádinky.",
+      "Přidejte vodu → 20% roztok.",
+      "Vložte magnetické míchadlo, míchejte do rozpuštění.",
+      "Za stálého míchání pomalu přikapejte 50% roztok ethylendiaminu (6 ekv. vůči niklu).",
+      "Tvoří se fialový roztok cílového komplexu.",
+      "Za míchání pomalu přikapejte 100 ml acetonu.",
+      "Ponechte 5 minut v klidu → krystalizace.",
+      "Odsajte na fritě.",
+      "Promyjte acetonem na fritě (naplnit, rozmíchat, odsát).",
+      "Sušte prosáváním vzduchem.",
+      "Vysypte na zvážené hodinové sklo, zvažte.",
+      "Vypočtěte výtěžek."
+    ]
+  },
+  {
+    title: "3. [Cu(en)₃]SO₄ ⭐",
+    fullName: "Síran tris(ethylendiamin)měďnatý (bonus)",
+    equation: "CuSO₄ + 3 en → [Cu(en)₃]SO₄",
+    eqEn: "12 ekvivalentů en vůči Cu",
+    solvent: "ethanol (75 ml)",
+    product: "Modré krystaly, špatně rozpustné ve vodě. Pozor: promýváním se odštěpuje en!",
+    steps: [
+      "Odvažte 5 g CuSO₄·5H₂O do kádinky.",
+      "Přidejte vodu → 20% roztok.",
+      "Magnetické míchadlo, míchejte do rozpuštění.",
+      "Za stálého míchání přikapejte 50% en (12 ekv. vůči mědi) → tmavě modrý roztok.",
+      "Pomalu přikapejte 75 ml ethanolu → světlemodrá suspenze.",
+      "5 minut klid → krystalizace.",
+      "Odsajte na fritě.",
+      "Promyjte ethanolem.",
+      "Sušte prosáváním vzduchu.",
+      "Zvažte na hodinkovém skle, vypočtěte výtěžek."
+    ]
+  }
+];
+
+const calculations = [
+  {
+    title: "Výpočet 20% roztoku CuSO₄",
+    problem: "Máme 5 g CuSO₄·5H₂O. Kolik vody přidat pro 20% roztok?",
+    solution: `w = m(látky) / m(roztoku)
+0,20 = 5 / m(roztoku)
+m(roztoku) = 5 / 0,20 = 25 g
+m(vody) = 25 − 5 = 20 g → přidáme 20 ml vody`
+  },
+  {
+    title: "Látkové množství CuSO₄·5H₂O",
+    problem: "Kolik molů je 5 g CuSO₄·5H₂O? (Mm = 249,7 g/mol)",
+    solution: `n = m / Mm = 5 / 249,7 ≈ 0,0200 mol
+
+Pozn.: Protokol uvádí Mm = 159,6 g/mol — to je Mm samotného CuSO₄ (bezvodého)!
+Pro výpočet z navážky hydrátu: Mm(CuSO₄·5H₂O) = 159,6 + 5×18 = 249,6 g/mol
+n = 5 / 249,6 ≈ 0,0200 mol Cu²⁺`
+  },
+  {
+    title: "Množství en pro [Cu(en)₂]SO₄",
+    problem: "Kolik ml 50% roztoku en potřebujeme (2,2 ekv.)?",
+    solution: `n(Cu²⁺) = 0,0200 mol
+n(en) = 2,2 × 0,0200 = 0,0441 mol
+m(en) = 0,0441 × 60,1 = 2,65 g (čistý en)
+Mm(en) = 60,1 g/mol
+
+Z 50% roztoku: m(roztoku) = 2,65 / 0,50 = 5,30 g
+Hustota en ~ 0,90 g/ml → V ≈ 5,30 / 0,90 ≈ 5,9 ml`
+  },
+  {
+    title: "Teoretický výtěžek [Cu(en)₂]SO₄",
+    problem: "Jaký je teoretický výtěžek z 0,0200 mol Cu²⁺?",
+    solution: `Reakce: CuSO₄ + 2 en → [Cu(en)₂]SO₄
+Poměr 1:1, takže n(produktu) = n(Cu²⁺) = 0,0200 mol
+
+Mm([Cu(en)₂]SO₄) = 63,5 + 2×60,1 + 32,1 + 4×16 = 279,8 g/mol
+m(teor) = 0,0200 × 279,8 = 5,60 g
+
+Procentuální výtěžek = (m(skutečná) / m(teor)) × 100 %`
+  },
+  {
+    title: "Látkové množství NiCl₂·6H₂O",
+    problem: "Kolik molů je 5 g NiCl₂·6H₂O? (Mm = 237,7 g/mol)",
+    solution: `n = m / Mm = 5 / 237,7 = 0,02103 mol
+
+Pro 6 ekv. en:
+n(en) = 6 × 0,02103 = 0,1262 mol
+m(en) = 0,1262 × 60,1 = 7,59 g
+m(50% roztoku) = 7,59 / 0,50 = 15,17 g`
+  }
+];
+
+const questions = [
+  { question: "Co je centrální atom v komplexu?", type: "single", options: ["Donor volného el. páru, většinou nekov", "Akceptor volného el. páru, většinou přechodný kov", "Anion, který tvoří vnější sféru komplexu", "Atom s plně obsazenými d-orbitaly"], correct: [0 + 1], explanation: "CA přijímá (akceptuje) volné elektronové páry od ligandů do svých prázdných orbitalů (ns, np, nd). Většinou jde o přechodný kov." },
+  { question: "Jakou roli hraje ligand v koordinační sloučenině?", type: "single", options: ["Akceptor volného el. páru", "Donor volného el. páru", "Katalyzátor reakce", "Nositel náboje komplexu"], correct: [1], explanation: "Ligand poskytuje (donuje) svůj volný elektronový pár do prázdného orbitalu centrálního atomu." },
+  { question: "Co znamená, že ethylendiamin je bidentátní ligand?", type: "single", options: ["Váže se jedním atomem N", "Váže se oběma atomy N současně na CA", "Tvoří dvě nezávislé vazby s dvěma různými CA", "Má dva typy vazeb — iontovou a kovalentní"], correct: [1], explanation: "Bidentátní = dvouzubý. En se váže na jeden CA prostřednictvím obou atomů dusíku, čímž tvoří pětičlenný chelatový cyklus." },
+  { question: "Proč jsou en-komplexy stabilnější než NH₃-komplexy?", type: "single", options: ["NH₃ má slabší bazicitu", "En tvoří chelatový cyklus → chelátový efekt (↑ entropie)", "En má větší molární hmotnost", "NH₃ se odpařuje z roztoku"], correct: [1], explanation: "Chelátový efekt: nahrazení monodentátních ligandů polydentátními uvolní více malých molekul (H₂O), což výrazně zvýší entropii systému (ΔS > 0). Spolu s ΔH < 0 to činí reakci silně termodynamicky výhodnou.", tip: "Chelát = klepeto (z řečtiny) — en svírá CA jako klepeto." },
+  { question: "Jaká je správná řada rostoucí stability?", type: "single", options: ["[Cu(en)₂]²⁺ < [Cu(H₂O)₄]²⁺ < [Cu(NH₃)₄]²⁺", "[Cu(NH₃)₄]²⁺ < [Cu(H₂O)₄]²⁺ < [Cu(en)₂]²⁺", "[Cu(H₂O)₄]²⁺ < [Cu(NH₃)₄]²⁺ < [Cu(en)₂]²⁺", "[Cu(H₂O)₄]²⁺ < [Cu(en)₂]²⁺ < [Cu(NH₃)₄]²⁺"], correct: [2], explanation: "Aquakomplex je nejméně stabilní, amminkomplex uprostřed, ethylendiaminový komplex nejstabilnější díky chelátovému efektu." },
+  { question: "Jak se jmenuje [Cu(H₂O)₄]²⁺?", type: "single", options: ["Kationt tetraamminměďnatý", "Kationt tetraaquaměďnatý", "Kationt bis(ethylendiamin)měďnatý", "Kationt hexaaquaměďnatý"], correct: [1], explanation: "Tetra = 4, aqua = voda, měďnatý = Cu²⁺. Tedy: kationt tetraaquaměďnatý." },
+  { question: "Jak se jmenuje [Cu(NH₃)₄]²⁺?", type: "single", options: ["Kationt tetraaquaměďnatý", "Kationt tetraamminměďnatý", "Kationt diaminměďnatý", "Kationt tetrachloridoměďnatý"], correct: [1], explanation: "Ammin = NH₃ jako ligand (pozor: ammin s dvojím m, ne amin). Tetraamminměďnatý." },
+  { question: "Proč při přidání NH₃ k [Cu(H₂O)₄]²⁺ nejprve vzniká sraženina?", type: "single", options: ["Amoniak reaguje přímo s Cu za vzniku kovu", "NH₃ zvýší pH → vzniká Cu(OH)₂↓, která se pak rozpouští v nadbytku NH₃", "Vzniká CuCl₂, který je nerozpustný", "NH₃ způsobí oxidaci Cu²⁺ na Cu³⁺"], correct: [1], explanation: "Amoniak (čpavková voda) je zásaditý → zvýší pH → hydroxidové ionty sráží Cu(OH)₂. V nadbytku NH₃ se sraženina rozpouští za vzniku stabilního amminkomplexu [Cu(NH₃)₄]²⁺." },
+  { question: "K čemu slouží ethanol/aceton při preparaci?", type: "single", options: ["Jako rozpouštědlo pro en", "Snižuje rozpustnost produktu → vyvolá krystalizaci", "Reaguje s CA za vzniku alkoxykomplexu", "Neutralizuje přebytek en"], correct: [1], explanation: "Ethanol/aceton jsou srážedla — snižují rozpustnost komplexu ve vodném roztoku, čímž vyvolají krystalizaci produktu." },
+  { question: "Co je frita a jak se používá?", type: "single", options: ["Skleněná tyčinka na míchání", "Porézní filtrační destička připojená k vakuové pumpě", "Keramická miska na sušení", "Odměrný válec na přesné dávkování"], correct: [1], explanation: "Frita je skleněná porézní destička v nálevce. Připojí se k vakuové pumpě (vývěvě) → odsátí kapaliny, zatímco krystaly zůstanou na fritě. Slouží k filtraci i promývání." },
+  { question: "Proč se [Cu(en)₃]SO₄ nesmí promývat vodou?", type: "single", options: ["Rozpustí se ve vodě", "Voda odštěpí jednu molekulu en → vznikne bis(en) komplex", "Voda oxiduje měď", "Voda změní barvu krystalů"], correct: [1], explanation: "Tris-komplex je nestabilní vůči vodě — při kontaktu ztrácí en ligand a přechází na stabilnější [Cu(en)₂]²⁺." },
+  { question: "Jaká je barva [Ni(en)₃]Cl₂?", type: "single", options: ["Zelená", "Tmavě modrá", "Fialová", "Žlutá"], correct: [2], explanation: "Fialový krystalický prášek. Původní NiCl₂ ve vodě je zelený → po přidání en se mění na fialový." },
+  { question: "Jak vypočteme látkové množství?", type: "single", options: ["n = Mm / m", "n = m × Mm", "n = m / Mm", "n = m + Mm"], correct: [2], explanation: "n = m / Mm, kde m je hmotnost v gramech a Mm je molární hmotnost v g/mol." },
+  { question: "Které z následujících jsou ligandy?", type: "multi", options: ["H₂O", "Na⁺", "NH₃", "Cl⁻", "K⁺", "CN⁻"], correct: [0, 2, 3, 5], explanation: "Ligandy musí mít volný elektronový pár: H₂O, NH₃, Cl⁻, CN⁻. Na⁺ a K⁺ jsou kationty alkalických kovů bez volných párů pro donaci.", tip: "Ligand = donor e⁻ páru. Kationty alkalických kovů ligandy nejsou." },
+  { question: "Hmotnostní zlomek w je:", type: "single", options: ["w = m(roztoku) / m(látky)", "w = m(látky) / m(roztoku)", "w = n × Mm", "w = m(látky) × m(roztoku)"], correct: [1], explanation: "Hmotnostní zlomek = hmotnost složky dělená hmotností celého roztoku (směsi). Je to bezrozměrná veličina." },
+];
+
+const flashcards = [
+  { front: "Centrální atom (CA)", back: "Atom (většinou přechodný kov) v centru komplexu. Akceptor volného e⁻ páru. Má prázdné orbitaly ns, np, nd." },
+  { front: "Ligand", back: "Molekula nebo ion navázaný na CA. Donor volného e⁻ páru. Příklady: H₂O, NH₃, Cl⁻, en, CN⁻." },
+  { front: "Donor-akceptorová vazba", back: "Kovalentní vazba, kde oba elektrony pochází od jednoho partnera (ligandu = donor). CA = akceptor." },
+  { front: "Bidentátní ligand", back: "Ligand, který se váže na CA dvěma donorovými atomy současně. Příklad: ethylendiamin (en) — dva atomy N." },
+  { front: "Chelátový efekt", back: "Polydentátní ligandy tvoří stabilnější komplexy než monodentátní. Důvod: uvolnění více malých molekul → ↑ΔS." },
+  { front: "Konstanta stability Kₖ", back: "Čím větší Kₖ, tím stabilnější komplex. Řada: aqua < ammin < en-komplex." },
+  { front: "[Cu(H₂O)₄]²⁺", back: "Kationt tetraaquaměďnatý. Světle modrý. Vzniká rozpuštěním CuSO₄ ve vodě." },
+  { front: "[Cu(NH₃)₄]²⁺", back: "Kationt tetraamminměďnatý. Tmavě modrý. Vzniká přidáním NH₃ k aquakomplexu Cu." },
+  { front: "[Cu(en)₂]SO₄", back: "Síran bis(ethylendiamin)měďnatý. Temně modrý krystalický prášek. Rozpustný ve vodě." },
+  { front: "[Ni(en)₃]Cl₂·2H₂O", back: "Dihydrát chloridu tris(ethylendiamin)nikelnatého. Fialový prášek. Nerozpustný v acetonu." },
+  { front: "Frita", back: "Porézní skleněná filtrační destička. Používá se s vývěvou k vakuové filtraci a promývání produktu." },
+  { front: "Ethylendiamin (en)", back: "H₂N−CH₂−CH₂−NH₂ (ethan-1,2-diamin). Mm = 60,1 g/mol. Bidentátní ligand." },
+  { front: "Proč ethanol/aceton?", back: "Srážedlo — snižuje rozpustnost komplexu ve vodném roztoku → vyvolá krystalizaci produktu." },
+  { front: "n = m / Mm", back: "Látkové množství [mol] = hmotnost [g] / molární hmotnost [g/mol]" },
+  { front: "w(a) = m(a) / m(roztoku)", back: "Hmotnostní zlomek — bezrozměrná veličina. Pro 20% roztok: w = 0,20." },
+];
+
+const formulas = [
+  { label: "Látkové množství", formula: "n = m / Mₘ", unit: "[mol]" },
+  { label: "Hmotnostní zlomek", formula: "w = m(složky) / m(roztoku)", unit: "bezrozměrné" },
+  { label: "Teoretický výtěžek", formula: "m(teor) = n(produkt) × Mₘ(produkt)", unit: "[g]" },
+  { label: "Procentuální výtěžek", formula: "η = (m(skutečná) / m(teor)) × 100", unit: "[%]" },
+  { label: "Mₘ CuSO₄·5H₂O", formula: "249,6 g/mol", unit: "(protokol: 159,6 = bezvodý)" },
+  { label: "Mₘ NiCl₂·6H₂O", formula: "237,7 g/mol", unit: "" },
+  { label: "Mₘ ethylendiamin", formula: "60,1 g/mol", unit: "" },
+  { label: "Mₘ [Cu(en)₂]SO₄", formula: "≈ 279,8 g/mol", unit: "" },
+];
+
+// ── Main App ─────────────────────────────────────────────────
+const tabs = ["Teorie", "Postupy", "Výpočty", "Kvíz", "Kartičky", "Vzorce"];
+
+export default function App() {
+  const [tab, setTab] = useState(0);
+  const [theoryTab, setTheoryTab] = useState(0);
+  const [procTab, setProcTab] = useState(0);
+  const [openCalc, setOpenCalc] = useState(null);
+  const [openSteps, setOpenSteps] = useState({});
+  const [fcIdx, setFcIdx] = useState(0);
+  const [fcFlipped, setFcFlipped] = useState(false);
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#0a0a1a", color: "#fff", fontFamily: "'Exo 2', 'Segoe UI', sans-serif", position: "relative", overflow: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+      {/* Animated BG */}
+      <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
+        <div style={{ position: "absolute", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle, rgba(124,58,237,0.15), transparent 70%)", top: "-10%", left: "-10%", animation: "float1 20s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle, rgba(6,182,212,0.12), transparent 70%)", bottom: "-10%", right: "-10%", animation: "float2 25s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", width: "400px", height: "400px", borderRadius: "50%", background: "radial-gradient(circle, rgba(251,191,36,0.08), transparent 70%)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", animation: "float3 30s ease-in-out infinite" }} />
+      </div>
+      <style>{`
+        @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(60px,40px); } }
+        @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-50px,-30px); } }
+        @keyframes float3 { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(1.15); } }
+        @keyframes flipIn { from { opacity:0; transform:rotateY(90deg); } to { opacity:1; transform:rotateY(0); } }
+        * { box-sizing: border-box; }
+        button:disabled { opacity: 0.4; cursor: default; }
+      `}</style>
+
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "900px", margin: "0 auto", padding: "24px 16px" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+          <h1 style={{ fontSize: "28px", fontWeight: 800, background: "linear-gradient(135deg, #7c3aed, #06b6d4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>Amminkomplexy přechodných kovů</h1>
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px", marginTop: "6px" }}>Laboratorní praktikum — Symposion 2023</p>
+        </div>
+
+        {/* Tab Bar */}
+        <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "24px" }}>
+          {tabs.map((t, i) => (
+            <button key={i} onClick={() => setTab(i)} style={{ padding: "8px 20px", borderRadius: "999px", border: tab === i ? `1px solid ${accent}` : "1px solid rgba(255,255,255,0.12)", background: tab === i ? accent + "33" : "rgba(255,255,255,0.05)", color: tab === i ? "#c4b5fd" : "rgba(255,255,255,0.5)", cursor: "pointer", fontSize: "14px", fontWeight: 600, transition: "all 0.4s ease" }}>
+              {t}
+            </button>
+          ))}
+        </div>
+
+        {/* ═══ TEORIE ═══ */}
+        {tab === 0 && (
+          <div>
+            <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" }}>
+              {theoryTabs.map((t, i) => (
+                <button key={i} onClick={() => setTheoryTab(i)} style={{ padding: "6px 14px", borderRadius: "10px", border: theoryTab === i ? `1px solid ${accentCyan}` : "1px solid rgba(255,255,255,0.1)", background: theoryTab === i ? accentCyan + "22" : "transparent", color: theoryTab === i ? "#67e8f9" : "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: "13px", fontWeight: 600, transition: "all 0.4s ease" }}>
+                  {t.title}
+                </button>
+              ))}
+            </div>
+            <div style={{ ...glass, padding: "24px" }}>
+              {theoryTabs[theoryTab].content.map((item, i) => (
+                <div key={i} style={{ marginBottom: i < theoryTabs[theoryTab].content.length - 1 ? "20px" : 0 }}>
+                  <h3 style={{ color: "#67e8f9", fontSize: "16px", fontWeight: 700, marginBottom: "6px", margin: 0 }}>{item.heading}</h3>
+                  <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "15px", lineHeight: 1.65, margin: "6px 0 0 0" }}>{item.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ═══ POSTUPY ═══ */}
+        {tab === 1 && (
+          <div>
+            <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" }}>
+              {procedures.map((p, i) => (
+                <button key={i} onClick={() => setProcTab(i)} style={{ padding: "6px 14px", borderRadius: "10px", border: procTab === i ? `1px solid ${accentCyan}` : "1px solid rgba(255,255,255,0.1)", background: procTab === i ? accentCyan + "22" : "transparent", color: procTab === i ? "#67e8f9" : "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: "13px", fontWeight: 600, transition: "all 0.4s ease" }}>
+                  {p.title}
+                </button>
+              ))}
+            </div>
+            {(() => {
+              const p = procedures[procTab];
+              return (
+                <div style={{ ...glass, padding: "24px" }}>
+                  <h3 style={{ color: "#c4b5fd", fontSize: "18px", fontWeight: 700, margin: "0 0 4px 0" }}>{p.fullName}</h3>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", color: "#67e8f9", fontSize: "15px", background: "rgba(6,182,212,0.08)", padding: "10px 14px", borderRadius: "10px", marginBottom: "12px", marginTop: "8px" }}>{p.equation}</div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginBottom: "16px" }}>
+                    <span style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.3)", padding: "4px 12px", borderRadius: "8px", fontSize: "13px", color: "#c4b5fd" }}>en: {p.eqEn}</span>
+                    <span style={{ background: "rgba(251,191,36,0.12)", border: "1px solid rgba(251,191,36,0.3)", padding: "4px 12px", borderRadius: "8px", fontSize: "13px", color: "#fbbf24" }}>Srážedlo: {p.solvent}</span>
+                  </div>
+                  <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", marginBottom: "16px" }}>Produkt: {p.product}</p>
+
+                  <button onClick={() => setOpenSteps(s => ({ ...s, [procTab]: !s[procTab] }))} style={{ ...btnStyle, marginBottom: "12px", width: "100%", textAlign: "left" }}>
+                    {openSteps[procTab] ? "▼" : "▶"} Postup krok za krokem
+                  </button>
+                  {openSteps[procTab] && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      {p.steps.map((s, i) => (
+                        <div key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start", padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.06)" }}>
+                          <span style={{ color: accent, fontWeight: 700, minWidth: "28px", fontSize: "15px" }}>{i + 1}.</span>
+                          <span style={{ color: "rgba(255,255,255,0.8)", fontSize: "14px", lineHeight: 1.5 }}>{s}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* ═══ VÝPOČTY ═══ */}
+        {tab === 2 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {calculations.map((c, i) => (
+              <div key={i} style={{ ...glass, padding: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div style={{ color: "#c4b5fd", fontWeight: 700, fontSize: "15px" }}>{c.title}</div>
+                    <div style={{ color: "rgba(255,255,255,0.55)", fontSize: "14px", marginTop: "4px" }}>{c.problem}</div>
+                  </div>
+                  <button onClick={() => setOpenCalc(openCalc === i ? null : i)} style={{ ...btnStyle, fontSize: "13px", padding: "6px 14px" }}>
+                    {openCalc === i ? "Skrýt" : "Řešení"}
+                  </button>
+                </div>
+                {openCalc === i && (
+                  <pre style={{ fontFamily: "'JetBrains Mono', monospace", color: "#67e8f9", fontSize: "13px", background: "rgba(6,182,212,0.06)", padding: "14px", borderRadius: "12px", marginTop: "12px", whiteSpace: "pre-wrap", lineHeight: 1.6, margin: "12px 0 0 0" }}>{c.solution}</pre>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ═══ KVÍZ ═══ */}
+        {tab === 3 && <QuizEngine questions={questions} accentColor={accent} />}
+
+        {/* ═══ KARTIČKY ═══ */}
+        {tab === 4 && (
+          <div style={{ maxWidth: "520px", margin: "0 auto" }}>
+            <div style={{ textAlign: "center", color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "12px" }}>{fcIdx + 1} / {flashcards.length}</div>
+            <div onClick={() => setFcFlipped(!fcFlipped)} style={{ ...glass, padding: "40px 28px", minHeight: "200px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", animation: "flipIn 0.4s ease", textAlign: "center" }}>
+              <div>
+                <div style={{ color: fcFlipped ? "#67e8f9" : "#fbbf24", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>{fcFlipped ? "Odpověď" : "Pojem"}</div>
+                <div style={{ color: "#fff", fontSize: "18px", lineHeight: 1.6, fontWeight: fcFlipped ? 400 : 700 }} key={`${fcIdx}-${fcFlipped}`}>
+                  {fcFlipped ? flashcards[fcIdx].back : flashcards[fcIdx].front}
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "16px" }}>
+              <button style={btnStyle} disabled={fcIdx === 0} onClick={() => { setFcIdx(fcIdx - 1); setFcFlipped(false); }}>← Předchozí</button>
+              <button style={{ ...btnStyle, background: "rgba(255,255,255,0.05)" }} onClick={() => setFcFlipped(!fcFlipped)}>Otočit</button>
+              <button style={btnStyle} disabled={fcIdx === flashcards.length - 1} onClick={() => { setFcIdx(fcIdx + 1); setFcFlipped(false); }}>Další →</button>
+            </div>
+          </div>
+        )}
+
+        {/* ═══ VZORCE ═══ */}
+        {tab === 5 && (
+          <div style={{ ...glass, padding: "24px" }}>
+            <h3 style={{ color: "#c4b5fd", fontSize: "18px", fontWeight: 700, margin: "0 0 16px 0" }}>Vzorce & konstanty</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              {formulas.map((f, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: "rgba(255,255,255,0.03)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.06)", flexWrap: "wrap", gap: "8px" }}>
+                  <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", minWidth: "160px" }}>{f.label}</span>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", color: "#67e8f9", fontSize: "15px", fontWeight: 600 }}>{f.formula}</span>
+                  {f.unit && <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px" }}>{f.unit}</span>}
+                </div>
+              ))}
+            </div>
+
+            <h3 style={{ color: "#c4b5fd", fontSize: "16px", fontWeight: 700, margin: "28px 0 12px 0" }}>Reakce z praktika</h3>
+            {[
+              "CuSO₄ + 2 en → [Cu(en)₂]SO₄",
+              "NiCl₂ + 3 en → [Ni(en)₃]Cl₂",
+              "CuSO₄ + 3 en → [Cu(en)₃]SO₄",
+              "Cu²⁺ + 4H₂O → [Cu(H₂O)₄]²⁺   (aquakomplex)",
+              "[Cu(H₂O)₄]²⁺ + 4NH₃ → [Cu(NH₃)₄]²⁺ + 4H₂O   (amminkomplex)"
+            ].map((eq, i) => (
+              <div key={i} style={{ fontFamily: "'JetBrains Mono', monospace", color: "#67e8f9", fontSize: "14px", padding: "8px 14px", background: "rgba(6,182,212,0.06)", borderRadius: "8px", marginBottom: "6px" }}>{eq}</div>
+            ))}
+
+            <h3 style={{ color: "#c4b5fd", fontSize: "16px", fontWeight: 700, margin: "28px 0 12px 0" }}>Názvosloví</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              {[
+                ["[Cu(H₂O)₄]²⁺", "kationt tetraaquaměďnatý"],
+                ["[Cu(NH₃)₄]²⁺", "kationt tetraamminměďnatý"],
+                ["[Cu(en)₂]SO₄", "síran bis(ethylendiamin)měďnatý"],
+                ["[Ni(en)₃]Cl₂·2H₂O", "dihydrát chloridu tris(ethylendiamin)nikelnatého"],
+                ["[Cu(en)₃]SO₄", "síran tris(ethylendiamin)měďnatý"],
+              ].map(([f, n], i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 14px", background: "rgba(255,255,255,0.03)", borderRadius: "8px", flexWrap: "wrap", gap: "8px" }}>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", color: "#fbbf24", fontSize: "14px" }}>{f}</span>
+                  <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "14px" }}>{n}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
