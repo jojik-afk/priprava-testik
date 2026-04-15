@@ -1,5 +1,5 @@
 // @title Odměrná analýza — kyselina citronová v 7-Up
-// @subject Chemie
+// @subject Chemistry
 // @topic Laboratorní praktikum — alkalimetrická titrace
 // @template mixed
 
