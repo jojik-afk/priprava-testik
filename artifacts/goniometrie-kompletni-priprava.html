@@ -1,0 +1,3240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goniometrie — kompletní příprava na písemku</title>
+    <meta name="subject" content="Math">
+    <meta name="topic" content="Goniometrie: hodnoty, kružnice, grafy, rovnice, výrazy">
+    <meta name="template" content="mixed">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/goniometrie-kompletni-priprava.jsx
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function shuffleQuestions(questions) {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const shuffledOptions = shuffledIndices.map((i) => q.options[i]);
+    const newCorrect = q.correct.map((oldIdx) => shuffledIndices.indexOf(oldIdx));
+    return { ...q, options: shuffledOptions, correct: newCorrect };
+  });
+}
+function QuizEngine({ questions, accentColor = "#ec4899" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  const shuffledQuestions = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = shuffledQuestions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffledQuestions.filter((q2, i) => revealed[i] && arrEqual(answers[i] || [], q2.correct)).length;
+  const pct = Math.round(score / shuffledQuestions.length * 100);
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, shuffledQuestions]);
+  const handleSingleSelect = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [optionIdx] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, isRevealed]);
+  const toggleMulti = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setPendingMulti((prev) => prev.includes(optionIdx) ? prev.filter((i) => i !== optionIdx) : [...prev, optionIdx]);
+  }, [isRevealed]);
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [...pendingMulti] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, pendingMulti]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPendingMulti([]);
+    setShowResults(false);
+    setShuffleKey((k) => k + 1);
+  }, []);
+  if (showResults) {
+    const msg = pct >= 90 ? "Vyborne! Mas to perfektne zvladnute!" : pct >= 70 ? "Dobre! Temer mas vse zvladnute." : pct >= 50 ? "Mohlo by to byt lepsi, ale jdes spravnym smerem." : "Potrebujes vice pripravy. Opakuj a bude to!";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", ...glass, padding: "40px 48px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "52px", fontWeight: 800 },
+            children: [
+              score,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+            children: [
+              pct,
+              " %"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.8)", fontSize: "17px", lineHeight: 1.5, marginBottom: "24px", maxWidth: "340px", margin: "0 auto 24px" },
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnS, background: accentColor + "66", border: `1px solid ${accentColor}` },
+            onClick: restart,
+            children: "Zacit znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  const activeSet = isMulti ? isRevealed ? myAnswer : pendingMulti : myAnswer;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "680px", margin: "0 auto", padding: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" },
+        children: shuffledQuestions.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
+          return /* @__PURE__ */ jsxDEV("div", {
+            onClick: () => goTo(i),
+            title: `Otazka ${i + 1}`,
+            style: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: bg }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "24px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
+            children: [
+              "Otazka ",
+              idx + 1,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", flexDirection: "column", gap: "10px" },
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(255,255,255,0.12)";
+              let bg = "rgba(255,255,255,0.04)";
+              if (isRevealed) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(34,197,94,0.15)";
+                  border = "1px solid #22c55e";
+                } else if (activeSet.includes(i)) {
+                  bg = "rgba(239,68,68,0.15)";
+                  border = "1px solid #ef4444";
+                }
+              } else if (activeSet.includes(i)) {
+                bg = accentColor + "18";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("div", {
+                style: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px", background: bg, border },
+                onClick: () => isMulti ? toggleMulti(i) : handleSingleSelect(i),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: { fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" },
+                    children: activeSet.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRevealed && /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnS, opacity: pendingMulti.length === 0 ? 0.4 : 1, marginTop: "12px" },
+            onClick: submitMulti,
+            disabled: pendingMulti.length === 0,
+            children: "Potvrdit"
+          }, undefined, false, undefined, this),
+          isRevealed && /* @__PURE__ */ jsxDEV("div", {
+            style: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: `1px solid ${isCorrect ? "#22c55e" : "#ef4444"}`, background: "rgba(255,255,255,0.03)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+                children: isCorrect ? "Spravne!" : "Spatne"
+              }, undefined, false, undefined, this),
+              !isCorrect && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+                children: [
+                  "Spravna odpoved: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 },
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+                children: [
+                  "Tip: ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnS,
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "\\u2190 Predchozi"
+          }, undefined, false, undefined, this),
+          idx < shuffledQuestions.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: btnS,
+            onClick: () => goTo(idx + 1),
+            children: "Dalsi \\u2192"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnS, background: accentColor + "55", border: `1px solid ${accentColor}` },
+            onClick: () => setShowResults(true),
+            children: "Vysledky \\u2192"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function arrEqual(a, b) {
+  if (!a || !b)
+    return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+var glass = {
+  background: "rgba(255,255,255,0.05)",
+  backdropFilter: "blur(20px)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "20px",
+  transition: "all 0.4s ease"
+};
+var btnS = {
+  padding: "10px 22px",
+  background: "rgba(255,255,255,0.07)",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: "10px",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: "15px",
+  transition: "all 0.4s ease"
+};
+var PINK = "#ec4899";
+var CYAN = "#22d3ee";
+var TABS = [
+  { id: "theory", label: "Teorie" },
+  { id: "problems", label: "Priklady" },
+  { id: "quiz", label: "Kviz" },
+  { id: "flashcards", label: "Karticky" },
+  { id: "formulas", label: "Vzorce" }
+];
+function Collapsible({ title, children, defaultOpen = false, badge }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { ...glass, padding: "0", marginBottom: "12px", overflow: "hidden" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        onClick: () => setOpen(!open),
+        style: { padding: "16px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.03)" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", alignItems: "center", gap: "10px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: "#fff", fontSize: "16px", fontWeight: 600 },
+                children: title
+              }, undefined, false, undefined, this),
+              badge && /* @__PURE__ */ jsxDEV("span", {
+                style: { fontSize: "12px", padding: "2px 10px", borderRadius: "20px", background: badge === "Easy" ? "rgba(34,197,94,0.2)" : badge === "Medium" ? "rgba(234,179,8,0.2)" : "rgba(239,68,68,0.2)", color: badge === "Easy" ? "#4ade80" : badge === "Medium" ? "#fbbf24" : "#f87171" },
+                children: badge === "Easy" ? "✨ Easy" : badge === "Medium" ? "⚡ Medium" : "\uD83D\uDD25 Hard"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: "rgba(255,255,255,0.5)", fontSize: "20px", transition: "transform 0.4s ease", transform: open ? "rotate(180deg)" : "rotate(0)" },
+            children: "\\u25BC"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      open && /* @__PURE__ */ jsxDEV("div", {
+        style: { padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.08)" },
+        children
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function Solution({ children }) {
+  const [show, setShow] = useState(false);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { marginTop: "12px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("button", {
+        onClick: () => setShow(!show),
+        style: { ...btnS, fontSize: "13px", padding: "6px 16px", background: show ? "rgba(236,72,153,0.15)" : "rgba(255,255,255,0.05)", border: show ? "1px solid #ec4899" : "1px solid rgba(255,255,255,0.15)" },
+        children: show ? "Skryt reseni" : "Zobrazit reseni"
+      }, undefined, false, undefined, this),
+      show && /* @__PURE__ */ jsxDEV("div", {
+        style: { marginTop: "12px", padding: "16px", borderRadius: "14px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7 },
+        children
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function M({ children }) {
+  return /* @__PURE__ */ jsxDEV("span", {
+    style: { fontFamily: "'JetBrains Mono', monospace", color: CYAN, fontSize: "inherit" },
+    children
+  }, undefined, false, undefined, this);
+}
+function MBlock({ children }) {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { fontFamily: "'JetBrains Mono', monospace", color: CYAN, fontSize: "15px", padding: "12px 16px", background: "rgba(34,211,238,0.06)", borderRadius: "10px", margin: "8px 0", lineHeight: 1.8, overflowX: "auto" },
+    children
+  }, undefined, false, undefined, this);
+}
+function Step({ n, title, children }) {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { marginBottom: "10px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: PINK, fontSize: "13px", fontWeight: 700, marginBottom: "2px" },
+        children: [
+          "Krok ",
+          n,
+          ": ",
+          title
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.7 },
+        children
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function UnitCircle() {
+  const [selectedAngle, setSelectedAngle] = useState(null);
+  const angles = [
+    { deg: 0, rad: "0", sin: "0", cos: "1", tg: "0", cotg: "X" },
+    { deg: 30, rad: "π/6", sin: "1/2", cos: "√3/2", tg: "√3/3", cotg: "√3" },
+    { deg: 45, rad: "π/4", sin: "√2/2", cos: "√2/2", tg: "1", cotg: "1" },
+    { deg: 60, rad: "π/3", sin: "√3/2", cos: "1/2", tg: "√3", cotg: "√3/3" },
+    { deg: 90, rad: "π/2", sin: "1", cos: "0", tg: "X", cotg: "0" },
+    { deg: 120, rad: "2π/3", sin: "√3/2", cos: "-1/2", tg: "-√3", cotg: "-√3/3" },
+    { deg: 135, rad: "3π/4", sin: "√2/2", cos: "-√2/2", tg: "-1", cotg: "-1" },
+    { deg: 150, rad: "5π/6", sin: "1/2", cos: "-√3/2", tg: "-√3/3", cotg: "-√3" },
+    { deg: 180, rad: "π", sin: "0", cos: "-1", tg: "0", cotg: "X" },
+    { deg: 210, rad: "7π/6", sin: "-1/2", cos: "-√3/2", tg: "√3/3", cotg: "√3" },
+    { deg: 225, rad: "5π/4", sin: "-√2/2", cos: "-√2/2", tg: "1", cotg: "1" },
+    { deg: 240, rad: "4π/3", sin: "-√3/2", cos: "-1/2", tg: "√3", cotg: "√3/3" },
+    { deg: 270, rad: "3π/2", sin: "-1", cos: "0", tg: "X", cotg: "0" },
+    { deg: 300, rad: "5π/3", sin: "-√3/2", cos: "1/2", tg: "-√3", cotg: "-√3/3" },
+    { deg: 315, rad: "7π/4", sin: "-√2/2", cos: "√2/2", tg: "-1", cotg: "-1" },
+    { deg: 330, rad: "11π/6", sin: "-1/2", cos: "√3/2", tg: "-√3/3", cotg: "-√3" }
+  ];
+  const r = 110;
+  const cx = 150, cy = 150;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexWrap: "wrap", gap: "20px", alignItems: "flex-start" },
+    children: [
+      /* @__PURE__ */ jsxDEV("svg", {
+        viewBox: "0 0 300 300",
+        style: { width: "280px", height: "280px", flexShrink: 0 },
+        children: [
+          /* @__PURE__ */ jsxDEV("circle", {
+            cx,
+            cy,
+            r,
+            fill: "none",
+            stroke: "rgba(255,255,255,0.2)",
+            strokeWidth: "1.5"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("line", {
+            x1: cx - r - 15,
+            y1: cy,
+            x2: cx + r + 15,
+            y2: cy,
+            stroke: "rgba(255,255,255,0.15)",
+            strokeWidth: "1"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("line", {
+            x1: cx,
+            y1: cy - r - 15,
+            x2: cx,
+            y2: cy + r + 15,
+            stroke: "rgba(255,255,255,0.15)",
+            strokeWidth: "1"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("text", {
+            x: cx + 50,
+            y: cy - 50,
+            fill: "rgba(255,255,255,0.15)",
+            fontSize: "14",
+            fontWeight: "bold",
+            children: "I."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("text", {
+            x: cx - 65,
+            y: cy - 50,
+            fill: "rgba(255,255,255,0.15)",
+            fontSize: "14",
+            fontWeight: "bold",
+            children: "II."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("text", {
+            x: cx - 65,
+            y: cy + 60,
+            fill: "rgba(255,255,255,0.15)",
+            fontSize: "14",
+            fontWeight: "bold",
+            children: "III."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("text", {
+            x: cx + 50,
+            y: cy + 60,
+            fill: "rgba(255,255,255,0.15)",
+            fontSize: "14",
+            fontWeight: "bold",
+            children: "IV."
+          }, undefined, false, undefined, this),
+          angles.map((a, i) => {
+            const rad = a.deg * Math.PI / 180;
+            const x = cx + r * Math.cos(rad);
+            const y = cy - r * Math.sin(rad);
+            const isSel = selectedAngle === i;
+            return /* @__PURE__ */ jsxDEV("g", {
+              onClick: () => setSelectedAngle(isSel ? null : i),
+              style: { cursor: "pointer" },
+              children: [
+                isSel && /* @__PURE__ */ jsxDEV("line", {
+                  x1: cx,
+                  y1: cy,
+                  x2: x,
+                  y2: y,
+                  stroke: PINK,
+                  strokeWidth: "2"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("circle", {
+                  cx: x,
+                  cy: y,
+                  r: isSel ? 7 : 5,
+                  fill: isSel ? PINK : CYAN,
+                  style: { transition: "all 0.4s ease" }
+                }, undefined, false, undefined, this)
+              ]
+            }, i, true, undefined, this);
+          })
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { flex: "1 1 200px", minWidth: "200px" },
+        children: [
+          selectedAngle !== null ? /* @__PURE__ */ jsxDEV("div", {
+            style: { ...glass, padding: "16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "8px" },
+                children: [
+                  angles[selectedAngle].deg,
+                  "\\u00b0 = ",
+                  angles[selectedAngle].rad
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px" },
+                children: [["sin", angles[selectedAngle].sin], ["cos", angles[selectedAngle].cos], ["tg", angles[selectedAngle].tg], ["cotg", angles[selectedAngle].cotg]].map(([fn, val]) => /* @__PURE__ */ jsxDEV("div", {
+                  style: { padding: "8px", borderRadius: "8px", background: "rgba(255,255,255,0.04)", textAlign: "center" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "rgba(255,255,255,0.5)", fontSize: "12px" },
+                      children: fn
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { color: "#fff", fontFamily: "'JetBrains Mono', monospace", fontSize: "16px", fontWeight: 600 },
+                      children: val === "X" ? "nedef." : val
+                    }, undefined, false, undefined, this)
+                  ]
+                }, fn, true, undefined, this))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this) : /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.4)", fontSize: "14px", padding: "20px" },
+            children: "Klikni na bod na kruznici pro zobrazeni hodnot."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { marginTop: "12px", color: "rgba(255,255,255,0.5)", fontSize: "12px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                children: "I. kvadrant: sin+, cos+, tg+, cotg+"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: "II. kvadrant: sin+, cos-, tg-, cotg-"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: "III. kvadrant: sin-, cos-, tg+, cotg+"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: "IV. kvadrant: sin-, cos+, tg-, cotg-"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function TheoryTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "1. Jednotkova kruznice a hodnoty",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              "Na jednotkove kruznici je bod ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "[cos \\u03b1; sin \\u03b1]"
+              }, undefined, false, undefined, this),
+              ". Uhel merimo od kladne poloosy x proti smeru hodinovych rucicek."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(UnitCircle, {}, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { marginTop: "16px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: PINK, fontWeight: 600, marginBottom: "8px" },
+                children: "Zakladni tabulka hodnot:"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { overflowX: "auto" },
+                children: /* @__PURE__ */ jsxDEV("table", {
+                  style: { width: "100%", borderCollapse: "collapse", fontSize: "14px", fontFamily: "'JetBrains Mono', monospace" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("thead", {
+                      children: /* @__PURE__ */ jsxDEV("tr", {
+                        style: { borderBottom: "1px solid rgba(255,255,255,0.15)" },
+                        children: ["", "0", "π/6", "π/4", "π/3", "π/2"].map((h) => /* @__PURE__ */ jsxDEV("th", {
+                          style: { padding: "8px", color: CYAN, textAlign: "center" },
+                          children: h
+                        }, h, false, undefined, this))
+                      }, undefined, false, undefined, this)
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tbody", {
+                      children: [
+                        ["sin", "0", "1/2", "√2/2", "√3/2", "1"],
+                        ["cos", "1", "√3/2", "√2/2", "1/2", "0"],
+                        ["tg", "0", "√3/3", "1", "√3", "X"],
+                        ["cotg", "X", "√3", "1", "√3/3", "0"]
+                      ].map((row) => /* @__PURE__ */ jsxDEV("tr", {
+                        style: { borderBottom: "1px solid rgba(255,255,255,0.06)" },
+                        children: [
+                          /* @__PURE__ */ jsxDEV("td", {
+                            style: { padding: "8px", color: PINK, fontWeight: 600 },
+                            children: row[0]
+                          }, undefined, false, undefined, this),
+                          row.slice(1).map((v, i) => /* @__PURE__ */ jsxDEV("td", {
+                            style: { padding: "8px", color: v === "X" ? "rgba(255,255,255,0.3)" : "#fff", textAlign: "center" },
+                            children: v === "X" ? "ndef." : v
+                          }, i, false, undefined, this))
+                        ]
+                      }, row[0], true, undefined, this))
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "2. Prevod na zakladni uhel",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              "Velky uhel prevedeme odectenim celych nasobku ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "2\\u03c0"
+              }, undefined, false, undefined, this),
+              ":"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin(23\\u03c0/6) = sin(23\\u03c0/6 - 2\\u00b72\\u03c0) = sin(23\\u03c0/6 - 24\\u03c0/6) = sin(-\\u03c0/6) = -1/2"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              "Zaporne uhly: ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "sin(-\\u03b1) = -sin \\u03b1"
+              }, undefined, false, undefined, this),
+              ", ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "cos(-\\u03b1) = cos \\u03b1"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Znaminko urcujeme podle kvadrantu, kde uhel lezi."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "3. Dopocitavani hodnot z jedne funkce",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Zname jednu funkci + kvadrant \\u2192 dopocitame ostatni pomoci:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: [
+              "sin\\u00b2x + cos\\u00b2x = 1",
+              `
+`,
+              "tg x = sin x / cos x",
+              `
+`,
+              "cotg x = cos x / sin x = 1 / tg x"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Postup:"
+              }, undefined, false, undefined, this),
+              " Z dane funkce a identity ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "sin\\u00b2x + cos\\u00b2x = 1"
+              }, undefined, false, undefined, this),
+              " urcime druhou funkci. Znaminko vybereme podle kvadrantu. Pak dopocitame tg a cotg jako podil."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "4. Goniometricke rovnice",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Elementarni:"
+              }, undefined, false, undefined, this),
+              " ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "sin x = a"
+              }, undefined, false, undefined, this),
+              " \\u2192 na kruznici najdeme uhly kde sinus = a"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Se sloz. argumentem:"
+              }, undefined, false, undefined, this),
+              " ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "cos(\\u03c0/3 - 2x) = -1/2"
+              }, undefined, false, undefined, this),
+              " \\u2192 substituujeme ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "\\u03b1 = \\u03c0/3 - 2x"
+              }, undefined, false, undefined, this),
+              ", vyresime ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "cos \\u03b1 = -1/2"
+              }, undefined, false, undefined, this),
+              ", pak zpetne dosadime."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Kvadraticke (substituce):"
+              }, undefined, false, undefined, this),
+              " Napr. ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "2cos\\u00b2x + cos x - 1 = 0"
+              }, undefined, false, undefined, this),
+              " \\u2192 substituce ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "y = cos x"
+              }, undefined, false, undefined, this),
+              " \\u2192 ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "2y\\u00b2 + y - 1 = 0"
+              }, undefined, false, undefined, this),
+              " \\u2192 vyresime KR \\u2192 zpetne dosadime."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Vzdy:"
+              }, undefined, false, undefined, this),
+              " zapsat obecne reseni s parametrem ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "k \\u2208 Z"
+              }, undefined, false, undefined, this),
+              "!"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "5. Transformace grafu",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              "Obecny tvar: ",
+              /* @__PURE__ */ jsxDEV(M, {
+                children: "y = a \\u00b7 sin(b(x + c)) + d"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginTop: "8px" },
+            children: [
+              ["a", "Amplituda (vyska)", "Nasobi y-ove hodnoty, |a|"],
+              ["b", "Zmena periody", "Perioda = 2π/|b| (sin, cos); π/|b| (tg, cotg)"],
+              ["c", "Posun po ose x", "+ doleva, - doprava"],
+              ["d", "Posun po ose y", "+ nahoru, - dolu"]
+            ].map(([param, name, desc]) => /* @__PURE__ */ jsxDEV("div", {
+              style: { padding: "10px", borderRadius: "10px", background: "rgba(255,255,255,0.04)" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: PINK, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                  children: param
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "#fff", fontSize: "13px", fontWeight: 600 },
+                  children: name
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.5)", fontSize: "12px" },
+                  children: desc
+                }, undefined, false, undefined, this)
+              ]
+            }, param, true, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { ...pS, marginTop: "12px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Cteni grafu:"
+              }, undefined, false, undefined, this),
+              " Najdi amplitudu (max-min)/2, periodu (vzdalenost dvou maxim), posun (kde je maximum misto \\u03c0/2 pro sin)."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "6. Uprava vyrazu",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Pouzivame vzorce pro dvojnasobny uhel a zakladni identity k zjednoduseni. Casto:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: [
+              "sin 2x = 2 sin x cos x",
+              `
+`,
+              "cos 2x = cos\\u00b2x - sin\\u00b2x = 1 - 2sin\\u00b2x = 2cos\\u00b2x - 1",
+              `
+`,
+              "sin\\u00b2x = (1 - cos 2x)/2",
+              `
+`,
+              "cos\\u00b2x = (1 + cos 2x)/2"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Typicky postup: rozlozit, dosadit identity, zkratit. Pozor na definicni obor!"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var pS = { color: "rgba(255,255,255,0.75)", fontSize: "15px", lineHeight: 1.7, marginBottom: "8px" };
+function ProblemsTab() {
+  const [section, setSection] = useState(0);
+  const sections = [
+    "Hodnoty a kruznice",
+    "Dopocitavani",
+    "Rovnice (lin. arg.)",
+    "Rovnice (substituce)",
+    "Graf → predpis",
+    "Predpis → graf",
+    "Uprava vyrazu"
+  ];
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" },
+        children: sections.map((s, i) => /* @__PURE__ */ jsxDEV("button", {
+          onClick: () => setSection(i),
+          style: { ...btnS, fontSize: "13px", padding: "6px 14px", background: section === i ? PINK + "33" : "rgba(255,255,255,0.05)", border: section === i ? `1px solid ${PINK}` : "1px solid rgba(255,255,255,0.12)" },
+          children: s
+        }, i, false, undefined, this))
+      }, undefined, false, undefined, this),
+      section === 0 && /* @__PURE__ */ jsxDEV(ProblemsHodnoty, {}, undefined, false, undefined, this),
+      section === 1 && /* @__PURE__ */ jsxDEV(ProblemsDopocitavani, {}, undefined, false, undefined, this),
+      section === 2 && /* @__PURE__ */ jsxDEV(ProblemsRovniceLinArg, {}, undefined, false, undefined, this),
+      section === 3 && /* @__PURE__ */ jsxDEV(ProblemsRovniceSubstituce, {}, undefined, false, undefined, this),
+      section === 4 && /* @__PURE__ */ jsxDEV(ProblemsGrafNaPredpis, {}, undefined, false, undefined, this),
+      section === 5 && /* @__PURE__ */ jsxDEV(ProblemsPredpisNaGraf, {}, undefined, false, undefined, this),
+      section === 6 && /* @__PURE__ */ jsxDEV(ProblemsVyrazy, {}, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProblemsHodnoty() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 1: Vypocitejte sin(23\\u03c0/6)",
+        badge: "Easy",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin(23\\u03c0/6) = ?"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Prevod na zakladni uhel",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "23\\u03c0/6 = 3\\u00b72\\u03c0 + 5\\u03c0/6",
+                    `
+`,
+                    "(protoze 3\\u00b72\\u03c0 = 36\\u03c0/6, zbyde 23-36 = ... ne)",
+                    `
+`,
+                    "23\\u03c0/6 - 2\\u03c0 = 23\\u03c0/6 - 12\\u03c0/6 = 11\\u03c0/6",
+                    `
+`,
+                    "11\\u03c0/6 - 2\\u03c0 = 11\\u03c0/6 - 12\\u03c0/6 = -\\u03c0/6"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Vyhodnoceni",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "sin(-\\u03c0/6) = -sin(\\u03c0/6) = -1/2"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "Vysledek: sin(23\\u03c0/6) = -1/2"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 2: Vypocitejte (sin(11\\u03c0/3) + cos(3\\u03c0/4))\\u00b2",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "(sin(11\\u03c0/3) + cos(3\\u03c0/4))\\u00b2 = ?"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Prevod uhlu",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "11\\u03c0/3 - 2\\u03c0 = 11\\u03c0/3 - 6\\u03c0/3 = 5\\u03c0/3",
+                    `
+`,
+                    "sin(5\\u03c0/3) = -\\u221a3/2",
+                    `
+`,
+                    `
+`,
+                    "cos(3\\u03c0/4) = -\\u221a2/2"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Dosazeni a vyraz",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "(-\\u221a3/2 + (-\\u221a2/2))\\u00b2 = (-\\u221a3/2 - \\u221a2/2)\\u00b2",
+                    `
+`,
+                    "= ((\\u221a3 + \\u221a2)/2)\\u00b2",
+                    `
+`,
+                    "= (3 + 2\\u221a6 + 2)/4",
+                    `
+`,
+                    "= (5 + 2\\u221a6)/4"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "Vysledek: (5 + 2\\u221a6)/4"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 3: Vypocitejte (sin(23\\u03c0/6) - 1) / cotg(-\\u03c0/3)",
+        badge: "Hard",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Toto je priklad z cvicneho testu!"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "(sin(23\\u03c0/6) - 1) / cotg(-\\u03c0/3) = ?"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Citatel",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin(23\\u03c0/6) = -1/2 (viz predchozi)",
+                    `
+`,
+                    "citatel = -1/2 - 1 = -3/2"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Jmenovatel",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "cotg(-\\u03c0/3) = -cotg(\\u03c0/3) = -\\u221a3/3"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Podil",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "(-3/2) / (-\\u221a3/3) = (-3/2) \\u00b7 (-3/\\u221a3)",
+                    `
+`,
+                    "= 9/(2\\u221a3) = 9\\u221a3/6 = 3\\u221a3/2"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "Vysledek: 3\\u221a3/2"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 4: sin(7\\u03c0/6) \\u00b7 cos(\\u03c0/3)",
+        badge: "Easy",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin(7\\u03c0/6) \\u00b7 cos(\\u03c0/3) = ?"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Hodnoty",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin(7\\u03c0/6) = -1/2  (III. kvadrant, ref. uhel \\u03c0/6)",
+                    `
+`,
+                    "cos(\\u03c0/3) = 1/2"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Soucin",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "(-1/2) \\u00b7 (1/2) = -1/4"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "Vysledek: -1/4"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 5: Urcete uhel \\u03b1 = -22\\u03c0/3 na kruznici",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "\\u03b1 = -22\\u03c0/3, najdete referencni uhel a k"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Prevod",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "\\u03b1 = 2\\u03c0/3 + k\\u00b72\\u03c0",
+                    `
+`,
+                    "-22\\u03c0/3 = 2\\u03c0/3 + k\\u00b72\\u03c0",
+                    `
+`,
+                    "-22\\u03c0/3 - 2\\u03c0/3 = k\\u00b72\\u03c0",
+                    `
+`,
+                    "-24\\u03c0/3 = k\\u00b72\\u03c0",
+                    `
+`,
+                    "-8\\u03c0 = k\\u00b72\\u03c0",
+                    `
+`,
+                    "k = -4"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Overeni",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "2\\u03c0/3 + (-4)\\u00b72\\u03c0 = 2\\u03c0/3 - 8\\u03c0 = 2\\u03c0/3 - 24\\u03c0/3 = -22\\u03c0/3 \\u2713"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "Uhel lezi na 2\\u03c0/3 (120\\u00b0), k = -4"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProblemsDopocitavani() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 1: cotg x = \\u221a39/6, x \\u2208 (pi, 3pi/2)",
+        badge: "Hard",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Z cvicneho testu! Aniž spocitate x, urcete sin x, cos x, tg x."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "cotg x = \\u221a39/6,  \\u03c0 < x < 3\\u03c0/2  (III. kvadrant)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "tg x z cotg x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "tg x = 1/cotg x = 6/\\u221a39 = 6\\u221a39/39"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Pouzijeme 1 + cotg\\u00b2x = 1/sin\\u00b2x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "1 + (\\u221a39/6)\\u00b2 = 1/sin\\u00b2x",
+                    `
+`,
+                    "1 + 39/36 = 1/sin\\u00b2x",
+                    `
+`,
+                    "75/36 = 1/sin\\u00b2x",
+                    `
+`,
+                    "sin\\u00b2x = 36/75 = 12/25"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Znaminko z kvadrantu",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "III. kvadrant: sin < 0, cos < 0",
+                    `
+`,
+                    "sin x = -2\\u221a3/5"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 4,
+                title: "cos x z identity",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "cos\\u00b2x = 1 - 12/25 = 13/25",
+                    `
+`,
+                    "cos x = -\\u221a13/5  (III. kvadrant, zaporne)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "sin x = -2\\u221a3/5, cos x = -\\u221a13/5, tg x = 6\\u221a39/39"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 2: tg x = -\\u221a2, x \\u2208 II. kvadrant",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "tg x = -\\u221a2, x \\u2208 II. kv. Urcete sin x, cos x, cotg x."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "cotg x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "cotg x = 1/tg x = -1/\\u221a2 = -\\u221a2/2"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Z identity sin\\u00b2x + cos\\u00b2x = 1 a tg x = sin x/cos x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin x = -\\u221a2 \\u00b7 cos x",
+                    `
+`,
+                    "(-\\u221a2 cos x)\\u00b2 + cos\\u00b2x = 1",
+                    `
+`,
+                    "2cos\\u00b2x + cos\\u00b2x = 1",
+                    `
+`,
+                    "3cos\\u00b2x = 1",
+                    `
+`,
+                    "cos x = -\\u221a3/3  (II. kv. \\u2192 cos < 0)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "sin x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "sin x = -\\u221a2 \\u00b7 (-\\u221a3/3) = \\u221a6/3"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "sin x = \\u221a6/3, cos x = -\\u221a3/3, cotg x = -\\u221a2/2"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 3: cotg x = -1/3, x \\u2208 IV. kvadrant",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "cotg x = -1/3, x \\u2208 IV. kv. Urcete sin x, cos x."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "tg x a vyjadrime cos x pres sin x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "tg x = -3, tj. sin x / cos x = -3",
+                    `
+`,
+                    "cos x = (-1/3) \\u00b7 sin x"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Dosazeni do identity",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin\\u00b2x + (1/9)sin\\u00b2x = 1",
+                    `
+`,
+                    "(10/9)sin\\u00b2x = 1",
+                    `
+`,
+                    "sin\\u00b2x = 9/10",
+                    `
+`,
+                    "sin x = -3\\u221a10/10  (IV. kv. \\u2192 sin < 0)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "cos x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "cos x = \\u221a10/10  (IV. kv. \\u2192 cos > 0)"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "sin x = -3\\u221a10/10, cos x = \\u221a10/10"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProblemsRovniceLinArg() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 1: cos(\\u03c0/4 - x) = 1",
+        badge: "Easy",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Z cvicneho testu!"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "cos(\\u03c0/4 - x) = 1 v R"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Kdy cos = 1?",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "cos \\u03b1 = 1 \\u21d4 \\u03b1 = 2k\\u03c0, k \\u2208 Z"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Dosazeni",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "\\u03c0/4 - x = 2k\\u03c0",
+                    `
+`,
+                    "-x = -\\u03c0/4 + 2k\\u03c0",
+                    `
+`,
+                    "x = \\u03c0/4 - 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Ekvivalentni zapis",
+                children: [
+                  /* @__PURE__ */ jsxDEV(MBlock, {
+                    children: "x = \\u03c0/4 + 2k\\u03c0, k \\u2208 Z"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: pS,
+                    children: "(protoze -2k\\u03c0 a +2k\\u03c0 pokryvaji stejna cisla pri k \\u2208 Z)"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = \\u03c0/4 + 2k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 2: cos(\\u03c0/3 - 2x) = -1/2",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "cos(\\u03c0/3 - 2x) = -1/2 v R"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "\\u03b1 = \\u03c0/3 - 2x",
+                    `
+`,
+                    "cos \\u03b1 = -1/2",
+                    `
+`,
+                    "\\u03b1_1 = 2\\u03c0/3 + 2k\\u03c0",
+                    `
+`,
+                    "\\u03b1_2 = 4\\u03c0/3 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zpetna substituce (vetev 1)",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "\\u03c0/3 - 2x = 2\\u03c0/3 + 2k\\u03c0",
+                    `
+`,
+                    "-2x = \\u03c0/3 + 2k\\u03c0",
+                    `
+`,
+                    "x = -\\u03c0/6 - k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Zpetna substituce (vetev 2)",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "\\u03c0/3 - 2x = 4\\u03c0/3 + 2k\\u03c0",
+                    `
+`,
+                    "-2x = \\u03c0 + 2k\\u03c0",
+                    `
+`,
+                    "x = -\\u03c0/2 - k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x_1 = -\\u03c0/6 - k\\u03c0, x_2 = -\\u03c0/2 - k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: pS,
+                children: "Ekvivalentne: x_1 = 5\\u03c0/6 + k\\u03c0, x_2 = \\u03c0/2 + k\\u03c0"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 3: sin(2x) = \\u221a3/2 na <0, 2\\u03c0)",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin(2x) = \\u221a3/2, x \\u2208 \\u27e80, 2\\u03c0)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Substituce \\u03b1 = 2x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin \\u03b1 = \\u221a3/2",
+                    `
+`,
+                    "\\u03b1_1 = \\u03c0/3 + 2k\\u03c0",
+                    `
+`,
+                    "\\u03b1_2 = 2\\u03c0/3 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zpet na x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "x_1 = \\u03c0/6 + k\\u03c0",
+                    `
+`,
+                    "x_2 = \\u03c0/3 + k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Vyber z intervalu <0, 2\\u03c0)",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "k=0: x = \\u03c0/6, \\u03c0/3",
+                    `
+`,
+                    "k=1: x = 7\\u03c0/6, 4\\u03c0/3"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: [
+                  "K = ",
+                  "{π/6, π/3, 7π/6, 4π/3}"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 4: tg(2x + \\u03c0/4) = \\u221a3/3",
+        badge: "Hard",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "tg(2x + \\u03c0/4) = \\u221a3/3 v R"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Substituce a reseni",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "tg \\u03b1 = \\u221a3/3 \\u21d4 \\u03b1 = \\u03c0/6 + k\\u03c0",
+                    `
+`,
+                    "(perioda tg je \\u03c0)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zpetna substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "2x + \\u03c0/4 = \\u03c0/6 + k\\u03c0",
+                    `
+`,
+                    "2x = \\u03c0/6 - \\u03c0/4 + k\\u03c0",
+                    `
+`,
+                    "2x = (2\\u03c0 - 3\\u03c0)/12 + k\\u03c0",
+                    `
+`,
+                    "2x = -\\u03c0/12 + k\\u03c0",
+                    `
+`,
+                    "x = -\\u03c0/24 + k\\u03c0/2"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = -\\u03c0/24 + k\\u03c0/2 = \\u03c0(12k - 1)/24, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 5: cos(x + \\u03c0/6) = -1 v R",
+        badge: "Easy",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "cos(x + \\u03c0/6) = -1"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Kdy cos = -1?",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "cos \\u03b1 = -1 \\u21d4 \\u03b1 = \\u03c0 + 2k\\u03c0"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Dosazeni",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "x + \\u03c0/6 = \\u03c0 + 2k\\u03c0",
+                    `
+`,
+                    "x = 5\\u03c0/6 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = 5\\u03c0/6 + 2k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 6: sin(x - \\u03c0/4) = 1/2 v R",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin(x - \\u03c0/4) = 1/2"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Reseni pro sin \\u03b1 = 1/2",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "\\u03b1_1 = \\u03c0/6 + 2k\\u03c0",
+                    `
+`,
+                    "\\u03b1_2 = 5\\u03c0/6 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zpetna substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "x - \\u03c0/4 = \\u03c0/6 + 2k\\u03c0 \\u2192 x = 5\\u03c0/12 + 2k\\u03c0",
+                    `
+`,
+                    "x - \\u03c0/4 = 5\\u03c0/6 + 2k\\u03c0 \\u2192 x = 13\\u03c0/12 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x_1 = 5\\u03c0/12 + 2k\\u03c0, x_2 = 13\\u03c0/12 + 2k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProblemsRovniceSubstituce() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 1: 2 + cos 2x = -5 sin x",
+        badge: "Hard",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Z cvicneho testu!"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "2 + cos 2x = -5 sin x"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Pouzijeme cos 2x = 1 - 2sin\\u00b2x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "2 + 1 - 2sin\\u00b2x = -5 sin x",
+                    `
+`,
+                    "-2sin\\u00b2x + 5 sin x + 3 = 0",
+                    `
+`,
+                    "2sin\\u00b2x - 5 sin x - 3 = 0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Substituce y = sin x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "2y\\u00b2 - 5y - 3 = 0",
+                    `
+`,
+                    "D = 25 + 24 = 49",
+                    `
+`,
+                    "y = (5 \\u00b1 7)/4",
+                    `
+`,
+                    "y_1 = 3, y_2 = -1/2"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Zpetna substituce",
+                children: [
+                  /* @__PURE__ */ jsxDEV(MBlock, {
+                    children: [
+                      "sin x = 3 \\u2192 nema reseni (|sin x| \\u2264 1)",
+                      `
+`,
+                      "sin x = -1/2",
+                      `
+`,
+                      "x_1 = 7\\u03c0/6 + 2k\\u03c0",
+                      `
+`,
+                      "x_2 = 11\\u03c0/6 + 2k\\u03c0"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: pS,
+                    children: "Ekvivalentne: x = -\\u03c0/6 + 2k\\u03c0 nebo x = \\u03c0 + \\u03c0/6 + 2k\\u03c0"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x_1 = 7\\u03c0/6 + 2k\\u03c0, x_2 = 11\\u03c0/6 + 2k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 2: 2cos\\u00b2x + cos x - 1 = 0",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "2cos\\u00b2x + cos x - 1 = 0"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Substituce y = cos x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "2y\\u00b2 + y - 1 = 0",
+                    `
+`,
+                    "D = 1 + 8 = 9",
+                    `
+`,
+                    "y = (-1 \\u00b1 3)/4",
+                    `
+`,
+                    "y_1 = 1/2, y_2 = -1"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zpetna substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "cos x = 1/2: x_1 = \\u03c0/3 + 2k\\u03c0, x_2 = 5\\u03c0/3 + 2k\\u03c0",
+                    `
+`,
+                    "cos x = -1: x_3 = \\u03c0 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Overeni na <0, 2\\u03c0)",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "K = ",
+                    "{π/3, π, 5π/3}"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = \\u03c0/3 + 2k\\u03c0, 5\\u03c0/3 + 2k\\u03c0, \\u03c0 + 2k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 3: sin\\u00b2x = 2 sin x",
+        badge: "Easy",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin\\u00b2x = 2 sin x"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Uprava a substituce a = sin x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "a\\u00b2 - 2a = 0",
+                    `
+`,
+                    "a(a - 2) = 0",
+                    `
+`,
+                    "a_1 = 0, a_2 = 2"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zpetna substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin x = 0 \\u2192 x = k\\u03c0",
+                    `
+`,
+                    "sin x = 2 \\u2192 nema reseni"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 4: 6sin\\u00b2x - 7cos x - 1 = 0",
+        badge: "Hard",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "6sin\\u00b2x - 7cos x - 1 = 0"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Prevod sin\\u00b2x = 1 - cos\\u00b2x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "6(1 - cos\\u00b2x) - 7cos x - 1 = 0",
+                    `
+`,
+                    "-6cos\\u00b2x - 7cos x + 5 = 0",
+                    `
+`,
+                    "6cos\\u00b2x + 7cos x - 5 = 0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Substituce a = cos x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "6a\\u00b2 + 7a - 5 = 0",
+                    `
+`,
+                    "D = 49 + 120 = 169",
+                    `
+`,
+                    "a = (-7 \\u00b1 13)/12",
+                    `
+`,
+                    "a_1 = 1/2, a_2 = -20/12 (X, mimo rozsah)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Zpetna substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "cos x = 1/2",
+                    `
+`,
+                    "x_1 = \\u03c0/3 + 2k\\u03c0",
+                    `
+`,
+                    "x_2 = 5\\u03c0/3 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = \\u00b1\\u03c0/3 + 2k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 5: sin\\u00b2x + 5 sin x + 4 = 0",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin\\u00b2x + 5 sin x + 4 = 0"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Substituce y = sin x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "y\\u00b2 + 5y + 4 = 0",
+                    `
+`,
+                    "(y + 1)(y + 4) = 0",
+                    `
+`,
+                    "y_1 = -1, y_2 = -4"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zpetna substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin x = -1 \\u2192 x = 3\\u03c0/2 + 2k\\u03c0",
+                    `
+`,
+                    "sin x = -4 \\u2192 nema reseni"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = 3\\u03c0/2 + 2k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 6: cos 2x + sin x = 0",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "cos 2x + sin x = 0"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "cos 2x = 1 - 2sin\\u00b2x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "1 - 2sin\\u00b2x + sin x = 0",
+                    `
+`,
+                    "2sin\\u00b2x - sin x - 1 = 0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Substituce y = sin x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "2y\\u00b2 - y - 1 = 0",
+                    `
+`,
+                    "y = (1 \\u00b1 3)/4",
+                    `
+`,
+                    "y_1 = 1, y_2 = -1/2"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Zpetna substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin x = 1 \\u2192 x = \\u03c0/2 + 2k\\u03c0",
+                    `
+`,
+                    "sin x = -1/2 \\u2192 x = 7\\u03c0/6 + 2k\\u03c0 nebo x = 11\\u03c0/6 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = \\u03c0/2 + 2k\\u03c0, 7\\u03c0/6 + 2k\\u03c0, 11\\u03c0/6 + 2k\\u03c0"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 7: sin 2x \\u00b7 cos x + sin\\u00b2x = 1",
+        badge: "Hard",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin 2x \\u00b7 cos x + sin\\u00b2x = 1"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "sin 2x = 2 sin x cos x",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "2 sin x cos\\u00b2x + sin\\u00b2x = 1",
+                    `
+`,
+                    "Ale sin\\u00b2x + cos\\u00b2x = 1, tak prepis:",
+                    `
+`,
+                    "2 sin x cos\\u00b2x + sin\\u00b2x = sin\\u00b2x + cos\\u00b2x",
+                    `
+`,
+                    "2 sin x cos\\u00b2x = cos\\u00b2x",
+                    `
+`,
+                    "cos\\u00b2x(2 sin x - 1) = 0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Rozklad na soucin",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "cos\\u00b2x = 0 \\u2192 cos x = 0 \\u2192 x = \\u03c0/2 + k\\u03c0",
+                    `
+`,
+                    "2 sin x - 1 = 0 \\u2192 sin x = 1/2 \\u2192 x = \\u03c0/6 + 2k\\u03c0, 5\\u03c0/6 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = \\u03c0/2 + k\\u03c0, \\u03c0/6 + 2k\\u03c0, 5\\u03c0/6 + 2k\\u03c0, k \\u2208 Z"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProblemsGrafNaPredpis() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 1: Sinusoida z cvicneho testu",
+        badge: "Medium",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Graf z testu: sinusoida, minima v -2, maxima v 0, neprochazi pocatkem, perioda = \\u03c0."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Popis grafu: amplituda = 1 (rozsah 0 az -2, stred = -1), perioda = \\u03c0, posunuta dolu o 1."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Amplituda",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "a = (max - min)/2 = (0 - (-2))/2 = 1"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Vertikalni posun",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "d = (max + min)/2 = (0 + (-2))/2 = -1"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Perioda a b",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "T = \\u03c0, b = 2\\u03c0/T = 2"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 4,
+                title: "Faze (horizontalni posun)",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "Maximum je v x = \\u03c0/4 (misto 0 pro -cos)",
+                    `
+`,
+                    "y = -cos(2x) - 1  nebo  y = cos(2x + \\u03c0) - 1"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "y = -cos(2x) - 1"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 2: Sinusoida s body (-\\u03c0/3, 4) a (5\\u03c0/3, -4)",
+        badge: "Hard",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Maximum 4, minimum -4, nulove body v 2\\u03c0/3 a 8\\u03c0/3."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Amplituda a perioda",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "a = 4",
+                    `
+`,
+                    "Vzdalenost dvou po sobe jdoucich maxim: 11\\u03c0/3 - (-\\u03c0/3) = 4\\u03c0",
+                    `
+`,
+                    "T = 4\\u03c0, b = 2\\u03c0/T = 1/2"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Posun",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "Max v x = -\\u03c0/3. Pro sin je max v \\u03c0/2b = \\u03c0.",
+                    `
+`,
+                    "Posun: -\\u03c0/3 - \\u03c0 = -4\\u03c0/3, tj. c = 4\\u03c0/3 vlevo? Hmm.",
+                    `
+`,
+                    `
+`,
+                    "Spis: y = 4cos(x/2 + \\u03c0/6)",
+                    `
+`,
+                    "Max cosinusoidy pri argumentu = 0:",
+                    `
+`,
+                    "x/2 + \\u03c0/6 = 0 \\u2192 x = -\\u03c0/3 \\u2713"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "y = 4cos(x/2 + \\u03c0/6)"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 3: y = 2sin(2x + \\u03c0/3) — postup cteni grafu",
+        badge: "Easy",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Obecny postup pro rozpoznani y = a\\u00b7sin(b(x+c)) + d z grafu:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Amplituda a = (max - min) / 2",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "Precteme maximum a minimum z grafu."
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Vertikalni posun d = (max + min) / 2",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "Pokud d = 0, graf osciluje symetricky kolem osy x."
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Perioda T a koeficient b",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "T = vzdalenost dvou po sobe jdoucich maxim",
+                    `
+`,
+                    "b = 2\\u03c0 / T (pro sin, cos)",
+                    `
+`,
+                    "b = \\u03c0 / T (pro tg, cotg)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 4,
+                title: "Faze c",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "Najdi x-ovou souradnici maxima (pro sin/cos).",
+                    `
+`,
+                    "Pro y = sin: max je v b(x+c) = \\u03c0/2",
+                    `
+`,
+                    "Pro y = cos: max je v b(x+c) = 0",
+                    `
+`,
+                    "Z toho vypoctete c."
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: PINK, fontWeight: 600 },
+                children: "Priklad: max v (-\\u03c0/6, 2), min v (5\\u03c0/12, -2), T = \\u03c0"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(MBlock, {
+                children: [
+                  "a = 2, d = 0, b = 2",
+                  `
+`,
+                  "Max pri x = -\\u03c0/6: b(x+c) = \\u03c0/2",
+                  `
+`,
+                  "2(-\\u03c0/6 + c) = \\u03c0/2",
+                  `
+`,
+                  "-\\u03c0/3 + 2c = \\u03c0/2",
+                  `
+`,
+                  "2c = 5\\u03c0/6",
+                  `
+`,
+                  "c = 5\\u03c0/12... ne, zkusme cos:",
+                  `
+`,
+                  "b(x+c) = 0 \\u2192 2(-\\u03c0/6 + c) = 0 \\u2192 c = \\u03c0/6",
+                  `
+`,
+                  "y = 2cos(2(x + \\u03c0/6)) = 2cos(2x + \\u03c0/3)"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProblemsPredpisNaGraf() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 1: y = sin(x + 2\\u03c0/3)",
+        badge: "Easy",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "y = sin(x + 2\\u03c0/3)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Identifikace transformaci",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "Zakladni funkce: y = sin x",
+                    `
+`,
+                    "Posun o 2\\u03c0/3 DOLEVA (vnitrni +)",
+                    `
+`,
+                    "Amplituda = 1, perioda = 2\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Klicove body",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin x ma max v \\u03c0/2.",
+                    `
+`,
+                    "Posunuty max: \\u03c0/2 - 2\\u03c0/3 = -\\u03c0/6",
+                    `
+`,
+                    "Nuly: -2\\u03c0/3 (start), \\u03c0/3 (stred), 4\\u03c0/3",
+                    `
+`,
+                    "Min: -\\u03c0/6 + \\u03c0 = 5\\u03c0/6"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: PINK },
+                children: "Nakresli sinusoidu posunutou o 2\\u03c0/3 doleva. Max v (-\\u03c0/6, 1), nula v (\\u03c0/3, 0), min v (5\\u03c0/6, -1)."
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 2: y = -cos(2x)",
+        badge: "Easy",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "y = -cos(2x)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Transformace",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "1. cos(x) \\u2192 cos(2x): perioda 2\\u03c0/2 = \\u03c0",
+                    `
+`,
+                    "2. -cos(2x): zrcadleni pres osu x",
+                    `
+`,
+                    "Amplituda = 1"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Klicove body",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "cos(2x) ma max v x=0.",
+                    `
+`,
+                    "-cos(2x) ma MIN v x=0: (0, -1)",
+                    `
+`,
+                    "Nuly: \\u03c0/4, 3\\u03c0/4",
+                    `
+`,
+                    "Max: \\u03c0/2: (\\u03c0/2, 1)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 3: y = 2cos(2x - \\u03c0/4)",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "y = 2cos(2x - \\u03c0/4) = 2cos(2(x - \\u03c0/8))"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Rozklad parametru",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "a = 2 (amplituda)",
+                    `
+`,
+                    "b = 2 \\u2192 T = \\u03c0",
+                    `
+`,
+                    "c = -\\u03c0/8 (posun doprava o \\u03c0/8)",
+                    `
+`,
+                    "d = 0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Klicove body",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "Max (cos arg = 0): 2(x - \\u03c0/8) = 0 \\u2192 x = \\u03c0/8: (\\u03c0/8, 2)",
+                    `
+`,
+                    "Nula: x = \\u03c0/8 + \\u03c0/4 = 3\\u03c0/8",
+                    `
+`,
+                    "Min: x = \\u03c0/8 + \\u03c0/2 = 5\\u03c0/8: (5\\u03c0/8, -2)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 4: y = -tg(x/2)",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "y = -tg(x/2)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Transformace",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "tg(x/2): perioda = \\u03c0/(1/2) = 2\\u03c0",
+                    `
+`,
+                    "-tg: zrcadleni pres osu x",
+                    `
+`,
+                    "Asymptoty kde x/2 = \\u03c0/2 + k\\u03c0 \\u2192 x = \\u03c0 + 2k\\u03c0"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Klicove body",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "Nula: x = 0 (a kazdych 2\\u03c0)",
+                    `
+`,
+                    "Asymptoty: x = \\u00b1\\u03c0, \\u00b13\\u03c0, ...",
+                    `
+`,
+                    "Klesajici (protoze minus) na (-\\u03c0, \\u03c0)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 5: y = cotg(2x + \\u03c0) - 1",
+        badge: "Hard",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "y = cotg(2x + \\u03c0) - 1 = cotg(2(x + \\u03c0/2)) - 1"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Transformace",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "cotg(2x): perioda = \\u03c0/2",
+                    `
+`,
+                    "Posun o \\u03c0/2 doleva",
+                    `
+`,
+                    "Posun o 1 dolu",
+                    `
+`,
+                    `
+`,
+                    "Pozn: cotg(x + \\u03c0) = cotg x (perioda cotg je \\u03c0)",
+                    `
+`,
+                    "Takze cotg(2x + \\u03c0) = cotg(2x)",
+                    `
+`,
+                    "y = cotg(2x) - 1"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Klicove body",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "Asymptoty: 2x = k\\u03c0 \\u2192 x = k\\u03c0/2",
+                    `
+`,
+                    "Nula cotg: 2x = \\u03c0/2 + k\\u03c0 \\u2192 x = \\u03c0/4 + k\\u03c0/2",
+                    `
+`,
+                    "Ale -1 posun: y = 0 v jinem bode"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProblemsVyrazy() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 1: (sin x + sin 2x) / (1 + cos x + cos 2x)",
+        badge: "Hard",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Z cvicneho testu!"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "(sin x + sin 2x) / (1 + cos x + cos 2x) = ?"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Rozepsani dvojnasobnych uhlu",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "Citatel: sin x + 2 sin x cos x = sin x(1 + 2 cos x)",
+                    `
+`,
+                    "Jmenovatel: 1 + cos x + (2cos\\u00b2x - 1) = cos x + 2cos\\u00b2x = cos x(1 + 2 cos x)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zkraceni",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin x(1 + 2 cos x) / (cos x(1 + 2 cos x))",
+                    `
+`,
+                    "= sin x / cos x = tg x"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "Vysledek: tg x"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: pS,
+                children: "Podminka: cos x \\u2260 0 a 1 + 2cos x \\u2260 0, tj. x \\u2260 \\u03c0/2 + k\\u03c0 a x \\u2260 \\u00b12\\u03c0/3 + 2k\\u03c0"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 2: (cotg x - tg x) / (cotg x + tg x)",
+        badge: "Hard",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Z cvicneho testu!"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "(cotg x - tg x) / (cotg x + tg x) = ?"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Prepis na sin a cos",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "cotg x = cos x/sin x, tg x = sin x/cos x",
+                    `
+`,
+                    `
+`,
+                    "Citatel: cos x/sin x - sin x/cos x",
+                    `
+`,
+                    "= (cos\\u00b2x - sin\\u00b2x)/(sin x cos x)",
+                    `
+`,
+                    "= cos 2x / (sin x cos x)",
+                    `
+`,
+                    `
+`,
+                    "Jmenovatel: cos x/sin x + sin x/cos x",
+                    `
+`,
+                    "= (cos\\u00b2x + sin\\u00b2x)/(sin x cos x)",
+                    `
+`,
+                    "= 1/(sin x cos x)"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Podil",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "[cos 2x/(sin x cos x)] / [1/(sin x cos x)]",
+                    `
+`,
+                    "= cos 2x"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "Vysledek: cos 2x"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 3: (cos\\u00b2x - cos 2x) / sin 2x = (1/2) tg x",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Dokazte rovnost a urcete podminku."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "(cos\\u00b2x - cos 2x) / sin 2x = (1/2) tg x"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Leva strana",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "cos 2x = cos\\u00b2x - sin\\u00b2x",
+                    `
+`,
+                    "L = (cos\\u00b2x - (cos\\u00b2x - sin\\u00b2x)) / (2 sin x cos x)",
+                    `
+`,
+                    "= sin\\u00b2x / (2 sin x cos x)",
+                    `
+`,
+                    "= sin x / (2 cos x)",
+                    `
+`,
+                    "= (1/2) tg x \\u2713"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Podminka",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin 2x \\u2260 0 \\u2192 x \\u2260 k\\u03c0/2",
+                    `
+`,
+                    "D = R \\ ",
+                    "{k·π/2; k ∈ Z}"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "Dokazano. D: x \\u2260 k\\u03c0/2"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Pr. 4: sin 2x/(1 + cos 2x) + (1 - cos 2x)/sin 2x = 2 tg x",
+        badge: "Hard",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin 2x/(1 + cos 2x) + (1 - cos 2x)/sin 2x = 2 tg x"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Dosazeni vzorcu",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "sin 2x = 2 sin x cos x",
+                    `
+`,
+                    "cos 2x = cos\\u00b2x - sin\\u00b2x",
+                    `
+`,
+                    "1 + cos 2x = 1 + cos\\u00b2x - sin\\u00b2x = 2cos\\u00b2x",
+                    `
+`,
+                    "1 - cos 2x = 1 - cos\\u00b2x + sin\\u00b2x = 2sin\\u00b2x"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Dosazeni do zlomku",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: [
+                    "2 sin x cos x / (2cos\\u00b2x) + 2sin\\u00b2x / (2 sin x cos x)",
+                    `
+`,
+                    "= sin x/cos x + sin x/cos x",
+                    `
+`,
+                    "= tg x + tg x = 2 tg x \\u2713"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "Dokazano. D: x \\u2260 k\\u03c0/2"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var quizQuestions = [
+  {
+    question: "Kolik je sin(5π/6)?",
+    type: "single",
+    options: ["1/2", "-1/2", "√3/2", "-√3/2"],
+    correct: [0],
+    explanation: "5π/6 je v II. kvadrantu, referencni uhel je π/6. Sin je v II. kv. kladny, sin(π/6) = 1/2.",
+    tip: "II. kvadrant = sin kladny, cos zaporny."
+  },
+  {
+    question: "Kolik je cos(7π/4)?",
+    type: "single",
+    options: ["√2/2", "-√2/2", "1/2", "-1/2"],
+    correct: [0],
+    explanation: "7π/4 = 2π - π/4 je v IV. kvadrantu. Cos je kladny v IV. kv., cos(π/4) = √2/2."
+  },
+  {
+    question: "Jaka je perioda funkce y = sin(3x)?",
+    type: "single",
+    options: ["2π/3", "3π", "6π", "π/3"],
+    correct: [0],
+    explanation: "Pro sin(bx) je perioda T = 2π/b. Tady b = 3, takze T = 2π/3.",
+    tip: "T = 2π/b pro sin a cos, T = π/b pro tg a cotg."
+  },
+  {
+    question: "Jaka je perioda funkce y = -2sin(x/2)?",
+    type: "single",
+    options: ["4π", "2π", "π", "π/2"],
+    correct: [0],
+    explanation: "b = 1/2, T = 2π/(1/2) = 4π. Zaporny koeficient a amplituda nemeji periodu."
+  },
+  {
+    question: "Jaka je perioda funkce y = -(1/2)tg(4x)?",
+    type: "single",
+    options: ["π/4", "4π", "π/2", "2π"],
+    correct: [0],
+    explanation: "Pro tg(bx) je T = π/b. Tady b = 4, T = π/4."
+  },
+  {
+    question: "Rovnice cos x = -1 ma reseni:",
+    type: "single",
+    options: ["x = π + 2kπ", "x = 3π/2 + 2kπ", "x = 0 + 2kπ", "x = π/2 + kπ"],
+    correct: [0],
+    explanation: "cos x = -1 nastava pouze v bode π na jednotkove kruznici, s periodou 2π."
+  },
+  {
+    question: "sin²x + cos²x = ?",
+    type: "single",
+    options: ["1", "0", "2", "sin 2x"],
+    correct: [0],
+    explanation: "Zakladni goniometricka identita (Pythagorova veta na jednotkove kruznici).",
+    tip: "Toto je nejdulezitejsi identita v goniometrii!"
+  },
+  {
+    question: "cos 2x se rovna:",
+    type: "multi",
+    options: ["cos²x - sin²x", "1 - 2sin²x", "2cos²x - 1", "2sin x cos x"],
+    correct: [0, 1, 2],
+    explanation: "Vsechny tri prvni tvary jsou spravne (ekvivalentni). 2sin x cos x = sin 2x, ne cos 2x."
+  },
+  {
+    question: "sin 2x = ?",
+    type: "single",
+    options: ["2 sin x cos x", "sin²x + cos²x", "cos²x - sin²x", "2 sin²x"],
+    correct: [0],
+    explanation: "Vzorec pro dvojnasobny uhel: sin 2x = 2 sin x cos x."
+  },
+  {
+    question: "Funkce y = 3sin(2(x - π/6)) ma amplitudu a periodu:",
+    type: "single",
+    options: ["a = 3, T = π", "a = 3, T = 2π", "a = 2, T = 3π", "a = 6, T = π/2"],
+    correct: [0],
+    explanation: "Amplituda = |a| = 3. Perioda = 2π/b = 2π/2 = π."
+  },
+  {
+    question: "Ve kterych kvadrantech je tg x kladny?",
+    type: "multi",
+    options: ["I. kvadrant", "II. kvadrant", "III. kvadrant", "IV. kvadrant"],
+    correct: [0, 2],
+    explanation: "tg = sin/cos. V I. kv. oba kladne (+/+), v III. kv. oba zaporne (-/- = +).",
+    tip: "tg a cotg maji stejne znaminko — kladne v I. a III. kv."
+  },
+  {
+    question: "Rovnice 2cos²x - cos x - 1 = 0: jaka je spravna substituce?",
+    type: "single",
+    options: ["y = cos x, pak 2y² - y - 1 = 0", "y = cos²x, pak 2y - y - 1 = 0", "y = sin x, pak 2y² - y - 1 = 0", "y = 2cos x, pak y² - y - 1 = 0"],
+    correct: [0],
+    explanation: "Substituujeme y = cos x. Rovnice 2y² - y - 1 = 0 je standardni kvadraticka rovnice."
+  },
+  {
+    question: "cotg(π/4) = ?",
+    type: "single",
+    options: ["1", "0", "√3", "√3/3"],
+    correct: [0],
+    explanation: "cotg(π/4) = cos(π/4)/sin(π/4) = (√2/2)/(√2/2) = 1."
+  },
+  {
+    question: "Kdyz x je v III. kvadrantu a cotg x = 2, pak:",
+    type: "multi",
+    options: ["sin x < 0", "cos x < 0", "tg x > 0", "tg x < 0"],
+    correct: [0, 1, 2],
+    explanation: "V III. kv.: sin < 0, cos < 0. tg = sin/cos = (-)/(-) > 0. cotg > 0 souhlasi."
+  },
+  {
+    question: "Jak se zmeni graf funkce y = sin x pri transformaci y = sin(x + π/2)?",
+    type: "single",
+    options: ["Posune se o π/2 DOLEVA", "Posune se o π/2 DOPRAVA", "Posune se o π/2 NAHORU", "Zmeni se perioda"],
+    correct: [0],
+    explanation: "Vnitrni transformace +c posouva graf DOLEVA o c. sin(x + π/2) = cos x.",
+    tip: "Vnitrni + = DOLEVA, vnitrni - = DOPRAVA (opak intuice!)"
+  },
+  {
+    question: "tg x = sin x / cos x. Kdy tg x neni definovan?",
+    type: "single",
+    options: ["Kdyz cos x = 0, tj. x = π/2 + kπ", "Kdyz sin x = 0, tj. x = kπ", "Kdyz x = 2kπ", "tg x je vzdy definovan"],
+    correct: [0],
+    explanation: "tg x = sin x / cos x, takze neni definovan kde cos x = 0, tj. v x = π/2 + kπ."
+  }
+];
+var flashcardsData = [
+  { front: "sin²x + cos²x = ?", back: `1
+(Pythagorova identita)` },
+  { front: "sin 2x = ?", back: "2 sin x cos x" },
+  { front: "cos 2x = ? (3 tvary)", back: `cos²x - sin²x
+= 1 - 2sin²x
+= 2cos²x - 1` },
+  { front: "tg x = ?", back: "sin x / cos x" },
+  { front: "cotg x = ?", back: "cos x / sin x = 1 / tg x" },
+  { front: "Perioda sin(bx), cos(bx)?", back: "T = 2π / |b|" },
+  { front: "Perioda tg(bx), cotg(bx)?", back: "T = π / |b|" },
+  { front: "sin(π/6) = ?", back: "1/2" },
+  { front: "cos(π/6) = ?", back: "√3/2" },
+  { front: "sin(π/4) = ?", back: "√2/2" },
+  { front: "cos(π/4) = ?", back: "√2/2" },
+  { front: "sin(π/3) = ?", back: "√3/2" },
+  { front: "cos(π/3) = ?", back: "1/2" },
+  { front: "tg(π/3) = ?", back: "√3" },
+  { front: "tg(π/6) = ?", back: "√3/3" },
+  { front: "Znaminko sin ve III. kv.?", back: "ZAPORNE (sin < 0)" },
+  { front: "Znaminko cos ve II. kv.?", back: "ZAPORNE (cos < 0)" },
+  { front: `y = a sin(b(x+c)) + d
+Co je a?`, back: `Amplituda — nasobi y-ove hodnoty
+Rozsah: <-|a|, |a|> (bez d)` },
+  { front: `y = a sin(b(x+c)) + d
+Co je c?`, back: `Horizontalni posun
++c = doleva, -c = doprava` },
+  { front: "sin²x = ? (pres cos 2x)", back: "(1 - cos 2x) / 2" },
+  { front: "cos²x = ? (pres cos 2x)", back: "(1 + cos 2x) / 2" },
+  { front: "sin(-α) = ?", back: "-sin α (licha funkce)" },
+  { front: "cos(-α) = ?", back: "cos α (suda funkce)" },
+  { front: "1 + tg²x = ?", back: "1 / cos²x" },
+  { front: "1 + cotg²x = ?", back: "1 / sin²x" }
+];
+function Flashcards() {
+  const [idx, setIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const card = flashcardsData[idx];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "540px", margin: "0 auto" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        onClick: () => setFlipped(!flipped),
+        style: { ...glass, padding: "40px 32px", minHeight: "200px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", transition: "all 0.4s ease", transform: flipped ? "rotateY(0)" : "rotateY(0)", background: flipped ? "rgba(236,72,153,0.08)" : "rgba(255,255,255,0.05)" },
+        children: /* @__PURE__ */ jsxDEV("div", {
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { color: "rgba(255,255,255,0.3)", fontSize: "12px", marginBottom: "12px" },
+              children: [
+                flipped ? "ODPOVED" : "OTAZKA",
+                " (",
+                idx + 1,
+                "/",
+                flashcardsData.length,
+                ")"
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { color: "#fff", fontSize: "22px", fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", whiteSpace: "pre-line", lineHeight: 1.6 },
+              children: flipped ? card.back : card.front
+            }, undefined, false, undefined, this),
+            !flipped && /* @__PURE__ */ jsxDEV("div", {
+              style: { color: "rgba(255,255,255,0.3)", fontSize: "13px", marginTop: "16px" },
+              children: "Klikni pro otoceni"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "center", gap: "12px", marginTop: "16px", flexWrap: "wrap" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnS,
+            onClick: () => {
+              setIdx(Math.max(0, idx - 1));
+              setFlipped(false);
+            },
+            disabled: idx === 0,
+            children: "\\u2190 Predchozi"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnS, background: PINK + "22", border: `1px solid ${PINK}` },
+            onClick: () => setFlipped(!flipped),
+            children: flipped ? "Otocit zpet" : "Zobrazit odpoved"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnS,
+            onClick: () => {
+              setIdx(Math.min(flashcardsData.length - 1, idx + 1));
+              setFlipped(false);
+            },
+            disabled: idx === flashcardsData.length - 1,
+            children: "Dalsi \\u2192"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginTop: "12px" },
+        children: flashcardsData.map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+          onClick: () => {
+            setIdx(i);
+            setFlipped(false);
+          },
+          style: { width: "18px", height: "18px", borderRadius: "50%", background: i === idx ? PINK : "#4b5563", cursor: "pointer", transition: "background 0.4s ease" }
+        }, i, false, undefined, this))
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function FormulaSheet() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "20px", marginBottom: "16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
+            children: "Zakladni identity"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: [
+              "sin\\u00b2x + cos\\u00b2x = 1",
+              `
+`,
+              "tg x = sin x / cos x",
+              `
+`,
+              "cotg x = cos x / sin x",
+              `
+`,
+              "tg x \\u00b7 cotg x = 1",
+              `
+`,
+              "1 + tg\\u00b2x = 1/cos\\u00b2x",
+              `
+`,
+              "1 + cotg\\u00b2x = 1/sin\\u00b2x"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "20px", marginBottom: "16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
+            children: "Dvojnasobny uhel"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: [
+              "sin 2x = 2 sin x cos x",
+              `
+`,
+              "cos 2x = cos\\u00b2x - sin\\u00b2x",
+              `
+`,
+              "       = 1 - 2sin\\u00b2x",
+              `
+`,
+              "       = 2cos\\u00b2x - 1"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "20px", marginBottom: "16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
+            children: "Polovicni uhel"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: [
+              "sin\\u00b2(x/2) = (1 - cos x)/2",
+              `
+`,
+              "cos\\u00b2(x/2) = (1 + cos x)/2"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "20px", marginBottom: "16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
+            children: "Sudost a lichost"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: [
+              "sin(-x) = -sin x  (licha)",
+              `
+`,
+              "cos(-x) = cos x   (suda)",
+              `
+`,
+              "tg(-x) = -tg x    (licha)",
+              `
+`,
+              "cotg(-x) = -cotg x (licha)"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "20px", marginBottom: "16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
+            children: "Periody"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: [
+              "sin(bx), cos(bx): T = 2\\u03c0/|b|",
+              `
+`,
+              "tg(bx), cotg(bx): T = \\u03c0/|b|"
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "20px", marginBottom: "16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
+            children: "Transformace y = a\\u00b7f(b(x + c)) + d"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 16px", fontFamily: "'JetBrains Mono', monospace", fontSize: "14px", color: "#fff" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: CYAN },
+                children: "|a|"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "amplituda (nasobeni y)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: CYAN },
+                children: "a < 0"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "zrcadleni pres osu x"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: CYAN },
+                children: "b"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "zmena periody (T = 2\\u03c0/b)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: CYAN },
+                children: "c > 0"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "posun DOLEVA o c"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: CYAN },
+                children: "c < 0"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "posun DOPRAVA o |c|"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: CYAN },
+                children: "d > 0"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "posun NAHORU o d"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: CYAN },
+                children: "d < 0"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                children: "posun DOLU o |d|"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "20px", marginBottom: "16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
+            children: "Tabulka hodnot (I. kvadrant)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { overflowX: "auto" },
+            children: /* @__PURE__ */ jsxDEV("table", {
+              style: { width: "100%", borderCollapse: "collapse", fontFamily: "'JetBrains Mono', monospace", fontSize: "14px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("thead", {
+                  children: /* @__PURE__ */ jsxDEV("tr", {
+                    style: { borderBottom: "2px solid rgba(255,255,255,0.2)" },
+                    children: ["", "0°", "30° (π/6)", "45° (π/4)", "60° (π/3)", "90° (π/2)"].map((h) => /* @__PURE__ */ jsxDEV("th", {
+                      style: { padding: "10px 6px", color: CYAN, textAlign: "center", fontSize: "12px" },
+                      children: h
+                    }, h, false, undefined, this))
+                  }, undefined, false, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("tbody", {
+                  children: [
+                    ["sin", "0", "1/2", "√2/2", "√3/2", "1"],
+                    ["cos", "1", "√3/2", "√2/2", "1/2", "0"],
+                    ["tg", "0", "√3/3", "1", "√3", "ndef."],
+                    ["cotg", "ndef.", "√3", "1", "√3/3", "0"]
+                  ].map((row) => /* @__PURE__ */ jsxDEV("tr", {
+                    style: { borderBottom: "1px solid rgba(255,255,255,0.06)" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        style: { padding: "10px 6px", color: PINK, fontWeight: 700, textAlign: "center" },
+                        children: row[0]
+                      }, undefined, false, undefined, this),
+                      row.slice(1).map((v, i) => /* @__PURE__ */ jsxDEV("td", {
+                        style: { padding: "10px 6px", color: v === "ndef." ? "rgba(255,255,255,0.3)" : "#fff", textAlign: "center" },
+                        children: v
+                      }, i, false, undefined, this))
+                    ]
+                  }, row[0], true, undefined, this))
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "20px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
+            children: "Znaminko v kvadrantech"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", maxWidth: "360px", margin: "0 auto" },
+            children: [
+              ["II.", "sin +", "cos -", "tg -", "cotg -"],
+              ["I.", "sin +", "cos +", "tg +", "cotg +"],
+              ["III.", "sin -", "cos -", "tg +", "cotg +"],
+              ["IV.", "sin -", "cos +", "tg -", "cotg -"]
+            ].map((q, i) => /* @__PURE__ */ jsxDEV("div", {
+              style: { padding: "12px", borderRadius: "10px", background: "rgba(255,255,255,0.04)", textAlign: "center" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: CYAN, fontWeight: 700, marginBottom: "4px" },
+                  children: q[0]
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "12px", color: "rgba(255,255,255,0.6)", lineHeight: 1.6 },
+                  children: q.slice(1).map((v) => /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: v.includes("+") ? "#4ade80" : "#f87171" },
+                    children: v
+                  }, v, false, undefined, this))
+                }, undefined, false, undefined, this)
+              ]
+            }, i, true, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function App() {
+  const [tab, setTab] = useState("problems");
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { minHeight: "100vh", background: "#0a0a1a", fontFamily: "'Exo 2', sans-serif", position: "relative", overflow: "hidden" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", bottom: 0, left: "-50%", width: "200%", height: "50%", background: `linear-gradient(transparent 0%, ${PINK}11 100%)`, backgroundSize: "60px 60px", backgroundImage: `linear-gradient(${PINK}15 1px, transparent 1px), linear-gradient(90deg, ${PINK}15 1px, transparent 1px)`, transform: "perspective(500px) rotateX(60deg)", transformOrigin: "center bottom" }
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", top: "8%", left: "50%", transform: "translateX(-50%)", width: "200px", height: "200px", borderRadius: "50%", background: `radial-gradient(circle, ${PINK}44, ${CYAN}22, transparent)`, filter: "blur(40px)" }
+          }, undefined, false, undefined, this),
+          [...Array(12)].map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", width: `${3 + Math.random() * 4}px`, height: `${3 + Math.random() * 4}px`, borderRadius: "50%", background: i % 2 === 0 ? PINK + "66" : CYAN + "66", left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, animation: `float${i % 3} ${12 + Math.random() * 8}s ease-in-out infinite`, filter: "blur(1px)" }
+          }, i, false, undefined, this))
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800&family=Audiowide&family=JetBrains+Mono:wght@400;600;700&display=swap');
+        @keyframes float0 { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-30px) translateX(15px); } }
+        @keyframes float1 { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(20px) translateX(-20px); } }
+        @keyframes float2 { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-15px) translateX(-10px); } }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        button:disabled { opacity: 0.4; cursor: not-allowed; }
+        button:hover:not(:disabled) { filter: brightness(1.2); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+      `
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "relative", zIndex: 1, maxWidth: "900px", margin: "0 auto", padding: "20px 16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { textAlign: "center", marginBottom: "24px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("h1", {
+                style: { fontFamily: "'Audiowide', sans-serif", fontSize: "clamp(22px, 5vw, 36px)", color: "#fff", marginBottom: "6px", textShadow: `0 0 20px ${PINK}66` },
+                children: "Goniometrie"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: { color: "rgba(255,255,255,0.4)", fontSize: "14px" },
+                children: "Kompletni priprava na pisemku — 20. 4. 2026"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginBottom: "20px" },
+            children: TABS.map((t) => /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => setTab(t.id),
+              style: { padding: "8px 20px", borderRadius: "20px", border: tab === t.id ? `1px solid ${PINK}` : "1px solid rgba(255,255,255,0.12)", background: tab === t.id ? PINK + "22" : "rgba(255,255,255,0.04)", color: tab === t.id ? "#fff" : "rgba(255,255,255,0.6)", fontFamily: "'Exo 2', sans-serif", fontSize: "14px", fontWeight: 600, cursor: "pointer", transition: "all 0.4s ease" },
+              children: t.label
+            }, t.id, false, undefined, this))
+          }, undefined, false, undefined, this),
+          tab === "theory" && /* @__PURE__ */ jsxDEV(TheoryTab, {}, undefined, false, undefined, this),
+          tab === "problems" && /* @__PURE__ */ jsxDEV(ProblemsTab, {}, undefined, false, undefined, this),
+          tab === "quiz" && /* @__PURE__ */ jsxDEV(QuizEngine, {
+            questions: quizQuestions,
+            accentColor: PINK
+          }, undefined, false, undefined, this),
+          tab === "flashcards" && /* @__PURE__ */ jsxDEV(Flashcards, {}, undefined, false, undefined, this),
+          tab === "formulas" && /* @__PURE__ */ jsxDEV(FormulaSheet, {}, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
