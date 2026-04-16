@@ -199,6 +199,122 @@ function Collapsible({ title, children, defaultOpen = false, badge }) {
 }
 
 // ══════════════════════════════════════════════════════════════════
+// FUNCTION GRAPH (SVG)
+// ══════════════════════════════════════════════════════════════════
+function FunctionGraph({ funcs, xMin = -Math.PI * 2, xMax = Math.PI * 2, yMin = -3, yMax = 3, width = 520, height = 280, showPiLabels = true, title, keyPoints }) {
+  const pad = { top: 28, bottom: 36, left: 42, right: 16 };
+  const w = width - pad.left - pad.right;
+  const h = height - pad.top - pad.bottom;
+  const toX = (x) => pad.left + ((x - xMin) / (xMax - xMin)) * w;
+  const toY = (y) => pad.top + ((yMax - y) / (yMax - yMin)) * h;
+
+  // Grid lines
+  const gridLines = [];
+  // Horizontal
+  for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y++) {
+    gridLines.push(<line key={`h${y}`} x1={pad.left} x2={width - pad.right} y1={toY(y)} y2={toY(y)} stroke="rgba(255,255,255,0.08)" strokeWidth="1" />);
+  }
+  // Vertical — pi multiples or integers
+  if (showPiLabels) {
+    const step = Math.PI / 2;
+    for (let x = Math.ceil(xMin / step) * step; x <= xMax; x += step) {
+      gridLines.push(<line key={`v${x.toFixed(3)}`} x1={toX(x)} x2={toX(x)} y1={pad.top} y2={height - pad.bottom} stroke="rgba(255,255,255,0.06)" strokeWidth="1" />);
+    }
+  }
+
+  // X-axis labels
+  const xLabels = [];
+  if (showPiLabels) {
+    const step = Math.PI / 2;
+    for (let x = Math.ceil(xMin / step) * step; x <= xMax + 0.01; x += step) {
+      const n = Math.round(x / (Math.PI / 2));
+      let label = "";
+      if (n === 0) label = "0";
+      else if (n === 1) label = "π/2";
+      else if (n === -1) label = "−π/2";
+      else if (n === 2) label = "π";
+      else if (n === -2) label = "−π";
+      else if (n === 4) label = "2π";
+      else if (n === -4) label = "−2π";
+      else if (n % 2 === 0) label = `${n/2}π`;
+      else label = `${n}π/2`;
+      xLabels.push(<text key={`xl${n}`} x={toX(x)} y={height - pad.bottom + 18} fill="rgba(255,255,255,0.4)" fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{label}</text>);
+    }
+  }
+
+  // Y-axis labels
+  const yLabels = [];
+  for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y++) {
+    yLabels.push(<text key={`yl${y}`} x={pad.left - 8} y={toY(y) + 4} fill="rgba(255,255,255,0.4)" fontSize="11" textAnchor="end" fontFamily="'JetBrains Mono', monospace">{y}</text>);
+  }
+
+  // Plot functions
+  const curves = funcs.map((f, fi) => {
+    const step = (xMax - xMin) / 400;
+    let segments = [];
+    let currentPath = [];
+
+    for (let x = xMin; x <= xMax + step / 2; x += step) {
+      const y = f.fn(x);
+      if (y === undefined || y === null || !isFinite(y) || Math.abs(y) > 50) {
+        if (currentPath.length > 1) segments.push(currentPath);
+        currentPath = [];
+      } else {
+        currentPath.push([toX(x), toY(y)]);
+      }
+    }
+    if (currentPath.length > 1) segments.push(currentPath);
+
+    return segments.map((seg, si) => (
+      <polyline
+        key={`f${fi}s${si}`}
+        points={seg.map(([px, py]) => `${px},${py}`).join(" ")}
+        fill="none"
+        stroke={f.color || PINK}
+        strokeWidth={f.strokeWidth || 2.5}
+        strokeLinecap="round"
+        strokeDasharray={f.dash || "none"}
+      />
+    ));
+  });
+
+  // Key points
+  const pointMarkers = (keyPoints || []).map((p, i) => {
+    const px = toX(p.x);
+    const py = toY(p.y);
+    return (
+      <g key={`kp${i}`}>
+        <circle cx={px} cy={py} r={4} fill={p.color || "#22c55e"} stroke="#fff" strokeWidth="1.5" />
+        {p.label && <text x={px + (p.labelOffset?.[0] || 8)} y={py + (p.labelOffset?.[1] || -8)} fill={p.color || "#22c55e"} fontSize="11" fontFamily="'JetBrains Mono', monospace">{p.label}</text>}
+      </g>
+    );
+  });
+
+  return (
+    <div style={{ margin: "12px 0", overflowX: "auto" }}>
+      {title && <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", marginBottom: "4px", fontStyle: "italic" }}>{title}</div>}
+      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: "100%", maxWidth: `${width}px`, height: "auto", background: "rgba(0,0,0,0.3)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.08)" }}>
+        {gridLines}
+        {/* Axes */}
+        <line x1={pad.left} x2={width - pad.right} y1={toY(0)} y2={toY(0)} stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+        <line x1={toX(0)} x2={toX(0)} y1={pad.top} y2={height - pad.bottom} stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+        {curves}
+        {pointMarkers}
+        {xLabels}
+        {yLabels}
+        {/* Legend */}
+        {funcs.length > 1 && funcs.map((f, i) => (
+          <g key={`leg${i}`}>
+            <line x1={pad.left + i * 140} x2={pad.left + i * 140 + 20} y1={12} y2={12} stroke={f.color || PINK} strokeWidth="2.5" strokeDasharray={f.dash || "none"} />
+            <text x={pad.left + i * 140 + 26} y={16} fill={f.color || PINK} fontSize="12" fontFamily="'JetBrains Mono', monospace">{f.label || `f${i+1}`}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════
 // SOLUTION REVEAL
 // ══════════════════════════════════════════════════════════════════
 function Solution({ children }) {
@@ -379,6 +495,51 @@ function TheoryTab() {
             </div>
           ))}
         </div>
+
+        <p style={{ ...pS, marginTop: "16px", fontWeight: 600, color: "#fff" }}>Vliv parametru a (amplituda):</p>
+        <FunctionGraph
+          funcs={[
+            { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.3)", label: "sin x", dash: "6,4" },
+            { fn: (x) => 2 * Math.sin(x), color: PINK, label: "2·sin x" },
+            { fn: (x) => 0.5 * Math.sin(x), color: CYAN, label: "0.5·sin x" },
+          ]}
+          yMin={-2.5} yMax={2.5}
+          title="Amplituda mění výšku vlny"
+        />
+
+        <p style={{ ...pS, marginTop: "16px", fontWeight: 600, color: "#fff" }}>Vliv parametru b (perioda):</p>
+        <FunctionGraph
+          funcs={[
+            { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.3)", label: "sin x", dash: "6,4" },
+            { fn: (x) => Math.sin(2 * x), color: PINK, label: "sin 2x (T=π)" },
+            { fn: (x) => Math.sin(x / 2), color: CYAN, label: "sin x/2 (T=4π)" },
+          ]}
+          yMin={-1.5} yMax={1.5}
+          title="Větší b = kratší perioda, menší b = delší perioda"
+        />
+
+        <p style={{ ...pS, marginTop: "16px", fontWeight: 600, color: "#fff" }}>Vliv parametru c (posun po ose x):</p>
+        <FunctionGraph
+          funcs={[
+            { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.3)", label: "sin x", dash: "6,4" },
+            { fn: (x) => Math.sin(x + Math.PI / 2), color: PINK, label: "sin(x+π/2)" },
+            { fn: (x) => Math.sin(x - Math.PI / 3), color: CYAN, label: "sin(x−π/3)" },
+          ]}
+          yMin={-1.5} yMax={1.5}
+          title="+c posouvá doleva, −c doprava"
+        />
+
+        <p style={{ ...pS, marginTop: "16px", fontWeight: 600, color: "#fff" }}>Vliv parametru d (posun po ose y):</p>
+        <FunctionGraph
+          funcs={[
+            { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.3)", label: "sin x", dash: "6,4" },
+            { fn: (x) => Math.sin(x) + 1, color: PINK, label: "sin x + 1" },
+            { fn: (x) => Math.sin(x) - 1, color: CYAN, label: "sin x − 1" },
+          ]}
+          yMin={-2.5} yMax={2.5}
+          title="+d nahoru, −d dolů"
+        />
+
         <p style={{ ...pS, marginTop: "12px" }}><strong>Čtení grafu:</strong> Najdi amplitudu (max−min)/2, periodu (vzdálenost dvou maxim), posun (kde je maximum místo π/2 pro sin).</p>
       </Collapsible>
 
@@ -771,6 +932,17 @@ function ProblemsGrafNaPredpis() {
     <div>
       <Collapsible title="Př. 1: Sinusoida z cvičného testu" badge="Medium" defaultOpen={true}>
         <p style={pS}>Graf z testu: sinusoida, minima v −2, maxima v 0, neprocházím počátkem, perioda = π.</p>
+        <FunctionGraph
+          funcs={[{ fn: (x) => -Math.cos(2 * x) - 1, color: PINK, label: "y = −cos(2x) − 1" }]}
+          yMin={-2.5} yMax={0.8}
+          keyPoints={[
+            { x: 0, y: -2, label: "(0, −2)", color: "#fbbf24", labelOffset: [8, 14] },
+            { x: Math.PI / 4, y: 0, label: "(π/4, 0)", color: "#22c55e", labelOffset: [6, -8] },
+            { x: Math.PI / 2, y: -2, label: "(π/2, −2)", color: "#fbbf24", labelOffset: [6, 14] },
+            { x: 3 * Math.PI / 4, y: 0, label: "(3π/4, 0)", color: "#22c55e", labelOffset: [-60, -8] },
+          ]}
+          title="Zadaný graf — urči předpis"
+        />
         <Solution>
           <Step n={1} title="Amplituda">
             <MBlock>{"a = (max − min)/2 = (0 − (−2))/2 = 1"}</MBlock>
@@ -790,6 +962,15 @@ function ProblemsGrafNaPredpis() {
 
       <Collapsible title="Př. 2: Sinusoida s body (−π/3, 4) a (5π/3, −4)" badge="Hard">
         <p style={pS}>Maximum 4, minimum −4, nulové body v 2π/3 a 8π/3.</p>
+        <FunctionGraph
+          funcs={[{ fn: (x) => 4 * Math.cos(x / 2 + Math.PI / 6), color: PINK, label: "y = 4cos(x/2 + π/6)" }]}
+          xMin={-Math.PI * 2} xMax={Math.PI * 3} yMin={-5} yMax={5}
+          keyPoints={[
+            { x: -Math.PI / 3, y: 4, label: "(−π/3, 4)", color: "#22c55e", labelOffset: [6, -10] },
+            { x: 5 * Math.PI / 3, y: -4, label: "(5π/3, −4)", color: "#ef4444", labelOffset: [6, 14] },
+          ]}
+          title="Zadaný graf — urči předpis"
+        />
         <Solution>
           <Step n={1} title="Amplituda a perioda">
             <MBlock>{"a = 4\nVzdálenost dvou po sobě jdoucích maxim: 11π/3 − (−π/3) = 4π\nT = 4π, b = 2π/T = 1/2"}</MBlock>
@@ -834,7 +1015,19 @@ function ProblemsPredpisNaGraf() {
           <Step n={2} title="Klíčové body">
             <MBlock>{"sin x má max v π/2.\nPosunutý max: π/2 − 2π/3 = −π/6\nNuly: −2π/3 (start), π/3 (střed), 4π/3\nMin: −π/6 + π = 5π/6"}</MBlock>
           </Step>
-          <div style={{ color: PINK }}>Nakresli sinusoidu posunutou o 2π/3 doleva. Max v (−π/6, 1), nula v (π/3, 0), min v (5π/6, −1).</div>
+          <FunctionGraph
+            funcs={[
+              { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.25)", label: "sin x", dash: "6,4" },
+              { fn: (x) => Math.sin(x + 2 * Math.PI / 3), color: PINK, label: "sin(x + 2π/3)" },
+            ]}
+            yMin={-1.5} yMax={1.5}
+            keyPoints={[
+              { x: -Math.PI / 6, y: 1, label: "(−π/6, 1)", color: "#22c55e", labelOffset: [6, -8] },
+              { x: Math.PI / 3, y: 0, label: "(π/3, 0)", color: "#fbbf24", labelOffset: [6, -8] },
+              { x: 5 * Math.PI / 6, y: -1, label: "(5π/6, −1)", color: "#ef4444", labelOffset: [6, 14] },
+            ]}
+            title="Výsledný graf — posun sin x doleva o 2π/3"
+          />
         </Solution>
       </Collapsible>
 
@@ -847,6 +1040,19 @@ function ProblemsPredpisNaGraf() {
           <Step n={2} title="Klíčové body">
             <MBlock>{"cos(2x) má max v x=0.\n−cos(2x) má MIN v x=0: (0, −1)\nNuly: π/4, 3π/4\nMax: π/2: (π/2, 1)"}</MBlock>
           </Step>
+          <FunctionGraph
+            funcs={[
+              { fn: (x) => Math.cos(x), color: "rgba(255,255,255,0.25)", label: "cos x", dash: "6,4" },
+              { fn: (x) => -Math.cos(2 * x), color: PINK, label: "−cos(2x)" },
+            ]}
+            yMin={-1.5} yMax={1.5}
+            keyPoints={[
+              { x: 0, y: -1, label: "(0, −1)", color: "#ef4444", labelOffset: [6, 14] },
+              { x: Math.PI / 4, y: 0, label: "(π/4, 0)", color: "#fbbf24", labelOffset: [6, -8] },
+              { x: Math.PI / 2, y: 1, label: "(π/2, 1)", color: "#22c55e", labelOffset: [6, -8] },
+            ]}
+            title="Výsledný graf — perioda π, zrcadlení přes osu x"
+          />
         </Solution>
       </Collapsible>
 
@@ -859,6 +1065,19 @@ function ProblemsPredpisNaGraf() {
           <Step n={2} title="Klíčové body">
             <MBlock>{"Max (cos arg = 0): 2(x − π/8) = 0 → x = π/8: (π/8, 2)\nNula: x = π/8 + π/4 = 3π/8\nMin: x = π/8 + π/2 = 5π/8: (5π/8, −2)"}</MBlock>
           </Step>
+          <FunctionGraph
+            funcs={[
+              { fn: (x) => Math.cos(x), color: "rgba(255,255,255,0.25)", label: "cos x", dash: "6,4" },
+              { fn: (x) => 2 * Math.cos(2 * x - Math.PI / 4), color: PINK, label: "2cos(2x−π/4)" },
+            ]}
+            yMin={-2.5} yMax={2.5}
+            keyPoints={[
+              { x: Math.PI / 8, y: 2, label: "(π/8, 2)", color: "#22c55e", labelOffset: [6, -8] },
+              { x: 3 * Math.PI / 8, y: 0, label: "(3π/8, 0)", color: "#fbbf24", labelOffset: [6, -8] },
+              { x: 5 * Math.PI / 8, y: -2, label: "(5π/8, −2)", color: "#ef4444", labelOffset: [6, 14] },
+            ]}
+            title="Výsledný graf — amplituda 2, perioda π, posun doprava π/8"
+          />
         </Solution>
       </Collapsible>
 
@@ -871,6 +1090,16 @@ function ProblemsPredpisNaGraf() {
           <Step n={2} title="Klíčové body">
             <MBlock>{"Nula: x = 0 (a každých 2π)\nAsymptoty: x = ±π, ±3π, ...\nKlesající (protože mínus) na (−π, π)"}</MBlock>
           </Step>
+          <FunctionGraph
+            funcs={[
+              { fn: (x) => { const v = -Math.tan(x / 2); return Math.abs(v) > 8 ? undefined : v; }, color: PINK, label: "−tg(x/2)" },
+            ]}
+            yMin={-4} yMax={4}
+            keyPoints={[
+              { x: 0, y: 0, label: "(0, 0)", color: "#fbbf24", labelOffset: [8, -8] },
+            ]}
+            title="Výsledný graf — perioda 2π, asymptoty v x = ±π"
+          />
         </Solution>
       </Collapsible>
 
@@ -883,6 +1112,16 @@ function ProblemsPredpisNaGraf() {
           <Step n={2} title="Klíčové body">
             <MBlock>{"Asymptoty: 2x = kπ → x = kπ/2\nNula cotg: 2x = π/2 + kπ → x = π/4 + kπ/2\nPosun −1 posouvá celý graf dolů o 1"}</MBlock>
           </Step>
+          <FunctionGraph
+            funcs={[
+              { fn: (x) => { const v = 1 / Math.tan(2 * x) - 1; return Math.abs(v) > 8 ? undefined : v; }, color: PINK, label: "cotg(2x) − 1" },
+            ]}
+            xMin={-Math.PI} xMax={Math.PI} yMin={-5} yMax={5}
+            keyPoints={[
+              { x: Math.PI / 4, y: -1, label: "(π/4, −1)", color: "#fbbf24", labelOffset: [6, 14] },
+            ]}
+            title="Výsledný graf — perioda π/2, posun dolů o 1"
+          />
         </Solution>
       </Collapsible>
     </div>

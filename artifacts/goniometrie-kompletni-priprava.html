@@ -315,6 +315,190 @@ function Collapsible({ title, children, defaultOpen = false, badge }) {
     ]
   }, undefined, true, undefined, this);
 }
+function FunctionGraph({ funcs, xMin = -Math.PI * 2, xMax = Math.PI * 2, yMin = -3, yMax = 3, width = 520, height = 280, showPiLabels = true, title, keyPoints }) {
+  const pad = { top: 28, bottom: 36, left: 42, right: 16 };
+  const w = width - pad.left - pad.right;
+  const h = height - pad.top - pad.bottom;
+  const toX = (x) => pad.left + (x - xMin) / (xMax - xMin) * w;
+  const toY = (y) => pad.top + (yMax - y) / (yMax - yMin) * h;
+  const gridLines = [];
+  for (let y = Math.ceil(yMin);y <= Math.floor(yMax); y++) {
+    gridLines.push(/* @__PURE__ */ jsxDEV("line", {
+      x1: pad.left,
+      x2: width - pad.right,
+      y1: toY(y),
+      y2: toY(y),
+      stroke: "rgba(255,255,255,0.08)",
+      strokeWidth: "1"
+    }, `h${y}`, false, undefined, this));
+  }
+  if (showPiLabels) {
+    const step = Math.PI / 2;
+    for (let x = Math.ceil(xMin / step) * step;x <= xMax; x += step) {
+      gridLines.push(/* @__PURE__ */ jsxDEV("line", {
+        x1: toX(x),
+        x2: toX(x),
+        y1: pad.top,
+        y2: height - pad.bottom,
+        stroke: "rgba(255,255,255,0.06)",
+        strokeWidth: "1"
+      }, `v${x.toFixed(3)}`, false, undefined, this));
+    }
+  }
+  const xLabels = [];
+  if (showPiLabels) {
+    const step = Math.PI / 2;
+    for (let x = Math.ceil(xMin / step) * step;x <= xMax + 0.01; x += step) {
+      const n = Math.round(x / (Math.PI / 2));
+      let label = "";
+      if (n === 0)
+        label = "0";
+      else if (n === 1)
+        label = "π/2";
+      else if (n === -1)
+        label = "−π/2";
+      else if (n === 2)
+        label = "π";
+      else if (n === -2)
+        label = "−π";
+      else if (n === 4)
+        label = "2π";
+      else if (n === -4)
+        label = "−2π";
+      else if (n % 2 === 0)
+        label = `${n / 2}π`;
+      else
+        label = `${n}π/2`;
+      xLabels.push(/* @__PURE__ */ jsxDEV("text", {
+        x: toX(x),
+        y: height - pad.bottom + 18,
+        fill: "rgba(255,255,255,0.4)",
+        fontSize: "11",
+        textAnchor: "middle",
+        fontFamily: "'JetBrains Mono', monospace",
+        children: label
+      }, `xl${n}`, false, undefined, this));
+    }
+  }
+  const yLabels = [];
+  for (let y = Math.ceil(yMin);y <= Math.floor(yMax); y++) {
+    yLabels.push(/* @__PURE__ */ jsxDEV("text", {
+      x: pad.left - 8,
+      y: toY(y) + 4,
+      fill: "rgba(255,255,255,0.4)",
+      fontSize: "11",
+      textAnchor: "end",
+      fontFamily: "'JetBrains Mono', monospace",
+      children: y
+    }, `yl${y}`, false, undefined, this));
+  }
+  const curves = funcs.map((f, fi) => {
+    const step = (xMax - xMin) / 400;
+    let segments = [];
+    let currentPath = [];
+    for (let x = xMin;x <= xMax + step / 2; x += step) {
+      const y = f.fn(x);
+      if (y === undefined || y === null || !isFinite(y) || Math.abs(y) > 50) {
+        if (currentPath.length > 1)
+          segments.push(currentPath);
+        currentPath = [];
+      } else {
+        currentPath.push([toX(x), toY(y)]);
+      }
+    }
+    if (currentPath.length > 1)
+      segments.push(currentPath);
+    return segments.map((seg, si) => /* @__PURE__ */ jsxDEV("polyline", {
+      points: seg.map(([px, py]) => `${px},${py}`).join(" "),
+      fill: "none",
+      stroke: f.color || PINK,
+      strokeWidth: f.strokeWidth || 2.5,
+      strokeLinecap: "round",
+      strokeDasharray: f.dash || "none"
+    }, `f${fi}s${si}`, false, undefined, this));
+  });
+  const pointMarkers = (keyPoints || []).map((p, i) => {
+    const px = toX(p.x);
+    const py = toY(p.y);
+    return /* @__PURE__ */ jsxDEV("g", {
+      children: [
+        /* @__PURE__ */ jsxDEV("circle", {
+          cx: px,
+          cy: py,
+          r: 4,
+          fill: p.color || "#22c55e",
+          stroke: "#fff",
+          strokeWidth: "1.5"
+        }, undefined, false, undefined, this),
+        p.label && /* @__PURE__ */ jsxDEV("text", {
+          x: px + (p.labelOffset?.[0] || 8),
+          y: py + (p.labelOffset?.[1] || -8),
+          fill: p.color || "#22c55e",
+          fontSize: "11",
+          fontFamily: "'JetBrains Mono', monospace",
+          children: p.label
+        }, undefined, false, undefined, this)
+      ]
+    }, `kp${i}`, true, undefined, this);
+  });
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { margin: "12px 0", overflowX: "auto" },
+    children: [
+      title && /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.5)", fontSize: "12px", marginBottom: "4px", fontStyle: "italic" },
+        children: title
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("svg", {
+        viewBox: `0 0 ${width} ${height}`,
+        style: { width: "100%", maxWidth: `${width}px`, height: "auto", background: "rgba(0,0,0,0.3)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.08)" },
+        children: [
+          gridLines,
+          /* @__PURE__ */ jsxDEV("line", {
+            x1: pad.left,
+            x2: width - pad.right,
+            y1: toY(0),
+            y2: toY(0),
+            stroke: "rgba(255,255,255,0.25)",
+            strokeWidth: "1.5"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("line", {
+            x1: toX(0),
+            x2: toX(0),
+            y1: pad.top,
+            y2: height - pad.bottom,
+            stroke: "rgba(255,255,255,0.25)",
+            strokeWidth: "1.5"
+          }, undefined, false, undefined, this),
+          curves,
+          pointMarkers,
+          xLabels,
+          yLabels,
+          funcs.length > 1 && funcs.map((f, i) => /* @__PURE__ */ jsxDEV("g", {
+            children: [
+              /* @__PURE__ */ jsxDEV("line", {
+                x1: pad.left + i * 140,
+                x2: pad.left + i * 140 + 20,
+                y1: 12,
+                y2: 12,
+                stroke: f.color || PINK,
+                strokeWidth: "2.5",
+                strokeDasharray: f.dash || "none"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: pad.left + i * 140 + 26,
+                y: 16,
+                fill: f.color || PINK,
+                fontSize: "12",
+                fontFamily: "'JetBrains Mono', monospace",
+                children: f.label || `f${i + 1}`
+              }, undefined, false, undefined, this)
+            ]
+          }, `leg${i}`, true, undefined, this))
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
 function Solution({ children }) {
   const [show, setShow] = useState(false);
   return /* @__PURE__ */ jsxDEV("div", {
@@ -766,6 +950,62 @@ cotg x = cos x / sin x = 1 / tg x`
                 }, undefined, false, undefined, this)
               ]
             }, param, true, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { ...pS, marginTop: "16px", fontWeight: 600, color: "#fff" },
+            children: "Vliv parametru a (amplituda):"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(FunctionGraph, {
+            funcs: [
+              { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.3)", label: "sin x", dash: "6,4" },
+              { fn: (x) => 2 * Math.sin(x), color: PINK, label: "2·sin x" },
+              { fn: (x) => 0.5 * Math.sin(x), color: CYAN, label: "0.5·sin x" }
+            ],
+            yMin: -2.5,
+            yMax: 2.5,
+            title: "Amplituda mění výšku vlny"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { ...pS, marginTop: "16px", fontWeight: 600, color: "#fff" },
+            children: "Vliv parametru b (perioda):"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(FunctionGraph, {
+            funcs: [
+              { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.3)", label: "sin x", dash: "6,4" },
+              { fn: (x) => Math.sin(2 * x), color: PINK, label: "sin 2x (T=π)" },
+              { fn: (x) => Math.sin(x / 2), color: CYAN, label: "sin x/2 (T=4π)" }
+            ],
+            yMin: -1.5,
+            yMax: 1.5,
+            title: "Větší b = kratší perioda, menší b = delší perioda"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { ...pS, marginTop: "16px", fontWeight: 600, color: "#fff" },
+            children: "Vliv parametru c (posun po ose x):"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(FunctionGraph, {
+            funcs: [
+              { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.3)", label: "sin x", dash: "6,4" },
+              { fn: (x) => Math.sin(x + Math.PI / 2), color: PINK, label: "sin(x+π/2)" },
+              { fn: (x) => Math.sin(x - Math.PI / 3), color: CYAN, label: "sin(x−π/3)" }
+            ],
+            yMin: -1.5,
+            yMax: 1.5,
+            title: "+c posouvá doleva, −c doprava"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { ...pS, marginTop: "16px", fontWeight: 600, color: "#fff" },
+            children: "Vliv parametru d (posun po ose y):"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(FunctionGraph, {
+            funcs: [
+              { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.3)", label: "sin x", dash: "6,4" },
+              { fn: (x) => Math.sin(x) + 1, color: PINK, label: "sin x + 1" },
+              { fn: (x) => Math.sin(x) - 1, color: CYAN, label: "sin x − 1" }
+            ],
+            yMin: -2.5,
+            yMax: 2.5,
+            title: "+d nahoru, −d dolů"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("p", {
             style: { ...pS, marginTop: "12px" },
@@ -1716,6 +1956,18 @@ function ProblemsGrafNaPredpis() {
             style: pS,
             children: "Graf z testu: sinusoida, minima v −2, maxima v 0, neprocházím počátkem, perioda = π."
           }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(FunctionGraph, {
+            funcs: [{ fn: (x) => -Math.cos(2 * x) - 1, color: PINK, label: "y = −cos(2x) − 1" }],
+            yMin: -2.5,
+            yMax: 0.8,
+            keyPoints: [
+              { x: 0, y: -2, label: "(0, −2)", color: "#fbbf24", labelOffset: [8, 14] },
+              { x: Math.PI / 4, y: 0, label: "(π/4, 0)", color: "#22c55e", labelOffset: [6, -8] },
+              { x: Math.PI / 2, y: -2, label: "(π/2, −2)", color: "#fbbf24", labelOffset: [6, 14] },
+              { x: 3 * Math.PI / 4, y: 0, label: "(3π/4, 0)", color: "#22c55e", labelOffset: [-60, -8] }
+            ],
+            title: "Zadaný graf — urči předpis"
+          }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
@@ -1762,6 +2014,18 @@ y = −cos(2x) − 1  nebo  y = cos(2x + π) − 1`
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
             children: "Maximum 4, minimum −4, nulové body v 2π/3 a 8π/3."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(FunctionGraph, {
+            funcs: [{ fn: (x) => 4 * Math.cos(x / 2 + Math.PI / 6), color: PINK, label: "y = 4cos(x/2 + π/6)" }],
+            xMin: -Math.PI * 2,
+            xMax: Math.PI * 3,
+            yMin: -5,
+            yMax: 5,
+            keyPoints: [
+              { x: -Math.PI / 3, y: 4, label: "(−π/3, 4)", color: "#22c55e", labelOffset: [6, -10] },
+              { x: 5 * Math.PI / 3, y: -4, label: "(5π/3, −4)", color: "#ef4444", labelOffset: [6, 14] }
+            ],
+            title: "Zadaný graf — urči předpis"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -1874,9 +2138,19 @@ Nuly: −2π/3 (start), π/3 (střed), 4π/3
 Min: −π/6 + π = 5π/6`
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV("div", {
-                style: { color: PINK },
-                children: "Nakresli sinusoidu posunutou o 2π/3 doleva. Max v (−π/6, 1), nula v (π/3, 0), min v (5π/6, −1)."
+              /* @__PURE__ */ jsxDEV(FunctionGraph, {
+                funcs: [
+                  { fn: (x) => Math.sin(x), color: "rgba(255,255,255,0.25)", label: "sin x", dash: "6,4" },
+                  { fn: (x) => Math.sin(x + 2 * Math.PI / 3), color: PINK, label: "sin(x + 2π/3)" }
+                ],
+                yMin: -1.5,
+                yMax: 1.5,
+                keyPoints: [
+                  { x: -Math.PI / 6, y: 1, label: "(−π/6, 1)", color: "#22c55e", labelOffset: [6, -8] },
+                  { x: Math.PI / 3, y: 0, label: "(π/3, 0)", color: "#fbbf24", labelOffset: [6, -8] },
+                  { x: 5 * Math.PI / 6, y: -1, label: "(5π/6, −1)", color: "#ef4444", labelOffset: [6, 14] }
+                ],
+                title: "Výsledný graf — posun sin x doleva o 2π/3"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -1909,6 +2183,20 @@ Amplituda = 1`
 Nuly: π/4, 3π/4
 Max: π/2: (π/2, 1)`
                 }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(FunctionGraph, {
+                funcs: [
+                  { fn: (x) => Math.cos(x), color: "rgba(255,255,255,0.25)", label: "cos x", dash: "6,4" },
+                  { fn: (x) => -Math.cos(2 * x), color: PINK, label: "−cos(2x)" }
+                ],
+                yMin: -1.5,
+                yMax: 1.5,
+                keyPoints: [
+                  { x: 0, y: -1, label: "(0, −1)", color: "#ef4444", labelOffset: [6, 14] },
+                  { x: Math.PI / 4, y: 0, label: "(π/4, 0)", color: "#fbbf24", labelOffset: [6, -8] },
+                  { x: Math.PI / 2, y: 1, label: "(π/2, 1)", color: "#22c55e", labelOffset: [6, -8] }
+                ],
+                title: "Výsledný graf — perioda π, zrcadlení přes osu x"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -1941,6 +2229,20 @@ d = 0`
 Nula: x = π/8 + π/4 = 3π/8
 Min: x = π/8 + π/2 = 5π/8: (5π/8, −2)`
                 }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(FunctionGraph, {
+                funcs: [
+                  { fn: (x) => Math.cos(x), color: "rgba(255,255,255,0.25)", label: "cos x", dash: "6,4" },
+                  { fn: (x) => 2 * Math.cos(2 * x - Math.PI / 4), color: PINK, label: "2cos(2x−π/4)" }
+                ],
+                yMin: -2.5,
+                yMax: 2.5,
+                keyPoints: [
+                  { x: Math.PI / 8, y: 2, label: "(π/8, 2)", color: "#22c55e", labelOffset: [6, -8] },
+                  { x: 3 * Math.PI / 8, y: 0, label: "(3π/8, 0)", color: "#fbbf24", labelOffset: [6, -8] },
+                  { x: 5 * Math.PI / 8, y: -2, label: "(5π/8, −2)", color: "#ef4444", labelOffset: [6, 14] }
+                ],
+                title: "Výsledný graf — amplituda 2, perioda π, posun doprava π/8"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -1972,6 +2274,20 @@ Asymptoty kde x/2 = π/2 + kπ → x = π + 2kπ`
 Asymptoty: x = ±π, ±3π, ...
 Klesající (protože mínus) na (−π, π)`
                 }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(FunctionGraph, {
+                funcs: [
+                  { fn: (x) => {
+                    const v = -Math.tan(x / 2);
+                    return Math.abs(v) > 8 ? undefined : v;
+                  }, color: PINK, label: "−tg(x/2)" }
+                ],
+                yMin: -4,
+                yMax: 4,
+                keyPoints: [
+                  { x: 0, y: 0, label: "(0, 0)", color: "#fbbf24", labelOffset: [8, -8] }
+                ],
+                title: "Výsledný graf — perioda 2π, asymptoty v x = ±π"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -2004,6 +2320,22 @@ y = cotg(2x) − 1`
 Nula cotg: 2x = π/2 + kπ → x = π/4 + kπ/2
 Posun −1 posouvá celý graf dolů o 1`
                 }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(FunctionGraph, {
+                funcs: [
+                  { fn: (x) => {
+                    const v = 1 / Math.tan(2 * x) - 1;
+                    return Math.abs(v) > 8 ? undefined : v;
+                  }, color: PINK, label: "cotg(2x) − 1" }
+                ],
+                xMin: -Math.PI,
+                xMax: Math.PI,
+                yMin: -5,
+                yMax: 5,
+                keyPoints: [
+                  { x: Math.PI / 4, y: -1, label: "(π/4, −1)", color: "#fbbf24", labelOffset: [6, 14] }
+                ],
+                title: "Výsledný graf — perioda π/2, posun dolů o 1"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
