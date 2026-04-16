@@ -1471,7 +1471,7 @@ function FormulaSheet() {
 // MAIN APP
 // ══════════════════════════════════════════════════════════════════
 export default function App() {
-  const [tab, setTab] = useState("problems");
+  const [tab, setTab] = useState("theory");
 
   return (
     <div style={{ minHeight: "100vh", background: "#0a0a1a", fontFamily: "'Exo 2', sans-serif", position: "relative", overflow: "hidden" }}>
