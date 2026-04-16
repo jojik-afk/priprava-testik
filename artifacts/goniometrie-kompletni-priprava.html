@@ -24,7 +24,7 @@
     <div id="root"></div>
     <script type="module">
 // src/goniometrie-kompletni-priprava.jsx
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { jsxDEV } from "react/jsx-dev-runtime";
 function shuffleArray(array) {
   const shuffled = [...array];
@@ -88,7 +88,7 @@ function QuizEngine({ questions, accentColor = "#ec4899" }) {
     setShuffleKey((k) => k + 1);
   }, []);
   if (showResults) {
-    const msg = pct >= 90 ? "Vyborne! Mas to perfektne zvladnute!" : pct >= 70 ? "Dobre! Temer mas vse zvladnute." : pct >= 50 ? "Mohlo by to byt lepsi, ale jdes spravnym smerem." : "Potrebujes vice pripravy. Opakuj a bude to!";
+    const msg = pct >= 90 ? "Výborně! Máš to perfektně zvládnuté!" : pct >= 70 ? "Dobře! Téměř máš vše zvládnuté." : pct >= 50 ? "Mohlo by to být lepší, ale jdeš správným směrem." : "Potřebuješ více přípravy. Opakuj a bude to!";
     return /* @__PURE__ */ jsxDEV("div", {
       style: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
       children: /* @__PURE__ */ jsxDEV("div", {
@@ -116,7 +116,7 @@ function QuizEngine({ questions, accentColor = "#ec4899" }) {
           /* @__PURE__ */ jsxDEV("button", {
             style: { ...btnS, background: accentColor + "66", border: `1px solid ${accentColor}` },
             onClick: restart,
-            children: "Zacit znovu"
+            children: "Začít znovu"
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this)
@@ -136,7 +136,7 @@ function QuizEngine({ questions, accentColor = "#ec4899" }) {
             bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
           return /* @__PURE__ */ jsxDEV("div", {
             onClick: () => goTo(i),
-            title: `Otazka ${i + 1}`,
+            title: `Otázka ${i + 1}`,
             style: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: bg }
           }, i, false, undefined, this);
         })
@@ -147,7 +147,7 @@ function QuizEngine({ questions, accentColor = "#ec4899" }) {
           /* @__PURE__ */ jsxDEV("div", {
             style: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
             children: [
-              "Otazka ",
+              "Otázka ",
               idx + 1,
               " / ",
               shuffledQuestions.length
@@ -200,12 +200,12 @@ function QuizEngine({ questions, accentColor = "#ec4899" }) {
             children: [
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
-                children: isCorrect ? "Spravne!" : "Spatne"
+                children: isCorrect ? "Správně!" : "Špatně"
               }, undefined, false, undefined, this),
               !isCorrect && /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
                 children: [
-                  "Spravna odpoved: ",
+                  "Správná odpověď: ",
                   q.correct.map((i) => q.options[i]).join(", ")
                 ]
               }, undefined, true, undefined, this),
@@ -231,16 +231,16 @@ function QuizEngine({ questions, accentColor = "#ec4899" }) {
             style: btnS,
             onClick: () => goTo(idx - 1),
             disabled: idx === 0,
-            children: "\\u2190 Predchozi"
+            children: "← Předchozí"
           }, undefined, false, undefined, this),
           idx < shuffledQuestions.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
             style: btnS,
             onClick: () => goTo(idx + 1),
-            children: "Dalsi \\u2192"
+            children: "Další →"
           }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
             style: { ...btnS, background: accentColor + "55", border: `1px solid ${accentColor}` },
             onClick: () => setShowResults(true),
-            children: "Vysledky \\u2192"
+            children: "Výsledky →"
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this)
@@ -275,9 +275,9 @@ var PINK = "#ec4899";
 var CYAN = "#22d3ee";
 var TABS = [
   { id: "theory", label: "Teorie" },
-  { id: "problems", label: "Priklady" },
-  { id: "quiz", label: "Kviz" },
-  { id: "flashcards", label: "Karticky" },
+  { id: "problems", label: "Příklady" },
+  { id: "quiz", label: "Kvíz" },
+  { id: "flashcards", label: "Kartičky" },
   { id: "formulas", label: "Vzorce" }
 ];
 function Collapsible({ title, children, defaultOpen = false, badge }) {
@@ -304,7 +304,7 @@ function Collapsible({ title, children, defaultOpen = false, badge }) {
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV("span", {
             style: { color: "rgba(255,255,255,0.5)", fontSize: "20px", transition: "transform 0.4s ease", transform: open ? "rotate(180deg)" : "rotate(0)" },
-            children: "\\u25BC"
+            children: "▼"
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
@@ -323,7 +323,7 @@ function Solution({ children }) {
       /* @__PURE__ */ jsxDEV("button", {
         onClick: () => setShow(!show),
         style: { ...btnS, fontSize: "13px", padding: "6px 16px", background: show ? "rgba(236,72,153,0.15)" : "rgba(255,255,255,0.05)", border: show ? "1px solid #ec4899" : "1px solid rgba(255,255,255,0.15)" },
-        children: show ? "Skryt reseni" : "Zobrazit reseni"
+        children: show ? "Skrýt řešení" : "Zobrazit řešení"
       }, undefined, false, undefined, this),
       show && /* @__PURE__ */ jsxDEV("div", {
         style: { marginTop: "12px", padding: "16px", borderRadius: "14px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7 },
@@ -340,7 +340,7 @@ function M({ children }) {
 }
 function MBlock({ children }) {
   return /* @__PURE__ */ jsxDEV("div", {
-    style: { fontFamily: "'JetBrains Mono', monospace", color: CYAN, fontSize: "15px", padding: "12px 16px", background: "rgba(34,211,238,0.06)", borderRadius: "10px", margin: "8px 0", lineHeight: 1.8, overflowX: "auto" },
+    style: { fontFamily: "'JetBrains Mono', monospace", color: CYAN, fontSize: "15px", padding: "12px 16px", background: "rgba(34,211,238,0.06)", borderRadius: "10px", margin: "8px 0", lineHeight: 1.8, overflowX: "auto", whiteSpace: "pre-wrap" },
     children
   }, undefined, false, undefined, this);
 }
@@ -367,22 +367,22 @@ function Step({ n, title, children }) {
 function UnitCircle() {
   const [selectedAngle, setSelectedAngle] = useState(null);
   const angles = [
-    { deg: 0, rad: "0", sin: "0", cos: "1", tg: "0", cotg: "X" },
+    { deg: 0, rad: "0", sin: "0", cos: "1", tg: "0", cotg: "—" },
     { deg: 30, rad: "π/6", sin: "1/2", cos: "√3/2", tg: "√3/3", cotg: "√3" },
     { deg: 45, rad: "π/4", sin: "√2/2", cos: "√2/2", tg: "1", cotg: "1" },
     { deg: 60, rad: "π/3", sin: "√3/2", cos: "1/2", tg: "√3", cotg: "√3/3" },
-    { deg: 90, rad: "π/2", sin: "1", cos: "0", tg: "X", cotg: "0" },
-    { deg: 120, rad: "2π/3", sin: "√3/2", cos: "-1/2", tg: "-√3", cotg: "-√3/3" },
-    { deg: 135, rad: "3π/4", sin: "√2/2", cos: "-√2/2", tg: "-1", cotg: "-1" },
-    { deg: 150, rad: "5π/6", sin: "1/2", cos: "-√3/2", tg: "-√3/3", cotg: "-√3" },
-    { deg: 180, rad: "π", sin: "0", cos: "-1", tg: "0", cotg: "X" },
-    { deg: 210, rad: "7π/6", sin: "-1/2", cos: "-√3/2", tg: "√3/3", cotg: "√3" },
-    { deg: 225, rad: "5π/4", sin: "-√2/2", cos: "-√2/2", tg: "1", cotg: "1" },
-    { deg: 240, rad: "4π/3", sin: "-√3/2", cos: "-1/2", tg: "√3", cotg: "√3/3" },
-    { deg: 270, rad: "3π/2", sin: "-1", cos: "0", tg: "X", cotg: "0" },
-    { deg: 300, rad: "5π/3", sin: "-√3/2", cos: "1/2", tg: "-√3", cotg: "-√3/3" },
-    { deg: 315, rad: "7π/4", sin: "-√2/2", cos: "√2/2", tg: "-1", cotg: "-1" },
-    { deg: 330, rad: "11π/6", sin: "-1/2", cos: "√3/2", tg: "-√3/3", cotg: "-√3" }
+    { deg: 90, rad: "π/2", sin: "1", cos: "0", tg: "—", cotg: "0" },
+    { deg: 120, rad: "2π/3", sin: "√3/2", cos: "−1/2", tg: "−√3", cotg: "−√3/3" },
+    { deg: 135, rad: "3π/4", sin: "√2/2", cos: "−√2/2", tg: "−1", cotg: "−1" },
+    { deg: 150, rad: "5π/6", sin: "1/2", cos: "−√3/2", tg: "−√3/3", cotg: "−√3" },
+    { deg: 180, rad: "π", sin: "0", cos: "−1", tg: "0", cotg: "—" },
+    { deg: 210, rad: "7π/6", sin: "−1/2", cos: "−√3/2", tg: "√3/3", cotg: "√3" },
+    { deg: 225, rad: "5π/4", sin: "−√2/2", cos: "−√2/2", tg: "1", cotg: "1" },
+    { deg: 240, rad: "4π/3", sin: "−√3/2", cos: "−1/2", tg: "√3", cotg: "√3/3" },
+    { deg: 270, rad: "3π/2", sin: "−1", cos: "0", tg: "—", cotg: "0" },
+    { deg: 300, rad: "5π/3", sin: "−√3/2", cos: "1/2", tg: "−√3", cotg: "−√3/3" },
+    { deg: 315, rad: "7π/4", sin: "−√2/2", cos: "√2/2", tg: "−1", cotg: "−1" },
+    { deg: 330, rad: "11π/6", sin: "−1/2", cos: "√3/2", tg: "−√3/3", cotg: "−√3" }
   ];
   const r = 110;
   const cx = 150, cy = 150;
@@ -488,7 +488,7 @@ function UnitCircle() {
                 style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "8px" },
                 children: [
                   angles[selectedAngle].deg,
-                  "\\u00b0 = ",
+                  "° = ",
                   angles[selectedAngle].rad
                 ]
               }, undefined, true, undefined, this),
@@ -503,7 +503,7 @@ function UnitCircle() {
                     }, undefined, false, undefined, this),
                     /* @__PURE__ */ jsxDEV("div", {
                       style: { color: "#fff", fontFamily: "'JetBrains Mono', monospace", fontSize: "16px", fontWeight: 600 },
-                      children: val === "X" ? "nedef." : val
+                      children: val === "—" ? "nedef." : val
                     }, undefined, false, undefined, this)
                   ]
                 }, fn, true, undefined, this))
@@ -511,7 +511,7 @@ function UnitCircle() {
             ]
           }, undefined, true, undefined, this) : /* @__PURE__ */ jsxDEV("div", {
             style: { color: "rgba(255,255,255,0.4)", fontSize: "14px", padding: "20px" },
-            children: "Klikni na bod na kruznici pro zobrazeni hodnot."
+            children: "Klikni na bod na kružnici pro zobrazení hodnot."
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("div", {
             style: { marginTop: "12px", color: "rgba(255,255,255,0.5)", fontSize: "12px" },
@@ -520,13 +520,13 @@ function UnitCircle() {
                 children: "I. kvadrant: sin+, cos+, tg+, cotg+"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
-                children: "II. kvadrant: sin+, cos-, tg-, cotg-"
+                children: "II. kvadrant: sin+, cos−, tg−, cotg−"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
-                children: "III. kvadrant: sin-, cos-, tg+, cotg+"
+                children: "III. kvadrant: sin−, cos−, tg+, cotg+"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
-                children: "IV. kvadrant: sin-, cos+, tg-, cotg-"
+                children: "IV. kvadrant: sin−, cos+, tg−, cotg−"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -539,17 +539,17 @@ function TheoryTab() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "1. Jednotkova kruznice a hodnoty",
+        title: "1. Jednotková kružnice a hodnoty",
         defaultOpen: true,
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
             children: [
-              "Na jednotkove kruznici je bod ",
+              "Na jednotkové kružnici je bod ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "[cos \\u03b1; sin \\u03b1]"
+                children: "[cos α; sin α]"
               }, undefined, false, undefined, this),
-              ". Uhel merimo od kladne poloosy x proti smeru hodinovych rucicek."
+              ". Úhel měříme od kladné poloosy x proti směru hodinových ručiček."
             ]
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV(UnitCircle, {}, undefined, false, undefined, this),
@@ -558,7 +558,7 @@ function TheoryTab() {
             children: [
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: PINK, fontWeight: 600, marginBottom: "8px" },
-                children: "Zakladni tabulka hodnot:"
+                children: "Základní tabulka hodnot:"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { overflowX: "auto" },
@@ -578,8 +578,8 @@ function TheoryTab() {
                       children: [
                         ["sin", "0", "1/2", "√2/2", "√3/2", "1"],
                         ["cos", "1", "√3/2", "√2/2", "1/2", "0"],
-                        ["tg", "0", "√3/3", "1", "√3", "X"],
-                        ["cotg", "X", "√3", "1", "√3/3", "0"]
+                        ["tg", "0", "√3/3", "1", "√3", "—"],
+                        ["cotg", "—", "√3", "1", "√3/3", "0"]
                       ].map((row) => /* @__PURE__ */ jsxDEV("tr", {
                         style: { borderBottom: "1px solid rgba(255,255,255,0.06)" },
                         children: [
@@ -588,8 +588,8 @@ function TheoryTab() {
                             children: row[0]
                           }, undefined, false, undefined, this),
                           row.slice(1).map((v, i) => /* @__PURE__ */ jsxDEV("td", {
-                            style: { padding: "8px", color: v === "X" ? "rgba(255,255,255,0.3)" : "#fff", textAlign: "center" },
-                            children: v === "X" ? "ndef." : v
+                            style: { padding: "8px", color: v === "—" ? "rgba(255,255,255,0.3)" : "#fff", textAlign: "center" },
+                            children: v === "—" ? "ndef." : v
                           }, i, false, undefined, this))
                         ]
                       }, row[0], true, undefined, this))
@@ -602,140 +602,128 @@ function TheoryTab() {
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "2. Prevod na zakladni uhel",
+        title: "2. Převod na základní úhel",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: [
-              "Velky uhel prevedeme odectenim celych nasobku ",
-              /* @__PURE__ */ jsxDEV(M, {
-                children: "2\\u03c0"
-              }, undefined, false, undefined, this),
-              ":"
-            ]
-          }, undefined, true, undefined, this),
+            children: "Velký úhel převedeme odečtením celých násobků 2π:"
+          }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "sin(23\\u03c0/6) = sin(23\\u03c0/6 - 2\\u00b72\\u03c0) = sin(23\\u03c0/6 - 24\\u03c0/6) = sin(-\\u03c0/6) = -1/2"
+            children: "sin(23π/6) = sin(23π/6 − 2·2π) = sin(23π/6 − 24π/6) = sin(−π/6) = −1/2"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
             children: [
-              "Zaporne uhly: ",
+              "Záporné úhly: ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "sin(-\\u03b1) = -sin \\u03b1"
+                children: "sin(−α) = −sin α"
               }, undefined, false, undefined, this),
               ", ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "cos(-\\u03b1) = cos \\u03b1"
+                children: "cos(−α) = cos α"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Znaminko urcujeme podle kvadrantu, kde uhel lezi."
+            children: "Znaménko určujeme podle kvadrantu, kde úhel leží."
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "3. Dopocitavani hodnot z jedne funkce",
+        title: "3. Dopočítávání hodnot z jedné funkce",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Zname jednu funkci + kvadrant \\u2192 dopocitame ostatni pomoci:"
+            children: "Známe jednu funkci + kvadrant → dopočítáme ostatní pomocí:"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: [
-              "sin\\u00b2x + cos\\u00b2x = 1",
-              `
-`,
-              "tg x = sin x / cos x",
-              `
-`,
-              "cotg x = cos x / sin x = 1 / tg x"
-            ]
-          }, undefined, true, undefined, this),
+            children: `sin²x + cos²x = 1
+tg x = sin x / cos x
+cotg x = cos x / sin x = 1 / tg x`
+          }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
             children: [
               /* @__PURE__ */ jsxDEV("strong", {
                 children: "Postup:"
               }, undefined, false, undefined, this),
-              " Z dane funkce a identity ",
+              " Z dané funkce a identity ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "sin\\u00b2x + cos\\u00b2x = 1"
+                children: "sin²x + cos²x = 1"
               }, undefined, false, undefined, this),
-              " urcime druhou funkci. Znaminko vybereme podle kvadrantu. Pak dopocitame tg a cotg jako podil."
+              " určíme druhou funkci. Znaménko vybereme podle kvadrantu. Pak dopočítáme tg a cotg jako podíl."
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "4. Goniometricke rovnice",
+        title: "4. Goniometrické rovnice",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
             children: [
               /* @__PURE__ */ jsxDEV("strong", {
-                children: "Elementarni:"
+                children: "Elementární:"
               }, undefined, false, undefined, this),
               " ",
               /* @__PURE__ */ jsxDEV(M, {
                 children: "sin x = a"
               }, undefined, false, undefined, this),
-              " \\u2192 na kruznici najdeme uhly kde sinus = a"
+              " → na kružnici najdeme úhly kde sinus = a"
             ]
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
             children: [
               /* @__PURE__ */ jsxDEV("strong", {
-                children: "Se sloz. argumentem:"
+                children: "Se složeným argumentem:"
               }, undefined, false, undefined, this),
               " ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "cos(\\u03c0/3 - 2x) = -1/2"
+                children: "cos(π/3 − 2x) = −1/2"
               }, undefined, false, undefined, this),
-              " \\u2192 substituujeme ",
+              " → substituujeme ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "\\u03b1 = \\u03c0/3 - 2x"
+                children: "α = π/3 − 2x"
               }, undefined, false, undefined, this),
-              ", vyresime ",
+              ", vyřešíme ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "cos \\u03b1 = -1/2"
+                children: "cos α = −1/2"
               }, undefined, false, undefined, this),
-              ", pak zpetne dosadime."
+              ", pak zpětně dosadíme."
             ]
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
             children: [
               /* @__PURE__ */ jsxDEV("strong", {
-                children: "Kvadraticke (substituce):"
+                children: "Kvadratické (substituce):"
               }, undefined, false, undefined, this),
-              " Napr. ",
+              " Např. ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "2cos\\u00b2x + cos x - 1 = 0"
+                children: "2cos²x + cos x − 1 = 0"
               }, undefined, false, undefined, this),
-              " \\u2192 substituce ",
+              " → substituce ",
               /* @__PURE__ */ jsxDEV(M, {
                 children: "y = cos x"
               }, undefined, false, undefined, this),
-              " \\u2192 ",
+              " → ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "2y\\u00b2 + y - 1 = 0"
+                children: "2y² + y − 1 = 0"
               }, undefined, false, undefined, this),
-              " \\u2192 vyresime KR \\u2192 zpetne dosadime."
+              " → vyřešíme KR → zpětně dosadíme."
             ]
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
             children: [
               /* @__PURE__ */ jsxDEV("strong", {
-                children: "Vzdy:"
+                children: "Vždy:"
               }, undefined, false, undefined, this),
-              " zapsat obecne reseni s parametrem ",
+              " zapsat obecné řešení s parametrem ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "k \\u2208 Z"
+                children: "k ∈ ℤ"
               }, undefined, false, undefined, this),
               "!"
             ]
@@ -743,24 +731,24 @@ function TheoryTab() {
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "5. Transformace grafu",
+        title: "5. Transformace grafů",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
             children: [
-              "Obecny tvar: ",
+              "Obecný tvar: ",
               /* @__PURE__ */ jsxDEV(M, {
-                children: "y = a \\u00b7 sin(b(x + c)) + d"
+                children: "y = a · sin(b(x + c)) + d"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV("div", {
             style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginTop: "8px" },
             children: [
-              ["a", "Amplituda (vyska)", "Nasobi y-ove hodnoty, |a|"],
-              ["b", "Zmena periody", "Perioda = 2π/|b| (sin, cos); π/|b| (tg, cotg)"],
-              ["c", "Posun po ose x", "+ doleva, - doprava"],
-              ["d", "Posun po ose y", "+ nahoru, - dolu"]
+              ["a", "Amplituda (výška)", "Násobí y-ové hodnoty, |a|"],
+              ["b", "Změna periody", "Perioda = 2π/|b| (sin, cos); π/|b| (tg, cotg)"],
+              ["c", "Posun po ose x", "+ doleva, − doprava"],
+              ["d", "Posun po ose y", "+ nahoru, − dolů"]
             ].map(([param, name, desc]) => /* @__PURE__ */ jsxDEV("div", {
               style: { padding: "10px", borderRadius: "10px", background: "rgba(255,255,255,0.04)" },
               children: [
@@ -783,37 +771,29 @@ function TheoryTab() {
             style: { ...pS, marginTop: "12px" },
             children: [
               /* @__PURE__ */ jsxDEV("strong", {
-                children: "Cteni grafu:"
+                children: "Čtení grafu:"
               }, undefined, false, undefined, this),
-              " Najdi amplitudu (max-min)/2, periodu (vzdalenost dvou maxim), posun (kde je maximum misto \\u03c0/2 pro sin)."
+              " Najdi amplitudu (max−min)/2, periodu (vzdálenost dvou maxim), posun (kde je maximum místo π/2 pro sin)."
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "6. Uprava vyrazu",
+        title: "6. Úprava výrazů",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Pouzivame vzorce pro dvojnasobny uhel a zakladni identity k zjednoduseni. Casto:"
+            children: "Používáme vzorce pro dvojnásobný úhel a základní identity k zjednodušení. Často:"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: [
-              "sin 2x = 2 sin x cos x",
-              `
-`,
-              "cos 2x = cos\\u00b2x - sin\\u00b2x = 1 - 2sin\\u00b2x = 2cos\\u00b2x - 1",
-              `
-`,
-              "sin\\u00b2x = (1 - cos 2x)/2",
-              `
-`,
-              "cos\\u00b2x = (1 + cos 2x)/2"
-            ]
-          }, undefined, true, undefined, this),
+            children: `sin 2x = 2 sin x cos x
+cos 2x = cos²x − sin²x = 1 − 2sin²x = 2cos²x − 1
+sin²x = (1 − cos 2x)/2
+cos²x = (1 + cos 2x)/2`
+          }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Typicky postup: rozlozit, dosadit identity, zkratit. Pozor na definicni obor!"
+            children: "Typický postup: rozložit, dosadit identity, zkrátit. Pozor na definiční obor!"
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this)
@@ -824,13 +804,13 @@ var pS = { color: "rgba(255,255,255,0.75)", fontSize: "15px", lineHeight: 1.7, m
 function ProblemsTab() {
   const [section, setSection] = useState(0);
   const sections = [
-    "Hodnoty a kruznice",
-    "Dopocitavani",
+    "Hodnoty a kružnice",
+    "Dopočítávání",
     "Rovnice (lin. arg.)",
     "Rovnice (substituce)",
-    "Graf → predpis",
-    "Predpis → graf",
-    "Uprava vyrazu"
+    "Graf → předpis",
+    "Předpis → graf",
+    "Úprava výrazů"
   ];
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
@@ -856,158 +836,125 @@ function ProblemsHodnoty() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 1: Vypocitejte sin(23\\u03c0/6)",
+        title: "Př. 1: Vypočítejte sin(23π/6)",
         badge: "Easy",
         defaultOpen: true,
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "sin(23\\u03c0/6) = ?"
+            children: "sin(23π/6) = ?"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Prevod na zakladni uhel",
+                title: "Převod na základní úhel",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "23\\u03c0/6 = 3\\u00b72\\u03c0 + 5\\u03c0/6",
-                    `
-`,
-                    "(protoze 3\\u00b72\\u03c0 = 36\\u03c0/6, zbyde 23-36 = ... ne)",
-                    `
-`,
-                    "23\\u03c0/6 - 2\\u03c0 = 23\\u03c0/6 - 12\\u03c0/6 = 11\\u03c0/6",
-                    `
-`,
-                    "11\\u03c0/6 - 2\\u03c0 = 11\\u03c0/6 - 12\\u03c0/6 = -\\u03c0/6"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `23π/6 − 2π = 23π/6 − 12π/6 = 11π/6
+11π/6 − 2π = 11π/6 − 12π/6 = −π/6`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Vyhodnoceni",
+                title: "Vyhodnocení",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "sin(-\\u03c0/6) = -sin(\\u03c0/6) = -1/2"
+                  children: "sin(−π/6) = −sin(π/6) = −1/2"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "Vysledek: sin(23\\u03c0/6) = -1/2"
+                children: "Výsledek: sin(23π/6) = −1/2"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 2: Vypocitejte (sin(11\\u03c0/3) + cos(3\\u03c0/4))\\u00b2",
+        title: "Př. 2: Vypočítejte (sin(11π/3) + cos(3π/4))²",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "(sin(11\\u03c0/3) + cos(3\\u03c0/4))\\u00b2 = ?"
+            children: "(sin(11π/3) + cos(3π/4))² = ?"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Prevod uhlu",
+                title: "Převod úhlů",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "11\\u03c0/3 - 2\\u03c0 = 11\\u03c0/3 - 6\\u03c0/3 = 5\\u03c0/3",
-                    `
-`,
-                    "sin(5\\u03c0/3) = -\\u221a3/2",
-                    `
-`,
-                    `
-`,
-                    "cos(3\\u03c0/4) = -\\u221a2/2"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `11π/3 − 2π = 11π/3 − 6π/3 = 5π/3
+sin(5π/3) = −√3/2
+
+cos(3π/4) = −√2/2`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Dosazeni a vyraz",
+                title: "Dosazení a výraz",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "(-\\u221a3/2 + (-\\u221a2/2))\\u00b2 = (-\\u221a3/2 - \\u221a2/2)\\u00b2",
-                    `
-`,
-                    "= ((\\u221a3 + \\u221a2)/2)\\u00b2",
-                    `
-`,
-                    "= (3 + 2\\u221a6 + 2)/4",
-                    `
-`,
-                    "= (5 + 2\\u221a6)/4"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `(−√3/2 + (−√2/2))² = (−√3/2 − √2/2)²
+= ((√3 + √2)/2)²
+= (3 + 2√6 + 2)/4
+= (5 + 2√6)/4`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "Vysledek: (5 + 2\\u221a6)/4"
+                children: "Výsledek: (5 + 2√6)/4"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 3: Vypocitejte (sin(23\\u03c0/6) - 1) / cotg(-\\u03c0/3)",
+        title: "Př. 3: Vypočítejte (sin(23π/6) − 1) / cotg(−π/3)",
         badge: "Hard",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Toto je priklad z cvicneho testu!"
+            children: "Toto je příklad z cvičného testu!"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "(sin(23\\u03c0/6) - 1) / cotg(-\\u03c0/3) = ?"
+            children: "(sin(23π/6) − 1) / cotg(−π/3) = ?"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Citatel",
+                title: "Čitatel",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin(23\\u03c0/6) = -1/2 (viz predchozi)",
-                    `
-`,
-                    "citatel = -1/2 - 1 = -3/2"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin(23π/6) = −1/2 (viz předchozí)
+čitatel = −1/2 − 1 = −3/2`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
                 title: "Jmenovatel",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "cotg(-\\u03c0/3) = -cotg(\\u03c0/3) = -\\u221a3/3"
+                  children: "cotg(−π/3) = −cotg(π/3) = −√3/3"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
-                title: "Podil",
+                title: "Podíl",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "(-3/2) / (-\\u221a3/3) = (-3/2) \\u00b7 (-3/\\u221a3)",
-                    `
-`,
-                    "= 9/(2\\u221a3) = 9\\u221a3/6 = 3\\u221a3/2"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `(−3/2) / (−√3/3) = (−3/2) · (−3/√3)
+= 9/(2√3) = 9√3/6 = 3√3/2`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "Vysledek: 3\\u221a3/2"
+                children: "Výsledek: 3√3/2"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 4: sin(7\\u03c0/6) \\u00b7 cos(\\u03c0/3)",
+        title: "Př. 4: sin(7π/6) · cos(π/3)",
         badge: "Easy",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "sin(7\\u03c0/6) \\u00b7 cos(\\u03c0/3) = ?"
+            children: "sin(7π/6) · cos(π/3) = ?"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -1015,72 +962,56 @@ function ProblemsHodnoty() {
                 n: 1,
                 title: "Hodnoty",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin(7\\u03c0/6) = -1/2  (III. kvadrant, ref. uhel \\u03c0/6)",
-                    `
-`,
-                    "cos(\\u03c0/3) = 1/2"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin(7π/6) = −1/2  (III. kvadrant, ref. úhel π/6)
+cos(π/3) = 1/2`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Soucin",
+                title: "Součin",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "(-1/2) \\u00b7 (1/2) = -1/4"
+                  children: "(−1/2) · (1/2) = −1/4"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "Vysledek: -1/4"
+                children: "Výsledek: −1/4"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 5: Urcete uhel \\u03b1 = -22\\u03c0/3 na kruznici",
+        title: "Př. 5: Určete úhel α = −22π/3 na kružnici",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "\\u03b1 = -22\\u03c0/3, najdete referencni uhel a k"
+            children: "α = −22π/3, najděte referenční úhel a k"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Prevod",
+                title: "Převod",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "\\u03b1 = 2\\u03c0/3 + k\\u00b72\\u03c0",
-                    `
-`,
-                    "-22\\u03c0/3 = 2\\u03c0/3 + k\\u00b72\\u03c0",
-                    `
-`,
-                    "-22\\u03c0/3 - 2\\u03c0/3 = k\\u00b72\\u03c0",
-                    `
-`,
-                    "-24\\u03c0/3 = k\\u00b72\\u03c0",
-                    `
-`,
-                    "-8\\u03c0 = k\\u00b72\\u03c0",
-                    `
-`,
-                    "k = -4"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `α = 2π/3 + k·2π
+−22π/3 = 2π/3 + k·2π
+−22π/3 − 2π/3 = k·2π
+−24π/3 = k·2π
+−8π = k·2π
+k = −4`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Overeni",
+                title: "Ověření",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "2\\u03c0/3 + (-4)\\u00b72\\u03c0 = 2\\u03c0/3 - 8\\u03c0 = 2\\u03c0/3 - 24\\u03c0/3 = -22\\u03c0/3 \\u2713"
+                  children: "2π/3 + (−4)·2π = 2π/3 − 8π = 2π/3 − 24π/3 = −22π/3 ✓"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "Uhel lezi na 2\\u03c0/3 (120\\u00b0), k = -4"
+                children: "Úhel leží na 2π/3 (120°), k = −4"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -1093,16 +1024,16 @@ function ProblemsDopocitavani() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 1: cotg x = \\u221a39/6, x \\u2208 (pi, 3pi/2)",
+        title: "Př. 1: cotg x = √39/6, x ∈ (π, 3π/2)",
         badge: "Hard",
         defaultOpen: true,
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Z cvicneho testu! Aniž spocitate x, urcete sin x, cos x, tg x."
+            children: "Z cvičného testu! Aniž spočítáte x, určete sin x, cos x, tg x."
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "cotg x = \\u221a39/6,  \\u03c0 < x < 3\\u03c0/2  (III. kvadrant)"
+            children: "cotg x = √39/6,  π < x < 3π/2  (III. kvadrant)"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -1110,65 +1041,49 @@ function ProblemsDopocitavani() {
                 n: 1,
                 title: "tg x z cotg x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "tg x = 1/cotg x = 6/\\u221a39 = 6\\u221a39/39"
+                  children: "tg x = 1/cotg x = 6/√39 = 6√39/39"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Pouzijeme 1 + cotg\\u00b2x = 1/sin\\u00b2x",
+                title: "Použijeme 1 + cotg²x = 1/sin²x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "1 + (\\u221a39/6)\\u00b2 = 1/sin\\u00b2x",
-                    `
-`,
-                    "1 + 39/36 = 1/sin\\u00b2x",
-                    `
-`,
-                    "75/36 = 1/sin\\u00b2x",
-                    `
-`,
-                    "sin\\u00b2x = 36/75 = 12/25"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `1 + (√39/6)² = 1/sin²x
+1 + 39/36 = 1/sin²x
+75/36 = 1/sin²x
+sin²x = 36/75 = 12/25`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
-                title: "Znaminko z kvadrantu",
+                title: "Znaménko z kvadrantu",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "III. kvadrant: sin < 0, cos < 0",
-                    `
-`,
-                    "sin x = -2\\u221a3/5"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `III. kvadrant: sin < 0, cos < 0
+sin x = −2√3/5`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 4,
                 title: "cos x z identity",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "cos\\u00b2x = 1 - 12/25 = 13/25",
-                    `
-`,
-                    "cos x = -\\u221a13/5  (III. kvadrant, zaporne)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `cos²x = 1 − 12/25 = 13/25
+cos x = −√13/5  (III. kvadrant, záporné)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "sin x = -2\\u221a3/5, cos x = -\\u221a13/5, tg x = 6\\u221a39/39"
+                children: "sin x = −2√3/5, cos x = −√13/5, tg x = 6√39/39"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 2: tg x = -\\u221a2, x \\u2208 II. kvadrant",
+        title: "Př. 2: tg x = −√2, x ∈ II. kvadrant",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "tg x = -\\u221a2, x \\u2208 II. kv. Urcete sin x, cos x, cotg x."
+            children: "tg x = −√2, x ∈ II. kv. Určete sin x, cos x, cotg x."
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -1176,94 +1091,72 @@ function ProblemsDopocitavani() {
                 n: 1,
                 title: "cotg x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "cotg x = 1/tg x = -1/\\u221a2 = -\\u221a2/2"
+                  children: "cotg x = 1/tg x = −1/√2 = −√2/2"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Z identity sin\\u00b2x + cos\\u00b2x = 1 a tg x = sin x/cos x",
+                title: "Z identity sin²x + cos²x = 1 a tg x = sin x/cos x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin x = -\\u221a2 \\u00b7 cos x",
-                    `
-`,
-                    "(-\\u221a2 cos x)\\u00b2 + cos\\u00b2x = 1",
-                    `
-`,
-                    "2cos\\u00b2x + cos\\u00b2x = 1",
-                    `
-`,
-                    "3cos\\u00b2x = 1",
-                    `
-`,
-                    "cos x = -\\u221a3/3  (II. kv. \\u2192 cos < 0)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin x = −√2 · cos x
+(−√2 cos x)² + cos²x = 1
+2cos²x + cos²x = 1
+3cos²x = 1
+cos x = −√3/3  (II. kv. → cos < 0)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
                 title: "sin x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "sin x = -\\u221a2 \\u00b7 (-\\u221a3/3) = \\u221a6/3"
+                  children: "sin x = −√2 · (−√3/3) = √6/3"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "sin x = \\u221a6/3, cos x = -\\u221a3/3, cotg x = -\\u221a2/2"
+                children: "sin x = √6/3, cos x = −√3/3, cotg x = −√2/2"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 3: cotg x = -1/3, x \\u2208 IV. kvadrant",
+        title: "Př. 3: cotg x = −1/3, x ∈ IV. kvadrant",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "cotg x = -1/3, x \\u2208 IV. kv. Urcete sin x, cos x."
+            children: "cotg x = −1/3, x ∈ IV. kv. Určete sin x, cos x."
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "tg x a vyjadrime cos x pres sin x",
+                title: "tg x a vyjádříme cos x přes sin x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "tg x = -3, tj. sin x / cos x = -3",
-                    `
-`,
-                    "cos x = (-1/3) \\u00b7 sin x"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `tg x = −3, tj. sin x / cos x = −3
+cos x = (−1/3) · sin x`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Dosazeni do identity",
+                title: "Dosazení do identity",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin\\u00b2x + (1/9)sin\\u00b2x = 1",
-                    `
-`,
-                    "(10/9)sin\\u00b2x = 1",
-                    `
-`,
-                    "sin\\u00b2x = 9/10",
-                    `
-`,
-                    "sin x = -3\\u221a10/10  (IV. kv. \\u2192 sin < 0)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin²x + (1/9)sin²x = 1
+(10/9)sin²x = 1
+sin²x = 9/10
+sin x = −3√10/10  (IV. kv. → sin < 0)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
                 title: "cos x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "cos x = \\u221a10/10  (IV. kv. \\u2192 cos > 0)"
+                  children: "cos x = √10/10  (IV. kv. → cos > 0)"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "sin x = -3\\u221a10/10, cos x = \\u221a10/10"
+                children: "sin x = −3√10/10, cos x = √10/10"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -1276,16 +1169,16 @@ function ProblemsRovniceLinArg() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 1: cos(\\u03c0/4 - x) = 1",
+        title: "Př. 1: cos(π/4 − x) = 1",
         badge: "Easy",
         defaultOpen: true,
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Z cvicneho testu!"
+            children: "Z cvičného testu!"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "cos(\\u03c0/4 - x) = 1 v R"
+            children: "cos(π/4 − x) = 1 v ℝ"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -1293,51 +1186,45 @@ function ProblemsRovniceLinArg() {
                 n: 1,
                 title: "Kdy cos = 1?",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "cos \\u03b1 = 1 \\u21d4 \\u03b1 = 2k\\u03c0, k \\u2208 Z"
+                  children: "cos α = 1 ⇔ α = 2kπ, k ∈ ℤ"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Dosazeni",
+                title: "Dosazení",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "\\u03c0/4 - x = 2k\\u03c0",
-                    `
-`,
-                    "-x = -\\u03c0/4 + 2k\\u03c0",
-                    `
-`,
-                    "x = \\u03c0/4 - 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `π/4 − x = 2kπ
+−x = −π/4 + 2kπ
+x = π/4 − 2kπ`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
-                title: "Ekvivalentni zapis",
+                title: "Ekvivalentní zápis",
                 children: [
                   /* @__PURE__ */ jsxDEV(MBlock, {
-                    children: "x = \\u03c0/4 + 2k\\u03c0, k \\u2208 Z"
+                    children: "x = π/4 + 2kπ, k ∈ ℤ"
                   }, undefined, false, undefined, this),
                   /* @__PURE__ */ jsxDEV("p", {
                     style: pS,
-                    children: "(protoze -2k\\u03c0 a +2k\\u03c0 pokryvaji stejna cisla pri k \\u2208 Z)"
+                    children: "(protože −2kπ a +2kπ pokrývají stejná čísla při k ∈ ℤ)"
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x = \\u03c0/4 + 2k\\u03c0, k \\u2208 Z"
+                children: "x = π/4 + 2kπ, k ∈ ℤ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 2: cos(\\u03c0/3 - 2x) = -1/2",
+        title: "Př. 2: cos(π/3 − 2x) = −1/2",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "cos(\\u03c0/3 - 2x) = -1/2 v R"
+            children: "cos(π/3 − 2x) = −1/2 v ℝ"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -1345,243 +1232,180 @@ function ProblemsRovniceLinArg() {
                 n: 1,
                 title: "Substituce",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "\\u03b1 = \\u03c0/3 - 2x",
-                    `
-`,
-                    "cos \\u03b1 = -1/2",
-                    `
-`,
-                    "\\u03b1_1 = 2\\u03c0/3 + 2k\\u03c0",
-                    `
-`,
-                    "\\u03b1_2 = 4\\u03c0/3 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV(Step, {
-                n: 2,
-                title: "Zpetna substituce (vetev 1)",
-                children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "\\u03c0/3 - 2x = 2\\u03c0/3 + 2k\\u03c0",
-                    `
-`,
-                    "-2x = \\u03c0/3 + 2k\\u03c0",
-                    `
-`,
-                    "x = -\\u03c0/6 - k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV(Step, {
-                n: 3,
-                title: "Zpetna substituce (vetev 2)",
-                children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "\\u03c0/3 - 2x = 4\\u03c0/3 + 2k\\u03c0",
-                    `
-`,
-                    "-2x = \\u03c0 + 2k\\u03c0",
-                    `
-`,
-                    "x = -\\u03c0/2 - k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV("div", {
-                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x_1 = -\\u03c0/6 - k\\u03c0, x_2 = -\\u03c0/2 - k\\u03c0, k \\u2208 Z"
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV("p", {
-                style: pS,
-                children: "Ekvivalentne: x_1 = 5\\u03c0/6 + k\\u03c0, x_2 = \\u03c0/2 + k\\u03c0"
-              }, undefined, false, undefined, this)
-            ]
-          }, undefined, true, undefined, this)
-        ]
-      }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 3: sin(2x) = \\u221a3/2 na <0, 2\\u03c0)",
-        badge: "Medium",
-        children: [
-          /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "sin(2x) = \\u221a3/2, x \\u2208 \\u27e80, 2\\u03c0)"
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsxDEV(Solution, {
-            children: [
-              /* @__PURE__ */ jsxDEV(Step, {
-                n: 1,
-                title: "Substituce \\u03b1 = 2x",
-                children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin \\u03b1 = \\u221a3/2",
-                    `
-`,
-                    "\\u03b1_1 = \\u03c0/3 + 2k\\u03c0",
-                    `
-`,
-                    "\\u03b1_2 = 2\\u03c0/3 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV(Step, {
-                n: 2,
-                title: "Zpet na x",
-                children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "x_1 = \\u03c0/6 + k\\u03c0",
-                    `
-`,
-                    "x_2 = \\u03c0/3 + k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV(Step, {
-                n: 3,
-                title: "Vyber z intervalu <0, 2\\u03c0)",
-                children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "k=0: x = \\u03c0/6, \\u03c0/3",
-                    `
-`,
-                    "k=1: x = 7\\u03c0/6, 4\\u03c0/3"
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV("div", {
-                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: [
-                  "K = ",
-                  "{π/6, π/3, 7π/6, 4π/3}"
-                ]
-              }, undefined, true, undefined, this)
-            ]
-          }, undefined, true, undefined, this)
-        ]
-      }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 4: tg(2x + \\u03c0/4) = \\u221a3/3",
-        badge: "Hard",
-        children: [
-          /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "tg(2x + \\u03c0/4) = \\u221a3/3 v R"
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsxDEV(Solution, {
-            children: [
-              /* @__PURE__ */ jsxDEV(Step, {
-                n: 1,
-                title: "Substituce a reseni",
-                children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "tg \\u03b1 = \\u221a3/3 \\u21d4 \\u03b1 = \\u03c0/6 + k\\u03c0",
-                    `
-`,
-                    "(perioda tg je \\u03c0)"
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV(Step, {
-                n: 2,
-                title: "Zpetna substituce",
-                children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "2x + \\u03c0/4 = \\u03c0/6 + k\\u03c0",
-                    `
-`,
-                    "2x = \\u03c0/6 - \\u03c0/4 + k\\u03c0",
-                    `
-`,
-                    "2x = (2\\u03c0 - 3\\u03c0)/12 + k\\u03c0",
-                    `
-`,
-                    "2x = -\\u03c0/12 + k\\u03c0",
-                    `
-`,
-                    "x = -\\u03c0/24 + k\\u03c0/2"
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV("div", {
-                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x = -\\u03c0/24 + k\\u03c0/2 = \\u03c0(12k - 1)/24, k \\u2208 Z"
-              }, undefined, false, undefined, this)
-            ]
-          }, undefined, true, undefined, this)
-        ]
-      }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 5: cos(x + \\u03c0/6) = -1 v R",
-        badge: "Easy",
-        children: [
-          /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "cos(x + \\u03c0/6) = -1"
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsxDEV(Solution, {
-            children: [
-              /* @__PURE__ */ jsxDEV(Step, {
-                n: 1,
-                title: "Kdy cos = -1?",
-                children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "cos \\u03b1 = -1 \\u21d4 \\u03b1 = \\u03c0 + 2k\\u03c0"
+                  children: `α = π/3 − 2x
+cos α = −1/2
+α₁ = 2π/3 + 2kπ
+α₂ = 4π/3 + 2kπ`
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Dosazeni",
+                title: "Zpětná substituce (větev 1)",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "x + \\u03c0/6 = \\u03c0 + 2k\\u03c0",
-                    `
-`,
-                    "x = 5\\u03c0/6 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `π/3 − 2x = 2π/3 + 2kπ
+−2x = π/3 + 2kπ
+x = −π/6 − kπ`
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Zpětná substituce (větev 2)",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: `π/3 − 2x = 4π/3 + 2kπ
+−2x = π + 2kπ
+x = −π/2 − kπ`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x = 5\\u03c0/6 + 2k\\u03c0, k \\u2208 Z"
+                children: "x₁ = −π/6 − kπ, x₂ = −π/2 − kπ, k ∈ ℤ"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: pS,
+                children: "Ekvivalentně: x₁ = 5π/6 + kπ, x₂ = π/2 + kπ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 6: sin(x - \\u03c0/4) = 1/2 v R",
+        title: "Př. 3: sin(2x) = √3/2 na ⟨0, 2π)",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "sin(x - \\u03c0/4) = 1/2"
+            children: "sin(2x) = √3/2, x ∈ ⟨0, 2π)"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Reseni pro sin \\u03b1 = 1/2",
+                title: "Substituce α = 2x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "\\u03b1_1 = \\u03c0/6 + 2k\\u03c0",
-                    `
-`,
-                    "\\u03b1_2 = 5\\u03c0/6 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin α = √3/2
+α₁ = π/3 + 2kπ
+α₂ = 2π/3 + 2kπ`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Zpetna substituce",
+                title: "Zpět na x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "x - \\u03c0/4 = \\u03c0/6 + 2k\\u03c0 \\u2192 x = 5\\u03c0/12 + 2k\\u03c0",
-                    `
-`,
-                    "x - \\u03c0/4 = 5\\u03c0/6 + 2k\\u03c0 \\u2192 x = 13\\u03c0/12 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `x₁ = π/6 + kπ
+x₂ = π/3 + kπ`
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 3,
+                title: "Výběr z intervalu ⟨0, 2π)",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: `k=0: x = π/6, π/3
+k=1: x = 7π/6, 4π/3`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x_1 = 5\\u03c0/12 + 2k\\u03c0, x_2 = 13\\u03c0/12 + 2k\\u03c0, k \\u2208 Z"
+                children: "K = {π/6, π/3, 7π/6, 4π/3}"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Př. 4: tg(2x + π/4) = √3/3",
+        badge: "Hard",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "tg(2x + π/4) = √3/3 v ℝ"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Substituce a řešení",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: `tg α = √3/3 ⇔ α = π/6 + kπ
+(perioda tg je π)`
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zpětná substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: `2x + π/4 = π/6 + kπ
+2x = π/6 − π/4 + kπ
+2x = (2π − 3π)/12 + kπ
+2x = −π/12 + kπ
+x = −π/24 + kπ/2`
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = −π/24 + kπ/2 = π(12k − 1)/24, k ∈ ℤ"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Př. 5: cos(x + π/6) = −1 v ℝ",
+        badge: "Easy",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "cos(x + π/6) = −1"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Kdy cos = −1?",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: "cos α = −1 ⇔ α = π + 2kπ"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Dosazení",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: `x + π/6 = π + 2kπ
+x = 5π/6 + 2kπ`
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x = 5π/6 + 2kπ, k ∈ ℤ"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "Př. 6: sin(x − π/4) = 1/2 v ℝ",
+        badge: "Medium",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: "sin(x − π/4) = 1/2"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Solution, {
+            children: [
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 1,
+                title: "Řešení pro sin α = 1/2",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: `α₁ = π/6 + 2kπ
+α₂ = 5π/6 + 2kπ`
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Step, {
+                n: 2,
+                title: "Zpětná substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: `x − π/4 = π/6 + 2kπ → x = 5π/12 + 2kπ
+x − π/4 = 5π/6 + 2kπ → x = 13π/12 + 2kπ`
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
+                children: "x₁ = 5π/12 + 2kπ, x₂ = 13π/12 + 2kπ, k ∈ ℤ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -1594,90 +1418,62 @@ function ProblemsRovniceSubstituce() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 1: 2 + cos 2x = -5 sin x",
+        title: "Př. 1: 2 + cos 2x = −5 sin x",
         badge: "Hard",
         defaultOpen: true,
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Z cvicneho testu!"
+            children: "Z cvičného testu!"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "2 + cos 2x = -5 sin x"
+            children: "2 + cos 2x = −5 sin x"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Pouzijeme cos 2x = 1 - 2sin\\u00b2x",
+                title: "Použijeme cos 2x = 1 − 2sin²x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "2 + 1 - 2sin\\u00b2x = -5 sin x",
-                    `
-`,
-                    "-2sin\\u00b2x + 5 sin x + 3 = 0",
-                    `
-`,
-                    "2sin\\u00b2x - 5 sin x - 3 = 0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `2 + 1 − 2sin²x = −5 sin x
+−2sin²x + 5 sin x + 3 = 0
+2sin²x − 5 sin x − 3 = 0`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
                 title: "Substituce y = sin x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "2y\\u00b2 - 5y - 3 = 0",
-                    `
-`,
-                    "D = 25 + 24 = 49",
-                    `
-`,
-                    "y = (5 \\u00b1 7)/4",
-                    `
-`,
-                    "y_1 = 3, y_2 = -1/2"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `2y² − 5y − 3 = 0
+D = 25 + 24 = 49
+y = (5 ± 7)/4
+y₁ = 3, y₂ = −1/2`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
-                title: "Zpetna substituce",
-                children: [
-                  /* @__PURE__ */ jsxDEV(MBlock, {
-                    children: [
-                      "sin x = 3 \\u2192 nema reseni (|sin x| \\u2264 1)",
-                      `
-`,
-                      "sin x = -1/2",
-                      `
-`,
-                      "x_1 = 7\\u03c0/6 + 2k\\u03c0",
-                      `
-`,
-                      "x_2 = 11\\u03c0/6 + 2k\\u03c0"
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsxDEV("p", {
-                    style: pS,
-                    children: "Ekvivalentne: x = -\\u03c0/6 + 2k\\u03c0 nebo x = \\u03c0 + \\u03c0/6 + 2k\\u03c0"
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
+                title: "Zpětná substituce",
+                children: /* @__PURE__ */ jsxDEV(MBlock, {
+                  children: `sin x = 3 → nemá řešení (|sin x| ≤ 1)
+sin x = −1/2
+x₁ = 7π/6 + 2kπ
+x₂ = 11π/6 + 2kπ`
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x_1 = 7\\u03c0/6 + 2k\\u03c0, x_2 = 11\\u03c0/6 + 2k\\u03c0, k \\u2208 Z"
+                children: "x₁ = 7π/6 + 2kπ, x₂ = 11π/6 + 2kπ, k ∈ ℤ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 2: 2cos\\u00b2x + cos x - 1 = 0",
+        title: "Př. 2: 2cos²x + cos x − 1 = 0",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "2cos\\u00b2x + cos x - 1 = 0"
+            children: "2cos²x + cos x − 1 = 0"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -1685,165 +1481,120 @@ function ProblemsRovniceSubstituce() {
                 n: 1,
                 title: "Substituce y = cos x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "2y\\u00b2 + y - 1 = 0",
-                    `
-`,
-                    "D = 1 + 8 = 9",
-                    `
-`,
-                    "y = (-1 \\u00b1 3)/4",
-                    `
-`,
-                    "y_1 = 1/2, y_2 = -1"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `2y² + y − 1 = 0
+D = 1 + 8 = 9
+y = (−1 ± 3)/4
+y₁ = 1/2, y₂ = −1`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Zpetna substituce",
+                title: "Zpětná substituce",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "cos x = 1/2: x_1 = \\u03c0/3 + 2k\\u03c0, x_2 = 5\\u03c0/3 + 2k\\u03c0",
-                    `
-`,
-                    "cos x = -1: x_3 = \\u03c0 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `cos x = 1/2: x₁ = π/3 + 2kπ, x₂ = 5π/3 + 2kπ
+cos x = −1: x₃ = π + 2kπ`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
-                title: "Overeni na <0, 2\\u03c0)",
+                title: "Ověření na ⟨0, 2π)",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "K = ",
-                    "{π/3, π, 5π/3}"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: "K = {π/3, π, 5π/3}"
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x = \\u03c0/3 + 2k\\u03c0, 5\\u03c0/3 + 2k\\u03c0, \\u03c0 + 2k\\u03c0, k \\u2208 Z"
+                children: "x = π/3 + 2kπ, 5π/3 + 2kπ, π + 2kπ, k ∈ ℤ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 3: sin\\u00b2x = 2 sin x",
+        title: "Př. 3: sin²x = 2 sin x",
         badge: "Easy",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "sin\\u00b2x = 2 sin x"
+            children: "sin²x = 2 sin x"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Uprava a substituce a = sin x",
+                title: "Úprava a substituce a = sin x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "a\\u00b2 - 2a = 0",
-                    `
-`,
-                    "a(a - 2) = 0",
-                    `
-`,
-                    "a_1 = 0, a_2 = 2"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `a² − 2a = 0
+a(a − 2) = 0
+a₁ = 0, a₂ = 2`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Zpetna substituce",
+                title: "Zpětná substituce",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin x = 0 \\u2192 x = k\\u03c0",
-                    `
-`,
-                    "sin x = 2 \\u2192 nema reseni"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin x = 0 → x = kπ
+sin x = 2 → nemá řešení`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x = k\\u03c0, k \\u2208 Z"
+                children: "x = kπ, k ∈ ℤ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 4: 6sin\\u00b2x - 7cos x - 1 = 0",
+        title: "Př. 4: 6sin²x − 7cos x − 1 = 0",
         badge: "Hard",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "6sin\\u00b2x - 7cos x - 1 = 0"
+            children: "6sin²x − 7cos x − 1 = 0"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Prevod sin\\u00b2x = 1 - cos\\u00b2x",
+                title: "Převod sin²x = 1 − cos²x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "6(1 - cos\\u00b2x) - 7cos x - 1 = 0",
-                    `
-`,
-                    "-6cos\\u00b2x - 7cos x + 5 = 0",
-                    `
-`,
-                    "6cos\\u00b2x + 7cos x - 5 = 0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `6(1 − cos²x) − 7cos x − 1 = 0
+−6cos²x − 7cos x + 5 = 0
+6cos²x + 7cos x − 5 = 0`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
                 title: "Substituce a = cos x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "6a\\u00b2 + 7a - 5 = 0",
-                    `
-`,
-                    "D = 49 + 120 = 169",
-                    `
-`,
-                    "a = (-7 \\u00b1 13)/12",
-                    `
-`,
-                    "a_1 = 1/2, a_2 = -20/12 (X, mimo rozsah)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `6a² + 7a − 5 = 0
+D = 49 + 120 = 169
+a = (−7 ± 13)/12
+a₁ = 1/2, a₂ = −20/12 (✗, mimo rozsah)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
-                title: "Zpetna substituce",
+                title: "Zpětná substituce",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "cos x = 1/2",
-                    `
-`,
-                    "x_1 = \\u03c0/3 + 2k\\u03c0",
-                    `
-`,
-                    "x_2 = 5\\u03c0/3 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `cos x = 1/2
+x₁ = π/3 + 2kπ
+x₂ = 5π/3 + 2kπ`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x = \\u00b1\\u03c0/3 + 2k\\u03c0, k \\u2208 Z"
+                children: "x = ±π/3 + 2kπ, k ∈ ℤ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 5: sin\\u00b2x + 5 sin x + 4 = 0",
+        title: "Př. 5: sin²x + 5 sin x + 4 = 0",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "sin\\u00b2x + 5 sin x + 4 = 0"
+            children: "sin²x + 5 sin x + 4 = 0"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -1851,39 +1602,29 @@ function ProblemsRovniceSubstituce() {
                 n: 1,
                 title: "Substituce y = sin x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "y\\u00b2 + 5y + 4 = 0",
-                    `
-`,
-                    "(y + 1)(y + 4) = 0",
-                    `
-`,
-                    "y_1 = -1, y_2 = -4"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `y² + 5y + 4 = 0
+(y + 1)(y + 4) = 0
+y₁ = −1, y₂ = −4`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Zpetna substituce",
+                title: "Zpětná substituce",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin x = -1 \\u2192 x = 3\\u03c0/2 + 2k\\u03c0",
-                    `
-`,
-                    "sin x = -4 \\u2192 nema reseni"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin x = −1 → x = 3π/2 + 2kπ
+sin x = −4 → nemá řešení`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x = 3\\u03c0/2 + 2k\\u03c0, k \\u2208 Z"
+                children: "x = 3π/2 + 2kπ, k ∈ ℤ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 6: cos 2x + sin x = 0",
+        title: "Př. 6: cos 2x + sin x = 0",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
@@ -1893,57 +1634,43 @@ function ProblemsRovniceSubstituce() {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "cos 2x = 1 - 2sin\\u00b2x",
+                title: "cos 2x = 1 − 2sin²x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "1 - 2sin\\u00b2x + sin x = 0",
-                    `
-`,
-                    "2sin\\u00b2x - sin x - 1 = 0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `1 − 2sin²x + sin x = 0
+2sin²x − sin x − 1 = 0`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
                 title: "Substituce y = sin x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "2y\\u00b2 - y - 1 = 0",
-                    `
-`,
-                    "y = (1 \\u00b1 3)/4",
-                    `
-`,
-                    "y_1 = 1, y_2 = -1/2"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `2y² − y − 1 = 0
+y = (1 ± 3)/4
+y₁ = 1, y₂ = −1/2`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
-                title: "Zpetna substituce",
+                title: "Zpětná substituce",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin x = 1 \\u2192 x = \\u03c0/2 + 2k\\u03c0",
-                    `
-`,
-                    "sin x = -1/2 \\u2192 x = 7\\u03c0/6 + 2k\\u03c0 nebo x = 11\\u03c0/6 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin x = 1 → x = π/2 + 2kπ
+sin x = −1/2 → x = 7π/6 + 2kπ nebo x = 11π/6 + 2kπ`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x = \\u03c0/2 + 2k\\u03c0, 7\\u03c0/6 + 2k\\u03c0, 11\\u03c0/6 + 2k\\u03c0"
+                children: "x = π/2 + 2kπ, 7π/6 + 2kπ, 11π/6 + 2kπ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 7: sin 2x \\u00b7 cos x + sin\\u00b2x = 1",
+        title: "Př. 7: sin 2x · cos x + sin²x = 1",
         badge: "Hard",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "sin 2x \\u00b7 cos x + sin\\u00b2x = 1"
+            children: "sin 2x · cos x + sin²x = 1"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -1951,38 +1678,24 @@ function ProblemsRovniceSubstituce() {
                 n: 1,
                 title: "sin 2x = 2 sin x cos x",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "2 sin x cos\\u00b2x + sin\\u00b2x = 1",
-                    `
-`,
-                    "Ale sin\\u00b2x + cos\\u00b2x = 1, tak prepis:",
-                    `
-`,
-                    "2 sin x cos\\u00b2x + sin\\u00b2x = sin\\u00b2x + cos\\u00b2x",
-                    `
-`,
-                    "2 sin x cos\\u00b2x = cos\\u00b2x",
-                    `
-`,
-                    "cos\\u00b2x(2 sin x - 1) = 0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `2 sin x cos²x + sin²x = 1
+Ale sin²x + cos²x = 1, tak přepis:
+2 sin x cos²x + sin²x = sin²x + cos²x
+2 sin x cos²x = cos²x
+cos²x(2 sin x − 1) = 0`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Rozklad na soucin",
+                title: "Rozklad na součin",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "cos\\u00b2x = 0 \\u2192 cos x = 0 \\u2192 x = \\u03c0/2 + k\\u03c0",
-                    `
-`,
-                    "2 sin x - 1 = 0 \\u2192 sin x = 1/2 \\u2192 x = \\u03c0/6 + 2k\\u03c0, 5\\u03c0/6 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `cos²x = 0 → cos x = 0 → x = π/2 + kπ
+2 sin x − 1 = 0 → sin x = 1/2 → x = π/6 + 2kπ, 5π/6 + 2kπ`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "x = \\u03c0/2 + k\\u03c0, \\u03c0/6 + 2k\\u03c0, 5\\u03c0/6 + 2k\\u03c0, k \\u2208 Z"
+                children: "x = π/2 + kπ, π/6 + 2kπ, 5π/6 + 2kπ, k ∈ ℤ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -1995,17 +1708,13 @@ function ProblemsGrafNaPredpis() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 1: Sinusoida z cvicneho testu",
+        title: "Př. 1: Sinusoida z cvičného testu",
         badge: "Medium",
         defaultOpen: true,
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Graf z testu: sinusoida, minima v -2, maxima v 0, neprochazi pocatkem, perioda = \\u03c0."
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsxDEV("p", {
-            style: pS,
-            children: "Popis grafu: amplituda = 1 (rozsah 0 az -2, stred = -1), perioda = \\u03c0, posunuta dolu o 1."
+            children: "Graf z testu: sinusoida, minima v −2, maxima v 0, neprocházím počátkem, perioda = π."
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -2013,50 +1722,46 @@ function ProblemsGrafNaPredpis() {
                 n: 1,
                 title: "Amplituda",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "a = (max - min)/2 = (0 - (-2))/2 = 1"
+                  children: "a = (max − min)/2 = (0 − (−2))/2 = 1"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Vertikalni posun",
+                title: "Vertikální posun",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "d = (max + min)/2 = (0 + (-2))/2 = -1"
+                  children: "d = (max + min)/2 = (0 + (−2))/2 = −1"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 3,
                 title: "Perioda a b",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "T = \\u03c0, b = 2\\u03c0/T = 2"
+                  children: "T = π, b = 2π/T = 2"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 4,
-                title: "Faze (horizontalni posun)",
+                title: "Fáze (horizontální posun)",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "Maximum je v x = \\u03c0/4 (misto 0 pro -cos)",
-                    `
-`,
-                    "y = -cos(2x) - 1  nebo  y = cos(2x + \\u03c0) - 1"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `Maximum je v x = π/4 (místo 0 pro −cos)
+y = −cos(2x) − 1  nebo  y = cos(2x + π) − 1`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "y = -cos(2x) - 1"
+                children: "y = −cos(2x) − 1"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 2: Sinusoida s body (-\\u03c0/3, 4) a (5\\u03c0/3, -4)",
+        title: "Př. 2: Sinusoida s body (−π/3, 4) a (5π/3, −4)",
         badge: "Hard",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Maximum 4, minimum -4, nulove body v 2\\u03c0/3 a 8\\u03c0/3."
+            children: "Maximum 4, minimum −4, nulové body v 2π/3 a 8π/3."
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -2064,68 +1769,49 @@ function ProblemsGrafNaPredpis() {
                 n: 1,
                 title: "Amplituda a perioda",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "a = 4",
-                    `
-`,
-                    "Vzdalenost dvou po sobe jdoucich maxim: 11\\u03c0/3 - (-\\u03c0/3) = 4\\u03c0",
-                    `
-`,
-                    "T = 4\\u03c0, b = 2\\u03c0/T = 1/2"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `a = 4
+Vzdálenost dvou po sobě jdoucích maxim: 11π/3 − (−π/3) = 4π
+T = 4π, b = 2π/T = 1/2`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
                 title: "Posun",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "Max v x = -\\u03c0/3. Pro sin je max v \\u03c0/2b = \\u03c0.",
-                    `
-`,
-                    "Posun: -\\u03c0/3 - \\u03c0 = -4\\u03c0/3, tj. c = 4\\u03c0/3 vlevo? Hmm.",
-                    `
-`,
-                    `
-`,
-                    "Spis: y = 4cos(x/2 + \\u03c0/6)",
-                    `
-`,
-                    "Max cosinusoidy pri argumentu = 0:",
-                    `
-`,
-                    "x/2 + \\u03c0/6 = 0 \\u2192 x = -\\u03c0/3 \\u2713"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `Max v x = −π/3. Pro cos je max při arg = 0:
+x/2 + c = 0 → (−π/3)/2 + c = 0
+−π/6 + c = 0 → c = π/6
+y = 4cos(x/2 + π/6)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "y = 4cos(x/2 + \\u03c0/6)"
+                children: "y = 4cos(x/2 + π/6)"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 3: y = 2sin(2x + \\u03c0/3) — postup cteni grafu",
+        title: "Př. 3: Obecný postup čtení grafu",
         badge: "Easy",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Obecny postup pro rozpoznani y = a\\u00b7sin(b(x+c)) + d z grafu:"
+            children: "Jak rozpoznat y = a·sin(b(x+c)) + d z grafu:"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Amplituda a = (max - min) / 2",
+                title: "Amplituda a = (max − min) / 2",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: "Precteme maximum a minimum z grafu."
+                  children: "Přečteme maximum a minimum z grafu."
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Vertikalni posun d = (max + min) / 2",
+                title: "Vertikální posun d = (max + min) / 2",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
                   children: "Pokud d = 0, graf osciluje symetricky kolem osy x."
                 }, undefined, false, undefined, this)
@@ -2134,65 +1820,21 @@ function ProblemsGrafNaPredpis() {
                 n: 3,
                 title: "Perioda T a koeficient b",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "T = vzdalenost dvou po sobe jdoucich maxim",
-                    `
-`,
-                    "b = 2\\u03c0 / T (pro sin, cos)",
-                    `
-`,
-                    "b = \\u03c0 / T (pro tg, cotg)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `T = vzdálenost dvou po sobě jdoucích maxim
+b = 2π / T (pro sin, cos)
+b = π / T (pro tg, cotg)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 4,
-                title: "Faze c",
+                title: "Fáze c",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "Najdi x-ovou souradnici maxima (pro sin/cos).",
-                    `
-`,
-                    "Pro y = sin: max je v b(x+c) = \\u03c0/2",
-                    `
-`,
-                    "Pro y = cos: max je v b(x+c) = 0",
-                    `
-`,
-                    "Z toho vypoctete c."
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV("div", {
-                style: { color: PINK, fontWeight: 600 },
-                children: "Priklad: max v (-\\u03c0/6, 2), min v (5\\u03c0/12, -2), T = \\u03c0"
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV(MBlock, {
-                children: [
-                  "a = 2, d = 0, b = 2",
-                  `
-`,
-                  "Max pri x = -\\u03c0/6: b(x+c) = \\u03c0/2",
-                  `
-`,
-                  "2(-\\u03c0/6 + c) = \\u03c0/2",
-                  `
-`,
-                  "-\\u03c0/3 + 2c = \\u03c0/2",
-                  `
-`,
-                  "2c = 5\\u03c0/6",
-                  `
-`,
-                  "c = 5\\u03c0/12... ne, zkusme cos:",
-                  `
-`,
-                  "b(x+c) = 0 \\u2192 2(-\\u03c0/6 + c) = 0 \\u2192 c = \\u03c0/6",
-                  `
-`,
-                  "y = 2cos(2(x + \\u03c0/6)) = 2cos(2x + \\u03c0/3)"
-                ]
-              }, undefined, true, undefined, this)
+                  children: `Najdi x-ovou souřadnici maxima.
+Pro y = sin: max je v b(x+c) = π/2
+Pro y = cos: max je v b(x+c) = 0
+Z toho vypočtete c.`
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
@@ -2204,62 +1846,48 @@ function ProblemsPredpisNaGraf() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 1: y = sin(x + 2\\u03c0/3)",
+        title: "Př. 1: y = sin(x + 2π/3)",
         badge: "Easy",
         defaultOpen: true,
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "y = sin(x + 2\\u03c0/3)"
+            children: "y = sin(x + 2π/3)"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Identifikace transformaci",
+                title: "Identifikace transformací",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "Zakladni funkce: y = sin x",
-                    `
-`,
-                    "Posun o 2\\u03c0/3 DOLEVA (vnitrni +)",
-                    `
-`,
-                    "Amplituda = 1, perioda = 2\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `Základní funkce: y = sin x
+Posun o 2π/3 DOLEVA (vnitřní +)
+Amplituda = 1, perioda = 2π`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Klicove body",
+                title: "Klíčové body",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin x ma max v \\u03c0/2.",
-                    `
-`,
-                    "Posunuty max: \\u03c0/2 - 2\\u03c0/3 = -\\u03c0/6",
-                    `
-`,
-                    "Nuly: -2\\u03c0/3 (start), \\u03c0/3 (stred), 4\\u03c0/3",
-                    `
-`,
-                    "Min: -\\u03c0/6 + \\u03c0 = 5\\u03c0/6"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin x má max v π/2.
+Posunutý max: π/2 − 2π/3 = −π/6
+Nuly: −2π/3 (start), π/3 (střed), 4π/3
+Min: −π/6 + π = 5π/6`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: PINK },
-                children: "Nakresli sinusoidu posunutou o 2\\u03c0/3 doleva. Max v (-\\u03c0/6, 1), nula v (\\u03c0/3, 0), min v (5\\u03c0/6, -1)."
+                children: "Nakresli sinusoidu posunutou o 2π/3 doleva. Max v (−π/6, 1), nula v (π/3, 0), min v (5π/6, −1)."
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 2: y = -cos(2x)",
+        title: "Př. 2: y = −cos(2x)",
         badge: "Easy",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "y = -cos(2x)"
+            children: "y = −cos(2x)"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -2267,91 +1895,63 @@ function ProblemsPredpisNaGraf() {
                 n: 1,
                 title: "Transformace",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "1. cos(x) \\u2192 cos(2x): perioda 2\\u03c0/2 = \\u03c0",
-                    `
-`,
-                    "2. -cos(2x): zrcadleni pres osu x",
-                    `
-`,
-                    "Amplituda = 1"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `1. cos(x) → cos(2x): perioda 2π/2 = π
+2. −cos(2x): zrcadlení přes osu x
+Amplituda = 1`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Klicove body",
+                title: "Klíčové body",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "cos(2x) ma max v x=0.",
-                    `
-`,
-                    "-cos(2x) ma MIN v x=0: (0, -1)",
-                    `
-`,
-                    "Nuly: \\u03c0/4, 3\\u03c0/4",
-                    `
-`,
-                    "Max: \\u03c0/2: (\\u03c0/2, 1)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `cos(2x) má max v x=0.
+−cos(2x) má MIN v x=0: (0, −1)
+Nuly: π/4, 3π/4
+Max: π/2: (π/2, 1)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 3: y = 2cos(2x - \\u03c0/4)",
+        title: "Př. 3: y = 2cos(2x − π/4)",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "y = 2cos(2x - \\u03c0/4) = 2cos(2(x - \\u03c0/8))"
+            children: "y = 2cos(2x − π/4) = 2cos(2(x − π/8))"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Rozklad parametru",
+                title: "Rozklad parametrů",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "a = 2 (amplituda)",
-                    `
-`,
-                    "b = 2 \\u2192 T = \\u03c0",
-                    `
-`,
-                    "c = -\\u03c0/8 (posun doprava o \\u03c0/8)",
-                    `
-`,
-                    "d = 0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `a = 2 (amplituda)
+b = 2 → T = π
+c = −π/8 (posun doprava o π/8)
+d = 0`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Klicove body",
+                title: "Klíčové body",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "Max (cos arg = 0): 2(x - \\u03c0/8) = 0 \\u2192 x = \\u03c0/8: (\\u03c0/8, 2)",
-                    `
-`,
-                    "Nula: x = \\u03c0/8 + \\u03c0/4 = 3\\u03c0/8",
-                    `
-`,
-                    "Min: x = \\u03c0/8 + \\u03c0/2 = 5\\u03c0/8: (5\\u03c0/8, -2)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `Max (cos arg = 0): 2(x − π/8) = 0 → x = π/8: (π/8, 2)
+Nula: x = π/8 + π/4 = 3π/8
+Min: x = π/8 + π/2 = 5π/8: (5π/8, −2)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 4: y = -tg(x/2)",
+        title: "Př. 4: y = −tg(x/2)",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "y = -tg(x/2)"
+            children: "y = −tg(x/2)"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -2359,42 +1959,30 @@ function ProblemsPredpisNaGraf() {
                 n: 1,
                 title: "Transformace",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "tg(x/2): perioda = \\u03c0/(1/2) = 2\\u03c0",
-                    `
-`,
-                    "-tg: zrcadleni pres osu x",
-                    `
-`,
-                    "Asymptoty kde x/2 = \\u03c0/2 + k\\u03c0 \\u2192 x = \\u03c0 + 2k\\u03c0"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `tg(x/2): perioda = π/(1/2) = 2π
+−tg: zrcadlení přes osu x
+Asymptoty kde x/2 = π/2 + kπ → x = π + 2kπ`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Klicove body",
+                title: "Klíčové body",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "Nula: x = 0 (a kazdych 2\\u03c0)",
-                    `
-`,
-                    "Asymptoty: x = \\u00b1\\u03c0, \\u00b13\\u03c0, ...",
-                    `
-`,
-                    "Klesajici (protoze minus) na (-\\u03c0, \\u03c0)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `Nula: x = 0 (a každých 2π)
+Asymptoty: x = ±π, ±3π, ...
+Klesající (protože mínus) na (−π, π)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 5: y = cotg(2x + \\u03c0) - 1",
+        title: "Př. 5: y = cotg(2x + π) − 1",
         badge: "Hard",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "y = cotg(2x + \\u03c0) - 1 = cotg(2(x + \\u03c0/2)) - 1"
+            children: "y = cotg(2x + π) − 1 = cotg(2(x + π/2)) − 1"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
@@ -2402,42 +1990,20 @@ function ProblemsPredpisNaGraf() {
                 n: 1,
                 title: "Transformace",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "cotg(2x): perioda = \\u03c0/2",
-                    `
-`,
-                    "Posun o \\u03c0/2 doleva",
-                    `
-`,
-                    "Posun o 1 dolu",
-                    `
-`,
-                    `
-`,
-                    "Pozn: cotg(x + \\u03c0) = cotg x (perioda cotg je \\u03c0)",
-                    `
-`,
-                    "Takze cotg(2x + \\u03c0) = cotg(2x)",
-                    `
-`,
-                    "y = cotg(2x) - 1"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `cotg(2x): perioda = π/2
+Pozn: cotg(x + π) = cotg x (perioda cotg je π)
+Takže cotg(2x + π) = cotg(2x)
+y = cotg(2x) − 1`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Klicove body",
+                title: "Klíčové body",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "Asymptoty: 2x = k\\u03c0 \\u2192 x = k\\u03c0/2",
-                    `
-`,
-                    "Nula cotg: 2x = \\u03c0/2 + k\\u03c0 \\u2192 x = \\u03c0/4 + k\\u03c0/2",
-                    `
-`,
-                    "Ale -1 posun: y = 0 v jinem bode"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `Asymptoty: 2x = kπ → x = kπ/2
+Nula cotg: 2x = π/2 + kπ → x = π/4 + kπ/2
+Posun −1 posouvá celý graf dolů o 1`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -2450,13 +2016,13 @@ function ProblemsVyrazy() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 1: (sin x + sin 2x) / (1 + cos x + cos 2x)",
+        title: "Př. 1: (sin x + sin 2x) / (1 + cos x + cos 2x)",
         badge: "Hard",
         defaultOpen: true,
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Z cvicneho testu!"
+            children: "Z cvičného testu!"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
             children: "(sin x + sin 2x) / (1 + cos x + cos 2x) = ?"
@@ -2465,204 +2031,147 @@ function ProblemsVyrazy() {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Rozepsani dvojnasobnych uhlu",
+                title: "Rozepsání dvojnásobných úhlů",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "Citatel: sin x + 2 sin x cos x = sin x(1 + 2 cos x)",
-                    `
-`,
-                    "Jmenovatel: 1 + cos x + (2cos\\u00b2x - 1) = cos x + 2cos\\u00b2x = cos x(1 + 2 cos x)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `Čitatel: sin x + 2 sin x cos x = sin x(1 + 2 cos x)
+Jmenovatel: 1 + cos x + (2cos²x − 1) = cos x + 2cos²x = cos x(1 + 2 cos x)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Zkraceni",
+                title: "Zkrácení",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin x(1 + 2 cos x) / (cos x(1 + 2 cos x))",
-                    `
-`,
-                    "= sin x / cos x = tg x"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin x(1 + 2 cos x) / (cos x(1 + 2 cos x))
+= sin x / cos x = tg x`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "Vysledek: tg x"
+                children: "Výsledek: tg x"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("p", {
                 style: pS,
-                children: "Podminka: cos x \\u2260 0 a 1 + 2cos x \\u2260 0, tj. x \\u2260 \\u03c0/2 + k\\u03c0 a x \\u2260 \\u00b12\\u03c0/3 + 2k\\u03c0"
+                children: "Podmínka: cos x ≠ 0 a 1 + 2cos x ≠ 0, tj. x ≠ π/2 + kπ a x ≠ ±2π/3 + 2kπ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 2: (cotg x - tg x) / (cotg x + tg x)",
+        title: "Př. 2: (cotg x − tg x) / (cotg x + tg x)",
         badge: "Hard",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Z cvicneho testu!"
+            children: "Z cvičného testu!"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "(cotg x - tg x) / (cotg x + tg x) = ?"
+            children: "(cotg x − tg x) / (cotg x + tg x) = ?"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Prepis na sin a cos",
+                title: "Přepis na sin a cos",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "cotg x = cos x/sin x, tg x = sin x/cos x",
-                    `
-`,
-                    `
-`,
-                    "Citatel: cos x/sin x - sin x/cos x",
-                    `
-`,
-                    "= (cos\\u00b2x - sin\\u00b2x)/(sin x cos x)",
-                    `
-`,
-                    "= cos 2x / (sin x cos x)",
-                    `
-`,
-                    `
-`,
-                    "Jmenovatel: cos x/sin x + sin x/cos x",
-                    `
-`,
-                    "= (cos\\u00b2x + sin\\u00b2x)/(sin x cos x)",
-                    `
-`,
-                    "= 1/(sin x cos x)"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `cotg x = cos x/sin x, tg x = sin x/cos x
+
+Čitatel: cos x/sin x − sin x/cos x
+= (cos²x − sin²x)/(sin x cos x)
+= cos 2x / (sin x cos x)
+
+Jmenovatel: cos x/sin x + sin x/cos x
+= (cos²x + sin²x)/(sin x cos x)
+= 1/(sin x cos x)`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Podil",
+                title: "Podíl",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "[cos 2x/(sin x cos x)] / [1/(sin x cos x)]",
-                    `
-`,
-                    "= cos 2x"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `[cos 2x/(sin x cos x)] / [1/(sin x cos x)]
+= cos 2x`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "Vysledek: cos 2x"
+                children: "Výsledek: cos 2x"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 3: (cos\\u00b2x - cos 2x) / sin 2x = (1/2) tg x",
+        title: "Př. 3: (cos²x − cos 2x) / sin 2x = (1/2) tg x",
         badge: "Medium",
         children: [
           /* @__PURE__ */ jsxDEV("p", {
             style: pS,
-            children: "Dokazte rovnost a urcete podminku."
+            children: "Dokažte rovnost a určete podmínku."
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "(cos\\u00b2x - cos 2x) / sin 2x = (1/2) tg x"
+            children: "(cos²x − cos 2x) / sin 2x = (1/2) tg x"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Leva strana",
+                title: "Levá strana",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "cos 2x = cos\\u00b2x - sin\\u00b2x",
-                    `
-`,
-                    "L = (cos\\u00b2x - (cos\\u00b2x - sin\\u00b2x)) / (2 sin x cos x)",
-                    `
-`,
-                    "= sin\\u00b2x / (2 sin x cos x)",
-                    `
-`,
-                    "= sin x / (2 cos x)",
-                    `
-`,
-                    "= (1/2) tg x \\u2713"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `cos 2x = cos²x − sin²x
+L = (cos²x − (cos²x − sin²x)) / (2 sin x cos x)
+= sin²x / (2 sin x cos x)
+= sin x / (2 cos x)
+= (1/2) tg x ✓`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Podminka",
+                title: "Podmínka",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin 2x \\u2260 0 \\u2192 x \\u2260 k\\u03c0/2",
-                    `
-`,
-                    "D = R \\ ",
-                    "{k·π/2; k ∈ Z}"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin 2x ≠ 0 → x ≠ kπ/2
+D = ℝ \\ {k·π/2; k ∈ ℤ}`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "Dokazano. D: x \\u2260 k\\u03c0/2"
+                children: "Dokázáno. D: x ≠ kπ/2"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV(Collapsible, {
-        title: "Pr. 4: sin 2x/(1 + cos 2x) + (1 - cos 2x)/sin 2x = 2 tg x",
+        title: "Př. 4: sin 2x/(1 + cos 2x) + (1 − cos 2x)/sin 2x = 2 tg x",
         badge: "Hard",
         children: [
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: "sin 2x/(1 + cos 2x) + (1 - cos 2x)/sin 2x = 2 tg x"
+            children: "sin 2x/(1 + cos 2x) + (1 − cos 2x)/sin 2x = 2 tg x"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(Solution, {
             children: [
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 1,
-                title: "Dosazeni vzorcu",
+                title: "Dosazení vzorců",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "sin 2x = 2 sin x cos x",
-                    `
-`,
-                    "cos 2x = cos\\u00b2x - sin\\u00b2x",
-                    `
-`,
-                    "1 + cos 2x = 1 + cos\\u00b2x - sin\\u00b2x = 2cos\\u00b2x",
-                    `
-`,
-                    "1 - cos 2x = 1 - cos\\u00b2x + sin\\u00b2x = 2sin\\u00b2x"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `sin 2x = 2 sin x cos x
+cos 2x = cos²x − sin²x
+1 + cos 2x = 1 + cos²x − sin²x = 2cos²x
+1 − cos 2x = 1 − cos²x + sin²x = 2sin²x`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Step, {
                 n: 2,
-                title: "Dosazeni do zlomku",
+                title: "Dosazení do zlomků",
                 children: /* @__PURE__ */ jsxDEV(MBlock, {
-                  children: [
-                    "2 sin x cos x / (2cos\\u00b2x) + 2sin\\u00b2x / (2 sin x cos x)",
-                    `
-`,
-                    "= sin x/cos x + sin x/cos x",
-                    `
-`,
-                    "= tg x + tg x = 2 tg x \\u2713"
-                  ]
-                }, undefined, true, undefined, this)
+                  children: `2 sin x cos x / (2cos²x) + 2sin²x / (2 sin x cos x)
+= sin x/cos x + sin x/cos x
+= tg x + tg x = 2 tg x ✓`
+                }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" },
-                children: "Dokazano. D: x \\u2260 k\\u03c0/2"
+                children: "Dokázáno. D: x ≠ kπ/2"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -2675,90 +2184,90 @@ var quizQuestions = [
   {
     question: "Kolik je sin(5π/6)?",
     type: "single",
-    options: ["1/2", "-1/2", "√3/2", "-√3/2"],
+    options: ["1/2", "−1/2", "√3/2", "−√3/2"],
     correct: [0],
-    explanation: "5π/6 je v II. kvadrantu, referencni uhel je π/6. Sin je v II. kv. kladny, sin(π/6) = 1/2.",
-    tip: "II. kvadrant = sin kladny, cos zaporny."
+    explanation: "5π/6 je v II. kvadrantu, referenční úhel je π/6. Sin je v II. kv. kladný, sin(π/6) = 1/2.",
+    tip: "II. kvadrant = sin kladný, cos záporný."
   },
   {
     question: "Kolik je cos(7π/4)?",
     type: "single",
-    options: ["√2/2", "-√2/2", "1/2", "-1/2"],
+    options: ["√2/2", "−√2/2", "1/2", "−1/2"],
     correct: [0],
-    explanation: "7π/4 = 2π - π/4 je v IV. kvadrantu. Cos je kladny v IV. kv., cos(π/4) = √2/2."
+    explanation: "7π/4 = 2π − π/4 je v IV. kvadrantu. Cos je kladný v IV. kv., cos(π/4) = √2/2."
   },
   {
-    question: "Jaka je perioda funkce y = sin(3x)?",
+    question: "Jaká je perioda funkce y = sin(3x)?",
     type: "single",
     options: ["2π/3", "3π", "6π", "π/3"],
     correct: [0],
-    explanation: "Pro sin(bx) je perioda T = 2π/b. Tady b = 3, takze T = 2π/3.",
+    explanation: "Pro sin(bx) je perioda T = 2π/b. Tady b = 3, takže T = 2π/3.",
     tip: "T = 2π/b pro sin a cos, T = π/b pro tg a cotg."
   },
   {
-    question: "Jaka je perioda funkce y = -2sin(x/2)?",
+    question: "Jaká je perioda funkce y = −2sin(x/2)?",
     type: "single",
     options: ["4π", "2π", "π", "π/2"],
     correct: [0],
-    explanation: "b = 1/2, T = 2π/(1/2) = 4π. Zaporny koeficient a amplituda nemeji periodu."
+    explanation: "b = 1/2, T = 2π/(1/2) = 4π. Záporný koeficient a amplituda nemění periodu."
   },
   {
-    question: "Jaka je perioda funkce y = -(1/2)tg(4x)?",
+    question: "Jaká je perioda funkce y = −(1/2)tg(4x)?",
     type: "single",
     options: ["π/4", "4π", "π/2", "2π"],
     correct: [0],
     explanation: "Pro tg(bx) je T = π/b. Tady b = 4, T = π/4."
   },
   {
-    question: "Rovnice cos x = -1 ma reseni:",
+    question: "Rovnice cos x = −1 má řešení:",
     type: "single",
     options: ["x = π + 2kπ", "x = 3π/2 + 2kπ", "x = 0 + 2kπ", "x = π/2 + kπ"],
     correct: [0],
-    explanation: "cos x = -1 nastava pouze v bode π na jednotkove kruznici, s periodou 2π."
+    explanation: "cos x = −1 nastává pouze v bodě π na jednotkové kružnici, s periodou 2π."
   },
   {
     question: "sin²x + cos²x = ?",
     type: "single",
     options: ["1", "0", "2", "sin 2x"],
     correct: [0],
-    explanation: "Zakladni goniometricka identita (Pythagorova veta na jednotkove kruznici).",
-    tip: "Toto je nejdulezitejsi identita v goniometrii!"
+    explanation: "Základní goniometrická identita (Pythagorova věta na jednotkové kružnici).",
+    tip: "Toto je nejdůležitější identita v goniometrii!"
   },
   {
-    question: "cos 2x se rovna:",
+    question: "cos 2x se rovná:",
     type: "multi",
-    options: ["cos²x - sin²x", "1 - 2sin²x", "2cos²x - 1", "2sin x cos x"],
+    options: ["cos²x − sin²x", "1 − 2sin²x", "2cos²x − 1", "2sin x cos x"],
     correct: [0, 1, 2],
-    explanation: "Vsechny tri prvni tvary jsou spravne (ekvivalentni). 2sin x cos x = sin 2x, ne cos 2x."
+    explanation: "Všechny tři první tvary jsou správné (ekvivalentní). 2sin x cos x = sin 2x, ne cos 2x."
   },
   {
     question: "sin 2x = ?",
     type: "single",
-    options: ["2 sin x cos x", "sin²x + cos²x", "cos²x - sin²x", "2 sin²x"],
+    options: ["2 sin x cos x", "sin²x + cos²x", "cos²x − sin²x", "2 sin²x"],
     correct: [0],
-    explanation: "Vzorec pro dvojnasobny uhel: sin 2x = 2 sin x cos x."
+    explanation: "Vzorec pro dvojnásobný úhel: sin 2x = 2 sin x cos x."
   },
   {
-    question: "Funkce y = 3sin(2(x - π/6)) ma amplitudu a periodu:",
+    question: "Funkce y = 3sin(2(x − π/6)) má amplitudu a periodu:",
     type: "single",
     options: ["a = 3, T = π", "a = 3, T = 2π", "a = 2, T = 3π", "a = 6, T = π/2"],
     correct: [0],
     explanation: "Amplituda = |a| = 3. Perioda = 2π/b = 2π/2 = π."
   },
   {
-    question: "Ve kterych kvadrantech je tg x kladny?",
+    question: "Ve kterých kvadrantech je tg x kladný?",
     type: "multi",
     options: ["I. kvadrant", "II. kvadrant", "III. kvadrant", "IV. kvadrant"],
     correct: [0, 2],
-    explanation: "tg = sin/cos. V I. kv. oba kladne (+/+), v III. kv. oba zaporne (-/- = +).",
-    tip: "tg a cotg maji stejne znaminko — kladne v I. a III. kv."
+    explanation: "tg = sin/cos. V I. kv. oba kladné (+/+), v III. kv. oba záporné (−/− = +).",
+    tip: "tg a cotg mají stejné znaménko — kladné v I. a III. kv."
   },
   {
-    question: "Rovnice 2cos²x - cos x - 1 = 0: jaka je spravna substituce?",
+    question: "Rovnice 2cos²x − cos x − 1 = 0: jaká je správná substituce?",
     type: "single",
-    options: ["y = cos x, pak 2y² - y - 1 = 0", "y = cos²x, pak 2y - y - 1 = 0", "y = sin x, pak 2y² - y - 1 = 0", "y = 2cos x, pak y² - y - 1 = 0"],
+    options: ["y = cos x, pak 2y² − y − 1 = 0", "y = cos²x, pak 2y − y − 1 = 0", "y = sin x, pak 2y² − y − 1 = 0", "y = 2cos x, pak y² − y − 1 = 0"],
     correct: [0],
-    explanation: "Substituujeme y = cos x. Rovnice 2y² - y - 1 = 0 je standardni kvadraticka rovnice."
+    explanation: "Substituujeme y = cos x. Rovnice 2y² − y − 1 = 0 je standardní kvadratická rovnice."
   },
   {
     question: "cotg(π/4) = ?",
@@ -2768,35 +2277,35 @@ var quizQuestions = [
     explanation: "cotg(π/4) = cos(π/4)/sin(π/4) = (√2/2)/(√2/2) = 1."
   },
   {
-    question: "Kdyz x je v III. kvadrantu a cotg x = 2, pak:",
+    question: "Když x je v III. kvadrantu a cotg x = 2, pak:",
     type: "multi",
     options: ["sin x < 0", "cos x < 0", "tg x > 0", "tg x < 0"],
     correct: [0, 1, 2],
-    explanation: "V III. kv.: sin < 0, cos < 0. tg = sin/cos = (-)/(-) > 0. cotg > 0 souhlasi."
+    explanation: "V III. kv.: sin < 0, cos < 0. tg = sin/cos = (−)/(−) > 0. cotg > 0 souhlasí."
   },
   {
-    question: "Jak se zmeni graf funkce y = sin x pri transformaci y = sin(x + π/2)?",
+    question: "Jak se změní graf funkce y = sin x při transformaci y = sin(x + π/2)?",
     type: "single",
-    options: ["Posune se o π/2 DOLEVA", "Posune se o π/2 DOPRAVA", "Posune se o π/2 NAHORU", "Zmeni se perioda"],
+    options: ["Posune se o π/2 DOLEVA", "Posune se o π/2 DOPRAVA", "Posune se o π/2 NAHORU", "Změní se perioda"],
     correct: [0],
-    explanation: "Vnitrni transformace +c posouva graf DOLEVA o c. sin(x + π/2) = cos x.",
-    tip: "Vnitrni + = DOLEVA, vnitrni - = DOPRAVA (opak intuice!)"
+    explanation: "Vnitřní transformace +c posouvá graf DOLEVA o c. sin(x + π/2) = cos x.",
+    tip: "Vnitřní + = DOLEVA, vnitřní − = DOPRAVA (opak intuice!)"
   },
   {
-    question: "tg x = sin x / cos x. Kdy tg x neni definovan?",
+    question: "tg x = sin x / cos x. Kdy tg x není definován?",
     type: "single",
-    options: ["Kdyz cos x = 0, tj. x = π/2 + kπ", "Kdyz sin x = 0, tj. x = kπ", "Kdyz x = 2kπ", "tg x je vzdy definovan"],
+    options: ["Když cos x = 0, tj. x = π/2 + kπ", "Když sin x = 0, tj. x = kπ", "Když x = 2kπ", "tg x je vždy definován"],
     correct: [0],
-    explanation: "tg x = sin x / cos x, takze neni definovan kde cos x = 0, tj. v x = π/2 + kπ."
+    explanation: "tg x = sin x / cos x, takže není definován kde cos x = 0, tj. v x = π/2 + kπ."
   }
 ];
 var flashcardsData = [
   { front: "sin²x + cos²x = ?", back: `1
 (Pythagorova identita)` },
   { front: "sin 2x = ?", back: "2 sin x cos x" },
-  { front: "cos 2x = ? (3 tvary)", back: `cos²x - sin²x
-= 1 - 2sin²x
-= 2cos²x - 1` },
+  { front: "cos 2x = ? (3 tvary)", back: `cos²x − sin²x
+= 1 − 2sin²x
+= 2cos²x − 1` },
   { front: "tg x = ?", back: "sin x / cos x" },
   { front: "cotg x = ?", back: "cos x / sin x = 1 / tg x" },
   { front: "Perioda sin(bx), cos(bx)?", back: "T = 2π / |b|" },
@@ -2809,18 +2318,18 @@ var flashcardsData = [
   { front: "cos(π/3) = ?", back: "1/2" },
   { front: "tg(π/3) = ?", back: "√3" },
   { front: "tg(π/6) = ?", back: "√3/3" },
-  { front: "Znaminko sin ve III. kv.?", back: "ZAPORNE (sin < 0)" },
-  { front: "Znaminko cos ve II. kv.?", back: "ZAPORNE (cos < 0)" },
+  { front: "Znaménko sin ve III. kv.?", back: "ZÁPORNÉ (sin < 0)" },
+  { front: "Znaménko cos ve II. kv.?", back: "ZÁPORNÉ (cos < 0)" },
   { front: `y = a sin(b(x+c)) + d
-Co je a?`, back: `Amplituda — nasobi y-ove hodnoty
-Rozsah: <-|a|, |a|> (bez d)` },
+Co je a?`, back: `Amplituda — násobí y-ové hodnoty
+Rozsah: ⟨−|a|, |a|⟩ (bez d)` },
   { front: `y = a sin(b(x+c)) + d
-Co je c?`, back: `Horizontalni posun
-+c = doleva, -c = doprava` },
-  { front: "sin²x = ? (pres cos 2x)", back: "(1 - cos 2x) / 2" },
-  { front: "cos²x = ? (pres cos 2x)", back: "(1 + cos 2x) / 2" },
-  { front: "sin(-α) = ?", back: "-sin α (licha funkce)" },
-  { front: "cos(-α) = ?", back: "cos α (suda funkce)" },
+Co je c?`, back: `Horizontální posun
++c = doleva, −c = doprava` },
+  { front: "sin²x = ? (přes cos 2x)", back: "(1 − cos 2x) / 2" },
+  { front: "cos²x = ? (přes cos 2x)", back: "(1 + cos 2x) / 2" },
+  { front: "sin(−α) = ?", back: "−sin α (lichá funkce)" },
+  { front: "cos(−α) = ?", back: "cos α (sudá funkce)" },
   { front: "1 + tg²x = ?", back: "1 / cos²x" },
   { front: "1 + cotg²x = ?", back: "1 / sin²x" }
 ];
@@ -2833,13 +2342,13 @@ function Flashcards() {
     children: [
       /* @__PURE__ */ jsxDEV("div", {
         onClick: () => setFlipped(!flipped),
-        style: { ...glass, padding: "40px 32px", minHeight: "200px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", transition: "all 0.4s ease", transform: flipped ? "rotateY(0)" : "rotateY(0)", background: flipped ? "rgba(236,72,153,0.08)" : "rgba(255,255,255,0.05)" },
+        style: { ...glass, padding: "40px 32px", minHeight: "200px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", transition: "all 0.4s ease", background: flipped ? "rgba(236,72,153,0.08)" : "rgba(255,255,255,0.05)" },
         children: /* @__PURE__ */ jsxDEV("div", {
           children: [
             /* @__PURE__ */ jsxDEV("div", {
               style: { color: "rgba(255,255,255,0.3)", fontSize: "12px", marginBottom: "12px" },
               children: [
-                flipped ? "ODPOVED" : "OTAZKA",
+                flipped ? "ODPOVĚĎ" : "OTÁZKA",
                 " (",
                 idx + 1,
                 "/",
@@ -2853,7 +2362,7 @@ function Flashcards() {
             }, undefined, false, undefined, this),
             !flipped && /* @__PURE__ */ jsxDEV("div", {
               style: { color: "rgba(255,255,255,0.3)", fontSize: "13px", marginTop: "16px" },
-              children: "Klikni pro otoceni"
+              children: "Klikni pro otočení"
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this)
@@ -2868,12 +2377,12 @@ function Flashcards() {
               setFlipped(false);
             },
             disabled: idx === 0,
-            children: "\\u2190 Predchozi"
+            children: "← Předchozí"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("button", {
             style: { ...btnS, background: PINK + "22", border: `1px solid ${PINK}` },
             onClick: () => setFlipped(!flipped),
-            children: flipped ? "Otocit zpet" : "Zobrazit odpoved"
+            children: flipped ? "Otočit zpět" : "Zobrazit odpověď"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("button", {
             style: btnS,
@@ -2882,7 +2391,7 @@ function Flashcards() {
               setFlipped(false);
             },
             disabled: idx === flashcardsData.length - 1,
-            children: "Dalsi \\u2192"
+            children: "Další →"
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
@@ -2907,28 +2416,16 @@ function FormulaSheet() {
         children: [
           /* @__PURE__ */ jsxDEV("div", {
             style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
-            children: "Zakladni identity"
+            children: "Základní identity"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: [
-              "sin\\u00b2x + cos\\u00b2x = 1",
-              `
-`,
-              "tg x = sin x / cos x",
-              `
-`,
-              "cotg x = cos x / sin x",
-              `
-`,
-              "tg x \\u00b7 cotg x = 1",
-              `
-`,
-              "1 + tg\\u00b2x = 1/cos\\u00b2x",
-              `
-`,
-              "1 + cotg\\u00b2x = 1/sin\\u00b2x"
-            ]
-          }, undefined, true, undefined, this)
+            children: `sin²x + cos²x = 1
+tg x = sin x / cos x
+cotg x = cos x / sin x
+tg x · cotg x = 1
+1 + tg²x = 1/cos²x
+1 + cotg²x = 1/sin²x`
+          }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
@@ -2936,22 +2433,14 @@ function FormulaSheet() {
         children: [
           /* @__PURE__ */ jsxDEV("div", {
             style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
-            children: "Dvojnasobny uhel"
+            children: "Dvojnásobný úhel"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: [
-              "sin 2x = 2 sin x cos x",
-              `
-`,
-              "cos 2x = cos\\u00b2x - sin\\u00b2x",
-              `
-`,
-              "       = 1 - 2sin\\u00b2x",
-              `
-`,
-              "       = 2cos\\u00b2x - 1"
-            ]
-          }, undefined, true, undefined, this)
+            children: `sin 2x = 2 sin x cos x
+cos 2x = cos²x − sin²x
+       = 1 − 2sin²x
+       = 2cos²x − 1`
+          }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
@@ -2959,16 +2448,12 @@ function FormulaSheet() {
         children: [
           /* @__PURE__ */ jsxDEV("div", {
             style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
-            children: "Polovicni uhel"
+            children: "Poloviční úhel"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: [
-              "sin\\u00b2(x/2) = (1 - cos x)/2",
-              `
-`,
-              "cos\\u00b2(x/2) = (1 + cos x)/2"
-            ]
-          }, undefined, true, undefined, this)
+            children: `sin²(x/2) = (1 − cos x)/2
+cos²(x/2) = (1 + cos x)/2`
+          }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
@@ -2979,19 +2464,11 @@ function FormulaSheet() {
             children: "Sudost a lichost"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: [
-              "sin(-x) = -sin x  (licha)",
-              `
-`,
-              "cos(-x) = cos x   (suda)",
-              `
-`,
-              "tg(-x) = -tg x    (licha)",
-              `
-`,
-              "cotg(-x) = -cotg x (licha)"
-            ]
-          }, undefined, true, undefined, this)
+            children: `sin(−x) = −sin x  (lichá)
+cos(−x) = cos x   (sudá)
+tg(−x) = −tg x    (lichá)
+cotg(−x) = −cotg x (lichá)`
+          }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
@@ -3002,13 +2479,9 @@ function FormulaSheet() {
             children: "Periody"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV(MBlock, {
-            children: [
-              "sin(bx), cos(bx): T = 2\\u03c0/|b|",
-              `
-`,
-              "tg(bx), cotg(bx): T = \\u03c0/|b|"
-            ]
-          }, undefined, true, undefined, this)
+            children: `sin(bx), cos(bx): T = 2π/|b|
+tg(bx), cotg(bx): T = π/|b|`
+          }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
@@ -3016,7 +2489,7 @@ function FormulaSheet() {
         children: [
           /* @__PURE__ */ jsxDEV("div", {
             style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
-            children: "Transformace y = a\\u00b7f(b(x + c)) + d"
+            children: "Transformace y = a·f(b(x + c)) + d"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("div", {
             style: { display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 16px", fontFamily: "'JetBrains Mono', monospace", fontSize: "14px", color: "#fff" },
@@ -3026,21 +2499,21 @@ function FormulaSheet() {
                 children: "|a|"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("span", {
-                children: "amplituda (nasobeni y)"
+                children: "amplituda (násobení y)"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("span", {
                 style: { color: CYAN },
                 children: "a < 0"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("span", {
-                children: "zrcadleni pres osu x"
+                children: "zrcadlení přes osu x"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("span", {
                 style: { color: CYAN },
                 children: "b"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("span", {
-                children: "zmena periody (T = 2\\u03c0/b)"
+                children: "změna periody (T = 2π/b)"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("span", {
                 style: { color: CYAN },
@@ -3068,7 +2541,7 @@ function FormulaSheet() {
                 children: "d < 0"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("span", {
-                children: "posun DOLU o |d|"
+                children: "posun DOLŮ o |d|"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
@@ -3125,15 +2598,15 @@ function FormulaSheet() {
         children: [
           /* @__PURE__ */ jsxDEV("div", {
             style: { color: PINK, fontWeight: 700, fontSize: "18px", marginBottom: "12px" },
-            children: "Znaminko v kvadrantech"
+            children: "Znaménko v kvadrantech"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("div", {
             style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", maxWidth: "360px", margin: "0 auto" },
             children: [
-              ["II.", "sin +", "cos -", "tg -", "cotg -"],
+              ["II.", "sin +", "cos −", "tg −", "cotg −"],
               ["I.", "sin +", "cos +", "tg +", "cotg +"],
-              ["III.", "sin -", "cos -", "tg +", "cotg +"],
-              ["IV.", "sin -", "cos +", "tg -", "cotg -"]
+              ["III.", "sin −", "cos −", "tg +", "cotg +"],
+              ["IV.", "sin −", "cos +", "tg −", "cotg −"]
             ].map((q, i) => /* @__PURE__ */ jsxDEV("div", {
               style: { padding: "12px", borderRadius: "10px", background: "rgba(255,255,255,0.04)", textAlign: "center" },
               children: [
@@ -3201,7 +2674,7 @@ function App() {
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("p", {
                 style: { color: "rgba(255,255,255,0.4)", fontSize: "14px" },
-                children: "Kompletni priprava na pisemku — 20. 4. 2026"
+                children: "Kompletní příprava na písemku — 20. 4. 2026"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
