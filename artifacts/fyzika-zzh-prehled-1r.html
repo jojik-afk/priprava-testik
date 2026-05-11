@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fyzika 1. ročník — Přehled + ZZH</title>
+    <meta name="subject" content="Physics">
+    <meta name="topic" content="Zákon zachování hybnosti, Newtonovy zákony, Energie, Gravitace, Chyby měření">
+    <meta name="template" content="study">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/fyzika-zzh-prehled-1r.jsx
+import { useState, useCallback, useMemo } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function shuffleQuestions(questions) {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const shuffledOptions = shuffledIndices.map((i) => q.options[i]);
+    const newCorrect = q.correct.map((oldIdx) => shuffledIndices.indexOf(oldIdx));
+    return { ...q, options: shuffledOptions, correct: newCorrect };
+  });
+}
+function arrEqual(a, b) {
+  if (!a || !b)
+    return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+function QuizEngine({ questions, accentColor = "#06b6d4" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  const shuffledQuestions = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = shuffledQuestions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffledQuestions.filter((q2, i) => revealed[i] && arrEqual(answers[i] || [], q2.correct)).length;
+  const pct = Math.round(score / shuffledQuestions.length * 100);
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, shuffledQuestions]);
+  const handleSingleSelect = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [optionIdx] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, isRevealed]);
+  const toggleMulti = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setPendingMulti((prev) => prev.includes(optionIdx) ? prev.filter((i) => i !== optionIdx) : [...prev, optionIdx]);
+  }, [isRevealed]);
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [...pendingMulti] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, pendingMulti]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPendingMulti([]);
+    setShowResults(false);
+    setShuffleKey((k) => k + 1);
+  }, []);
+  if (showResults) {
+    const msg = pct >= 90 ? "Výborně! Zákon zachování hybnosti máš v malíčku!" : pct >= 70 ? "Dobře! Ještě trochu zopakuj a test zítra zvládneš." : pct >= 50 ? "Solidní základ, ale projdi si teorii znovu." : "Vrať se k teorii a příkladům — pak to zkus znovu!";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", ...glass, padding: "40px 48px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "52px", fontWeight: 800, lineHeight: 1.1 },
+            children: [
+              score,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+            children: [
+              pct,
+              " %"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.8)", fontSize: "17px", lineHeight: 1.5, marginBottom: "24px", maxWidth: "340px", margin: "0 auto 24px" },
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, background: ACCENT + "66", border: `1px solid ${ACCENT}` },
+            onClick: restart,
+            children: "Začít znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  const activeSet = isMulti ? isRevealed ? myAnswer : pendingMulti : myAnswer;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "680px", margin: "0 auto", padding: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" },
+        children: shuffledQuestions.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
+          return /* @__PURE__ */ jsxDEV("div", {
+            onClick: () => goTo(i),
+            title: `Otázka ${i + 1}`,
+            style: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: bg }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "24px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
+            children: [
+              "Otázka ",
+              idx + 1,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", flexDirection: "column", gap: "10px" },
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(255,255,255,0.12)";
+              let bg = "rgba(255,255,255,0.04)";
+              if (isRevealed) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(34,197,94,0.15)";
+                  border = "1px solid #22c55e";
+                } else if (activeSet.includes(i)) {
+                  bg = "rgba(239,68,68,0.15)";
+                  border = "1px solid #ef4444";
+                }
+              } else if (activeSet.includes(i)) {
+                bg = accentColor + "18";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("div", {
+                style: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px", background: bg, border },
+                onClick: () => isMulti ? toggleMulti(i) : handleSingleSelect(i),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: { fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" },
+                    children: activeSet.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRevealed && /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, marginTop: "12px", opacity: pendingMulti.length === 0 ? 0.4 : 1 },
+            onClick: submitMulti,
+            disabled: pendingMulti.length === 0,
+            children: "Potvrdit"
+          }, undefined, false, undefined, this),
+          isRevealed && /* @__PURE__ */ jsxDEV("div", {
+            style: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: `1px solid ${isCorrect ? "#22c55e" : "#ef4444"}`, background: "rgba(255,255,255,0.03)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+                children: isCorrect ? "Správně!" : "Špatně"
+              }, undefined, false, undefined, this),
+              !isCorrect && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+                children: [
+                  "Správná odpověď: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 },
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+                children: [
+                  "Tip: ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnStyle,
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          idx < shuffledQuestions.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: btnStyle,
+            onClick: () => goTo(idx + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, background: accentColor + "55", border: `1px solid ${accentColor}` },
+            onClick: () => setShowResults(true),
+            children: "Výsledky →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var ACCENT = "#06b6d4";
+var ACCENT2 = "#8b5cf6";
+var glass = {
+  background: "rgba(255,255,255,0.05)",
+  backdropFilter: "blur(20px)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "20px",
+  transition: "all 0.4s ease"
+};
+var btnStyle = {
+  padding: "10px 22px",
+  background: "rgba(255,255,255,0.07)",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: "10px",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: "15px",
+  transition: "all 0.4s ease"
+};
+var overviewTopics = [
+  {
+    title: "Newtonovy pohybové zákony",
+    icon: "\uD83C\uDFAF",
+    status: "upcoming",
+    summary: "Základ klasické mechaniky — tři zákony popisující vztah mezi silou a pohybem těles.",
+    bullets: [
+      {
+        head: "1. Newtonův zákon (zákon setrvačnosti)",
+        body: `Každé těleso setrvává v klidu nebo v rovnoměrném přímočarém pohybu, dokud není přinuceno vnějšími silami tento stav změnit.
+
+Klíč: pokud F_výsl = 0 → v = konst.`
+      },
+      {
+        head: "2. Newtonův zákon (zákon síly)",
+        body: `Zrychlení tělesa je přímo úměrné výsledné síle a nepřímo úměrné jeho hmotnosti.
+
+F = m·a
+
+Jednotka síly: 1 N = 1 kg·m·s⁻²
+Obecnější tvar: F = Δp/Δt (síla = rychlost změny hybnosti)`
+      },
+      {
+        head: "3. Newtonův zákon (akce a reakce)",
+        body: `Dvě tělesa na sebe působí stejně velkými silami opačného směru.
+
+F₁₂ = −F₂₁
+
+Síly jsou tzv. partnerské — působí na RŮZNÁ tělesa, takže se neruší!`
+      },
+      {
+        head: "Význam pro ZZH",
+        body: "Ze 3. Newtonova zákona přímo plyne zákon zachování hybnosti. Když na sebe dvě tělesa působí silami F a −F po stejnou dobu Δt, jejich impulsy F·Δt jsou opačné, a tedy i změny hybnosti Δp jsou opačné — celková hybnost soustavy se nemění."
+      }
+    ]
+  },
+  {
+    title: "Dynamické fyzikální veličiny + ZZE",
+    icon: "⚡",
+    status: "upcoming",
+    summary: "Mechanická práce, výkon, kinetická a potenciální energie. Zákon zachování mechanické energie.",
+    bullets: [
+      {
+        head: "Mechanická práce W",
+        body: `W = F · s · cos α
+
+F = velikost síly, s = dráha, α = úhel mezi silou a směrem pohybu.
+
+Jednotka: 1 J = 1 N·m
+
+Práce je skalární veličina. Pokud F⊥s (α = 90°) → W = 0.`
+      },
+      {
+        head: "Výkon P",
+        body: `P = W / t = F · v   (při konstantní rychlosti)
+
+Jednotka: 1 W = 1 J/s
+
+Účinnost: η = W_uži / W_celk = P_uži / P_příkon`
+      },
+      {
+        head: "Kinetická energie E_k",
+        body: `E_k = ½ · m · v²
+
+Energie pohybu tělesa. Závisí kvadraticky na rychlosti (2× rychlost → 4× energie!).
+
+Vztah s prací: W = ΔE_k = ½m·v₂² − ½m·v₁²`
+      },
+      {
+        head: "Potenciální tíhová energie E_p",
+        body: `E_p = m · g · h
+
+h = výška nad zvolenou nulovou hladinou.
+
+Při pádu: W = ΔE_p, energie se mění v kinetickou.`
+      },
+      {
+        head: "Zákon zachování mechanické energie (ZZE)",
+        body: `V izolované soustavě (jen tíhová a pružnostní síla) platí:
+
+E_k + E_p = konst.
+
+½mv₁² + mgh₁ = ½mv₂² + mgh₂
+
+Volný pád: max h → max E_p, v = 0;  dopad → max E_k, h = 0.`
+      }
+    ]
+  },
+  {
+    title: "Newtonův gravitační zákon",
+    icon: "\uD83C\uDF0D",
+    status: "upcoming",
+    summary: "Dvě hmotná tělesa se vzájemně přitahují silou úměrnou součinu jejich hmotností a nepřímo úměrnou druhé mocnině jejich vzdálenosti.",
+    bullets: [
+      {
+        head: "Newtonův gravitační zákon",
+        body: `F_g = G · (m₁ · m₂) / r²
+
+G = 6,67·10⁻¹¹ N·m²·kg⁻²  (gravitační konstanta)
+r = vzdálenost středů těles
+
+Gravitační síla má vždy přitažlivý charakter.`
+      },
+      {
+        head: "Intenzita gravitačního pole K",
+        body: `K = F_g / m = G · M / r²
+
+Jednotka: N·kg⁻¹ = m·s⁻²
+
+Pro pole Země v daném místě je K = a_g (gravitační zrychlení).`
+      },
+      {
+        head: "Tíhová síla F_G a tíhové zrychlení g",
+        body: `F_G = m · g
+
+g = a_g − ω²·R·cos²φ  (skutečné tíhové zrychlení, díky rotaci Země)
+
+Pro výpočty: g ≈ 9,81 m·s⁻²  (na povrchu Země)
+Tíha tělesa = síla, kterou těleso působí na podložku.`
+      },
+      {
+        head: "Pohyb v gravitačním poli",
+        body: `Volný pád: a = g, v = g·t, h = ½g·t²
+Vrh svislý vzhůru, vodorovný, šikmý — kombinace pohybů.
+
+Kruhový pohyb družic: F_g = F_d (dostředivá síla)
+G·M·m/r² = m·v²/r  →  v = √(GM/r)`
+      }
+    ]
+  },
+  {
+    title: "Chyby měření",
+    icon: "\uD83D\uDCCF",
+    status: "upcoming",
+    summary: "Žádné měření není přesné. Učíme se odhadnout, jak velká je chyba a jak se propaguje při výpočtech.",
+    bullets: [
+      {
+        head: "Absolutní chyba Δx",
+        body: `Δx = |x_naměřené − x_skutečné|
+
+Má stejnou jednotku jako měřená veličina. Udává, o kolik se měření odchyluje od skutečné hodnoty.
+
+Výsledek se zapisuje: x = (x̄ ± Δx) [jednotka]`
+      },
+      {
+        head: "Relativní chyba δx",
+        body: `δx = Δx / x̄
+
+Bezrozměrná (často v %). Lépe vypovídá o přesnosti měření:
+
+Δm = 1 g u dárkového balíčku (m̄ = 200 g) → δm = 0,5 %
+Δm = 1 g u prstýnku (m̄ = 5 g) → δm = 20 %`
+      },
+      {
+        head: "Chyba SOUČINU",
+        body: `Pro y = a · b:
+
+δy = δa + δb
+
+Relativní chyby se SČÍTAJÍ.
+
+Příklad: S = a·b, δa = 2 %, δb = 3 %  →  δS = 5 %`
+      },
+      {
+        head: "Chyba PODÍLU",
+        body: `Pro y = a / b:
+
+δy = δa + δb
+
+Relativní chyby se opět SČÍTAJÍ (i u podílu!).
+
+Příklad: ρ = m/V, δm = 1 %, δV = 4 %  →  δρ = 5 %`
+      },
+      {
+        head: "Praktický postup",
+        body: `1) Změř a urči absolutní chybu každé veličiny.
+2) Spočítej relativní chyby všech vstupů.
+3) Sečti relativní chyby (součin/podíl) nebo aplikuj specifické pravidlo (mocnina: δ(aⁿ) = n·δa).
+4) Z výsledné relativní chyby spočítej absolutní chybu výsledku: Δy = δy · ȳ.
+5) Zapiš: y = (ȳ ± Δy) [jednotka].`
+      }
+    ]
+  },
+  {
+    title: "Zákon zachování hybnosti",
+    icon: "\uD83D\uDCA5",
+    status: "current",
+    summary: "AKTUÁLNÍ TÉMA — zítra test! Celková hybnost izolované soustavy těles se zachovává. Detailní příprava v záložkách Teorie, Příklady, Kvíz, Kartičky a Vzorce.",
+    bullets: [
+      {
+        head: "Definice hybnosti",
+        body: `p = m · v  (vektor)
+
+Hybnost je míra pohybového stavu tělesa. Jednotka: kg·m·s⁻¹
+Směr hybnosti je shodný se směrem rychlosti.`
+      },
+      {
+        head: "Zákon zachování hybnosti",
+        body: `Celková hybnost izolované soustavy těles se zachovává.
+
+Pro dvě tělesa: m₁v₁ + m₂v₂ = m₁w₁ + m₂w₂
+
+Izolovaná soustava = na tělesa působí pouze vzájemné síly, žádné vnější.`
+      },
+      {
+        head: "Typické situace",
+        body: `• Výstřel (puška + střela): m_s·v_s = −m_p·v_p
+• Srážka spojených těles (vagóny): (m₁+m₂)·w
+• Výbuch/rozdělení tělesa
+• Raketový pohon — odhazování paliva
+• Pohyb v 2D — řešíme x a y zvlášť`
+      },
+      {
+        head: "Pokračování →",
+        body: `Pro detailní přípravu na zítřejší test přejdi na záložky:
+• \uD83D\uDCD6 Teorie — odvození a vysvětlení
+• \uD83D\uDD22 Příklady — 9 řešených úloh
+• \uD83E\uDDE0 Kvíz — testové otázky
+• \uD83C\uDCCF Kartičky — rychlé opakování
+• \uD83D\uDCD0 Vzorce — souhrn`
+      }
+    ]
+  }
+];
+var theoryData = [
+  {
+    title: "Hybnost a impuls síly",
+    icon: "\uD83C\uDFAF",
+    content: [
+      { subtitle: "Co je hybnost?", text: `Hybnost p je fyzikální veličina popisující pohybový stav tělesa. Závisí na hmotnosti a rychlosti:
+
+p = m · v
+
+Jedná se o VEKTOR — má směr shodný se směrem rychlosti. Jednotka: kg·m·s⁻¹.
+
+Těžké pomalu pohybující se těleso může mít stejnou hybnost jako lehké, ale rychlé.` },
+      { subtitle: "Změna hybnosti", text: `Pokud na těleso po dobu Δt působí síla F, mění se jeho hybnost. Z 2. Newtonova zákona plyne:
+
+Δp = F · Δt
+
+Tento součin F·Δt se nazývá IMPULS SÍLY. Říká nám, že stejnou změnu hybnosti můžeme dosáhnout buď velkou silou krátce, nebo malou silou dlouho.
+
+Proto airbag funguje — prodlouží dobu brzdění a tím sníží působící sílu.` },
+      { subtitle: "Příklad — střela v hlavni", text: `Na střelu v hlavni pušky působí čtyři síly:
+• Gravitační síla F_g (kolmo dolů)
+• Tlaková síla hlavně F_h (kolmo nahoru)
+• Třecí síla F_t (mezi nábojem a hlavní)
+• Vystřelovací síla F_p (urychluje střelu)
+
+Ve vodorovném směru je F_p mnohem větší než ostatní, takže je můžeme zanedbat.
+
+Pro změnu hybnosti střely: Δp_s = F_p · Δt` }
+    ]
+  },
+  {
+    title: "Odvození ZZH ze 3. Newtonova zákona",
+    icon: "\uD83D\uDD04",
+    content: [
+      { subtitle: "Vzájemné působení", text: `Když puška urychluje střelu silou F_p, působí střela na pušku partnerskou silou F_s = −F_p (3. Newtonův zákon).
+
+Obě síly působí po stejnou dobu Δt. Změny hybnosti:
+
+Δp_s = F_p · Δt    (střela)
+Δp_p = F_s · Δt = −F_p · Δt    (puška)
+
+Tedy: Δp_s = −Δp_p` },
+      { subtitle: "Celková hybnost", text: `Celková změna hybnosti soustavy puška + střela:
+
+Δp = Δp_s + Δp_p = Δp_s − Δp_s = 0
+
+Celková hybnost se NEZMĚNILA, i když na sebe tělesa působila silami a získala rychlost.
+
+Společné těžiště soustavy puška + střela se po výstřelu vůbec nepohne!` },
+      { subtitle: "Zobecnění — ZZH", text: `Tento výsledek platí pro libovolnou soustavu, kde působí pouze vzájemné síly mezi tělesy:
+
+Pokud při libovolném fyzikálním ději nepůsobí na soustavu vnější síly, celková hybnost soustavy se nezmění.
+
+Zákon zachování hybnosti je jeden ze základních zákonů fyziky. Plyne přímo ze 3. Newtonova zákona.` }
+    ]
+  },
+  {
+    title: "Izolovaná soustava — kdy ZZH platí?",
+    icon: "\uD83D\uDEE1️",
+    content: [
+      { subtitle: "Definice izolované soustavy", text: `Izolovanou soustavu tvoří tělesa, na která působí pouze vzájemné síly a nepůsobí na ně vnější síly.
+
+Zákon zachování hybnosti: Celková hybnost izolované soustavy těles se zachovává.
+
+Dokonale izolovanou soustavu bychom hledali těžko — gravitace působí téměř všude.` },
+      { subtitle: "ZZH lze použít i u neizolovaných soustav, pokud…", text: `1) Předměty na sebe působí jen velmi KRÁTKOU dobu a vzájemně působící síly jsou MNOHEM VĚTŠÍ než vnější síly.
+   (Vnější síly se projeví až za delší dobu, protože impuls F·Δt je úměrný času.)
+
+2) Vnější síly působí v JINÉM SMĚRU, než který zkoumáme.
+   (Např. tíhová síla je svislá — pro děje ve vodorovném směru ji nemusíme uvažovat.)` },
+      { subtitle: "Příklady použití ZZH", text: `• Srážka kulečníkových koulí — ve vodorovném směru (gravitace působí svisle a stůl ji vyrovnává)
+• Vzájemné odstrčení dvou lidí — na ledě (zanedbáme tření) nebo v kosmu (beztížný stav)
+• Astronaut a kosmická loď na oběžné dráze — vždy izolovaná soustava (vzájemné síly velmi krátce a velmi velké)
+• Výstřel z pušky — krátký děj, F_p ≫ F_g a F_h` }
+    ]
+  },
+  {
+    title: "Aplikace ZZH",
+    icon: "\uD83D\uDCA5",
+    content: [
+      { subtitle: "Zpětný ráz zbraně", text: `Před výstřelem: p = 0 (vše stojí)
+Po výstřelu: m_s·v_s + m_p·v_p = 0
+
+v_p = −(m_s · v_s) / m_p
+
+Znaménko mínus → puška jede na opačnou stranu než střela.
+
+Velikost zpětného rázu závisí na:
+• hmotnosti střely (větší kulka → větší ráz)
+• úsťové rychlosti (rychlejší střela → větší ráz)
+• hmotnosti pušky (těžší zbraň → menší rychlost zpětného rázu)` },
+      { subtitle: "Srážka spojených těles (dokonale nepružná)", text: `Dvě tělesa se po srážce SPOJÍ a pohybují se SPOLEČNĚ:
+
+m₁v₁ + m₂v₂ = (m₁ + m₂) · w
+
+w = (m₁v₁ + m₂v₂) / (m₁ + m₂)
+
+Příklad: vagóny, které se spojí; akční hrdina skákající na vozík.
+
+POZOR na znaménka! Když tělesa jedou proti sobě, jedna rychlost je záporná.` },
+      { subtitle: "Výbuch / rozdělení tělesa", text: `Jedno těleso se rozpadne na dvě části:
+
+(m₁ + m₂) · v = m₁·w₁ + m₂·w₂
+
+Pokud původní těleso STÁLO (v = 0):
+m₁·w₁ = −m₂·w₂  → části letí opačnými směry.
+
+Příklad — exploze střely, raketový pohon, odraz člověka z lodi.` },
+      { subtitle: "Raketový pohon", text: `Raketa o hmotnosti M_l odhodí spálené palivo o hmotnosti m_p rychlostí v_p (proti směru jízdy → záporná) a tím zrychlí z v₁ na v₂.
+
+ZZH: M_l · v₁ = m_p · v_p + M_l · v₂
+(zanedbáváme změnu hmotnosti rakety v průběhu)
+
+m_p = (M_l · v₁ − M_l · v₂) / v_p
+
+Čím rychleji proudí palivo, tím méně paliva potřebujeme na stejné zrychlení.` },
+      { subtitle: "2D srážky — sledujeme x a y zvlášť", text: `Pokud se tělesa po srážce rozjedou v různých směrech, rozložíme hybnost do složek osy x a y a ZZH aplikujeme NEZÁVISLE v každém směru.
+
+m_s·v_s,x = m_k·v_k,x   (rovnice pro osu x)
+m_s·v_s,y = m_k·v_k,y   (rovnice pro osu y)
+
+Výslednou rychlost spočítáme z Pythagorovy věty:
+v_k = √(v_k,x² + v_k,y²)
+Směr: tg α = v_k,y / v_k,x` },
+      { subtitle: "Hlavní výhoda ZZH", text: `Nemusíme znát detaily průběhu srážky — síly, čas, deformaci.
+
+Stačí znát stav před a po, a hybnost se musí rovnat. ZZH je proto extrémně silný nástroj pro analýzu složitých dějů (havárie, srážky, výbuchy).
+
+Proto policisté používají ZZH k rekonstrukci nehod ze stop pneumatik!` }
+    ]
+  }
+];
+var problems = [
+  {
+    title: "Zpětný ráz pušky",
+    difficulty: "easy",
+    topic: "ZZH — výstřel",
+    statement: "Střela o hmotnosti 10 g je vystřelena z pušky o hmotnosti 4 kg rychlostí 800 m/s. Vypočti zpětnou rychlost pušky.",
+    checkAnswer: { value: -2, tolerance: 0.1, unit: "m/s" },
+    solution: {
+      given: `m_s = 10 g = 0,01 kg
+m_p = 4 kg
+v_s = 800 m/s
+v_p = ?`,
+      formula: `ZZH:  m_s·v_s + m_p·v_p = m_s·w_s + m_p·w_p
+Před výstřelem všechno stojí → v_s = 0, v_p = 0 (před)
+Po výstřelu jde střela rychlostí w_s a puška w_p:
+0 = m_s·w_s + m_p·w_p   →   w_p = −(m_s·w_s) / m_p`,
+      steps: [
+        "0 = m_s·w_s + m_p·w_p",
+        "m_p·w_p = −m_s·w_s",
+        "w_p = −(m_s·w_s) / m_p",
+        "w_p = −(0,01 · 800) / 4",
+        "w_p = −8 / 4 = −2 m/s"
+      ],
+      result: `w_p = −2 m/s
+Znaménko mínus znamená, že se puška pohybuje na opačnou stranu než střela. Puška získá kvůli zpětnému rázu rychlost 2 m/s.`
+    }
+  },
+  {
+    title: "Akční hrdina skáče na vozík",
+    difficulty: "easy",
+    topic: "ZZH — nepružná srážka",
+    statement: "Akční hrdina (hmotnost 80 kg) skočí při honičce rychlostí 6 m/s (vodorovně) na stojící nezabržděný vozík o hmotnosti 150 kg. Urči, jakou rychlostí se vozík s hrdinou rozjede.",
+    checkAnswer: { value: 2.09, tolerance: 0.05, unit: "m/s" },
+    solution: {
+      given: `m₁ = 80 kg, v₁ = 6 m/s
+m₂ = 150 kg, v₂ = 0 m/s
+w = ?  (hrdina i vozík mají stejnou rychlost po dopadu)`,
+      formula: `ZZH:  m₁·v₁ + m₂·v₂ = (m₁ + m₂)·w
+w = (m₁·v₁ + m₂·v₂) / (m₁ + m₂)`,
+      steps: [
+        "m₁·v₁ + m₂·v₂ = (m₁ + m₂)·w",
+        "Vozík stojí: v₂ = 0",
+        "m₁·v₁ = (m₁ + m₂)·w",
+        "w = m₁·v₁ / (m₁ + m₂)",
+        "w = (80 · 6) / (80 + 150)",
+        "w = 480 / 230 ≈ 2,09 m/s"
+      ],
+      result: `w ≈ 2,1 m/s
+Vozík s hrdinou se rozjede rychlostí asi 2,1 m/s ve směru hrdinova skoku.`
+    }
+  },
+  {
+    title: "Síla na kulomet (Arnold)",
+    difficulty: "medium",
+    topic: "Impuls síly + ZZH",
+    statement: "Vypočti, jakou sílu má Arnold Schwarzenegger v pravé ruce, když v ní udržel kulomet, který vypálil za 1 s dvacet nábojů o hmotnosti 30 g rychlostí 800 m/s.",
+    checkAnswer: { value: 480, tolerance: 5, unit: "N" },
+    solution: {
+      given: `n = 20 ran
+m_k = 0,03 kg (hmotnost jednoho náboje)
+v_k = 800 m/s
+Δt = 1 s
+F = ?`,
+      formula: `Při výstřelu získá kulomet hybnost o velikosti všech střel, ale v opačném směru. Síla střelce musí tuto hybnost vyrušit:
+
+2. Newtonův zákon:  Δp = F · Δt  →  F = Δp / Δt
+Celková změna hybnosti za 1 s:  Δp = n · m_k · v_k`,
+      steps: [
+        "Δp = n · m_k · v_k",
+        "Δp = 20 · 0,03 · 800",
+        "Δp = 480 kg·m/s",
+        "F = Δp / Δt = 480 / 1",
+        "F = 480 N"
+      ],
+      result: `F = 480 N
+Arnold musí kulomet držet silou 480 N (≈ 48 kg závaží).`
+    }
+  },
+  {
+    title: "Srážka vagónů — stejný směr",
+    difficulty: "easy",
+    topic: "ZZH — nepružná srážka",
+    statement: "Vagón o hmotnosti 4 t jede po vodorovných kolejích rychlostí 0,5 m/s a narazí na vagón o hmotnosti 2 t, který jede týmž směrem rychlostí 0,2 m/s. Při nárazu se oba vagóny spojí a dále se pohybují společně. Urči rychlost po srážce.",
+    checkAnswer: { value: 0.4, tolerance: 0.02, unit: "m/s" },
+    solution: {
+      given: `m₁ = 4 t = 4000 kg, v₁ = 0,5 m/s
+m₂ = 2 t = 2000 kg, v₂ = 0,2 m/s
+(oba jedou stejným směrem → stejné znaménko)
+w = ?`,
+      formula: `ZZH:  m₁·v₁ + m₂·v₂ = m₁·w₁ + m₂·w₂
+Vagóny se spojí:  w₁ = w₂ = w
+→  m₁·v₁ + m₂·v₂ = (m₁ + m₂)·w
+w = (m₁·v₁ + m₂·v₂) / (m₁ + m₂)`,
+      steps: [
+        "w = (m₁·v₁ + m₂·v₂) / (m₁ + m₂)",
+        "w = (4000·0,5 + 2000·0,2) / (4000 + 2000)",
+        "w = (2000 + 400) / 6000",
+        "w = 2400 / 6000",
+        "w = 0,4 m/s"
+      ],
+      result: `w = 0,4 m/s
+Oba spojené vagóny se po srážce pohybují rychlostí 0,4 m/s (ve stejném směru, jakým jely před srážkou).`
+    }
+  },
+  {
+    title: "Srážka vagónů — proti sobě",
+    difficulty: "medium",
+    topic: "ZZH — znaménka rychlostí",
+    statement: "Vagón o hmotnosti 4 t jede po vodorovných kolejích rychlostí 0,5 m/s a narazí na vagón o hmotnosti 2 t, který jede proti němu rychlostí 0,3 m/s. Při nárazu se oba vagóny spojí. Urči rychlost po srážce.",
+    checkAnswer: { value: 0.23, tolerance: 0.02, unit: "m/s" },
+    solution: {
+      given: `m₁ = 4 t = 4000 kg, v₁ = +0,5 m/s
+m₂ = 2 t = 2000 kg, v₂ = −0,3 m/s  (jede proti! → ZÁPORNÉ znaménko)
+w = ?`,
+      formula: `Jako kladný směr si zvolíme směr rychlosti v₁.
+ZZH:  m₁·v₁ + m₂·v₂ = (m₁ + m₂)·w
+w = (m₁·v₁ + m₂·v₂) / (m₁ + m₂)
+
+POZOR: opačný směr → záporná rychlost!`,
+      steps: [
+        "w = (m₁·v₁ + m₂·v₂) / (m₁ + m₂)",
+        "w = (4000·0,5 + 2000·(−0,3)) / (4000 + 2000)",
+        "w = (2000 − 600) / 6000",
+        "w = 1400 / 6000",
+        "w ≈ 0,23 m/s"
+      ],
+      result: `w ≈ 0,23 m/s
+Oba spojené vagóny se po srážce pohybují rychlostí 0,23 m/s ve směru POHYBU PRVNÍHO vagónu (kladné znaménko).
+
+Klíč: v ZZH se NIKDY nemění výchozí rovnice — znaménka patří do HODNOT rychlostí, ne do vzorce.`
+    }
+  },
+  {
+    title: "Výbuch střely",
+    difficulty: "medium",
+    topic: "ZZH — rozpad tělesa",
+    statement: "Střela pohybující se rychlostí 20 m/s vybuchla a roztrhla se na dvě části o hmotnostech 10 kg a 5 kg. Lehčí část měla rychlost 90 m/s a pohybovala se ve stejném směru jako původní střela. Urči rychlost těžší části.",
+    checkAnswer: { value: -15, tolerance: 1, unit: "m/s" },
+    solution: {
+      given: `v = 20 m/s (rychlost před výbuchem)
+m_l = 5 kg, w_l = 90 m/s
+m_t = 10 kg, w_t = ?`,
+      formula: `Při výbuchu působí na sebe jen části střely → platí ZZH.
+Před výbuchem: obě části letí pohromadě rychlostí v.
+
+ZZH:  (m_l + m_t)·v = m_l·w_l + m_t·w_t
+→  w_t = [(m_l + m_t)·v − m_l·w_l] / m_t`,
+      steps: [
+        "(m_l + m_t)·v = m_l·w_l + m_t·w_t",
+        "(5 + 10)·20 = 5·90 + 10·w_t",
+        "300 = 450 + 10·w_t",
+        "10·w_t = 300 − 450 = −150",
+        "w_t = −15 m/s"
+      ],
+      result: `w_t = −15 m/s
+Těžší část letí rychlostí 15 m/s v OPAČNÉM směru, než ve kterém letěla střela před výbuchem.
+
+Lehčí část výbuch urychlil dopředu, těžší část to ‚odpálilo' dozadu.`
+    }
+  },
+  {
+    title: "Kluk skáče z pramice — ve směru jízdy",
+    difficulty: "hard",
+    topic: "ZZH — odraz z pohyblivého tělesa",
+    statement: "Na pramici o hmotnosti 60 kg spolu plují kluk (75 kg) a dívka (50 kg). Pramice se pohybuje rychlostí 2 m/s. Kluk z ní skočí do vody rychlostí 6 m/s VE SMĚRU JÍZDY. Jakou rychlostí se po jeho skoku bude pohybovat dívka s lodí?",
+    checkAnswer: { value: -0.73, tolerance: 0.05, unit: "m/s" },
+    solution: {
+      given: `m_lod = 60 kg, m_kluk = 75 kg, m_divka = 50 kg
+m_dl = m_divka + m_lod = 110 kg (dívka + loď jako jedno těleso)
+v = 2 m/s (společná rychlost před skokem)
+w_k = +6 m/s (kluk skáče ve směru jízdy)
+w_dl = ?`,
+      formula: `ZZH:  (m_k + m_dl) · v = m_k·w_k + m_dl·w_dl
+→  w_dl = [(m_k + m_dl)·v − m_k·w_k] / m_dl`,
+      steps: [
+        "(m_k + m_dl)·v = m_k·w_k + m_dl·w_dl",
+        "(75 + 110)·2 = 75·6 + 110·w_dl",
+        "370 = 450 + 110·w_dl",
+        "110·w_dl = 370 − 450 = −80",
+        "w_dl ≈ −0,73 m/s"
+      ],
+      result: `w_dl ≈ −0,73 m/s
+Loď s dívkou se po odraze začne pohybovat OPAČNÝM směrem (oproti původní jízdě) rychlostí 0,73 m/s.
+
+Kluk se odrazil tak silně dopředu, že loď ‚vykopl' dozadu.`
+    }
+  },
+  {
+    title: "Kluk skáče z pramice — proti směru jízdy",
+    difficulty: "hard",
+    topic: "ZZH — odraz s opačnými znaménky",
+    statement: "Stejná situace jako předchozí: pramice (60 kg) s klukem (75 kg) a dívkou (50 kg) plave rychlostí 2 m/s. Tentokrát kluk skočí PROTI směru jízdy rychlostí 6 m/s. Jakou rychlostí se bude pohybovat dívka s lodí?",
+    checkAnswer: { value: 7.45, tolerance: 0.1, unit: "m/s" },
+    solution: {
+      given: `m_k = 75 kg, m_dl = 110 kg, v = 2 m/s
+w_k = −6 m/s (proti směru jízdy → ZÁPORNÉ)
+w_dl = ?`,
+      formula: `ZZH:  (m_k + m_dl)·v = m_k·w_k + m_dl·w_dl
+→  w_dl = [(m_k + m_dl)·v − m_k·w_k] / m_dl`,
+      steps: [
+        "(75 + 110)·2 = 75·(−6) + 110·w_dl",
+        "370 = −450 + 110·w_dl",
+        "110·w_dl = 370 + 450 = 820",
+        "w_dl ≈ 7,45 m/s"
+      ],
+      result: `w_dl ≈ 7,45 m/s
+Kluk se odrazil DOZADU → loď s dívkou se prudce urychlí DOPŘEDU.
+
+To je princip přímé akce-reakce: do čeho zatlačíš (nebo se odrazíš), to vystřelí opačným směrem.`
+    }
+  },
+  {
+    title: "Raketový pohon",
+    difficulty: "hard",
+    topic: "ZZH — odhazování paliva",
+    statement: "O kolik kg své váhy přijde kosmická loď o hmotnosti 10 t, když zvýší svou rychlost z 7 km/s na 8 km/s? Spálené palivo opouští trysky rychlostí 15 km/s (proti směru jízdy). Změnu hmotnosti rakety v průběhu zrychlování zanedbej.",
+    checkAnswer: { value: 667, tolerance: 10, unit: "kg" },
+    solution: {
+      given: `M_l = 10 t = 10 000 kg
+v₁ = 7 km/s = 7 000 m/s
+v₂ = 8 km/s = 8 000 m/s
+v_p = −15 km/s = −15 000 m/s (palivo letí PROTI raketě)
+m_p = ?`,
+      formula: `Hybnost před = hybnost po (raketa + palivo)
+M_l · v₁ = m_p · v_p + M_l · v₂
+→  m_p = (M_l·v₁ − M_l·v₂) / v_p`,
+      steps: [
+        "M_l · v₁ = m_p · v_p + M_l · v₂",
+        "10 000·7 000 = m_p·(−15 000) + 10 000·8 000",
+        "70 000 000 = −15 000·m_p + 80 000 000",
+        "15 000·m_p = 80 000 000 − 70 000 000 = 10 000 000",
+        "m_p = 10 000 000 / 15 000 ≈ 667 kg"
+      ],
+      result: `m_p ≈ 667 kg
+Kosmická loď při zrychlování o 1 km/s spotřebuje (odhodí) 667 kg paliva.
+
+Kdybychom změnu hmotnosti během zrychlování NEzanedbávali, raketa by zrychlila ještě více (stejná síla na menší hmotnost = větší zrychlení).`
+    }
+  },
+  {
+    title: "Srážka v 2D — kulka a kámen",
+    difficulty: "hard",
+    topic: "ZZH ve dvou rozměrech",
+    statement: "Kámen o hmotnosti 0,1 kg leží na hladkém ledu. Střela o hmotnosti 2,5 g letící vodorovně rychlostí 400 m/s narazí na kámen a odrazí se KOLMO ke svému původnímu směru rychlostí 300 m/s. Vypočti velikost rychlosti kamene po nárazu a úhel se směrem, ze kterého přiletěla střela.",
+    checkAnswer: { value: 12.5, tolerance: 0.5, unit: "m/s" },
+    solution: {
+      given: `m_k = 0,1 kg, m_s = 2,5 g = 0,0025 kg
+v_s1 = 400 m/s (ve směru x — před srážkou)
+v_s2 = 300 m/s (ve směru −y — po srážce, odraz kolmo)
+v_k = ?,  α = ?`,
+      formula: `Pohyb ve 2D → ZZH zvlášť pro osu x a y.
+
+Osa x: m_s·v_s1 = m_k·v_kx  →  v_kx = m_s·v_s1 / m_k
+Osa y: 0 = m_k·v_ky + m_s·(−v_s2)  →  v_ky = m_s·v_s2 / m_k
+
+Výslednice: v_k = √(v_kx² + v_ky²),  tg α = v_ky / v_kx`,
+      steps: [
+        "v_kx = m_s·v_s1 / m_k = 0,0025·400 / 0,1 = 10 m/s",
+        "v_ky = m_s·v_s2 / m_k = 0,0025·300 / 0,1 = 7,5 m/s",
+        "",
+        "VÝSLEDNICE (Pythagoras):",
+        "v_k = √(10² + 7,5²) = √(100 + 56,25)",
+        "v_k = √156,25 = 12,5 m/s",
+        "",
+        "ÚHEL:",
+        "tg α = 7,5 / 10 = 0,75",
+        "α = arctg(0,75) ≈ 36°52' ≈ 37°"
+      ],
+      result: `v_k ≈ 12,5 m/s,  α ≈ 37°
+Kámen se po srážce pohybuje rychlostí 12,5 m/s pod úhlem ~37° od původního směru letu střely.`
+    }
+  }
+];
+var quizQuestions = [
+  {
+    question: "Jaká je definice hybnosti tělesa?",
+    type: "single",
+    options: [
+      "p = m · v",
+      "p = m · a",
+      "p = ½ · m · v²",
+      "p = F · t"
+    ],
+    correct: [0],
+    explanation: "Hybnost p je součin hmotnosti a rychlosti tělesa: p = m·v. Jedná se o vektor — má směr shodný se směrem rychlosti. Jednotka: kg·m·s⁻¹.",
+    tip: "F·t je IMPULS síly (rovná se změně hybnosti), ne hybnost samotná!"
+  },
+  {
+    question: "Jak zní zákon zachování hybnosti?",
+    type: "single",
+    options: [
+      "Celková hybnost izolované soustavy těles se zachovává",
+      "Celková energie izolované soustavy se zachovává",
+      "Síla působící na těleso je úměrná zrychlení",
+      "Akce vyvolá vždy stejně velkou reakci"
+    ],
+    correct: [0],
+    explanation: "ZZH: celková hybnost izolované soustavy těles se zachovává. Izolovaná soustava = na tělesa působí pouze vzájemné síly, žádné vnější."
+  },
+  {
+    question: "Co tvoří izolovanou soustavu?",
+    type: "single",
+    options: [
+      "Tělesa, na která působí pouze vzájemné síly a nepůsobí na ně vnější síly",
+      "Tělesa uzavřená v termoizolované nádobě",
+      "Tělesa, mezi kterými nepůsobí žádné síly",
+      "Tělesa, která se vůči sobě nepohybují"
+    ],
+    correct: [0],
+    explanation: "Izolovanou soustavu tvoří tělesa, na která působí pouze vzájemné síly (např. během srážky, výstřelu, výbuchu) a vnější síly se neuvažují nebo jsou zanedbatelné."
+  },
+  {
+    question: "Z kterého Newtonova zákona přímo plyne zákon zachování hybnosti?",
+    type: "single",
+    options: [
+      "Z 3. zákona (akce a reakce)",
+      "Z 1. zákona (zákon setrvačnosti)",
+      "Z 2. zákona (zákon síly F = m·a)",
+      "Z gravitačního zákona"
+    ],
+    correct: [0],
+    explanation: "Ze 3. Newtonova zákona: dvě tělesa na sebe působí silami opačného směru F a −F po stejnou dobu Δt. Impulsy F·Δt jsou opačné, tedy i změny hybnosti Δp_1 = −Δp_2. Celková hybnost se nemění.",
+    tip: "Také 2. zákon (Δp = F·Δt) je tu důležitý — propojuje sílu se změnou hybnosti."
+  },
+  {
+    question: "Co je impuls síly a jak souvisí se změnou hybnosti?",
+    type: "single",
+    options: [
+      "Impuls síly F·Δt se rovná změně hybnosti: F·Δt = Δp",
+      "Impuls síly je hybnost: F·t = p",
+      "Impuls síly se rovná kinetické energii",
+      "Impuls síly je síla působící v jednom okamžiku"
+    ],
+    correct: [0],
+    explanation: "Impuls síly = F·Δt. Z 2. Newtonova zákona platí F·Δt = Δp. Stejnou změnu hybnosti můžeme získat velkou silou krátce nebo malou silou dlouho.",
+    tip: "Proto airbag zachraňuje životy — prodlouží Δt → sníží F"
+  },
+  {
+    question: "Střela o hmotnosti 10 g je vystřelena rychlostí 800 m/s z pušky o hmotnosti 4 kg. Jaká bude zpětná rychlost pušky?",
+    type: "single",
+    options: [
+      "2 m/s",
+      "8 m/s",
+      "0,2 m/s",
+      "20 m/s"
+    ],
+    correct: [0],
+    explanation: "ZZH: 0 = m_s·w_s + m_p·w_p → w_p = −(m_s·w_s)/m_p = −(0,01·800)/4 = −2 m/s. Velikost zpětného rázu pušky je 2 m/s (znaménko mínus = opačný směr).",
+    tip: "Lehčí střela rychlejší vs. těžší puška pomalejší — hybnosti se vždy musí vyrovnat"
+  },
+  {
+    question: "Vagón 4 t jede rychlostí 0,5 m/s a narazí na vagón 2 t jedoucí týmž směrem rychlostí 0,2 m/s. Po srážce se spojí. Jaká je jejich společná rychlost?",
+    type: "single",
+    options: [
+      "0,4 m/s",
+      "0,35 m/s",
+      "0,7 m/s",
+      "0,1 m/s"
+    ],
+    correct: [0],
+    explanation: "w = (m₁v₁ + m₂v₂)/(m₁+m₂) = (4000·0,5 + 2000·0,2)/(6000) = (2000+400)/6000 = 0,4 m/s.",
+    tip: "Spojené vagóny = NEPRUŽNÁ srážka, pravá strana ZZH má (m₁+m₂)·w"
+  },
+  {
+    question: "Kdy si u srážky dvou těles přidáme záporné znaménko k jedné z rychlostí?",
+    type: "single",
+    options: [
+      "Když se tělesa pohybují proti sobě (opačnými směry)",
+      "Když má jedno z těles větší hmotnost",
+      "Vždy, jedná-li se o pomalejší těleso",
+      "Když se po srážce spojí dohromady"
+    ],
+    correct: [0],
+    explanation: "Hybnost je vektor! Pokud se tělesa pohybují proti sobě, mají rychlosti opačné směry → jedna z hodnot v ZZH je záporná. Znaménka patří do HODNOT rychlostí, ne do vzorce.",
+    tip: "Vždy si zvol kladný směr a od něj odvozuj znaménka"
+  },
+  {
+    question: "Co se stane s celkovou hybností soustavy puška + střela při výstřelu, pokud puška není opřená?",
+    type: "single",
+    options: [
+      "Zachovává se (je nulová před i po)",
+      "Vzroste, protože střela letí pryč",
+      "Klesne, protože se část energie přemění na teplo",
+      "Změní se na hybnost rovnou hybnosti střely"
+    ],
+    correct: [0],
+    explanation: "Před výstřelem je celková hybnost 0 (vše stojí). Po výstřelu má střela hybnost +p a puška hybnost −p (zpětný ráz). Součet je opět 0. Společné těžiště soustavy se ani po výstřelu nepohne!"
+  },
+  {
+    question: "Akční hrdina (80 kg) skočí rychlostí 6 m/s na stojící vozík (150 kg). Jakou rychlostí se vozík s hrdinou rozjede?",
+    type: "single",
+    options: [
+      "≈ 2,1 m/s",
+      "≈ 6 m/s",
+      "≈ 3,2 m/s",
+      "≈ 1,1 m/s"
+    ],
+    correct: [0],
+    explanation: "Nepružná srážka (spojí se): w = m₁v₁ / (m₁+m₂) = 80·6 / 230 = 480/230 ≈ 2,09 m/s.",
+    tip: "Po srážce stejná rychlost obou těles → pravá strana je (m₁+m₂)·w"
+  },
+  {
+    question: "Střela (20 m/s) vybuchne na dvě části — 5 kg s rychlostí 90 m/s vpřed a 10 kg. Jakou rychlostí letí těžší část?",
+    type: "single",
+    options: [
+      "−15 m/s (proti původnímu směru, rychlost 15 m/s)",
+      "+15 m/s (stejným směrem)",
+      "0 m/s (zůstane stát)",
+      "−45 m/s"
+    ],
+    correct: [0],
+    explanation: "(5+10)·20 = 5·90 + 10·w_t → 300 = 450 + 10·w_t → w_t = −15 m/s. Mínus znamená opačný směr.",
+    tip: "Energie výbuchu vrazila lehčí část dopředu a těžší dozadu vůči původní rychlosti"
+  },
+  {
+    question: "Která z následujících situací je nejlépe popsatelná zákonem zachování hybnosti?",
+    type: "multi",
+    options: [
+      "Srážka kulečníkových koulí (ve vodorovném směru)",
+      "Výstřel z pušky",
+      "Volný pád jablka ze stromu",
+      "Výbuch granátu na otevřeném prostranství"
+    ],
+    correct: [0, 1, 3],
+    explanation: "Srážka kulí, výstřel i výbuch — všechno krátké děje s malými vnějšími silami → izolovaná soustava → ZZH platí. Volný pád ale řídí GRAVITAČNÍ síla (vnější), takže to není izolovaná soustava — řešíme jinak (kinematika)."
+  },
+  {
+    question: "Jakou jednotku má hybnost v SI?",
+    type: "single",
+    options: [
+      "kg · m · s⁻¹",
+      "kg · m · s⁻²",
+      "N · s²",
+      "kg · m² · s⁻¹"
+    ],
+    correct: [0],
+    explanation: "p = m · v → kg · (m·s⁻¹) = kg·m·s⁻¹. Lze také psát jako N·s (protože N = kg·m·s⁻²).",
+    tip: "Pokud ti při zkoušení vypadne jednotka, odvoď ji ze vzorce p=mv"
+  },
+  {
+    question: "Kdy můžeme ZZH použít i u soustavy, která NENÍ dokonale izolovaná?",
+    type: "multi",
+    options: [
+      "Když děj probíhá velmi krátkou dobu a vnitřní síly jsou mnohem větší než vnější",
+      "Když vnější síly působí v jiném směru, než který studujeme",
+      "Když je soustava vzduchotěsná",
+      "Když mají tělesa stejnou hmotnost"
+    ],
+    correct: [0, 1],
+    explanation: "U krátkých dějů (výstřel, srážka) impuls vnějších sil F·Δt je zanedbatelný oproti vzájemnému působení. Také pokud vnější síly působí v jiném směru (např. gravitace svisle), ve vodorovném směru je můžeme ignorovat.",
+    tip: "Proto u srážky vagónů řešíme ZZH jen ve vodorovném směru — gravitaci nese kolejnice"
+  },
+  {
+    question: "Raketa má hmotnost 10 t a zrychluje z 7 km/s na 8 km/s odhazováním paliva rychlostí 15 km/s (proti směru). Kolik paliva spotřebuje?",
+    type: "single",
+    options: [
+      "≈ 667 kg",
+      "≈ 6 670 kg",
+      "≈ 67 kg",
+      "≈ 1 500 kg"
+    ],
+    correct: [0],
+    explanation: "ZZH: M_l·v₁ = m_p·v_p + M_l·v₂. Dosaď znaménka (palivo letí PROTI, tedy −15000). m_p = (10000·7000 − 10000·8000) / (−15000) = (−10⁷)/(−15000) ≈ 667 kg.",
+    tip: "Důležité je dát palivu ZÁPORNOU rychlost (pohyb opačným směrem)"
+  },
+  {
+    question: "Jak řešíme srážku těles ve dvou rozměrech (např. kulka odražená kolmo od kamene)?",
+    type: "single",
+    options: [
+      "Aplikujeme ZZH zvlášť pro osu x a osu y",
+      "Jen průměrujeme rychlosti přes obě osy",
+      "Použijeme energetickou bilanci místo hybnostní",
+      "Sečteme všechny rychlosti dohromady"
+    ],
+    correct: [0],
+    explanation: "Hybnost je vektor → ZZH platí v každé složce nezávisle: m_s·v_sx = m_k·v_kx a m_s·v_sy + m_k·v_ky = 0 (např. pro kolmou srážku). Výslednou rychlost spočítáme Pythagorovou větou.",
+    tip: "v_k = √(v_kx² + v_ky²),  tg α = v_ky / v_kx"
+  },
+  {
+    question: "Co znamená v kontextu ZZH zápis Δp_1 = −Δp_2?",
+    type: "single",
+    options: [
+      "Když jedno těleso změní hybnost o určitou hodnotu, druhé o stejnou hodnotu v opačném směru",
+      "Hybnosti obou těles se rovnají",
+      "První těleso se zastaví, druhé se rozjede stejnou rychlostí",
+      "Obě tělesa mají stejně velkou ale zápornou hybnost"
+    ],
+    correct: [0],
+    explanation: "Δp_1 = −Δp_2 je důsledek 3. Newtonova zákona: vzájemné síly jsou opačné, působí stejnou dobu → změny hybnosti jsou opačně velké. Součet je nulový → celková hybnost soustavy se zachovává."
+  }
+];
+var flashcards = [
+  { front: "Definice hybnosti p", back: `p = m · v
+
+Vektor — má směr rychlosti.
+Jednotka: kg · m · s⁻¹` },
+  { front: "Zákon zachování hybnosti", back: `Celková hybnost IZOLOVANÉ soustavy těles se zachovává.
+
+Pro 2 tělesa:
+m₁v₁ + m₂v₂ = m₁w₁ + m₂w₂` },
+  { front: "Izolovaná soustava", back: `Tělesa, na která působí POUZE VZÁJEMNÉ síly a nepůsobí vnější síly.
+
+Nebo prakticky: krátký děj kde vnitřní síly ≫ vnější,
+nebo děj v směru kolmém na vnější síly.` },
+  { front: "Impuls síly", back: `F · Δt = Δp
+
+Změna hybnosti = impuls síly.
+
+Plyne z 2. Newtonova zákona.` },
+  { front: "Zpětný ráz zbraně", back: `Před výstřelem: p = 0
+Po výstřelu: m_s · v_s + m_p · v_p = 0
+
+v_p = −(m_s · v_s) / m_p
+
+Mínus = opačný směr.` },
+  { front: "Nepružná srážka (spojí se)", back: `(m₁ + m₂) · w = m₁v₁ + m₂v₂
+
+w = (m₁v₁ + m₂v₂) / (m₁ + m₂)
+
+Klasika: vagóny, hrdina+vozík.` },
+  { front: "Znaménka rychlostí", back: `Hybnost je VEKTOR.
+Proti sobě → opačná znaménka.
+
+Vždy zvol kladný směr a poté přiřaď znaménka VŠEM hodnotám rychlostí.` },
+  { front: "Rozpad / výbuch tělesa", back: `(m₁ + m₂) · v = m₁ · w₁ + m₂ · w₂
+
+Pokud původně stálo (v = 0):
+m₁·w₁ = −m₂·w₂
+části letí opačnými směry` },
+  { front: "Raketový pohon", back: `M_l · v₁ = m_p · v_p + M_l · v₂
+
+Palivo letí v OPAČNÉM směru → v_p záporné.
+
+m_p = (M_l·v₁ − M_l·v₂) / v_p` },
+  { front: "2D srážka", back: `ZZH platí v každé ose ZVLÁŠŤ:
+
+x: m_s·v_sx = m_k·v_kx
+y: m_s·v_sy + m_k·v_ky = 0
+
+v_k = √(v_kx² + v_ky²)
+tg α = v_ky / v_kx` },
+  { front: "Hlavní výhoda ZZH", back: `Nemusíme znát PRŮBĚH srážky — síly, čas, deformaci.
+
+Stačí stav PŘED a stav PO.
+
+Proto se používá při vyšetřování havárií!` },
+  { front: "Jednotka hybnosti", back: `kg · m · s⁻¹ = N · s
+
+p = m·v → [kg]·[m/s] = kg·m/s
+
+Může se zapsat i jako N·s, protože N = kg·m/s².` }
+];
+var formulaGroups = [
+  {
+    title: "Hybnost a impuls",
+    icon: "\uD83C\uDFAF",
+    formulas: [
+      { name: "Hybnost", formula: "p = m · v", unit: "[kg·m/s]", note: "Vektor — směr rychlosti" },
+      { name: "Změna hybnosti", formula: "Δp = m · Δv = m · (v₂ − v₁)", unit: "[kg·m/s]", note: "" },
+      { name: "Impuls síly", formula: "I = F · Δt = Δp", unit: "[N·s]", note: "Z 2. Newtonova zákona" }
+    ]
+  },
+  {
+    title: "ZZH — obecné tvary",
+    icon: "\uD83D\uDCA5",
+    formulas: [
+      { name: "ZZH pro 2 tělesa", formula: "m₁v₁ + m₂v₂ = m₁w₁ + m₂w₂", unit: "", note: "Před = Po" },
+      { name: "Nepružná srážka (spojí se)", formula: "m₁v₁ + m₂v₂ = (m₁ + m₂) · w", unit: "", note: "" },
+      { name: "Výstřel / dva původně v klidu", formula: "0 = m₁w₁ + m₂w₂", unit: "", note: "→ w₂ = −m₁w₁/m₂" },
+      { name: "Rozpad jednoho tělesa", formula: "(m₁ + m₂)·v = m₁w₁ + m₂w₂", unit: "", note: "Před výbuchem letěly pohromadě" }
+    ]
+  },
+  {
+    title: "ZZH ve 2D",
+    icon: "\uD83D\uDCD0",
+    formulas: [
+      { name: "Osa x", formula: "Σ pₓ (před) = Σ pₓ (po)", unit: "", note: "" },
+      { name: "Osa y", formula: "Σ p_y (před) = Σ p_y (po)", unit: "", note: "" },
+      { name: "Velikost rychlosti", formula: "v = √(vₓ² + v_y²)", unit: "[m/s]", note: "Pythagorova věta" },
+      { name: "Úhel", formula: "tg α = v_y / vₓ", unit: "", note: "" }
+    ]
+  },
+  {
+    title: "Newtonovy zákony (přípomínka)",
+    icon: "\uD83C\uDF93",
+    formulas: [
+      { name: "1. zákon (setrvačnost)", formula: "F_výsl = 0  →  v = konst.", unit: "", note: "" },
+      { name: "2. zákon (síla)", formula: "F = m · a = Δp / Δt", unit: "[N]", note: "1 N = 1 kg·m/s²" },
+      { name: "3. zákon (akce-reakce)", formula: "F₁₂ = −F₂₁", unit: "", note: "Z toho plyne ZZH!" }
+    ]
+  },
+  {
+    title: "Důležité konstanty",
+    icon: "\uD83D\uDD22",
+    formulas: [
+      { name: "Tíhové zrychlení", formula: "g ≈ 9,81 m/s²", unit: "", note: "Často zaokrouhleno na 10" },
+      { name: "Gravitační konstanta", formula: "G = 6,67 · 10⁻¹¹ N·m²/kg²", unit: "", note: "" }
+    ]
+  }
+];
+function OverviewCard({ topic, idx }) {
+  const [open, setOpen] = useState(topic.status === "current");
+  const statusBadge = {
+    current: { label: "\uD83D\uDD25 ZÍTRA TEST", color: "#ef4444", bg: "rgba(239,68,68,0.15)" },
+    upcoming: { label: "\uD83D\uDCCC K opakování", color: "#94a3b8", bg: "rgba(148,163,184,0.1)" },
+    done: { label: "✓ Hotovo", color: "#22c55e", bg: "rgba(34,197,94,0.12)" }
+  }[topic.status];
+  const isCurrent = topic.status === "current";
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { ...glass, padding: "20px", marginBottom: "16px", borderColor: isCurrent ? ACCENT2 : "rgba(255,255,255,0.1)", boxShadow: isCurrent ? `0 0 24px rgba(139,92,246,0.18)` : "none" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", alignItems: "center", gap: "12px", flex: 1, minWidth: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { fontSize: "26px" },
+                children: topic.icon
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "inline-block", padding: "2px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: 700, color: statusBadge.color, background: statusBadge.bg, border: `1px solid ${statusBadge.color}55`, marginBottom: "6px", letterSpacing: "0.4px" },
+                    children: statusBadge.label
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#fff", fontSize: "18px", fontWeight: 700, fontFamily: "'Audiowide', cursive", letterSpacing: "0.3px" },
+                    children: [
+                      idx + 1,
+                      ". ",
+                      topic.title
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, padding: "6px 14px", fontSize: "13px", background: open ? ACCENT + "22" : "rgba(255,255,255,0.07)", border: `1px solid ${open ? ACCENT : "rgba(255,255,255,0.15)"}` },
+            onClick: () => setOpen((o) => !o),
+            children: open ? "▲ Sbalit" : "▼ Rozbalit"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.65)", fontSize: "14px", lineHeight: 1.6, marginTop: "12px", marginLeft: "38px" },
+        children: topic.summary
+      }, undefined, false, undefined, this),
+      open && /* @__PURE__ */ jsxDEV("div", {
+        style: { marginTop: "20px", marginLeft: "38px" },
+        children: topic.bullets.map((b, i) => /* @__PURE__ */ jsxDEV("div", {
+          style: { marginBottom: "18px", paddingLeft: "14px", borderLeft: `3px solid ${isCurrent ? ACCENT2 : ACCENT}` },
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { color: isCurrent ? ACCENT2 : ACCENT, fontWeight: 700, fontSize: "14px", marginBottom: "6px" },
+              children: b.head
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { color: "rgba(255,255,255,0.8)", fontSize: "14px", lineHeight: 1.7, whiteSpace: "pre-line" },
+              children: b.body
+            }, undefined, false, undefined, this)
+          ]
+        }, i, true, undefined, this))
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function WorkedProblem({ prob, idx }) {
+  const [open, setOpen] = useState(false);
+  const [userAnswer, setUserAnswer] = useState("");
+  const [answerChecked, setAnswerChecked] = useState(false);
+  const diffBadge = {
+    easy: { label: "Easy ✨", color: "#22c55e" },
+    medium: { label: "Medium ⚡", color: "#f59e0b" },
+    hard: { label: "Hard \uD83D\uDD25", color: "#ef4444" }
+  }[prob.difficulty];
+  const numAnswer = parseFloat(userAnswer.replace(",", "."));
+  const isCorrect = prob.checkAnswer && !isNaN(numAnswer) && Math.abs(numAnswer - prob.checkAnswer.value) <= prob.checkAnswer.tolerance;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { ...glass, padding: "20px", marginBottom: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { marginBottom: "12px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { display: "inline-block", padding: "2px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, color: diffBadge.color, border: `1px solid ${diffBadge.color}` },
+                children: diffBadge.label
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { display: "inline-block", padding: "2px 10px", borderRadius: "20px", fontSize: "12px", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.15)" },
+                children: [
+                  "Příklad ",
+                  idx + 1
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { fontSize: "11px", color: ACCENT, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" },
+            children: prob.topic
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "17px", fontWeight: 600 },
+            children: prob.title
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.82)", fontSize: "15px", lineHeight: 1.7, whiteSpace: "pre-line", marginBottom: "16px" },
+        children: prob.statement
+      }, undefined, false, undefined, this),
+      prob.checkAnswer && /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", alignItems: "center", marginBottom: "12px", flexWrap: "wrap" },
+        children: [
+          /* @__PURE__ */ jsxDEV("input", {
+            type: "text",
+            placeholder: `Tvá odpověď [${prob.checkAnswer.unit}]`,
+            value: userAnswer,
+            onChange: (e) => {
+              setUserAnswer(e.target.value);
+              setAnswerChecked(false);
+            },
+            style: { padding: "8px 14px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "8px", color: "#fff", fontSize: "15px", width: "180px" }
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnStyle, padding: "8px 16px" },
+            onClick: () => setAnswerChecked(true),
+            children: "Zkontrolovat"
+          }, undefined, false, undefined, this),
+          answerChecked && !isNaN(numAnswer) && /* @__PURE__ */ jsxDEV("span", {
+            style: { color: isCorrect ? "#22c55e" : "#ef4444", fontWeight: 600 },
+            children: isCorrect ? "✓ Správně!" : `✗ Správná hodnota: ${prob.checkAnswer.value} ${prob.checkAnswer.unit}`
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("button", {
+        style: { ...btnStyle, background: open ? ACCENT + "22" : "rgba(255,255,255,0.07)", border: `1px solid ${open ? ACCENT : "rgba(255,255,255,0.15)"}` },
+        onClick: () => setOpen((o) => !o),
+        children: open ? "▲ Skrýt řešení" : "▼ Zobrazit řešení"
+      }, undefined, false, undefined, this),
+      open && /* @__PURE__ */ jsxDEV("div", {
+        style: { marginTop: "16px", padding: "18px", background: "rgba(6,182,212,0.05)", borderRadius: "14px", border: "1px solid rgba(6,182,212,0.2)" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { marginBottom: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: ACCENT, fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: "6px" },
+                children: "Zadáno"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.75)", fontSize: "14px", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.7, whiteSpace: "pre-line" },
+                children: prob.solution.given
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { marginBottom: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: ACCENT, fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: "6px" },
+                children: "Vzorec / postup"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#a5f3fc", fontSize: "14px", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.7, whiteSpace: "pre-line" },
+                children: prob.solution.formula
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { marginBottom: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: ACCENT, fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: "6px" },
+                children: "Výpočet"
+              }, undefined, false, undefined, this),
+              prob.solution.steps.map((s, i) => /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.82)", fontSize: "14px", fontFamily: "'JetBrains Mono', monospace", marginBottom: "3px", paddingLeft: s.startsWith("VÝSLEDNICE") || s.startsWith("ÚHEL") ? "0" : "16px", fontWeight: s.startsWith("VÝSLEDNICE") || s.startsWith("ÚHEL") ? 600 : 400 },
+                children: s || " "
+              }, i, false, undefined, this))
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { padding: "12px 16px", background: "rgba(34,197,94,0.1)", borderRadius: "10px", border: "1px solid rgba(34,197,94,0.3)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#22c55e", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: "4px" },
+                children: "Výsledek"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontSize: "15px", fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", whiteSpace: "pre-line" },
+                children: prob.solution.result
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function FlashcardsPanel({ cards }) {
+  const [idx, setIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const goTo = (i) => {
+    setIdx(i);
+    setFlipped(false);
+  };
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "600px", margin: "0 auto", padding: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "24px" },
+        children: cards.map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+          onClick: () => goTo(i),
+          style: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: i === idx ? ACCENT : "rgba(255,255,255,0.2)" }
+        }, i, false, undefined, this))
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { perspective: "1000px", height: "280px", cursor: "pointer", marginBottom: "24px" },
+        onClick: () => setFlipped((f) => !f),
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: {
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            transition: "transform 0.4s ease",
+            transformStyle: "preserve-3d",
+            transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)"
+          },
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { position: "absolute", width: "100%", height: "100%", backfaceVisibility: "hidden", ...glass, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", padding: "24px", boxSizing: "border-box" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: ACCENT, fontSize: "12px", textTransform: "uppercase", marginBottom: "10px" },
+                  children: [
+                    "Kartička ",
+                    idx + 1,
+                    " / ",
+                    cards.length
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "#fff", fontSize: "22px", fontWeight: 700, textAlign: "center" },
+                  children: cards[idx].front
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginTop: "20px" },
+                  children: "klikni pro otočení →"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { position: "absolute", width: "100%", height: "100%", backfaceVisibility: "hidden", transform: "rotateY(180deg)", ...glass, background: "rgba(6,182,212,0.07)", border: "1px solid rgba(6,182,212,0.25)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", boxSizing: "border-box" },
+              children: /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.92)", fontSize: "15px", fontFamily: "'JetBrains Mono', monospace", textAlign: "center", lineHeight: 1.75, whiteSpace: "pre-line" },
+                children: cards[idx].back
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnStyle,
+            onClick: () => goTo((idx - 1 + cards.length) % cards.length),
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnStyle,
+            onClick: () => goTo((idx + 1) % cards.length),
+            children: "Další →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function App() {
+  const [tab, setTab] = useState(0);
+  const [theoryTab, setTheoryTab] = useState(0);
+  const tabs = ["\uD83D\uDCCB Přehled 1.r.", "\uD83D\uDCD6 Teorie ZZH", "\uD83D\uDD22 Příklady", "\uD83E\uDDE0 Kvíz", "\uD83C\uDCCF Kartičky", "\uD83D\uDCD0 Vzorce"];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { minHeight: "100vh", background: "#0a0a1a", fontFamily: "'Exo 2', sans-serif", color: "#fff", position: "relative", overflowX: "hidden" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", bottom: 0, left: 0, right: 0, height: "55%", backgroundImage: "linear-gradient(rgba(6,182,212,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.12) 1px, transparent 1px)", backgroundSize: "55px 55px", transform: "perspective(350px) rotateX(60deg)", transformOrigin: "bottom" }
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", top: "12%", left: "50%", transform: "translateX(-50%)", width: "350px", height: "350px", borderRadius: "50%", background: "radial-gradient(circle, rgba(139,92,246,0.28) 0%, rgba(6,182,212,0.08) 40%, transparent 70%)", filter: "blur(50px)", animation: "sunpulse 9s ease-in-out infinite" }
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(6,182,212,0.012) 2px, rgba(6,182,212,0.012) 4px)" }
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Audiowide&family=JetBrains+Mono:wght@400;500&display=swap');
+        @keyframes sunpulse { 0%,100%{opacity:.6;transform:translateX(-50%) scale(1)} 50%{opacity:1;transform:translateX(-50%) scale(1.12)} }
+        * { box-sizing: border-box; }
+        button:hover { opacity: 0.82; }
+        input:focus { outline: 1px solid #06b6d4; }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.3); border-radius: 3px; }
+      `
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "relative", zIndex: 1, maxWidth: "920px", margin: "0 auto", padding: "24px 16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { textAlign: "center", marginBottom: "32px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { fontFamily: "'Audiowide', cursive", fontSize: "clamp(20px, 5vw, 34px)", fontWeight: 700, background: "linear-gradient(135deg, #06b6d4, #8b5cf6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "8px" },
+                children: "FYZIKA 1. ROČNÍK"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.65)", fontSize: "15px", marginBottom: "4px" },
+                children: "Přehled výstupů · Zákon zachování hybnosti"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.4)", fontSize: "13px" },
+                children: "Příprava na týdenní opakovací testy"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "28px" },
+            children: tabs.map((t, i) => /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => setTab(i),
+              style: { ...btnStyle, background: tab === i ? ACCENT + "33" : "rgba(255,255,255,0.05)", border: `1px solid ${tab === i ? ACCENT : "rgba(255,255,255,0.1)"}`, color: tab === i ? ACCENT : "rgba(255,255,255,0.65)", fontWeight: tab === i ? 600 : 400 },
+              children: t
+            }, i, false, undefined, this))
+          }, undefined, false, undefined, this),
+          tab === 0 && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { ...glass, padding: "20px", marginBottom: "20px", background: "rgba(139,92,246,0.07)", border: "1px solid rgba(139,92,246,0.25)" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: ACCENT2, fontSize: "13px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" },
+                    children: "\uD83D\uDCCC Úkol od paní profesorky"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.6 },
+                    children: 'Vytvořit přehled základních výstupů z fyziky 1. ročníku. Každý týden test z jednoho z následujících témat. Aktuálně procvičované téma má rozbalený detail; ostatní si rozbal kliknutím na „▼ Rozbalit".'
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              overviewTopics.map((t, i) => /* @__PURE__ */ jsxDEV(OverviewCard, {
+                topic: t,
+                idx: i
+              }, i, false, undefined, this)),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { ...glass, padding: "16px", marginTop: "16px", textAlign: "center", background: "rgba(6,182,212,0.05)", border: "1px solid rgba(6,182,212,0.2)" },
+                children: /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.7)", fontSize: "14px" },
+                  children: [
+                    "\uD83D\uDCA1 Detailní příprava na zítřejší test ze ZZH najdeš v záložkách ",
+                    /* @__PURE__ */ jsxDEV("span", {
+                      style: { color: ACCENT, fontWeight: 600 },
+                      children: "Teorie ZZH · Příklady · Kvíz · Kartičky · Vzorce"
+                    }, undefined, false, undefined, this),
+                    "."
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          tab === 1 && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "20px" },
+                children: theoryData.map((t, i) => /* @__PURE__ */ jsxDEV("button", {
+                  onClick: () => setTheoryTab(i),
+                  style: { ...btnStyle, padding: "8px 14px", fontSize: "13px", background: theoryTab === i ? ACCENT + "33" : "rgba(255,255,255,0.04)", border: `1px solid ${theoryTab === i ? ACCENT : "rgba(255,255,255,0.1)"}`, color: theoryTab === i ? ACCENT : "rgba(255,255,255,0.65)" },
+                  children: [
+                    t.icon,
+                    " ",
+                    t.title
+                  ]
+                }, i, true, undefined, this))
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { ...glass, padding: "28px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { fontSize: "28px" },
+                        children: theoryData[theoryTab].icon
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { fontFamily: "'Audiowide', cursive", fontSize: "18px", color: ACCENT },
+                        children: theoryData[theoryTab].title
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  theoryData[theoryTab].content.map((c, i) => /* @__PURE__ */ jsxDEV("div", {
+                    style: { marginBottom: "24px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { color: ACCENT, fontWeight: 700, fontSize: "15px", marginBottom: "8px", paddingLeft: "12px", borderLeft: `3px solid ${ACCENT}` },
+                        children: c.subtitle
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { color: "rgba(255,255,255,0.82)", fontSize: "15px", lineHeight: 1.78, whiteSpace: "pre-line" },
+                        children: c.text
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, i, true, undefined, this))
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          tab === 2 && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.55)", fontSize: "13px", marginBottom: "20px", textAlign: "center" },
+                children: "10 řešených úloh z hodin pí. profesorky. Spočítej nejdřív sám/sama, pak rozklikni řešení."
+              }, undefined, false, undefined, this),
+              problems.map((p, i) => /* @__PURE__ */ jsxDEV(WorkedProblem, {
+                prob: p,
+                idx: i
+              }, i, false, undefined, this))
+            ]
+          }, undefined, true, undefined, this),
+          tab === 3 && /* @__PURE__ */ jsxDEV(QuizEngine, {
+            questions: quizQuestions,
+            accentColor: ACCENT
+          }, undefined, false, undefined, this),
+          tab === 4 && /* @__PURE__ */ jsxDEV(FlashcardsPanel, {
+            cards: flashcards
+          }, undefined, false, undefined, this),
+          tab === 5 && /* @__PURE__ */ jsxDEV("div", {
+            children: formulaGroups.map((g, gi) => /* @__PURE__ */ jsxDEV("div", {
+              style: { ...glass, padding: "20px", marginBottom: "16px" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("span", {
+                      style: { fontSize: "20px" },
+                      children: g.icon
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { fontFamily: "'Audiowide', cursive", fontSize: "16px", color: ACCENT },
+                      children: g.title
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { display: "flex", flexDirection: "column", gap: "10px" },
+                  children: g.formulas.map((f, fi) => /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "grid", gridTemplateColumns: "1fr auto", gap: "12px", alignItems: "start", padding: "12px 14px", background: "rgba(255,255,255,0.03)", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.06)" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("div", {
+                            style: { color: "rgba(255,255,255,0.45)", fontSize: "12px", marginBottom: "4px" },
+                            children: f.name
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("div", {
+                            style: { fontFamily: "'JetBrains Mono', monospace", fontSize: "17px", color: "#a5f3fc", fontWeight: 500 },
+                            children: f.formula
+                          }, undefined, false, undefined, this),
+                          f.note && /* @__PURE__ */ jsxDEV("div", {
+                            style: { color: "rgba(255,255,255,0.38)", fontSize: "12px", marginTop: "4px" },
+                            children: f.note
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      f.unit && /* @__PURE__ */ jsxDEV("div", {
+                        style: { fontFamily: "'JetBrains Mono', monospace", fontSize: "13px", color: ACCENT, whiteSpace: "nowrap", paddingTop: "16px" },
+                        children: f.unit
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, fi, true, undefined, this))
+                }, undefined, false, undefined, this)
+              ]
+            }, gi, true, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
