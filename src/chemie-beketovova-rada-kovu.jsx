@@ -115,7 +115,7 @@ function QuizEngine({ questions, accentColor = "#8b5cf6" }) {
 
       <div style={QS.card}>
         <div style={QS.qNum}>Otázka {idx + 1} / {shuffledQuestions.length}</div>
-        <div style={QS.qText}>{q.question}</div>
+        <div style={QS.qText} dangerouslySetInnerHTML={{ __html: q.question }} />
 
         <div style={QS.optionsList}>
           {q.options.map((opt, i) => {

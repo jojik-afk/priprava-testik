@@ -162,7 +162,7 @@ function QuizEngine({ questions, accentColor = "#8b5cf6" }) {
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV("div", {
             style: QS.qText,
-            children: q.question
+            dangerouslySetInnerHTML: { __html: q.question }
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("div", {
             style: QS.optionsList,
