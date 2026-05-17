@@ -24,7 +24,7 @@
     <div id="root"></div>
     <script type="module">
 // src/geokurz-seminarni-prace-kvalita-zivota-domazlice.jsx
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { jsxDEV } from "react/jsx-dev-runtime";
 function shuffleArray(array) {
   const shuffled = [...array];
@@ -568,6 +568,11 @@ var domazliceData = [
   { label: "Památky", value: "Městská památková rezervace", detail: "Historické centrum, Chodsko" }
 ];
 function App() {
+  useEffect(() => {
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+    document.body.style.background = "#0a0a1a";
+  }, []);
   const [tab, setTab] = useState("osnova");
   const tabs = [
     { id: "osnova", label: "Osnova práce" },

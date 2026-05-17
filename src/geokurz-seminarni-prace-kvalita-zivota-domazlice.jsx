@@ -3,7 +3,7 @@
 // @topic Kvalita života, regionální geografie, Domažlice
 // @template practice
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 
 // ── Shuffle utilities (from quiz engine) ──
 function shuffleArray(array) {
@@ -398,6 +398,11 @@ const domazliceData = [
 
 // ── Main App ──
 export default function App() {
+  useEffect(() => {
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+    document.body.style.background = "#0a0a1a";
+  }, []);
   const [tab, setTab] = useState("osnova");
   const tabs = [
     { id: "osnova", label: "Osnova práce" },
