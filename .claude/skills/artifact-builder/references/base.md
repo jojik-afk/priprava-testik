@@ -65,6 +65,12 @@ Use the pre-built component in `assets/quiz-engine.jsx`. Read that file, copy th
 - `questions` — array (format below)
 - `accentColor` — hex string; pick the subject accent colour from the table above. Default is purple.
 
+**Built-in features:**
+- **Answer randomization** — options are shuffled on load so correct answer isn't always "A"
+- **Re-shuffle on restart** — when user clicks "Začít znovu", options are reshuffled for reusability
+- Single-select and multi-select question types
+- Dot navigation, feedback panel, results screen
+
 **Question object format:**
 ```js
 {

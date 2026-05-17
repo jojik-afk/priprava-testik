@@ -9,6 +9,12 @@
  *   accentColor — hex colour string; use the subject accent from base.md
  *                 Default: "#a855f7" (purple)
  *
+ * Features:
+ *   - Answer options are RANDOMIZED on load (correct answer won't always be "A")
+ *   - Options are RE-SHUFFLED when user clicks "Začít znovu" (quiz is reusable)
+ *   - Supports single-select and multi-select question types
+ *   - Dot navigation, feedback panel, results screen
+ *
  * Question object format:
  * {
  *   question:    "Text of the question",
@@ -39,7 +45,39 @@
  * ];
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
+
+// ── Shuffle utilities ──────────────────────────────────────────
+// Fisher-Yates shuffle algorithm
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// Shuffle options for each question and update correct indices accordingly
+function shuffleQuestions(questions) {
+  return questions.map(q => {
+    // Create array of indices and shuffle them
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+
+    // Reorder options according to shuffled indices
+    const shuffledOptions = shuffledIndices.map(i => q.options[i]);
+
+    // Map old correct indices to new positions
+    const newCorrect = q.correct.map(oldIdx => shuffledIndices.indexOf(oldIdx));
+
+    return {
+      ...q,
+      options: shuffledOptions,
+      correct: newCorrect
+    };
+  });
+}
 
 export default function QuizEngine({ questions, accentColor = "#a855f7" }) {
   const [idx, setIdx] = useState(0);
@@ -47,23 +85,29 @@ export default function QuizEngine({ questions, accentColor = "#a855f7" }) {
   const [revealed, setRevealed] = useState({});     // { questionIndex: true } means feedback is showing
   const [pendingMulti, setPendingMulti] = useState([]); // temp checkbox state for current multi-select before Submit
   const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);  // Increment to trigger re-shuffle
 
-  const q = questions[idx];
+  // Shuffle questions on mount and when shuffleKey changes (i.e., on restart)
+  const shuffledQuestions = useMemo(() => {
+    return shuffleQuestions(questions);
+  }, [questions, shuffleKey]);
+
+  const q = shuffledQuestions[idx];
   const isMulti = q.type === "multi";
   const isRevealed = !!revealed[idx];
   const myAnswer = answers[idx] || [];
   const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
 
   // ── Score (computed from all revealed answers) ────────────────
-  const score = questions.filter((q, i) => revealed[i] && arrEqual(answers[i] || [], q.correct)).length;
-  const pct = Math.round((score / questions.length) * 100);
+  const score = shuffledQuestions.filter((q, i) => revealed[i] && arrEqual(answers[i] || [], q.correct)).length;
+  const pct = Math.round((score / shuffledQuestions.length) * 100);
 
   // ── Navigation ─────────────────────────────────────────────────
   const goTo = useCallback((i) => {
     setIdx(i);
     // Restore pending checkboxes if navigating back to a multi-select that was already answered
-    setPendingMulti(questions[i].type === "multi" ? (answers[i] || []) : []);
-  }, [answers, questions]);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? (answers[i] || []) : []);
+  }, [answers, shuffledQuestions]);
 
   // ── Single-select: feedback triggers immediately on click ──────
   const handleSingleSelect = useCallback((optionIdx) => {
@@ -88,13 +132,14 @@ export default function QuizEngine({ questions, accentColor = "#a855f7" }) {
     setRevealed(prev => ({ ...prev, [idx]: true }));
   }, [idx, pendingMulti]);
 
-  // ── Restart ────────────────────────────────────────────────────
+  // ── Restart (reshuffles all options) ─────────────────────────
   const restart = useCallback(() => {
     setIdx(0);
     setAnswers({});
     setRevealed({});
     setPendingMulti([]);
     setShowResults(false);
+    setShuffleKey(k => k + 1); // Trigger new shuffle
   }, []);
 
   // ════════════════════════════════════════════════════════════════
@@ -102,15 +147,15 @@ export default function QuizEngine({ questions, accentColor = "#a855f7" }) {
   // ════════════════════════════════════════════════════════════════
   if (showResults) {
     const msg =
-      pct >= 90 ? "🎉 Výborně! Máš to perfektně zvládnuté!"
-      : pct >= 70 ? "👍 Dobře! Téměř máš vše zvládnuté."
-      : pct >= 50 ? "😐 Mohlo by to být lepší, ale jdeš správným směrem."
-      : "📚 Potřebuješ více přípravy. Nezávor — opakuj a bude to!";
+      pct >= 90 ? "Výborně! Máš to perfektně zvládnuté!"
+      : pct >= 70 ? "Dobře! Téměř máš vše zvládnuté."
+      : pct >= 50 ? "Mohlo by to být lepší, ale jdeš správným směrem."
+      : "Potřebuješ více přípravy. Opakuj a bude to!";
 
     return (
       <div style={S.resultsWrap}>
         <div style={S.resultsCard}>
-          <div style={S.resultsScore}>{score} / {questions.length}</div>
+          <div style={S.resultsScore}>{score} / {shuffledQuestions.length}</div>
           <div style={S.resultsPct}>{pct} %</div>
           <div style={S.resultsMsg}>{msg}</div>
           <button style={{ ...S.btn, background: accentColor + "66", border: `1px solid ${accentColor}` }} onClick={restart}>
@@ -133,10 +178,10 @@ export default function QuizEngine({ questions, accentColor = "#a855f7" }) {
 
       {/* ── Dot navigation bar (no legend — colour = meaning) ── */}
       <div style={S.dotBar}>
-        {questions.map((_, i) => {
+        {shuffledQuestions.map((_, i) => {
           let bg = "#4b5563"; // grey = unanswered
           if (i === idx) bg = accentColor; // current
-          else if (revealed[i]) bg = arrEqual(answers[i] || [], questions[i].correct) ? "#22c55e" : "#ef4444";
+          else if (revealed[i]) bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
           return (
             <div
               key={i}
@@ -150,7 +195,7 @@ export default function QuizEngine({ questions, accentColor = "#a855f7" }) {
 
       {/* ── Question card ── */}
       <div style={S.card}>
-        <div style={S.qNum}>Otázka {idx + 1} / {questions.length}</div>
+        <div style={S.qNum}>Otázka {idx + 1} / {shuffledQuestions.length}</div>
         <div style={S.qText}>{q.question}</div>
 
         {/* Options */}
@@ -193,14 +238,14 @@ export default function QuizEngine({ questions, accentColor = "#a855f7" }) {
         {/* ── Feedback panel ── */}
         {isRevealed && (
           <div style={{ ...S.feedback, borderColor: isCorrect ? "#22c55e" : "#ef4444" }}>
-            <div style={S.feedbackHeader}>{isCorrect ? "✅ Správně!" : "❌ Špatně"}</div>
+            <div style={S.feedbackHeader}>{isCorrect ? "Správně!" : "Špatně"}</div>
             {!isCorrect && (
               <div style={S.feedbackCorrect}>
                 Správná odpověď: {q.correct.map(i => q.options[i]).join(", ")}
               </div>
             )}
             <div style={S.feedbackExplanation}>{q.explanation}</div>
-            {q.tip && <div style={S.feedbackTip}>💡 {q.tip}</div>}
+            {q.tip && <div style={S.feedbackTip}>Tip: {q.tip}</div>}
           </div>
         )}
       </div>
@@ -208,7 +253,7 @@ export default function QuizEngine({ questions, accentColor = "#a855f7" }) {
       {/* ── Prev / Next navigation ── */}
       <div style={S.navRow}>
         <button style={S.btn} onClick={() => goTo(idx - 1)} disabled={idx === 0}>← Předchozí</button>
-        {idx < questions.length - 1
+        {idx < shuffledQuestions.length - 1
           ? <button style={S.btn} onClick={() => goTo(idx + 1)}>Další →</button>
           : <button style={{ ...S.btn, background: accentColor + "55", border: `1px solid ${accentColor}` }} onClick={() => setShowResults(true)}>Výsledky →</button>
         }
@@ -237,7 +282,7 @@ const S = {
   optionsList:     { display: "flex", flexDirection: "column", gap: "10px" },
   option:          { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px" },
   checkbox:        { fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" },
-  btn:             { marginTop: "12px", padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.3s ease" },
+  btn:             { marginTop: "12px", padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
   feedback:        { marginTop: "20px", padding: "16px", borderRadius: "14px", border: "1px solid", background: "rgba(255,255,255,0.03)" },
   feedbackHeader:  { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
   feedbackCorrect: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
