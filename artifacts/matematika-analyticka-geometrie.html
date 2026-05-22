@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytická geometrie — kompletní příprava na test</title>
+    <meta name="subject" content="Math">
+    <meta name="topic" content="Souřadnice, úsečka, vektory, přímky">
+    <meta name="template" content="mixed">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/matematika-analyticka-geometrie.jsx
+import { useState, useCallback, useMemo } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function shuffleQuestions(questions) {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const shuffledOptions = shuffledIndices.map((i) => q.options[i]);
+    const newCorrect = q.correct.map((oldIdx) => shuffledIndices.indexOf(oldIdx));
+    return { ...q, options: shuffledOptions, correct: newCorrect };
+  });
+}
+function arrEqual(a, b) {
+  if (!a || !b)
+    return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+function QuizEngine({ questions, accentColor = "#ec4899" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  const shuffledQuestions = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = shuffledQuestions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffledQuestions.filter((q2, i) => revealed[i] && arrEqual(answers[i] || [], q2.correct)).length;
+  const pct = Math.round(score / shuffledQuestions.length * 100);
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, shuffledQuestions]);
+  const handleSingleSelect = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [optionIdx] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, isRevealed]);
+  const toggleMulti = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setPendingMulti((prev) => prev.includes(optionIdx) ? prev.filter((i) => i !== optionIdx) : [...prev, optionIdx]);
+  }, [isRevealed]);
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [...pendingMulti] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, pendingMulti]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPendingMulti([]);
+    setShowResults(false);
+    setShuffleKey((k) => k + 1);
+  }, []);
+  if (showResults) {
+    const msg = pct >= 90 ? "Výborně! Máš to perfektně zvládnuté!" : pct >= 70 ? "Dobře! Téměř máš vše zvládnuté." : pct >= 50 ? "Mohlo by to být lepší, ale jdeš správným směrem." : "Potřebuješ více přípravy. Opakuj a bude to!";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", ...glass, padding: "40px 48px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "52px", fontWeight: 800 },
+            children: [
+              score,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+            children: [
+              pct,
+              " %"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.8)", fontSize: "17px", lineHeight: 1.5, marginBottom: "24px", maxWidth: "340px", margin: "0 auto 24px" },
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnS, background: accentColor + "66", border: `1px solid ${accentColor}` },
+            onClick: restart,
+            children: "Začít znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  const activeSet = isMulti ? isRevealed ? myAnswer : pendingMulti : myAnswer;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "680px", margin: "0 auto", padding: "16px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" },
+        children: shuffledQuestions.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
+          return /* @__PURE__ */ jsxDEV("div", {
+            onClick: () => goTo(i),
+            title: `Otázka ${i + 1}`,
+            style: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: bg }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "24px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
+            children: [
+              "Otázka ",
+              idx + 1,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", flexDirection: "column", gap: "10px" },
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(255,255,255,0.12)";
+              let bg = "rgba(255,255,255,0.04)";
+              if (isRevealed) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(34,197,94,0.15)";
+                  border = "1px solid #22c55e";
+                } else if (activeSet.includes(i)) {
+                  bg = "rgba(239,68,68,0.15)";
+                  border = "1px solid #ef4444";
+                }
+              } else if (activeSet.includes(i)) {
+                bg = accentColor + "18";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("div", {
+                style: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px", background: bg, border },
+                onClick: () => isMulti ? toggleMulti(i) : handleSingleSelect(i),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: { fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" },
+                    children: activeSet.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRevealed && /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnS, opacity: pendingMulti.length === 0 ? 0.4 : 1, marginTop: "12px" },
+            onClick: submitMulti,
+            disabled: pendingMulti.length === 0,
+            children: "Potvrdit"
+          }, undefined, false, undefined, this),
+          isRevealed && /* @__PURE__ */ jsxDEV("div", {
+            style: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: `1px solid ${isCorrect ? "#22c55e" : "#ef4444"}`, background: "rgba(255,255,255,0.03)" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+                children: isCorrect ? "Správně!" : "Špatně"
+              }, undefined, false, undefined, this),
+              !isCorrect && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+                children: [
+                  "Správná odpověď: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 },
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+                children: [
+                  "Tip: ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnS,
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          idx < shuffledQuestions.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: btnS,
+            onClick: () => goTo(idx + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnS, background: accentColor + "55", border: `1px solid ${accentColor}` },
+            onClick: () => setShowResults(true),
+            children: "Výsledky →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var glass = {
+  background: "rgba(255,255,255,0.05)",
+  backdropFilter: "blur(20px)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "20px",
+  transition: "all 0.4s ease"
+};
+var btnS = {
+  padding: "10px 22px",
+  background: "rgba(255,255,255,0.07)",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: "10px",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: "15px",
+  transition: "all 0.4s ease"
+};
+var PINK = "#ec4899";
+var CYAN = "#22d3ee";
+var YELLOW = "#fbbf24";
+var GREEN = "#34d399";
+var pS = { color: "rgba(255,255,255,0.82)", fontSize: "15px", lineHeight: 1.7, margin: "8px 0" };
+var TABS = [
+  { id: "theory", label: "Teorie" },
+  { id: "problems", label: "Příklady" },
+  { id: "grid", label: "Mřížka" },
+  { id: "quiz", label: "Kvíz" },
+  { id: "flashcards", label: "Kartičky" },
+  { id: "formulas", label: "Vzorce" }
+];
+function Collapsible({ title, children, defaultOpen = false, accent = PINK }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { ...glass, padding: "0", marginBottom: "12px", overflow: "hidden" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        onClick: () => setOpen(!open),
+        style: { padding: "16px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.03)" },
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: "#fff", fontSize: "16px", fontWeight: 600 },
+            children: title
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: accent, fontSize: "20px", transition: "transform 0.4s ease", transform: open ? "rotate(180deg)" : "rotate(0)" },
+            children: "▼"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      open && /* @__PURE__ */ jsxDEV("div", {
+        style: { padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.08)" },
+        children
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function MBlock({ children, color = CYAN }) {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { fontFamily: "'JetBrains Mono', monospace", color, fontSize: "14.5px", padding: "12px 16px", background: "rgba(34,211,238,0.06)", borderRadius: "10px", margin: "8px 0", lineHeight: 1.9, overflowX: "auto", whiteSpace: "pre-wrap", border: "1px solid rgba(255,255,255,0.06)" },
+    children
+  }, undefined, false, undefined, this);
+}
+var DIFF = {
+  easy: { label: "✨ Easy", bg: "rgba(34,197,94,0.2)", col: "#4ade80" },
+  medium: { label: "⚡ Medium", bg: "rgba(234,179,8,0.2)", col: "#fbbf24" },
+  hard: { label: "\uD83D\uDD25 Hard", bg: "rgba(239,68,68,0.2)", col: "#f87171" }
+};
+function SolvedProblem({ n, title, difficulty = "medium", given, formula, steps, result }) {
+  const [open, setOpen] = useState(false);
+  const d = DIFF[difficulty];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { ...glass, padding: "0", marginBottom: "14px", overflow: "hidden" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", flexWrap: "wrap", background: "rgba(255,255,255,0.03)" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: PINK, fontWeight: 700, fontSize: "14px" },
+                children: [
+                  n,
+                  "."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: "#fff", fontSize: "15.5px", fontWeight: 600 },
+                children: title
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { fontSize: "12px", padding: "2px 10px", borderRadius: "20px", background: d.bg, color: d.col },
+                children: d.label
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnS, fontSize: "13px", padding: "6px 16px", background: open ? PINK + "22" : "rgba(255,255,255,0.06)", border: open ? `1px solid ${PINK}` : "1px solid rgba(255,255,255,0.15)" },
+            onClick: () => setOpen(!open),
+            children: open ? "Skrýt řešení" : "Zobrazit řešení"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      open && /* @__PURE__ */ jsxDEV("div", {
+        style: { padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.08)" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { marginBottom: "10px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: GREEN, fontWeight: 700, fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.5px" },
+                children: "Zadáno"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { ...pS, margin: "4px 0 0" },
+                children: given
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { marginBottom: "10px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: CYAN, fontWeight: 700, fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.5px" },
+                children: "Vzorec / postup"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(MBlock, {
+                children: formula
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { marginBottom: "10px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: YELLOW, fontWeight: 700, fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.5px" },
+                children: "Krok za krokem"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(MBlock, {
+                color: YELLOW,
+                children: steps
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { padding: "12px 16px", borderRadius: "12px", background: "rgba(52,211,153,0.1)", border: `1px solid ${GREEN}` },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: GREEN, fontWeight: 700, fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.5px" },
+                children: "Výsledek"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "#fff", fontSize: "15.5px", fontWeight: 600, marginTop: "4px", fontFamily: "'JetBrains Mono', monospace" },
+                children: result
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var RANGE = 7;
+var SIZE = 460;
+var sc = SIZE / 2 / RANGE;
+var toX = (x) => SIZE / 2 + x * sc;
+var toY = (y) => SIZE / 2 - y * sc;
+function Arrow({ x1, y1, x2, y2, color, width = 3, dash }) {
+  const px1 = toX(x1), py1 = toY(y1), px2 = toX(x2), py2 = toY(y2);
+  const ang = Math.atan2(py2 - py1, px2 - px1);
+  const len = 11;
+  const a1 = ang - Math.PI / 7, a2 = ang + Math.PI / 7;
+  return /* @__PURE__ */ jsxDEV("g", {
+    children: [
+      /* @__PURE__ */ jsxDEV("line", {
+        x1: px1,
+        y1: py1,
+        x2: px2,
+        y2: py2,
+        stroke: color,
+        strokeWidth: width,
+        strokeLinecap: "round",
+        strokeDasharray: dash || "none"
+      }, undefined, false, undefined, this),
+      !dash && /* @__PURE__ */ jsxDEV("polygon", {
+        points: `${px2},${py2} ${px2 - len * Math.cos(a1)},${py2 - len * Math.sin(a1)} ${px2 - len * Math.cos(a2)},${py2 - len * Math.sin(a2)}`,
+        fill: color
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function GridSvg({ children }) {
+  const lines = [];
+  for (let i = -RANGE;i <= RANGE; i++) {
+    lines.push(/* @__PURE__ */ jsxDEV("line", {
+      x1: toX(i),
+      y1: toY(-RANGE),
+      x2: toX(i),
+      y2: toY(RANGE),
+      stroke: "rgba(255,255,255,0.07)",
+      strokeWidth: "1"
+    }, `v${i}`, false, undefined, this));
+    lines.push(/* @__PURE__ */ jsxDEV("line", {
+      x1: toX(-RANGE),
+      y1: toY(i),
+      x2: toX(RANGE),
+      y2: toY(i),
+      stroke: "rgba(255,255,255,0.07)",
+      strokeWidth: "1"
+    }, `h${i}`, false, undefined, this));
+  }
+  return /* @__PURE__ */ jsxDEV("svg", {
+    viewBox: `0 0 ${SIZE} ${SIZE}`,
+    style: { width: "100%", maxWidth: `${SIZE}px`, height: "auto", background: "rgba(0,0,0,0.35)", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.08)", display: "block", margin: "0 auto" },
+    children: [
+      lines,
+      /* @__PURE__ */ jsxDEV("line", {
+        x1: toX(-RANGE),
+        y1: toY(0),
+        x2: toX(RANGE),
+        y2: toY(0),
+        stroke: "rgba(255,255,255,0.3)",
+        strokeWidth: "1.5"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("line", {
+        x1: toX(0),
+        y1: toY(-RANGE),
+        x2: toX(0),
+        y2: toY(RANGE),
+        stroke: "rgba(255,255,255,0.3)",
+        strokeWidth: "1.5"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("text", {
+        x: toX(RANGE) - 10,
+        y: toY(0) - 6,
+        fill: "rgba(255,255,255,0.4)",
+        fontSize: "12",
+        fontFamily: "'JetBrains Mono', monospace",
+        children: "x"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("text", {
+        x: toX(0) + 7,
+        y: toY(RANGE) + 14,
+        fill: "rgba(255,255,255,0.4)",
+        fontSize: "12",
+        fontFamily: "'JetBrains Mono', monospace",
+        children: "y"
+      }, undefined, false, undefined, this),
+      children
+    ]
+  }, undefined, true, undefined, this);
+}
+function Slider({ label, value, set, min = -6, max = 6, step = 1, color = CYAN }) {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", alignItems: "center", gap: "10px", margin: "5px 0" },
+    children: [
+      /* @__PURE__ */ jsxDEV("span", {
+        style: { color, fontFamily: "'JetBrains Mono', monospace", fontSize: "13px", minWidth: "54px" },
+        children: [
+          label,
+          " = ",
+          value
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("input", {
+        type: "range",
+        min,
+        max,
+        step,
+        value,
+        onChange: (e) => set(Number(e.target.value)),
+        style: { flex: 1, accentColor: color }
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function VectorPlayground() {
+  const [u1, setU1] = useState(3), [u2, setU2] = useState(1);
+  const [v1, setV1] = useState(-2), [v2, setV2] = useState(2);
+  const [k, setK] = useState(2);
+  const [mode, setMode] = useState("add");
+  const dot = u1 * v1 + u2 * v2;
+  const mu = Math.hypot(u1, u2), mv = Math.hypot(v1, v2);
+  const cos = mu && mv ? dot / (mu * mv) : 0;
+  const ang = mu && mv ? Math.acos(Math.max(-1, Math.min(1, cos))) * 180 / Math.PI : 0;
+  let res = null, resLabel = "", resColor = YELLOW, extra = null;
+  if (mode === "add") {
+    res = [u1 + v1, u2 + v2];
+    resLabel = "u⃗ + v⃗";
+    extra = /* @__PURE__ */ jsxDEV(Arrow, {
+      x1: u1,
+      y1: u2,
+      x2: u1 + v1,
+      y2: u2 + v2,
+      color: PINK,
+      width: 2,
+      dash: "5 5"
+    }, undefined, false, undefined, this);
+  } else if (mode === "sub") {
+    res = [v1 - u1, v2 - u2];
+    resLabel = "v⃗ − u⃗";
+  } else if (mode === "scalar") {
+    res = [k * u1, k * u2];
+    resLabel = `${k}·u⃗`;
+  }
+  const modes = [["add", "Sčítání"], ["sub", "Odčítání"], ["scalar", "k · u⃗"], ["dot", "Skalární součin & úhel"]];
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "12px", justifyContent: "center" },
+        children: modes.map(([id, lbl]) => /* @__PURE__ */ jsxDEV("button", {
+          onClick: () => setMode(id),
+          style: { ...btnS, fontSize: "13px", padding: "6px 14px", background: mode === id ? PINK + "33" : "rgba(255,255,255,0.05)", border: mode === id ? `1px solid ${PINK}` : "1px solid rgba(255,255,255,0.12)" },
+          children: lbl
+        }, id, false, undefined, this))
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(GridSvg, {
+        children: [
+          /* @__PURE__ */ jsxDEV(Arrow, {
+            x1: 0,
+            y1: 0,
+            x2: u1,
+            y2: u2,
+            color: CYAN
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("text", {
+            x: toX(u1) + 6,
+            y: toY(u2) - 4,
+            fill: CYAN,
+            fontSize: "13",
+            fontFamily: "'JetBrains Mono', monospace",
+            children: "u"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Arrow, {
+            x1: 0,
+            y1: 0,
+            x2: v1,
+            y2: v2,
+            color: PINK
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("text", {
+            x: toX(v1) + 6,
+            y: toY(v2) - 4,
+            fill: PINK,
+            fontSize: "13",
+            fontFamily: "'JetBrains Mono', monospace",
+            children: "v"
+          }, undefined, false, undefined, this),
+          res && /* @__PURE__ */ jsxDEV(Arrow, {
+            x1: 0,
+            y1: 0,
+            x2: res[0],
+            y2: res[1],
+            color: resColor,
+            width: 3.5
+          }, undefined, false, undefined, this),
+          extra
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { marginTop: "14px", padding: "12px 16px", background: "rgba(255,255,255,0.04)", borderRadius: "12px" },
+        children: [
+          /* @__PURE__ */ jsxDEV(Slider, {
+            label: "u₁",
+            value: u1,
+            set: setU1,
+            color: CYAN
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Slider, {
+            label: "u₂",
+            value: u2,
+            set: setU2,
+            color: CYAN
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Slider, {
+            label: "v₁",
+            value: v1,
+            set: setV1,
+            color: PINK
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Slider, {
+            label: "v₂",
+            value: v2,
+            set: setV2,
+            color: PINK
+          }, undefined, false, undefined, this),
+          mode === "scalar" && /* @__PURE__ */ jsxDEV(Slider, {
+            label: "k",
+            value: k,
+            set: setK,
+            min: -3,
+            max: 3,
+            color: YELLOW
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(MBlock, {
+        children: [
+          `u⃗ = (${u1}; ${u2})    |u⃗| = √${u1 * u1 + u2 * u2} ≈ ${mu.toFixed(2)}
+`,
+          `v⃗ = (${v1}; ${v2})    |v⃗| = √${v1 * v1 + v2 * v2} ≈ ${mv.toFixed(2)}
+`,
+          res ? `${resLabel} = (${res[0]}; ${res[1]})` : "",
+          mode === "dot" ? `u⃗·v⃗ = ${u1}·${v1} + ${u2}·${v2} = ${dot}
+cos φ = ${dot} / (√${u1 * u1 + u2 * u2}·√${v1 * v1 + v2 * v2}) ≈ ${cos.toFixed(3)}
+φ ≈ ${ang.toFixed(1)}°${Math.abs(dot) < 0.000000001 ? "   (kolmé!)" : ""}` : ""
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function LinesPlayground() {
+  const [pax, setPax] = useState(-2), [pay, setPay] = useState(1);
+  const [psx, setPsx] = useState(1), [psy, setPsy] = useState(2);
+  const [qax, setQax] = useState(0), [qay, setQay] = useState(5);
+  const [qsx, setQsx] = useState(2), [qsy, setQsy] = useState(-1);
+  const detDir = psx * qsy - psy * qsx;
+  const dx = qax - pax, dy = qay - pay;
+  let poloha, P = null, color = PINK;
+  if (detDir !== 0) {
+    poloha = "různoběžné";
+    const t = (dx * qsy - dy * qsx) / detDir;
+    P = [pax + t * psx, pay + t * psy];
+  } else {
+    const cross = dx * psy - dy * psx;
+    poloha = cross === 0 ? "splývající (totožné)" : "rovnoběžné (různé)";
+    color = cross === 0 ? GREEN : CYAN;
+  }
+  const dotS = psx * qsx + psy * qsy;
+  const mp = Math.hypot(psx, psy), mq = Math.hypot(qsx, qsy);
+  const angL = mp && mq ? Math.acos(Math.min(1, Math.abs(dotS) / (mp * mq))) * 180 / Math.PI : 0;
+  const big = 40;
+  const lineP = [[pax - big * psx, pay - big * psy], [pax + big * psx, pay + big * psy]];
+  const lineQ = [[qax - big * qsx, qay - big * qsy], [qax + big * qsx, qay + big * qsy]];
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(GridSvg, {
+        children: [
+          /* @__PURE__ */ jsxDEV("line", {
+            x1: toX(lineP[0][0]),
+            y1: toY(lineP[0][1]),
+            x2: toX(lineP[1][0]),
+            y2: toY(lineP[1][1]),
+            stroke: CYAN,
+            strokeWidth: "2.5"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("line", {
+            x1: toX(lineQ[0][0]),
+            y1: toY(lineQ[0][1]),
+            x2: toX(lineQ[1][0]),
+            y2: toY(lineQ[1][1]),
+            stroke: PINK,
+            strokeWidth: "2.5"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Arrow, {
+            x1: pax,
+            y1: pay,
+            x2: pax + psx,
+            y2: pay + psy,
+            color: CYAN,
+            width: 3
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Arrow, {
+            x1: qax,
+            y1: qay,
+            x2: qax + qsx,
+            y2: qay + qsy,
+            color: PINK,
+            width: 3
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("circle", {
+            cx: toX(pax),
+            cy: toY(pay),
+            r: 3.5,
+            fill: CYAN
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("circle", {
+            cx: toX(qax),
+            cy: toY(qay),
+            r: 3.5,
+            fill: PINK
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("text", {
+            x: toX(pax) + 6,
+            y: toY(pay) + 16,
+            fill: CYAN,
+            fontSize: "12",
+            fontFamily: "'JetBrains Mono', monospace",
+            children: "p"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("text", {
+            x: toX(qax) + 6,
+            y: toY(qay) + 16,
+            fill: PINK,
+            fontSize: "12",
+            fontFamily: "'JetBrains Mono', monospace",
+            children: "q"
+          }, undefined, false, undefined, this),
+          P && Math.abs(P[0]) <= RANGE && Math.abs(P[1]) <= RANGE && /* @__PURE__ */ jsxDEV("g", {
+            children: [
+              /* @__PURE__ */ jsxDEV("circle", {
+                cx: toX(P[0]),
+                cy: toY(P[1]),
+                r: 5,
+                fill: YELLOW,
+                stroke: "#fff",
+                strokeWidth: "1.5"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("text", {
+                x: toX(P[0]) + 8,
+                y: toY(P[1]) - 8,
+                fill: YELLOW,
+                fontSize: "12",
+                fontFamily: "'JetBrains Mono', monospace",
+                children: "P"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "12px", flexWrap: "wrap", marginTop: "14px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { flex: "1 1 200px", padding: "12px 16px", background: "rgba(34,211,238,0.06)", borderRadius: "12px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: CYAN, fontWeight: 700, fontSize: "13px", marginBottom: "4px" },
+                children: "Přímka p"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Slider, {
+                label: "A_p x",
+                value: pax,
+                set: setPax,
+                color: CYAN
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Slider, {
+                label: "A_p y",
+                value: pay,
+                set: setPay,
+                color: CYAN
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Slider, {
+                label: "s_p x",
+                value: psx,
+                set: setPsx,
+                color: CYAN
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Slider, {
+                label: "s_p y",
+                value: psy,
+                set: setPsy,
+                color: CYAN
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { flex: "1 1 200px", padding: "12px 16px", background: "rgba(236,72,153,0.06)", borderRadius: "12px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { color: PINK, fontWeight: 700, fontSize: "13px", marginBottom: "4px" },
+                children: "Přímka q"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Slider, {
+                label: "A_q x",
+                value: qax,
+                set: setQax,
+                color: PINK
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Slider, {
+                label: "A_q y",
+                value: qay,
+                set: setQay,
+                color: PINK
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Slider, {
+                label: "s_q x",
+                value: qsx,
+                set: setQsx,
+                color: PINK
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(Slider, {
+                label: "s_q y",
+                value: qsy,
+                set: setQsy,
+                color: PINK
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(MBlock, {
+        color,
+        children: [
+          `s_p = (${psx}; ${psy})   s_q = (${qsx}; ${qsy})
+`,
+          `det(s_p, s_q) = ${psx}·${qsy} − ${psy}·${qsx} = ${detDir}
+`,
+          `→ ${poloha}`,
+          P ? `
+průsečík P = (${fmt(P[0])}; ${fmt(P[1])})
+úhel přímek φ ≈ ${angL.toFixed(1)}°${Math.abs(dotS) < 0.000000001 ? " (kolmé)" : ""}` : ""
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function fmt(x) {
+  const r = Math.round(x * 100) / 100;
+  return Number.isInteger(r) ? String(r) : r.toFixed(2);
+}
+function TheoryTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "760px", margin: "0 auto" },
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "1 · Vektory — základ",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Vektor"
+              }, undefined, false, undefined, this),
+              ' = „posun" / „cesta". Má ',
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "velikost"
+              }, undefined, false, undefined, this),
+              " a ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "směr"
+              }, undefined, false, undefined, this),
+              " (šipka). Jeden vektor lze umístit nekonečně mnoha způsoby — všechna umístění reprezentují ",
+              /* @__PURE__ */ jsxDEV("em", {
+                children: "tentýž"
+              }, undefined, false, undefined, this),
+              " vektor."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Souřadnice vektoru ze dvou bodů a jeho velikost:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `A[a₁; a₂], B[b₁; b₂]
+AB⃗ = (b₁ − a₁ ; b₂ − a₂)
+|u⃗| = √(u₁² + u₂²)`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Opačné vektory:"
+              }, undefined, false, undefined, this),
+              " AB⃗ a BA⃗ — stejná velikost, opačný směr. Obecně −u⃗ = (−u₁; −u₂)."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Příklad: A[2;1], B[5;5] → AB⃗ = (3;4), |AB⃗| = √(9+16) = 5."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "2 · Střed úsečky a těžiště",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `Střed úsečky AB:  S = [ (a₁+b₁)/2 ; (a₂+b₂)/2 ]
+
+Těžiště △ABC:     T = [ (a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3 ]`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Těžiště se odvozuje jako T = A + ⅔·AS⃗, kde S je střed protější strany. Příklad: A[−1;−3], B[5;2], C[2;5] → T = [6/3; 4/3] = [2; 4/3]."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "3 · Operace s vektory",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `u⃗ + v⃗ = (u₁+v₁ ; u₂+v₂)
+v⃗ − u⃗ = (v₁−u₁ ; v₂−u₂)
+k · u⃗ = (k·u₁ ; k·u₂)     k ∈ ℝ
+−u⃗ = (−u₁ ; −u₂)`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: 'Sčítání graficky: vektory se kladou „za sebe" (hlava–pata). Fyzika: skládání sil F⃗ = F⃗₁ + F⃗₂.'
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "4 · Lineární (ne)závislost a kolinearita",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              "Dva vektory v rovině jsou ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "lineárně závislé (LZ)"
+              }, undefined, false, undefined, this),
+              ", pokud je lze posunutím umístit na jednu přímku."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `LZ ⟺ ∃ k ≠ 0 :  v⃗ = k · u⃗
+     ⟺ det(u⃗, v⃗) = 0`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "Kolineární body"
+              }, undefined, false, undefined, this),
+              " = body ležící na jedné přímce. Test: AB⃗ a AC⃗ jsou násobky (det = 0)."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Příklad: K[−4;6], L[2;3], M[4;2] → KL⃗=(6;−3), LM⃗=(2;−1), LM⃗ = ⅓·KL⃗ → kolineární."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "5 · Lineární kombinace",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `w⃗ = a · u⃗ + b · v⃗     a, b ∈ ℝ (aspoň jedno ≠ 0)
+Nulový vektor:  O⃗ = (0; 0)`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              "Zápis vektoru jako LK = řeší se ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "soustavou dvou rovnic"
+              }, undefined, false, undefined, this),
+              " (jedna pro x-ové, jedna pro y-ové složky). Příklad: w⃗=(−1;−1), u⃗=(1;3), v⃗=(2;5) → w⃗ = 3u⃗ − 2v⃗."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "6 · Skalární součin + kolmost",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `u⃗ · v⃗ = u₁·v₁ + u₂·v₂      (výsledek je ČÍSLO)
+
+u⃗ ⊥ v⃗  ⟺  u⃗ · v⃗ = 0`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Znaménko podle úhlu φ: φ=90° → součin 0; φ ostrý → součin kladný; φ tupý → součin záporný."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Příklad: u⃗=(3;6), v⃗=(−4;2) → 3·(−4)+6·2 = 0 → kolmé."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "7 · Odchylka vektorů (úhel)",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `cos φ = (u₁v₁ + u₂v₂) / (|u⃗| · |v⃗|)
+      = (u⃗ · v⃗) / (|u⃗| · |v⃗|)`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Příklad: u⃗=(3;−2), v⃗=(6;5): cos φ = 8/(√13·√61) = 8/√793 → φ ≈ 73°30′."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "8 · Determinant a obsah",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `det(u⃗, v⃗) = | u₁  u₂ |
+            | v₁  v₂ | = u₁·v₂ − u₂·v₁
+
+Obsah trojúhelníku:    S△ = ½ · |det(u⃗, v⃗)|
+Obsah rovnoběžníku:    S  = |det(u⃗, v⃗)|`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Pravidlo: hlavní diagonála minus vedlejší. Vektory u⃗, v⃗ jsou dvě strany vycházející ze stejného vrcholu."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Příklad: A[1;2], B[3;−1], C[7;4] → AC⃗=(6;2), AB⃗=(2;−3), det=6·(−3)−2·2=−22 → S△ = ½·22 = 11."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "9 · Přímka — tři tvary rovnice",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `Směrnicový:    y = a·x + b           (a = směrnice)
+Obecný:        a·x + b·y + c = 0
+Parametrický:  X = A + t·u⃗,  t ∈ ℝ
+               x = a₁ + t·u₁
+               y = a₂ + t·u₂`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Směrnice ze dvou bodů: a = (b₂ − a₂) / (b₁ − a₁). Mezi tvary se převádí — z parametrického vyloučíš t, ze směrnicového vynásobíš a převedeš na nulu."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Příklad: A[3;4], B[5;−1] → y = −5/2 x + 23/2 → (×2) → 5x + 2y − 23 = 0."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "10 · Směrový a normálový vektor",
+        children: [
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `Přímka a·x + b·y + c = 0:
+   normálový vektor   n⃗ = (a; b)   (kolmý na přímku)
+   směrový vektor     s⃗ = (b; −a)  (rovnoběžný s přímkou)
+
+s⃗ ⊥ n⃗   (jejich skalární součin = 0)`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: 'Z bodů: s⃗ = AB⃗. Z normály získáš směr „prohozením a změnou znaménka". Příklad: A[1;5], B[3;−4] → s⃗=(2;−9), n⃗=(9;2) → 9x + 2y − 19 = 0.'
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "11 · Vzájemná poloha dvou přímek",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              "Tři případy: ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "různoběžné"
+              }, undefined, false, undefined, this),
+              " (jeden průsečík) · ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "rovnoběžné"
+              }, undefined, false, undefined, this),
+              " (žádný společný bod) · ",
+              /* @__PURE__ */ jsxDEV("strong", {
+                children: "splývající/totožné"
+              }, undefined, false, undefined, this),
+              " (stejná přímka)."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            children: `det(s_p, s_q) ≠ 0   → různoběžné → najdi průsečík
+det(s_p, s_q) = 0   → rovnoběžné NEBO totožné
+   (rozliš dosazením bodu jedné přímky do druhé)`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: [
+              "Příklad: p=",
+              "{[−2+t; 1+2t]}",
+              ", q=",
+              "{[2k; 5−k]}",
+              ": s_p=(1;2), s_q=(2;−1), det=−5 ≠ 0 → různoběžné, P[0;5], a navíc s_p·s_q=0 → kolmé (úhel 90°)."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapsible, {
+        title: "12 · Vzdálenost bodu od přímky",
+        accent: YELLOW,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { ...pS, color: YELLOW },
+            children: "⚠️ Tohle nebylo v zápiscích z hodin, ale je na procvičovacím listu — zařazeno dle domluvy."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(MBlock, {
+            color: YELLOW,
+            children: `A[x₀; y₀],  p: a·x + b·y + c = 0
+
+d(A, p) = |a·x₀ + b·y₀ + c| / √(a² + b²)`
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: pS,
+            children: "Je-li přímka zadaná parametricky, převeď ji nejdřív na obecný tvar. Příklad: A[7;−1], p: 3x−y−2=0 → d = |21+1−2|/√10 = 20/√10 = 2√10."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function ProblemsTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "760px", margin: "0 auto" },
+    children: [
+      /* @__PURE__ */ jsxDEV("p", {
+        style: { ...pS, textAlign: "center", marginBottom: "16px" },
+        children: "Vzorové úlohy z hodin, samostatné práce a obou procvičovacích listů. Řešení je skryté — nejdřív si zkus spočítat sám."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 1,
+        difficulty: "easy",
+        title: "Vektor ze dvou bodů a jeho velikost",
+        given: "A[2; 1], B[5; 5]. Urči AB⃗ a |AB⃗|.",
+        formula: `AB⃗ = (b₁−a₁ ; b₂−a₂)
+|u⃗| = √(u₁² + u₂²)`,
+        steps: `AB⃗ = (5−2 ; 5−1) = (3 ; 4)
+|AB⃗| = √(3² + 4²) = √(9+16) = √25 = 5`,
+        result: "AB⃗ = (3; 4),   |AB⃗| = 5"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 2,
+        difficulty: "easy",
+        title: "Těžiště trojúhelníku",
+        given: "A[−1; −3], B[5; 2], C[2; 5]. Urči těžiště T.",
+        formula: "T = [ (a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3 ]",
+        steps: `T = [ (−1+5+2)/3 ; (−3+2+5)/3 ]
+  = [ 6/3 ; 4/3 ]`,
+        result: "T = [2 ; 4/3]"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 3,
+        difficulty: "medium",
+        title: "Zápis vektoru jako lineární kombinace",
+        given: "Zapiš w⃗ = (−1; −1) jako LK vektorů u⃗ = (1; 3), v⃗ = (2; 5).",
+        formula: `w⃗ = a·u⃗ + b·v⃗
+(−1; −1) = a(1;3) + b(2;5) = (a+2b ; 3a+5b)`,
+        steps: `−1 = a + 2b      /·(−3)
+−1 = 3a + 5b
+———————————————
+ 3 = −3a − 6b
+−1 = 3a + 5b
+sečíst:  2 = −b → b = −2
+a = −1 − 2·(−2) = 3`,
+        result: "w⃗ = 3·u⃗ − 2·v⃗"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 4,
+        difficulty: "medium",
+        title: "Tvoří body trojúhelník? (test kolinearity)",
+        given: "A[1; −2], B[−3; −14], C[4; 7].",
+        formula: `AB⃗, AC⃗ → det(AB⃗, AC⃗) = ?
+det = 0 → kolineární (NEtvoří trojúhelník)`,
+        steps: `AB⃗ = (−3−1 ; −14−(−2)) = (−4 ; −12)
+AC⃗ = (4−1 ; 7−(−2)) = (3 ; 9)
+det = (−4)·9 − (−12)·3 = −36 + 36 = 0`,
+        result: "det = 0 → body jsou KOLINEÁRNÍ → netvoří trojúhelník"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 5,
+        difficulty: "medium",
+        title: "Skalární součin a odchylka vektorů",
+        given: "u⃗ = (3; −2), v⃗ = (6; 5). Urči odchylku φ.",
+        formula: "cos φ = (u₁v₁ + u₂v₂) / (|u⃗|·|v⃗|)",
+        steps: `u⃗·v⃗ = 3·6 + (−2)·5 = 18 − 10 = 8
+|u⃗| = √13,  |v⃗| = √61
+cos φ = 8 / (√13·√61) = 8/√793 ≈ 0,284`,
+        result: "φ ≈ 73°30′"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 6,
+        difficulty: "medium",
+        title: "Obsah trojúhelníku přes determinant",
+        given: "A[1; 2], B[3; −1], C[7; 4].",
+        formula: "S△ = ½ · |det(u⃗, v⃗)|,  u⃗ = AC⃗, v⃗ = AB⃗",
+        steps: `AC⃗ = (6 ; 2),  AB⃗ = (2 ; −3)
+det = 6·(−3) − 2·2 = −18 − 4 = −22
+S△ = ½·|−22| = ½·22`,
+        result: "S△ = 11"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 7,
+        difficulty: "medium",
+        title: "Přímka dvěma body — všechny tři tvary",
+        given: "A[3; 4], B[5; −1]. Urči parametrický, směrnicový a obecný tvar.",
+        formula: "u⃗ = AB⃗ ;  a = (b₂−a₂)/(b₁−a₁) ;  ax+by+c=0",
+        steps: `u⃗ = AB⃗ = (2 ; −5)
+parametricky:  x = 3 + 2t,  y = 4 − 5t
+směrnice a = (−1−4)/(5−3) = −5/2
+4 = 3·(−5/2) + b → b = 23/2
+směrnicový:  y = −5/2 x + 23/2   /·2
+obecný:  2y = −5x + 23`,
+        result: "x=3+2t, y=4−5t  ·  y = −5/2 x + 23/2  ·  5x + 2y − 23 = 0"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 8,
+        difficulty: "hard",
+        title: "Vzájemná poloha + průsečík + úhel",
+        given: "p = {[−2+t; 1+2t]; t∈ℝ},  q = {[2k; 5−k]; k∈ℝ}.",
+        formula: `det(s_p, s_q) ≠ 0 → různoběžné → soustava → P
+Úhel: cos φ = |s_p·s_q| / (|s_p|·|s_q|)`,
+        steps: `s_p = (1; 2),  s_q = (2; −1)
+det = 1·(−1) − 2·2 = −5 ≠ 0 → různoběžné
+−2+t = 2k  /·(−2)  → 4−2t = −4k
+ 1+2t = 5−k
+sečíst: 5 = 5 − 5k → k = 0 → P[0; 5]
+s_p·s_q = 1·2 + 2·(−1) = 0 → kolmé`,
+        result: "různoběžné · P[0; 5] · úhel φ = 90°"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 9,
+        difficulty: "medium",
+        title: "Vzdálenost bodu od přímky",
+        given: "A[7; −1], p: 3x − y − 2 = 0.",
+        formula: "d = |a·x₀ + b·y₀ + c| / √(a² + b²)",
+        steps: `d = |3·7 + (−1)·(−1) − 2| / √(3² + (−1)²)
+  = |21 + 1 − 2| / √10
+  = 20/√10 = 20√10/10 = 2√10`,
+        result: "d = 2√10 ≈ 6,32"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 10,
+        difficulty: "hard",
+        title: "Samostatná práce — vektor jako LK",
+        given: "w⃗ = (4; 8) zapiš jako LK u⃗ = (−2; 1), v⃗ = (4; 2).",
+        formula: "(4; 8) = a(−2;1) + b(4;2) = (−2a+4b ; a+2b)",
+        steps: `−2a + 4b = 4
+  a + 2b = 8   → a = 8 − 2b
+dosadit: −2(8−2b) + 4b = 4
+−16 + 4b + 4b = 4 → 8b = 20 → b = 5/2
+a = 8 − 2·(5/2) = 3`,
+        result: "w⃗ = 3·u⃗ + (5/2)·v⃗"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 11,
+        difficulty: "hard",
+        title: "Samostatná práce — dopočet vrcholů rovnoběžníku",
+        given: "Rovnoběžník ABCD: A[−2; 0], B[2; 3], střed úhlopříček S[3/2; −2]. Urči C, D a dokaž, že nejde o obdélník, čtverec ani kosočtverec.",
+        formula: `S je střed obou úhlopříček:
+C = 2S − A,  D = 2S − B`,
+        steps: `C = (2·3/2 − (−2) ; 2·(−2) − 0) = (5 ; −4)
+D = (3 − 2 ; −4 − 3) = (1 ; −7)
+AB⃗ = (4; 3) → |AB| = 5
+AD⃗ = (3; −7) → |AD| = √58
+|AB| ≠ |AD| → ne kosočtverec, ne čtverec
+AB⃗·AD⃗ = 4·3 + 3·(−7) = −9 ≠ 0 → ne kolmé → ne obdélník`,
+        result: "C[5; −4], D[1; −7] → obecný rovnoběžník (ani obdélník, ani čtverec, ani kosočtverec)"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 12,
+        difficulty: "hard",
+        title: "Samostatná práce — vektor pod daným úhlem",
+        given: "u⃗ = (√3; −1). Urči v⃗ tak, aby svíral s u⃗ úhel 60° a měl velikost 4.",
+        formula: `|u⃗| = 2 ;  u⃗·v⃗ = |u⃗|·|v⃗|·cos 60° = 2·4·½ = 4
+v⃗ = (x; y):  √3·x − y = 4  a  x² + y² = 16`,
+        steps: `y = √3·x − 4
+x² + (√3x − 4)² = 16
+4x² − 8√3·x = 0 → 4x(x − 2√3) = 0
+x = 0 → y = −4         (v⃗ = (0; −4))
+x = 2√3 → y = 2        (v⃗ = (2√3; 2))`,
+        result: "v⃗ = (2√3; 2)  nebo  v⃗ = (0; −4)"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(SolvedProblem, {
+        n: 13,
+        difficulty: "hard",
+        title: "Procvičovací list — těžnice a výška v trojúhelníku",
+        given: "△ABC: A[−6; 1], B[−1; −3], C[3; 4]. Obecná rovnice přímky s těžnicí na stranu c; parametrické vyjádření přímky s výškou na stranu a.",
+        formula: `Těžnice na c: z C do středu S_c úsečky AB.
+Výška na a (= BC): bodem A, kolmá na BC⃗ → směr ⊥ BC⃗.`,
+        steps: `S_c = střed AB = [(−6−1)/2 ; (1−3)/2] = [−7/2 ; −1]
+směr CS_c ~ (13 ; 10) → normála (10 ; −13)
+těžnice: 10x − 13y + c = 0, bodem C[3;4]: 30 − 52 + c = 0 → c = 22
+
+BC⃗ = (4 ; 7) → směr výšky ⊥ BC⃗ = (7 ; −4)
+výška bodem A[−6;1]:  x = −6 + 7t,  y = 1 − 4t`,
+        result: "těžnice na c:  10x − 13y + 22 = 0     výška na a:  x = −6 + 7t,  y = 1 − 4t"
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function GridTab() {
+  const [sub, setSub] = useState("vectors");
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "760px", margin: "0 auto" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "8px", justifyContent: "center", marginBottom: "16px" },
+        children: [["vectors", "Vektory"], ["lines", "Přímky"]].map(([id, lbl]) => /* @__PURE__ */ jsxDEV("button", {
+          onClick: () => setSub(id),
+          style: { ...btnS, background: sub === id ? CYAN + "22" : "rgba(255,255,255,0.05)", border: sub === id ? `1px solid ${CYAN}` : "1px solid rgba(255,255,255,0.12)" },
+          children: lbl
+        }, id, false, undefined, this))
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "18px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { ...pS, textAlign: "center", marginTop: 0 },
+            children: sub === "vectors" ? "Posuvníky mění složky vektorů u⃗ (modrý) a v⃗ (růžový). Žlutý vektor je výsledek operace." : "Posuvníky mění bod a směrový vektor každé přímky. Vlevo dole se počítá jejich vzájemná poloha a průsečík."
+          }, undefined, false, undefined, this),
+          sub === "vectors" ? /* @__PURE__ */ jsxDEV(VectorPlayground, {}, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV(LinesPlayground, {}, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var quizQuestions = [
+  {
+    question: "Jaké jsou souřadnice vektoru AB⃗ pro A[2; 1], B[5; 5]?",
+    type: "single",
+    options: ["(3; 4)", "(7; 6)", "(−3; −4)", "(2; 5)"],
+    correct: [0],
+    explanation: "AB⃗ = (b₁−a₁; b₂−a₂) = (5−2; 5−1) = (3; 4).",
+    tip: "Vždy KONEC mínus ZAČÁTEK."
+  },
+  {
+    question: "Jaká je velikost vektoru u⃗ = (−3; 5)?",
+    type: "single",
+    options: ["√34", "√16", "8", "2"],
+    correct: [0],
+    explanation: "|u⃗| = √((−3)² + 5²) = √(9+25) = √34."
+  },
+  {
+    question: "Vzorec pro těžiště trojúhelníku ABC je:",
+    type: "single",
+    options: ["[(a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3]", "[(a₁+b₁)/2 ; (a₂+b₂)/2]", "[(a₁+b₁+c₁)/2 ; (a₂+b₂+c₂)/2]", "[a₁+b₁+c₁ ; a₂+b₂+c₂]"],
+    correct: [0],
+    explanation: "Těžiště = aritmetický průměr souřadnic všech tří vrcholů (děleno 3)."
+  },
+  {
+    question: "Kolik je skalární součin u⃗·v⃗ pro u⃗ = (1; 5), v⃗ = (4; 3)?",
+    type: "single",
+    options: ["19", "9", "23", "(4; 15)"],
+    correct: [0],
+    explanation: "u⃗·v⃗ = 1·4 + 5·3 = 4 + 15 = 19. Výsledek je číslo, ne vektor!"
+  },
+  {
+    question: "Dva vektory jsou na sebe kolmé právě tehdy, když:",
+    type: "single",
+    options: ["u⃗·v⃗ = 0", "u⃗·v⃗ = 1", "det(u⃗, v⃗) = 0", "|u⃗| = |v⃗|"],
+    correct: [0],
+    explanation: "Kolmost ⟺ skalární součin = 0 (protože cos 90° = 0). Pozor: det = 0 znamená rovnoběžnost, ne kolmost!"
+  },
+  {
+    question: "Jsou vektory u⃗ = (3; 6) a v⃗ = (−4; 2) kolmé?",
+    type: "single",
+    options: ["Ano, jejich skalární součin je 0", "Ne, součin je 24", "Ne, jsou rovnoběžné", "Nelze určit"],
+    correct: [0],
+    explanation: "u⃗·v⃗ = 3·(−4) + 6·2 = −12 + 12 = 0 → kolmé."
+  },
+  {
+    question: "Kolik je det(u⃗, v⃗) pro u⃗ = (6; 2), v⃗ = (2; −3)?",
+    type: "single",
+    options: ["−22", "22", "14", "−14"],
+    correct: [0],
+    explanation: "det = u₁v₂ − u₂v₁ = 6·(−3) − 2·2 = −18 − 4 = −22."
+  },
+  {
+    question: "Obsah trojúhelníku daného vektory u⃗, v⃗ se počítá jako:",
+    type: "single",
+    options: ["½·|det(u⃗, v⃗)|", "|det(u⃗, v⃗)|", "½·(u⃗·v⃗)", "|u⃗|·|v⃗|"],
+    correct: [0],
+    explanation: "S△ = ½·|det|. Bez poloviny (|det|) je to obsah rovnoběžníku."
+  },
+  {
+    question: "Jaký je normálový vektor přímky 5x + 2y − 23 = 0?",
+    type: "single",
+    options: ["(5; 2)", "(2; −5)", "(−23; 0)", "(2; 5)"],
+    correct: [0],
+    explanation: "U přímky ax+by+c=0 je normálový vektor n⃗ = (a; b) = (5; 2)."
+  },
+  {
+    question: "Přímka má normálový vektor n⃗ = (a; b). Jaký je její směrový vektor?",
+    type: "single",
+    options: ["(b; −a)", "(a; b)", "(−a; −b)", "(a; −b)"],
+    correct: [0],
+    explanation: "Směrový vektor je kolmý na normálu: s⃗ = (b; −a). Ověř: (a;b)·(b;−a) = ab − ab = 0."
+  },
+  {
+    question: "Které z následujících jsou platné tvary rovnice přímky? (více odpovědí)",
+    type: "multi",
+    options: ["Směrnicový y = ax + b", "Obecný ax + by + c = 0", "Parametrický X = A + t·u⃗", "Determinantový det(x) = 0"],
+    correct: [0, 1, 2],
+    explanation: "Přímku zapisujeme směrnicově, obecně a parametricky. Žádný »determinantový« tvar neexistuje."
+  },
+  {
+    question: "Co platí pro body A[1; −2], B[−3; −14], C[4; 7]?",
+    type: "single",
+    options: ["Jsou kolineární — netvoří trojúhelník", "Tvoří pravoúhlý trojúhelník", "Tvoří rovnostranný trojúhelník", "Tvoří rovnoběžník"],
+    correct: [0],
+    explanation: "AB⃗=(−4;−12), AC⃗=(3;9), det = −36 + 36 = 0 → leží na jedné přímce."
+  },
+  {
+    question: "Vzdálenost bodu A[x₀;y₀] od přímky ax+by+c=0 je:",
+    type: "single",
+    options: ["|ax₀+by₀+c| / √(a²+b²)", "(ax₀+by₀+c) / (a²+b²)", "√(a²+b²) / |ax₀+by₀+c|", "|ax₀+by₀+c|"],
+    correct: [0],
+    explanation: "d = |ax₀+by₀+c| / √(a²+b²). V čitateli je absolutní hodnota (vzdálenost je nezáporná)."
+  },
+  {
+    question: "Dvě přímky mají rovnoběžné směrové vektory a sdílejí jeden bod. Jaká je jejich poloha?",
+    type: "single",
+    options: ["Splývající (totožné)", "Různoběžné", "Rovnoběžné různé", "Kolmé"],
+    correct: [0],
+    explanation: "Rovnoběžné směry + společný bod = jde o stejnou přímku → splývající."
+  },
+  {
+    question: "Vzorec pro kosinus úhlu mezi vektory je:",
+    type: "single",
+    options: ["(u₁v₁+u₂v₂) / (|u⃗|·|v⃗|)", "(u₁v₁+u₂v₂) · |u⃗| · |v⃗|", "(u₁v₂−u₂v₁) / (|u⃗|·|v⃗|)", "|u⃗| · |v⃗|"],
+    correct: [0],
+    explanation: "cos φ = (u⃗·v⃗)/(|u⃗|·|v⃗|). V čitateli skalární součin, ve jmenovateli součin velikostí."
+  },
+  {
+    question: "Jak zapíšeš w⃗ = (−1; −1) jako LK u⃗ = (1; 3), v⃗ = (2; 5)?",
+    type: "single",
+    options: ["3u⃗ − 2v⃗", "2u⃗ − 3v⃗", "−3u⃗ + 2v⃗", "u⃗ + v⃗"],
+    correct: [0],
+    explanation: "Soustava a+2b=−1, 3a+5b=−1 → a=3, b=−2 → w⃗ = 3u⃗ − 2v⃗."
+  },
+  {
+    question: "Jaký je opačný vektor k u⃗ = (1; 2)?",
+    type: "single",
+    options: ["(−1; −2)", "(2; 1)", "(−2; −1)", "(1; −2)"],
+    correct: [0],
+    explanation: "−u⃗ = (−u₁; −u₂) = (−1; −2)."
+  }
+];
+function Flashcards() {
+  const cards = [
+    { f: "Souřadnice vektoru AB⃗", b: `(b₁ − a₁ ; b₂ − a₂)
+KONEC mínus ZAČÁTEK` },
+    { f: "Velikost vektoru |u⃗|", b: "√(u₁² + u₂²)" },
+    { f: "Střed úsečky AB", b: "[ (a₁+b₁)/2 ; (a₂+b₂)/2 ]" },
+    { f: "Těžiště trojúhelníku T", b: "[ (a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3 ]" },
+    { f: "Skalární součin u⃗·v⃗", b: `u₁v₁ + u₂v₂
+(výsledek je ČÍSLO)` },
+    { f: "Kdy jsou vektory kolmé?", b: "u⃗ ⊥ v⃗  ⟺  u⃗·v⃗ = 0" },
+    { f: "Kosinus úhlu vektorů", b: "cos φ = (u₁v₁+u₂v₂) / (|u⃗|·|v⃗|)" },
+    { f: "Determinant det(u⃗, v⃗)", b: "u₁·v₂ − u₂·v₁" },
+    { f: "Obsah trojúhelníku ze 2 vektorů", b: "S△ = ½ · |det(u⃗, v⃗)|" },
+    { f: "Obsah rovnoběžníku", b: "S = |det(u⃗, v⃗)|" },
+    { f: "Směrnice přímky ze 2 bodů", b: "a = (b₂ − a₂) / (b₁ − a₁)" },
+    { f: "Tři tvary rovnice přímky", b: `směrnicový y=ax+b
+obecný ax+by+c=0
+parametrický X=A+t·u⃗` },
+    { f: "Normálový vektor přímky ax+by+c=0", b: "n⃗ = (a; b)" },
+    { f: "Směrový vektor z normály (a;b)", b: "s⃗ = (b; −a)" },
+    { f: "Vzdálenost bodu od přímky", b: "d = |ax₀+by₀+c| / √(a²+b²)" },
+    { f: "Vzájemná poloha přímek", b: `det(s_p,s_q)≠0 → různoběžné
+det=0 → rovnoběžné / splývající` }
+  ];
+  const [idx, setIdx] = useState(0);
+  const [flip, setFlip] = useState(false);
+  const go = (d) => {
+    setFlip(false);
+    setIdx((idx + d + cards.length) % cards.length);
+  };
+  const c = cards[idx];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "560px", margin: "0 auto" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.4)", textAlign: "center", fontSize: "13px", marginBottom: "10px" },
+        children: [
+          "Kartička ",
+          idx + 1,
+          " / ",
+          cards.length
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        onClick: () => setFlip(!flip),
+        style: { ...glass, padding: "44px 28px", minHeight: "190px", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", background: flip ? "rgba(34,211,238,0.08)" : "rgba(255,255,255,0.05)" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: flip ? CYAN : "#fff", fontSize: flip ? "18px" : "19px", fontWeight: 600, lineHeight: 1.6, whiteSpace: "pre-wrap", fontFamily: flip ? "'JetBrains Mono', monospace" : "'Exo 2', sans-serif" },
+            children: flip ? c.b : c.f
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { color: "rgba(255,255,255,0.35)", fontSize: "12px", marginTop: "16px" },
+            children: flip ? "↩ klikni pro otázku" : "klikni pro odpověď"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between", marginTop: "16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnS,
+            onClick: () => go(-1),
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...btnS, background: CYAN + "22", border: `1px solid ${CYAN}` },
+            onClick: () => setFlip(!flip),
+            children: flip ? "Otočit zpět" : "Zobrazit odpověď"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: btnS,
+            onClick: () => go(1),
+            children: "Další →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginTop: "16px" },
+        children: cards.map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+          onClick: () => {
+            setIdx(i);
+            setFlip(false);
+          },
+          style: { width: "16px", height: "16px", borderRadius: "50%", background: i === idx ? CYAN : "#4b5563", cursor: "pointer", transition: "background 0.4s ease" }
+        }, i, false, undefined, this))
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function FormulaSheet() {
+  const sec = (title, body, color = CYAN) => /* @__PURE__ */ jsxDEV("div", {
+    style: { ...glass, padding: "16px 20px", marginBottom: "14px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color, fontWeight: 700, fontSize: "15px", marginBottom: "8px", fontFamily: "'Audiowide', sans-serif" },
+        children: title
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(MBlock, {
+        color,
+        children: body
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "720px", margin: "0 auto" },
+    children: [
+      /* @__PURE__ */ jsxDEV("p", {
+        style: { ...pS, textAlign: "center", marginBottom: "16px" },
+        children: "Vše, co musíš umět zpaměti. Vektory značíme šipkou (u⃗)."
+      }, undefined, false, undefined, this),
+      sec("Vektory a body", `AB⃗ = (b₁−a₁ ; b₂−a₂)
+|u⃗| = √(u₁² + u₂²)
+−u⃗ = (−u₁ ; −u₂)
+Střed AB:  S = [(a₁+b₁)/2 ; (a₂+b₂)/2]
+Těžiště:   T = [(a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3]`),
+      sec("Operace", `u⃗ + v⃗ = (u₁+v₁ ; u₂+v₂)
+v⃗ − u⃗ = (v₁−u₁ ; v₂−u₂)
+k·u⃗  = (k·u₁ ; k·u₂)
+Lin. kombinace:  w⃗ = a·u⃗ + b·v⃗`, PINK),
+      sec("Závislost / kolinearita", "LZ (kolineární) ⟺ v⃗ = k·u⃗ ⟺ det(u⃗,v⃗) = 0", GREEN),
+      sec("Skalární součin & úhel", `u⃗·v⃗ = u₁v₁ + u₂v₂
+u⃗ ⊥ v⃗ ⟺ u⃗·v⃗ = 0
+cos φ = (u₁v₁+u₂v₂) / (|u⃗|·|v⃗|)`, CYAN),
+      sec("Determinant & obsah", `det(u⃗,v⃗) = u₁v₂ − u₂v₁
+S△ = ½·|det(u⃗,v⃗)|
+S rovnoběžníku = |det(u⃗,v⃗)|`, YELLOW),
+      sec("Přímka — tvary", `Směrnicový:    y = a·x + b,   a = (b₂−a₂)/(b₁−a₁)
+Obecný:        a·x + b·y + c = 0
+Parametrický:  x = a₁ + t·u₁,  y = a₂ + t·u₂`, PINK),
+      sec("Směrový a normálový vektor", `ax + by + c = 0:
+   n⃗ = (a; b)   (normála, ⊥ přímce)
+   s⃗ = (b; −a)  (směr, ∥ přímce)
+s⃗ = AB⃗ (ze dvou bodů)`, CYAN),
+      sec("Vzájemná poloha přímek", `det(s_p,s_q) ≠ 0 → různoběžné (→ průsečík)
+det(s_p,s_q) = 0 → rovnoběžné NEBO splývající
+Úhel: cos φ = |s_p·s_q| / (|s_p|·|s_q|)`, GREEN),
+      sec("Vzdálenost bodu od přímky", `A[x₀;y₀], p: ax+by+c=0
+d = |a·x₀ + b·y₀ + c| / √(a² + b²)`, YELLOW)
+    ]
+  }, undefined, true, undefined, this);
+}
+function App() {
+  const [tab, setTab] = useState("theory");
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { minHeight: "100vh", background: "#0a0a1a", fontFamily: "'Exo 2', sans-serif", position: "relative", overflow: "hidden" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", bottom: 0, left: "-50%", width: "200%", height: "50%", backgroundImage: `linear-gradient(${PINK}15 1px, transparent 1px), linear-gradient(90deg, ${PINK}15 1px, transparent 1px)`, backgroundSize: "60px 60px", transform: "perspective(500px) rotateX(60deg)", transformOrigin: "center bottom" }
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", top: "8%", left: "50%", transform: "translateX(-50%)", width: "200px", height: "200px", borderRadius: "50%", background: `radial-gradient(circle, ${PINK}44, ${CYAN}22, transparent)`, filter: "blur(40px)" }
+          }, undefined, false, undefined, this),
+          [...Array(12)].map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+            style: { position: "absolute", width: `${3 + i % 4}px`, height: `${3 + i % 4}px`, borderRadius: "50%", background: i % 2 === 0 ? PINK + "66" : CYAN + "66", left: `${i * 53 % 100}%`, top: `${i * 37 % 100}%`, animation: `float${i % 3} ${12 + i % 8}s ease-in-out infinite`, filter: "blur(1px)" }
+          }, i, false, undefined, this))
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800&family=Audiowide&family=JetBrains+Mono:wght@400;600;700&display=swap');
+        @keyframes float0 { 0%,100% { transform: translateY(0) translateX(0);} 50% { transform: translateY(-30px) translateX(15px);} }
+        @keyframes float1 { 0%,100% { transform: translateY(0) translateX(0);} 50% { transform: translateY(20px) translateX(-20px);} }
+        @keyframes float2 { 0%,100% { transform: translateY(0) translateX(0);} 50% { transform: translateY(-15px) translateX(-10px);} }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        button:disabled { opacity: 0.4; cursor: not-allowed; }
+        button:hover:not(:disabled) { filter: brightness(1.2); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+        input[type=range] { height: 4px; }
+      `
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "relative", zIndex: 1, maxWidth: "920px", margin: "0 auto", padding: "20px 16px 60px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { textAlign: "center", marginBottom: "22px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("h1", {
+                style: { fontFamily: "'Audiowide', sans-serif", fontSize: "clamp(20px, 5vw, 34px)", color: "#fff", marginBottom: "6px", textShadow: `0 0 20px ${PINK}66` },
+                children: "Analytická geometrie"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: { color: "rgba(255,255,255,0.45)", fontSize: "14px" },
+                children: "Souřadnice · úsečka · vektory · přímky — kompletní příprava na test"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginBottom: "22px" },
+            children: TABS.map((t) => /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => setTab(t.id),
+              style: { padding: "8px 18px", borderRadius: "20px", border: tab === t.id ? `1px solid ${PINK}` : "1px solid rgba(255,255,255,0.12)", background: tab === t.id ? PINK + "22" : "rgba(255,255,255,0.04)", color: tab === t.id ? "#fff" : "rgba(255,255,255,0.6)", fontFamily: "'Exo 2', sans-serif", fontSize: "14px", fontWeight: 600, cursor: "pointer", transition: "all 0.4s ease" },
+              children: t.label
+            }, t.id, false, undefined, this))
+          }, undefined, false, undefined, this),
+          tab === "theory" && /* @__PURE__ */ jsxDEV(TheoryTab, {}, undefined, false, undefined, this),
+          tab === "problems" && /* @__PURE__ */ jsxDEV(ProblemsTab, {}, undefined, false, undefined, this),
+          tab === "grid" && /* @__PURE__ */ jsxDEV(GridTab, {}, undefined, false, undefined, this),
+          tab === "quiz" && /* @__PURE__ */ jsxDEV(QuizEngine, {
+            questions: quizQuestions,
+            accentColor: PINK
+          }, undefined, false, undefined, this),
+          tab === "flashcards" && /* @__PURE__ */ jsxDEV(Flashcards, {}, undefined, false, undefined, this),
+          tab === "formulas" && /* @__PURE__ */ jsxDEV(FormulaSheet, {}, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
