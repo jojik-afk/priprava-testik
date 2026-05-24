@@ -212,22 +212,24 @@ function SolvedProblem({ n, title, difficulty = "medium", given, formula, steps,
   const d = DIFF[difficulty];
   return (
     <div style={{ ...glass, padding: "0", marginBottom: "14px", overflow: "hidden" }}>
-      <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", flexWrap: "wrap", background: "rgba(255,255,255,0.03)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-          <span style={{ color: PINK, fontWeight: 700, fontSize: "14px" }}>{n}.</span>
-          <span style={{ color: "#fff", fontSize: "15.5px", fontWeight: 600 }}>{title}</span>
-          <span style={{ fontSize: "12px", padding: "2px 10px", borderRadius: "20px", background: d.bg, color: d.col }}>{d.label}</span>
+      <div style={{ padding: "16px 20px", background: "rgba(255,255,255,0.03)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+            <span style={{ color: PINK, fontWeight: 700, fontSize: "14px" }}>{n}.</span>
+            <span style={{ color: "#fff", fontSize: "15.5px", fontWeight: 600 }}>{title}</span>
+            <span style={{ fontSize: "12px", padding: "2px 10px", borderRadius: "20px", background: d.bg, color: d.col }}>{d.label}</span>
+          </div>
+          <button style={{ ...btnS, fontSize: "13px", padding: "6px 16px", background: open ? PINK + "22" : "rgba(255,255,255,0.06)", border: open ? `1px solid ${PINK}` : "1px solid rgba(255,255,255,0.15)" }} onClick={() => setOpen(!open)}>
+            {open ? "Skrýt řešení" : "Zobrazit řešení"}
+          </button>
         </div>
-        <button style={{ ...btnS, fontSize: "13px", padding: "6px 16px", background: open ? PINK + "22" : "rgba(255,255,255,0.06)", border: open ? `1px solid ${PINK}` : "1px solid rgba(255,255,255,0.15)" }} onClick={() => setOpen(!open)}>
-          {open ? "Skrýt řešení" : "Zobrazit řešení"}
-        </button>
+        <div style={{ marginTop: "12px", display: "flex", gap: "8px", alignItems: "baseline", flexWrap: "wrap" }}>
+          <span style={{ color: GREEN, fontWeight: 700, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>Zadání:</span>
+          <div style={{ ...pS, margin: 0, flex: "1 1 220px" }}>{given}</div>
+        </div>
       </div>
       {open && (
         <div style={{ padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-          <div style={{ marginBottom: "10px" }}>
-            <span style={{ color: GREEN, fontWeight: 700, fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Zadáno</span>
-            <div style={{ ...pS, margin: "4px 0 0" }}>{given}</div>
-          </div>
           <div style={{ marginBottom: "10px" }}>
             <span style={{ color: CYAN, fontWeight: 700, fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Vzorec / postup</span>
             <MBlock>{formula}</MBlock>
@@ -309,15 +311,15 @@ function VectorPlayground() {
 
   let res = null, resLabel = "", resColor = YELLOW, extra = null;
   if (mode === "add") {
-    res = [u1 + v1, u2 + v2]; resLabel = "u⃗ + v⃗";
+    res = [u1 + v1, u2 + v2]; resLabel = "u→ + v→";
     extra = <Arrow x1={u1} y1={u2} x2={u1 + v1} y2={u2 + v2} color={PINK} width={2} dash="5 5" />;
   } else if (mode === "sub") {
-    res = [v1 - u1, v2 - u2]; resLabel = "v⃗ − u⃗";
+    res = [v1 - u1, v2 - u2]; resLabel = "v→ − u→";
   } else if (mode === "scalar") {
-    res = [k * u1, k * u2]; resLabel = `${k}·u⃗`;
+    res = [k * u1, k * u2]; resLabel = `${k}·u→`;
   }
 
-  const modes = [["add", "Sčítání"], ["sub", "Odčítání"], ["scalar", "k · u⃗"], ["dot", "Skalární součin & úhel"]];
+  const modes = [["add", "Sčítání"], ["sub", "Odčítání"], ["scalar", "k · u→"], ["dot", "Skalární součin & úhel"]];
 
   return (
     <div>
@@ -345,10 +347,10 @@ function VectorPlayground() {
       </div>
 
       <MBlock>
-        {`u⃗ = (${u1}; ${u2})    |u⃗| = √${u1 * u1 + u2 * u2} ≈ ${mu.toFixed(2)}\n`}
-        {`v⃗ = (${v1}; ${v2})    |v⃗| = √${v1 * v1 + v2 * v2} ≈ ${mv.toFixed(2)}\n`}
+        {`u→ = (${u1}; ${u2})    |u→| = √${u1 * u1 + u2 * u2} ≈ ${mu.toFixed(2)}\n`}
+        {`v→ = (${v1}; ${v2})    |v→| = √${v1 * v1 + v2 * v2} ≈ ${mv.toFixed(2)}\n`}
         {res ? `${resLabel} = (${res[0]}; ${res[1]})` : ""}
-        {mode === "dot" ? `u⃗·v⃗ = ${u1}·${v1} + ${u2}·${v2} = ${dot}\ncos φ = ${dot} / (√${u1*u1+u2*u2}·√${v1*v1+v2*v2}) ≈ ${cos.toFixed(3)}\nφ ≈ ${ang.toFixed(1)}°${Math.abs(dot) < 1e-9 ? "   (kolmé!)" : ""}` : ""}
+        {mode === "dot" ? `u→·v→ = ${u1}·${v1} + ${u2}·${v2} = ${dot}\ncos φ = ${dot} / (√${u1*u1+u2*u2}·√${v1*v1+v2*v2}) ≈ ${cos.toFixed(3)}\nφ ≈ ${ang.toFixed(1)}°${Math.abs(dot) < 1e-9 ? "   (kolmé!)" : ""}` : ""}
       </MBlock>
     </div>
   );
@@ -444,59 +446,59 @@ function TheoryTab() {
       <Collapsible title="1 · Vektory — základ" defaultOpen>
         <p style={pS}><strong>Vektor</strong> = „posun" / „cesta". Má <strong>velikost</strong> a <strong>směr</strong> (šipka). Jeden vektor lze umístit nekonečně mnoha způsoby — všechna umístění reprezentují <em>tentýž</em> vektor.</p>
         <p style={pS}>Souřadnice vektoru ze dvou bodů a jeho velikost:</p>
-        <MBlock>{"A[a₁; a₂], B[b₁; b₂]\nAB⃗ = (b₁ − a₁ ; b₂ − a₂)\n|u⃗| = √(u₁² + u₂²)"}</MBlock>
-        <p style={pS}><strong>Opačné vektory:</strong> AB⃗ a BA⃗ — stejná velikost, opačný směr. Obecně −u⃗ = (−u₁; −u₂).</p>
-        <p style={pS}>Příklad: A[2;1], B[5;5] → AB⃗ = (3;4), |AB⃗| = √(9+16) = 5.</p>
+        <MBlock>{"A[a₁; a₂], B[b₁; b₂]\nAB→ = (b₁ − a₁ ; b₂ − a₂)\n|u→| = √(u₁² + u₂²)"}</MBlock>
+        <p style={pS}><strong>Opačné vektory:</strong> AB→ a BA→ — stejná velikost, opačný směr. Obecně −u→ = (−u₁; −u₂).</p>
+        <p style={pS}>Příklad: A[2;1], B[5;5] → AB→ = (3;4), |AB→| = √(9+16) = 5.</p>
       </Collapsible>
 
       <Collapsible title="2 · Střed úsečky a těžiště">
         <MBlock>{"Střed úsečky AB:  S = [ (a₁+b₁)/2 ; (a₂+b₂)/2 ]\n\nTěžiště △ABC:     T = [ (a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3 ]"}</MBlock>
-        <p style={pS}>Těžiště se odvozuje jako T = A + ⅔·AS⃗, kde S je střed protější strany. Příklad: A[−1;−3], B[5;2], C[2;5] → T = [6/3; 4/3] = [2; 4/3].</p>
+        <p style={pS}>Těžiště se odvozuje jako T = A + ⅔·AS→, kde S je střed protější strany. Příklad: A[−1;−3], B[5;2], C[2;5] → T = [6/3; 4/3] = [2; 4/3].</p>
       </Collapsible>
 
       <Collapsible title="3 · Operace s vektory">
-        <MBlock>{"u⃗ + v⃗ = (u₁+v₁ ; u₂+v₂)\nv⃗ − u⃗ = (v₁−u₁ ; v₂−u₂)\nk · u⃗ = (k·u₁ ; k·u₂)     k ∈ ℝ\n−u⃗ = (−u₁ ; −u₂)"}</MBlock>
-        <p style={pS}>Sčítání graficky: vektory se kladou „za sebe" (hlava–pata). Fyzika: skládání sil F⃗ = F⃗₁ + F⃗₂.</p>
+        <MBlock>{"u→ + v→ = (u₁+v₁ ; u₂+v₂)\nv→ − u→ = (v₁−u₁ ; v₂−u₂)\nk · u→ = (k·u₁ ; k·u₂)     k ∈ ℝ\n−u→ = (−u₁ ; −u₂)"}</MBlock>
+        <p style={pS}>Sčítání graficky: vektory se kladou „za sebe" (hlava–pata). Fyzika: skládání sil F→ = F→₁ + F→₂.</p>
       </Collapsible>
 
       <Collapsible title="4 · Lineární (ne)závislost a kolinearita">
         <p style={pS}>Dva vektory v rovině jsou <strong>lineárně závislé (LZ)</strong>, pokud je lze posunutím umístit na jednu přímku.</p>
-        <MBlock>{"LZ ⟺ ∃ k ≠ 0 :  v⃗ = k · u⃗\n     ⟺ det(u⃗, v⃗) = 0"}</MBlock>
-        <p style={pS}><strong>Kolineární body</strong> = body ležící na jedné přímce. Test: AB⃗ a AC⃗ jsou násobky (det = 0).</p>
-        <p style={pS}>Příklad: K[−4;6], L[2;3], M[4;2] → KL⃗=(6;−3), LM⃗=(2;−1), LM⃗ = ⅓·KL⃗ → kolineární.</p>
+        <MBlock>{"LZ ⟺ ∃ k ≠ 0 :  v→ = k · u→\n     ⟺ det(u→, v→) = 0"}</MBlock>
+        <p style={pS}><strong>Kolineární body</strong> = body ležící na jedné přímce. Test: AB→ a AC→ jsou násobky (det = 0).</p>
+        <p style={pS}>Příklad: K[−4;6], L[2;3], M[4;2] → KL→=(6;−3), LM→=(2;−1), LM→ = ⅓·KL→ → kolineární.</p>
       </Collapsible>
 
       <Collapsible title="5 · Lineární kombinace">
-        <MBlock>{"w⃗ = a · u⃗ + b · v⃗     a, b ∈ ℝ (aspoň jedno ≠ 0)\nNulový vektor:  O⃗ = (0; 0)"}</MBlock>
-        <p style={pS}>Zápis vektoru jako LK = řeší se <strong>soustavou dvou rovnic</strong> (jedna pro x-ové, jedna pro y-ové složky). Příklad: w⃗=(−1;−1), u⃗=(1;3), v⃗=(2;5) → w⃗ = 3u⃗ − 2v⃗.</p>
+        <MBlock>{"w→ = a · u→ + b · v→     a, b ∈ ℝ (aspoň jedno ≠ 0)\nNulový vektor:  O→ = (0; 0)"}</MBlock>
+        <p style={pS}>Zápis vektoru jako LK = řeší se <strong>soustavou dvou rovnic</strong> (jedna pro x-ové, jedna pro y-ové složky). Příklad: w→=(−1;−1), u→=(1;3), v→=(2;5) → w→ = 3u→ − 2v→.</p>
       </Collapsible>
 
       <Collapsible title="6 · Skalární součin + kolmost">
-        <MBlock>{"u⃗ · v⃗ = u₁·v₁ + u₂·v₂      (výsledek je ČÍSLO)\n\nu⃗ ⊥ v⃗  ⟺  u⃗ · v⃗ = 0"}</MBlock>
+        <MBlock>{"u→ · v→ = u₁·v₁ + u₂·v₂      (výsledek je ČÍSLO)\n\nu→ ⊥ v→  ⟺  u→ · v→ = 0"}</MBlock>
         <p style={pS}>Znaménko podle úhlu φ: φ=90° → součin 0; φ ostrý → součin kladný; φ tupý → součin záporný.</p>
-        <p style={pS}>Příklad: u⃗=(3;6), v⃗=(−4;2) → 3·(−4)+6·2 = 0 → kolmé.</p>
+        <p style={pS}>Příklad: u→=(3;6), v→=(−4;2) → 3·(−4)+6·2 = 0 → kolmé.</p>
       </Collapsible>
 
       <Collapsible title="7 · Odchylka vektorů (úhel)">
-        <MBlock>{"cos φ = (u₁v₁ + u₂v₂) / (|u⃗| · |v⃗|)\n      = (u⃗ · v⃗) / (|u⃗| · |v⃗|)"}</MBlock>
-        <p style={pS}>Příklad: u⃗=(3;−2), v⃗=(6;5): cos φ = 8/(√13·√61) = 8/√793 → φ ≈ 73°30′.</p>
+        <MBlock>{"cos φ = (u₁v₁ + u₂v₂) / (|u→| · |v→|)\n      = (u→ · v→) / (|u→| · |v→|)"}</MBlock>
+        <p style={pS}>Příklad: u→=(3;−2), v→=(6;5): cos φ = 8/(√13·√61) = 8/√793 → φ ≈ 73°30′.</p>
       </Collapsible>
 
       <Collapsible title="8 · Determinant a obsah">
-        <MBlock>{"det(u⃗, v⃗) = | u₁  u₂ |\n            | v₁  v₂ | = u₁·v₂ − u₂·v₁\n\nObsah trojúhelníku:    S△ = ½ · |det(u⃗, v⃗)|\nObsah rovnoběžníku:    S  = |det(u⃗, v⃗)|"}</MBlock>
-        <p style={pS}>Pravidlo: hlavní diagonála minus vedlejší. Vektory u⃗, v⃗ jsou dvě strany vycházející ze stejného vrcholu.</p>
-        <p style={pS}>Příklad: A[1;2], B[3;−1], C[7;4] → AC⃗=(6;2), AB⃗=(2;−3), det=6·(−3)−2·2=−22 → S△ = ½·22 = 11.</p>
+        <MBlock>{"det(u→, v→) = | u₁  u₂ |\n            | v₁  v₂ | = u₁·v₂ − u₂·v₁\n\nObsah trojúhelníku:    S△ = ½ · |det(u→, v→)|\nObsah rovnoběžníku:    S  = |det(u→, v→)|"}</MBlock>
+        <p style={pS}>Pravidlo: hlavní diagonála minus vedlejší. Vektory u→, v→ jsou dvě strany vycházející ze stejného vrcholu.</p>
+        <p style={pS}>Příklad: A[1;2], B[3;−1], C[7;4] → AC→=(6;2), AB→=(2;−3), det=6·(−3)−2·2=−22 → S△ = ½·22 = 11.</p>
       </Collapsible>
 
       <Collapsible title="9 · Přímka — tři tvary rovnice">
-        <MBlock>{"Směrnicový:    y = a·x + b           (a = směrnice)\nObecný:        a·x + b·y + c = 0\nParametrický:  X = A + t·u⃗,  t ∈ ℝ\n               x = a₁ + t·u₁\n               y = a₂ + t·u₂"}</MBlock>
+        <MBlock>{"Směrnicový:    y = a·x + b           (a = směrnice)\nObecný:        a·x + b·y + c = 0\nParametrický:  X = A + t·u→,  t ∈ ℝ\n               x = a₁ + t·u₁\n               y = a₂ + t·u₂"}</MBlock>
         <p style={pS}>Směrnice ze dvou bodů: a = (b₂ − a₂) / (b₁ − a₁). Mezi tvary se převádí — z parametrického vyloučíš t, ze směrnicového vynásobíš a převedeš na nulu.</p>
         <p style={pS}>Příklad: A[3;4], B[5;−1] → y = −5/2 x + 23/2 → (×2) → 5x + 2y − 23 = 0.</p>
       </Collapsible>
 
       <Collapsible title="10 · Směrový a normálový vektor">
-        <MBlock>{"Přímka a·x + b·y + c = 0:\n   normálový vektor   n⃗ = (a; b)   (kolmý na přímku)\n   směrový vektor     s⃗ = (b; −a)  (rovnoběžný s přímkou)\n\ns⃗ ⊥ n⃗   (jejich skalární součin = 0)"}</MBlock>
-        <p style={pS}>Z bodů: s⃗ = AB⃗. Z normály získáš směr „prohozením a změnou znaménka". Příklad: A[1;5], B[3;−4] → s⃗=(2;−9), n⃗=(9;2) → 9x + 2y − 19 = 0.</p>
+        <MBlock>{"Přímka a·x + b·y + c = 0:\n   normálový vektor   n→ = (a; b)   (kolmý na přímku)\n   směrový vektor     s→ = (b; −a)  (rovnoběžný s přímkou)\n\ns→ ⊥ n→   (jejich skalární součin = 0)"}</MBlock>
+        <p style={pS}>Z bodů: s→ = AB→. Z normály získáš směr „prohozením a změnou znaménka". Příklad: A[1;5], B[3;−4] → s→=(2;−9), n→=(9;2) → 9x + 2y − 19 = 0.</p>
       </Collapsible>
 
       <Collapsible title="11 · Vzájemná poloha dvou přímek">
@@ -520,10 +522,10 @@ function ProblemsTab() {
       <p style={{ ...pS, textAlign: "center", marginBottom: "16px" }}>Vzorové úlohy z hodin, samostatné práce a obou procvičovacích listů. Řešení je skryté — nejdřív si zkus spočítat sám.</p>
 
       <SolvedProblem n={1} difficulty="easy" title="Vektor ze dvou bodů a jeho velikost"
-        given="A[2; 1], B[5; 5]. Urči AB⃗ a |AB⃗|."
-        formula={"AB⃗ = (b₁−a₁ ; b₂−a₂)\n|u⃗| = √(u₁² + u₂²)"}
-        steps={"AB⃗ = (5−2 ; 5−1) = (3 ; 4)\n|AB⃗| = √(3² + 4²) = √(9+16) = √25 = 5"}
-        result="AB⃗ = (3; 4),   |AB⃗| = 5" />
+        given="A[2; 1], B[5; 5]. Urči AB→ a |AB→|."
+        formula={"AB→ = (b₁−a₁ ; b₂−a₂)\n|u→| = √(u₁² + u₂²)"}
+        steps={"AB→ = (5−2 ; 5−1) = (3 ; 4)\n|AB→| = √(3² + 4²) = √(9+16) = √25 = 5"}
+        result="AB→ = (3; 4),   |AB→| = 5" />
 
       <SolvedProblem n={2} difficulty="easy" title="Těžiště trojúhelníku"
         given="A[−1; −3], B[5; 2], C[2; 5]. Urči těžiště T."
@@ -532,33 +534,33 @@ function ProblemsTab() {
         result="T = [2 ; 4/3]" />
 
       <SolvedProblem n={3} difficulty="medium" title="Zápis vektoru jako lineární kombinace"
-        given="Zapiš w⃗ = (−1; −1) jako LK vektorů u⃗ = (1; 3), v⃗ = (2; 5)."
-        formula={"w⃗ = a·u⃗ + b·v⃗\n(−1; −1) = a(1;3) + b(2;5) = (a+2b ; 3a+5b)"}
+        given="Zapiš w→ = (−1; −1) jako LK vektorů u→ = (1; 3), v→ = (2; 5)."
+        formula={"w→ = a·u→ + b·v→\n(−1; −1) = a(1;3) + b(2;5) = (a+2b ; 3a+5b)"}
         steps={"−1 = a + 2b      /·(−3)\n−1 = 3a + 5b\n———————————————\n 3 = −3a − 6b\n−1 = 3a + 5b\nsečíst:  2 = −b → b = −2\na = −1 − 2·(−2) = 3"}
-        result="w⃗ = 3·u⃗ − 2·v⃗" />
+        result="w→ = 3·u→ − 2·v→" />
 
       <SolvedProblem n={4} difficulty="medium" title="Tvoří body trojúhelník? (test kolinearity)"
         given="A[1; −2], B[−3; −14], C[4; 7]."
-        formula={"AB⃗, AC⃗ → det(AB⃗, AC⃗) = ?\ndet = 0 → kolineární (NEtvoří trojúhelník)"}
-        steps={"AB⃗ = (−3−1 ; −14−(−2)) = (−4 ; −12)\nAC⃗ = (4−1 ; 7−(−2)) = (3 ; 9)\ndet = (−4)·9 − (−12)·3 = −36 + 36 = 0"}
+        formula={"AB→, AC→ → det(AB→, AC→) = ?\ndet = 0 → kolineární (NEtvoří trojúhelník)"}
+        steps={"AB→ = (−3−1 ; −14−(−2)) = (−4 ; −12)\nAC→ = (4−1 ; 7−(−2)) = (3 ; 9)\ndet = (−4)·9 − (−12)·3 = −36 + 36 = 0"}
         result="det = 0 → body jsou KOLINEÁRNÍ → netvoří trojúhelník" />
 
       <SolvedProblem n={5} difficulty="medium" title="Skalární součin a odchylka vektorů"
-        given="u⃗ = (3; −2), v⃗ = (6; 5). Urči odchylku φ."
-        formula={"cos φ = (u₁v₁ + u₂v₂) / (|u⃗|·|v⃗|)"}
-        steps={"u⃗·v⃗ = 3·6 + (−2)·5 = 18 − 10 = 8\n|u⃗| = √13,  |v⃗| = √61\ncos φ = 8 / (√13·√61) = 8/√793 ≈ 0,284"}
+        given="u→ = (3; −2), v→ = (6; 5). Urči odchylku φ."
+        formula={"cos φ = (u₁v₁ + u₂v₂) / (|u→|·|v→|)"}
+        steps={"u→·v→ = 3·6 + (−2)·5 = 18 − 10 = 8\n|u→| = √13,  |v→| = √61\ncos φ = 8 / (√13·√61) = 8/√793 ≈ 0,284"}
         result="φ ≈ 73°30′" />
 
       <SolvedProblem n={6} difficulty="medium" title="Obsah trojúhelníku přes determinant"
         given="A[1; 2], B[3; −1], C[7; 4]."
-        formula={"S△ = ½ · |det(u⃗, v⃗)|,  u⃗ = AC⃗, v⃗ = AB⃗"}
-        steps={"AC⃗ = (6 ; 2),  AB⃗ = (2 ; −3)\ndet = 6·(−3) − 2·2 = −18 − 4 = −22\nS△ = ½·|−22| = ½·22"}
+        formula={"S△ = ½ · |det(u→, v→)|,  u→ = AC→, v→ = AB→"}
+        steps={"AC→ = (6 ; 2),  AB→ = (2 ; −3)\ndet = 6·(−3) − 2·2 = −18 − 4 = −22\nS△ = ½·|−22| = ½·22"}
         result="S△ = 11" />
 
       <SolvedProblem n={7} difficulty="medium" title="Přímka dvěma body — všechny tři tvary"
         given="A[3; 4], B[5; −1]. Urči parametrický, směrnicový a obecný tvar."
-        formula={"u⃗ = AB⃗ ;  a = (b₂−a₂)/(b₁−a₁) ;  ax+by+c=0"}
-        steps={"u⃗ = AB⃗ = (2 ; −5)\nparametricky:  x = 3 + 2t,  y = 4 − 5t\nsměrnice a = (−1−4)/(5−3) = −5/2\n4 = 3·(−5/2) + b → b = 23/2\nsměrnicový:  y = −5/2 x + 23/2   /·2\nobecný:  2y = −5x + 23"}
+        formula={"u→ = AB→ ;  a = (b₂−a₂)/(b₁−a₁) ;  ax+by+c=0"}
+        steps={"u→ = AB→ = (2 ; −5)\nparametricky:  x = 3 + 2t,  y = 4 − 5t\nsměrnice a = (−1−4)/(5−3) = −5/2\n4 = 3·(−5/2) + b → b = 23/2\nsměrnicový:  y = −5/2 x + 23/2   /·2\nobecný:  2y = −5x + 23"}
         result="x=3+2t, y=4−5t  ·  y = −5/2 x + 23/2  ·  5x + 2y − 23 = 0" />
 
       <SolvedProblem n={8} difficulty="hard" title="Vzájemná poloha + průsečík + úhel"
@@ -574,27 +576,27 @@ function ProblemsTab() {
         result="d = 2√10 ≈ 6,32" />
 
       <SolvedProblem n={10} difficulty="hard" title="Samostatná práce — vektor jako LK"
-        given="w⃗ = (4; 8) zapiš jako LK u⃗ = (−2; 1), v⃗ = (4; 2)."
+        given="w→ = (4; 8) zapiš jako LK u→ = (−2; 1), v→ = (4; 2)."
         formula={"(4; 8) = a(−2;1) + b(4;2) = (−2a+4b ; a+2b)"}
         steps={"−2a + 4b = 4\n  a + 2b = 8   → a = 8 − 2b\ndosadit: −2(8−2b) + 4b = 4\n−16 + 4b + 4b = 4 → 8b = 20 → b = 5/2\na = 8 − 2·(5/2) = 3"}
-        result="w⃗ = 3·u⃗ + (5/2)·v⃗" />
+        result="w→ = 3·u→ + (5/2)·v→" />
 
       <SolvedProblem n={11} difficulty="hard" title="Samostatná práce — dopočet vrcholů rovnoběžníku"
         given="Rovnoběžník ABCD: A[−2; 0], B[2; 3], střed úhlopříček S[3/2; −2]. Urči C, D a dokaž, že nejde o obdélník, čtverec ani kosočtverec."
         formula={"S je střed obou úhlopříček:\nC = 2S − A,  D = 2S − B"}
-        steps={"C = (2·3/2 − (−2) ; 2·(−2) − 0) = (5 ; −4)\nD = (3 − 2 ; −4 − 3) = (1 ; −7)\nAB⃗ = (4; 3) → |AB| = 5\nAD⃗ = (3; −7) → |AD| = √58\n|AB| ≠ |AD| → ne kosočtverec, ne čtverec\nAB⃗·AD⃗ = 4·3 + 3·(−7) = −9 ≠ 0 → ne kolmé → ne obdélník"}
+        steps={"C = (2·3/2 − (−2) ; 2·(−2) − 0) = (5 ; −4)\nD = (3 − 2 ; −4 − 3) = (1 ; −7)\nAB→ = (4; 3) → |AB| = 5\nAD→ = (3; −7) → |AD| = √58\n|AB| ≠ |AD| → ne kosočtverec, ne čtverec\nAB→·AD→ = 4·3 + 3·(−7) = −9 ≠ 0 → ne kolmé → ne obdélník"}
         result="C[5; −4], D[1; −7] → obecný rovnoběžník (ani obdélník, ani čtverec, ani kosočtverec)" />
 
       <SolvedProblem n={12} difficulty="hard" title="Samostatná práce — vektor pod daným úhlem"
-        given="u⃗ = (√3; −1). Urči v⃗ tak, aby svíral s u⃗ úhel 60° a měl velikost 4."
-        formula={"|u⃗| = 2 ;  u⃗·v⃗ = |u⃗|·|v⃗|·cos 60° = 2·4·½ = 4\nv⃗ = (x; y):  √3·x − y = 4  a  x² + y² = 16"}
-        steps={"y = √3·x − 4\nx² + (√3x − 4)² = 16\n4x² − 8√3·x = 0 → 4x(x − 2√3) = 0\nx = 0 → y = −4         (v⃗ = (0; −4))\nx = 2√3 → y = 2        (v⃗ = (2√3; 2))"}
-        result="v⃗ = (2√3; 2)  nebo  v⃗ = (0; −4)" />
+        given="u→ = (√3; −1). Urči v→ tak, aby svíral s u→ úhel 60° a měl velikost 4."
+        formula={"|u→| = 2 ;  u→·v→ = |u→|·|v→|·cos 60° = 2·4·½ = 4\nv→ = (x; y):  √3·x − y = 4  a  x² + y² = 16"}
+        steps={"y = √3·x − 4\nx² + (√3x − 4)² = 16\n4x² − 8√3·x = 0 → 4x(x − 2√3) = 0\nx = 0 → y = −4         (v→ = (0; −4))\nx = 2√3 → y = 2        (v→ = (2√3; 2))"}
+        result="v→ = (2√3; 2)  nebo  v→ = (0; −4)" />
 
       <SolvedProblem n={13} difficulty="hard" title="Procvičovací list — těžnice a výška v trojúhelníku"
         given="△ABC: A[−6; 1], B[−1; −3], C[3; 4]. Obecná rovnice přímky s těžnicí na stranu c; parametrické vyjádření přímky s výškou na stranu a."
-        formula={"Těžnice na c: z C do středu S_c úsečky AB.\nVýška na a (= BC): bodem A, kolmá na BC⃗ → směr ⊥ BC⃗."}
-        steps={"S_c = střed AB = [(−6−1)/2 ; (1−3)/2] = [−7/2 ; −1]\nsměr CS_c ~ (13 ; 10) → normála (10 ; −13)\ntěžnice: 10x − 13y + c = 0, bodem C[3;4]: 30 − 52 + c = 0 → c = 22\n\nBC⃗ = (4 ; 7) → směr výšky ⊥ BC⃗ = (7 ; −4)\nvýška bodem A[−6;1]:  x = −6 + 7t,  y = 1 − 4t"}
+        formula={"Těžnice na c: z C do středu S_c úsečky AB.\nVýška na a (= BC): bodem A, kolmá na BC→ → směr ⊥ BC→."}
+        steps={"S_c = střed AB = [(−6−1)/2 ; (1−3)/2] = [−7/2 ; −1]\nsměr CS_c ~ (13 ; 10) → normála (10 ; −13)\ntěžnice: 10x − 13y + c = 0, bodem C[3;4]: 30 − 52 + c = 0 → c = 22\n\nBC→ = (4 ; 7) → směr výšky ⊥ BC→ = (7 ; −4)\nvýška bodem A[−6;1]:  x = −6 + 7t,  y = 1 − 4t"}
         result="těžnice na c:  10x − 13y + 22 = 0     výška na a:  x = −6 + 7t,  y = 1 − 4t" />
     </div>
   );
@@ -612,7 +614,7 @@ function GridTab() {
       <div style={{ ...glass, padding: "18px" }}>
         <p style={{ ...pS, textAlign: "center", marginTop: 0 }}>
           {sub === "vectors"
-            ? "Posuvníky mění složky vektorů u⃗ (modrý) a v⃗ (růžový). Žlutý vektor je výsledek operace."
+            ? "Posuvníky mění složky vektorů u→ (modrý) a v→ (růžový). Žlutý vektor je výsledek operace."
             : "Posuvníky mění bod a směrový vektor každé přímky. Vlevo dole se počítá jejich vzájemná poloha a průsečík."}
         </p>
         {sub === "vectors" ? <VectorPlayground /> : <LinesPlayground />}
@@ -622,42 +624,42 @@ function GridTab() {
 }
 
 const quizQuestions = [
-  { question: "Jaké jsou souřadnice vektoru AB⃗ pro A[2; 1], B[5; 5]?", type: "single",
+  { question: "Jaké jsou souřadnice vektoru AB→ pro A[2; 1], B[5; 5]?", type: "single",
     options: ["(3; 4)", "(7; 6)", "(−3; −4)", "(2; 5)"], correct: [0],
-    explanation: "AB⃗ = (b₁−a₁; b₂−a₂) = (5−2; 5−1) = (3; 4).", tip: "Vždy KONEC mínus ZAČÁTEK." },
-  { question: "Jaká je velikost vektoru u⃗ = (−3; 5)?", type: "single",
+    explanation: "AB→ = (b₁−a₁; b₂−a₂) = (5−2; 5−1) = (3; 4).", tip: "Vždy KONEC mínus ZAČÁTEK." },
+  { question: "Jaká je velikost vektoru u→ = (−3; 5)?", type: "single",
     options: ["√34", "√16", "8", "2"], correct: [0],
-    explanation: "|u⃗| = √((−3)² + 5²) = √(9+25) = √34." },
+    explanation: "|u→| = √((−3)² + 5²) = √(9+25) = √34." },
   { question: "Vzorec pro těžiště trojúhelníku ABC je:", type: "single",
     options: ["[(a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3]", "[(a₁+b₁)/2 ; (a₂+b₂)/2]", "[(a₁+b₁+c₁)/2 ; (a₂+b₂+c₂)/2]", "[a₁+b₁+c₁ ; a₂+b₂+c₂]"], correct: [0],
     explanation: "Těžiště = aritmetický průměr souřadnic všech tří vrcholů (děleno 3)." },
-  { question: "Kolik je skalární součin u⃗·v⃗ pro u⃗ = (1; 5), v⃗ = (4; 3)?", type: "single",
+  { question: "Kolik je skalární součin u→·v→ pro u→ = (1; 5), v→ = (4; 3)?", type: "single",
     options: ["19", "9", "23", "(4; 15)"], correct: [0],
-    explanation: "u⃗·v⃗ = 1·4 + 5·3 = 4 + 15 = 19. Výsledek je číslo, ne vektor!" },
+    explanation: "u→·v→ = 1·4 + 5·3 = 4 + 15 = 19. Výsledek je číslo, ne vektor!" },
   { question: "Dva vektory jsou na sebe kolmé právě tehdy, když:", type: "single",
-    options: ["u⃗·v⃗ = 0", "u⃗·v⃗ = 1", "det(u⃗, v⃗) = 0", "|u⃗| = |v⃗|"], correct: [0],
+    options: ["u→·v→ = 0", "u→·v→ = 1", "det(u→, v→) = 0", "|u→| = |v→|"], correct: [0],
     explanation: "Kolmost ⟺ skalární součin = 0 (protože cos 90° = 0). Pozor: det = 0 znamená rovnoběžnost, ne kolmost!" },
-  { question: "Jsou vektory u⃗ = (3; 6) a v⃗ = (−4; 2) kolmé?", type: "single",
+  { question: "Jsou vektory u→ = (3; 6) a v→ = (−4; 2) kolmé?", type: "single",
     options: ["Ano, jejich skalární součin je 0", "Ne, součin je 24", "Ne, jsou rovnoběžné", "Nelze určit"], correct: [0],
-    explanation: "u⃗·v⃗ = 3·(−4) + 6·2 = −12 + 12 = 0 → kolmé." },
-  { question: "Kolik je det(u⃗, v⃗) pro u⃗ = (6; 2), v⃗ = (2; −3)?", type: "single",
+    explanation: "u→·v→ = 3·(−4) + 6·2 = −12 + 12 = 0 → kolmé." },
+  { question: "Kolik je det(u→, v→) pro u→ = (6; 2), v→ = (2; −3)?", type: "single",
     options: ["−22", "22", "14", "−14"], correct: [0],
     explanation: "det = u₁v₂ − u₂v₁ = 6·(−3) − 2·2 = −18 − 4 = −22." },
-  { question: "Obsah trojúhelníku daného vektory u⃗, v⃗ se počítá jako:", type: "single",
-    options: ["½·|det(u⃗, v⃗)|", "|det(u⃗, v⃗)|", "½·(u⃗·v⃗)", "|u⃗|·|v⃗|"], correct: [0],
+  { question: "Obsah trojúhelníku daného vektory u→, v→ se počítá jako:", type: "single",
+    options: ["½·|det(u→, v→)|", "|det(u→, v→)|", "½·(u→·v→)", "|u→|·|v→|"], correct: [0],
     explanation: "S△ = ½·|det|. Bez poloviny (|det|) je to obsah rovnoběžníku." },
   { question: "Jaký je normálový vektor přímky 5x + 2y − 23 = 0?", type: "single",
     options: ["(5; 2)", "(2; −5)", "(−23; 0)", "(2; 5)"], correct: [0],
-    explanation: "U přímky ax+by+c=0 je normálový vektor n⃗ = (a; b) = (5; 2)." },
-  { question: "Přímka má normálový vektor n⃗ = (a; b). Jaký je její směrový vektor?", type: "single",
+    explanation: "U přímky ax+by+c=0 je normálový vektor n→ = (a; b) = (5; 2)." },
+  { question: "Přímka má normálový vektor n→ = (a; b). Jaký je její směrový vektor?", type: "single",
     options: ["(b; −a)", "(a; b)", "(−a; −b)", "(a; −b)"], correct: [0],
-    explanation: "Směrový vektor je kolmý na normálu: s⃗ = (b; −a). Ověř: (a;b)·(b;−a) = ab − ab = 0." },
+    explanation: "Směrový vektor je kolmý na normálu: s→ = (b; −a). Ověř: (a;b)·(b;−a) = ab − ab = 0." },
   { question: "Které z následujících jsou platné tvary rovnice přímky? (více odpovědí)", type: "multi",
-    options: ["Směrnicový y = ax + b", "Obecný ax + by + c = 0", "Parametrický X = A + t·u⃗", "Determinantový det(x) = 0"], correct: [0, 1, 2],
+    options: ["Směrnicový y = ax + b", "Obecný ax + by + c = 0", "Parametrický X = A + t·u→", "Determinantový det(x) = 0"], correct: [0, 1, 2],
     explanation: "Přímku zapisujeme směrnicově, obecně a parametricky. Žádný »determinantový« tvar neexistuje." },
   { question: "Co platí pro body A[1; −2], B[−3; −14], C[4; 7]?", type: "single",
     options: ["Jsou kolineární — netvoří trojúhelník", "Tvoří pravoúhlý trojúhelník", "Tvoří rovnostranný trojúhelník", "Tvoří rovnoběžník"], correct: [0],
-    explanation: "AB⃗=(−4;−12), AC⃗=(3;9), det = −36 + 36 = 0 → leží na jedné přímce." },
+    explanation: "AB→=(−4;−12), AC→=(3;9), det = −36 + 36 = 0 → leží na jedné přímce." },
   { question: "Vzdálenost bodu A[x₀;y₀] od přímky ax+by+c=0 je:", type: "single",
     options: ["|ax₀+by₀+c| / √(a²+b²)", "(ax₀+by₀+c) / (a²+b²)", "√(a²+b²) / |ax₀+by₀+c|", "|ax₀+by₀+c|"], correct: [0],
     explanation: "d = |ax₀+by₀+c| / √(a²+b²). V čitateli je absolutní hodnota (vzdálenost je nezáporná)." },
@@ -665,32 +667,32 @@ const quizQuestions = [
     options: ["Splývající (totožné)", "Různoběžné", "Rovnoběžné různé", "Kolmé"], correct: [0],
     explanation: "Rovnoběžné směry + společný bod = jde o stejnou přímku → splývající." },
   { question: "Vzorec pro kosinus úhlu mezi vektory je:", type: "single",
-    options: ["(u₁v₁+u₂v₂) / (|u⃗|·|v⃗|)", "(u₁v₁+u₂v₂) · |u⃗| · |v⃗|", "(u₁v₂−u₂v₁) / (|u⃗|·|v⃗|)", "|u⃗| · |v⃗|"], correct: [0],
-    explanation: "cos φ = (u⃗·v⃗)/(|u⃗|·|v⃗|). V čitateli skalární součin, ve jmenovateli součin velikostí." },
-  { question: "Jak zapíšeš w⃗ = (−1; −1) jako LK u⃗ = (1; 3), v⃗ = (2; 5)?", type: "single",
-    options: ["3u⃗ − 2v⃗", "2u⃗ − 3v⃗", "−3u⃗ + 2v⃗", "u⃗ + v⃗"], correct: [0],
-    explanation: "Soustava a+2b=−1, 3a+5b=−1 → a=3, b=−2 → w⃗ = 3u⃗ − 2v⃗." },
-  { question: "Jaký je opačný vektor k u⃗ = (1; 2)?", type: "single",
+    options: ["(u₁v₁+u₂v₂) / (|u→|·|v→|)", "(u₁v₁+u₂v₂) · |u→| · |v→|", "(u₁v₂−u₂v₁) / (|u→|·|v→|)", "|u→| · |v→|"], correct: [0],
+    explanation: "cos φ = (u→·v→)/(|u→|·|v→|). V čitateli skalární součin, ve jmenovateli součin velikostí." },
+  { question: "Jak zapíšeš w→ = (−1; −1) jako LK u→ = (1; 3), v→ = (2; 5)?", type: "single",
+    options: ["3u→ − 2v→", "2u→ − 3v→", "−3u→ + 2v→", "u→ + v→"], correct: [0],
+    explanation: "Soustava a+2b=−1, 3a+5b=−1 → a=3, b=−2 → w→ = 3u→ − 2v→." },
+  { question: "Jaký je opačný vektor k u→ = (1; 2)?", type: "single",
     options: ["(−1; −2)", "(2; 1)", "(−2; −1)", "(1; −2)"], correct: [0],
-    explanation: "−u⃗ = (−u₁; −u₂) = (−1; −2)." },
+    explanation: "−u→ = (−u₁; −u₂) = (−1; −2)." },
 ];
 
 function Flashcards() {
   const cards = [
-    { f: "Souřadnice vektoru AB⃗", b: "(b₁ − a₁ ; b₂ − a₂)\nKONEC mínus ZAČÁTEK" },
-    { f: "Velikost vektoru |u⃗|", b: "√(u₁² + u₂²)" },
+    { f: "Souřadnice vektoru AB→", b: "(b₁ − a₁ ; b₂ − a₂)\nKONEC mínus ZAČÁTEK" },
+    { f: "Velikost vektoru |u→|", b: "√(u₁² + u₂²)" },
     { f: "Střed úsečky AB", b: "[ (a₁+b₁)/2 ; (a₂+b₂)/2 ]" },
     { f: "Těžiště trojúhelníku T", b: "[ (a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3 ]" },
-    { f: "Skalární součin u⃗·v⃗", b: "u₁v₁ + u₂v₂\n(výsledek je ČÍSLO)" },
-    { f: "Kdy jsou vektory kolmé?", b: "u⃗ ⊥ v⃗  ⟺  u⃗·v⃗ = 0" },
-    { f: "Kosinus úhlu vektorů", b: "cos φ = (u₁v₁+u₂v₂) / (|u⃗|·|v⃗|)" },
-    { f: "Determinant det(u⃗, v⃗)", b: "u₁·v₂ − u₂·v₁" },
-    { f: "Obsah trojúhelníku ze 2 vektorů", b: "S△ = ½ · |det(u⃗, v⃗)|" },
-    { f: "Obsah rovnoběžníku", b: "S = |det(u⃗, v⃗)|" },
+    { f: "Skalární součin u→·v→", b: "u₁v₁ + u₂v₂\n(výsledek je ČÍSLO)" },
+    { f: "Kdy jsou vektory kolmé?", b: "u→ ⊥ v→  ⟺  u→·v→ = 0" },
+    { f: "Kosinus úhlu vektorů", b: "cos φ = (u₁v₁+u₂v₂) / (|u→|·|v→|)" },
+    { f: "Determinant det(u→, v→)", b: "u₁·v₂ − u₂·v₁" },
+    { f: "Obsah trojúhelníku ze 2 vektorů", b: "S△ = ½ · |det(u→, v→)|" },
+    { f: "Obsah rovnoběžníku", b: "S = |det(u→, v→)|" },
     { f: "Směrnice přímky ze 2 bodů", b: "a = (b₂ − a₂) / (b₁ − a₁)" },
-    { f: "Tři tvary rovnice přímky", b: "směrnicový y=ax+b\nobecný ax+by+c=0\nparametrický X=A+t·u⃗" },
-    { f: "Normálový vektor přímky ax+by+c=0", b: "n⃗ = (a; b)" },
-    { f: "Směrový vektor z normály (a;b)", b: "s⃗ = (b; −a)" },
+    { f: "Tři tvary rovnice přímky", b: "směrnicový y=ax+b\nobecný ax+by+c=0\nparametrický X=A+t·u→" },
+    { f: "Normálový vektor přímky ax+by+c=0", b: "n→ = (a; b)" },
+    { f: "Směrový vektor z normály (a;b)", b: "s→ = (b; −a)" },
     { f: "Vzdálenost bodu od přímky", b: "d = |ax₀+by₀+c| / √(a²+b²)" },
     { f: "Vzájemná poloha přímek", b: "det(s_p,s_q)≠0 → různoběžné\ndet=0 → rovnoběžné / splývající" },
   ];
@@ -726,14 +728,14 @@ function FormulaSheet() {
   );
   return (
     <div style={{ maxWidth: "720px", margin: "0 auto" }}>
-      <p style={{ ...pS, textAlign: "center", marginBottom: "16px" }}>Vše, co musíš umět zpaměti. Vektory značíme šipkou (u⃗).</p>
-      {sec("Vektory a body", "AB⃗ = (b₁−a₁ ; b₂−a₂)\n|u⃗| = √(u₁² + u₂²)\n−u⃗ = (−u₁ ; −u₂)\nStřed AB:  S = [(a₁+b₁)/2 ; (a₂+b₂)/2]\nTěžiště:   T = [(a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3]")}
-      {sec("Operace", "u⃗ + v⃗ = (u₁+v₁ ; u₂+v₂)\nv⃗ − u⃗ = (v₁−u₁ ; v₂−u₂)\nk·u⃗  = (k·u₁ ; k·u₂)\nLin. kombinace:  w⃗ = a·u⃗ + b·v⃗", PINK)}
-      {sec("Závislost / kolinearita", "LZ (kolineární) ⟺ v⃗ = k·u⃗ ⟺ det(u⃗,v⃗) = 0", GREEN)}
-      {sec("Skalární součin & úhel", "u⃗·v⃗ = u₁v₁ + u₂v₂\nu⃗ ⊥ v⃗ ⟺ u⃗·v⃗ = 0\ncos φ = (u₁v₁+u₂v₂) / (|u⃗|·|v⃗|)", CYAN)}
-      {sec("Determinant & obsah", "det(u⃗,v⃗) = u₁v₂ − u₂v₁\nS△ = ½·|det(u⃗,v⃗)|\nS rovnoběžníku = |det(u⃗,v⃗)|", YELLOW)}
+      <p style={{ ...pS, textAlign: "center", marginBottom: "16px" }}>Vše, co musíš umět zpaměti. Vektory značíme šipkou (u→).</p>
+      {sec("Vektory a body", "AB→ = (b₁−a₁ ; b₂−a₂)\n|u→| = √(u₁² + u₂²)\n−u→ = (−u₁ ; −u₂)\nStřed AB:  S = [(a₁+b₁)/2 ; (a₂+b₂)/2]\nTěžiště:   T = [(a₁+b₁+c₁)/3 ; (a₂+b₂+c₂)/3]")}
+      {sec("Operace", "u→ + v→ = (u₁+v₁ ; u₂+v₂)\nv→ − u→ = (v₁−u₁ ; v₂−u₂)\nk·u→  = (k·u₁ ; k·u₂)\nLin. kombinace:  w→ = a·u→ + b·v→", PINK)}
+      {sec("Závislost / kolinearita", "LZ (kolineární) ⟺ v→ = k·u→ ⟺ det(u→,v→) = 0", GREEN)}
+      {sec("Skalární součin & úhel", "u→·v→ = u₁v₁ + u₂v₂\nu→ ⊥ v→ ⟺ u→·v→ = 0\ncos φ = (u₁v₁+u₂v₂) / (|u→|·|v→|)", CYAN)}
+      {sec("Determinant & obsah", "det(u→,v→) = u₁v₂ − u₂v₁\nS△ = ½·|det(u→,v→)|\nS rovnoběžníku = |det(u→,v→)|", YELLOW)}
       {sec("Přímka — tvary", "Směrnicový:    y = a·x + b,   a = (b₂−a₂)/(b₁−a₁)\nObecný:        a·x + b·y + c = 0\nParametrický:  x = a₁ + t·u₁,  y = a₂ + t·u₂", PINK)}
-      {sec("Směrový a normálový vektor", "ax + by + c = 0:\n   n⃗ = (a; b)   (normála, ⊥ přímce)\n   s⃗ = (b; −a)  (směr, ∥ přímce)\ns⃗ = AB⃗ (ze dvou bodů)", CYAN)}
+      {sec("Směrový a normálový vektor", "ax + by + c = 0:\n   n→ = (a; b)   (normála, ⊥ přímce)\n   s→ = (b; −a)  (směr, ∥ přímce)\ns→ = AB→ (ze dvou bodů)", CYAN)}
       {sec("Vzájemná poloha přímek", "det(s_p,s_q) ≠ 0 → různoběžné (→ průsečík)\ndet(s_p,s_q) = 0 → rovnoběžné NEBO splývající\nÚhel: cos φ = |s_p·s_q| / (|s_p|·|s_q|)", GREEN)}
       {sec("Vzdálenost bodu od přímky", "A[x₀;y₀], p: ax+by+c=0\nd = |a·x₀ + b·y₀ + c| / √(a² + b²)", YELLOW)}
     </div>
