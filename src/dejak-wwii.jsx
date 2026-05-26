@@ -50,7 +50,8 @@ POVSTALECKÝ CHAOS A POLSKÁ OTÁZKA:
 • Proti sobě bojovali „rudí" partyzáni, oddíly za samostatnost a kolaborantské jednotky
 • Na západní Ukrajině a Volyni navíc UPA (Ukrajinská povstalecká armáda) a polská Armija krajowa (AK) podřízená londýnské vládě
 • Dohoda Sikorski–Majskij (30.7.1941): spojenecká smlouva Polska se SSSR, otázka hranic ponechána otevřená
-• Katyň (duben 1943): odhalen masový hrob polských důstojníků → polská vláda požádala Červený kříž o vyšetření → SSSR přerušil styky a ustavil „vlastní" prosovětskou polskou vládu (1944)
+• Katyňský masakr: na jaře 1940 NKVD na přímý Berijův rozkaz povraždila 22 000–25 000 polských důstojníků a příslušníků inteligence (popravy v Katyni, Ostaškovu, Starobělsku)
+• Katyň (duben 1943): odhaleny masové hroby → polská vláda požádala Červený kříž o vyšetření → SSSR přerušil styky a ustavil „vlastní" prosovětskou polskou vládu (1944); téma zpracoval film „Katyň" (Andrzej Wajda, 2007)
 • Zodpovědnost NKVD za katyňský masakr přiznal SSSR teprve v roce 1990
 
 OTÁZKY K TEXTU (OTAZ) – VZOROVÉ ODPOVĚDI:
@@ -103,17 +104,28 @@ PŘÍKLAD SPRÁVNÉ ODPOVĚDI:
     {
       id: 2,
       title: "Válečné fronty a operace 1939–1943",
-      summary: `🔑 ZAČÁTEK: 1.9.1939 přepadení Polska (blitzkrieg), 3.9. VB+FR „podivná válka", 17.9. SSSR z východu
-🔑 1940: Dánsko, Norsko (Narvik), Benelux; útok přes Ardeny → Dunkerque (338 256 evakuováno), pád Francie 22.6.
+      summary: `🔑 POLSKO 1939: Piłsudski; pakt Ribbentrop–Molotov (23.8.) → 1.9. útok (Gliwice, blitzkrieg), 17.9. SSSR; Gen. gouvernement
+🔑 1940: Dánsko, Norsko (Narvik), Benelux; útok přes Ardeny → Dunkerque (338 256), pád Francie 22.6.; „podivná válka"
 🔑 BITVA O ANGLII (VII–X/1940): RAF × Luftwaffe; čs. + polští letci; Londýn 40 000 mrtvých
+🔑 BALKÁN 1941: Jugoslávie k Paktu tří (25.3.) → převrat (27.3.) → útok 6.4.; NDH (ustašovci), odboj Tito × Mihailović
 🔑 BARBAROSSA: 22.6.1941 útok na SSSR; bitva o Moskvu (zima 1941) = první velký neúspěch
 🔑 ZLOM 1942–43: Pearl Harbor (7.12.1941) → USA; Midway, El Alamein, Stalingrad (2.2.1943)`,
       content: `
+MEZIVÁLEČNÉ POLSKO A CESTA K VÁLCE:
+• Polsko obnovil maršál Józef Piłsudski (1867–1935); od roku 1926 vládl sanační režim – „diktatura v rukavičkách", orientace na Francii, strach ze SSSR
+• Po 15.3.1939 (okupace zbytku Česko-Slovenska) uzavřelo Polsko spojeneckou dohodu s VB a Francií; Hitler vypověděl smlouvu o neútočení, obsadil litevskou Klajpedu (Memel) a žádal přístav Gdaňsk
+• Pakt Ribbentrop–Molotov (23.8.1939): dohoda o neútočení + tajný dodatek o rozdělení Polska a Pobaltí mezi Německo a SSSR
+
 ROZPOUTÁNÍ VÁLKY (1939):
-• 1.9.1939: Německo přepadlo Polsko (záminka – inscenovaný přepad vysílačky v Glivicích) – nasazení taktiky blitzkrieg (bleskové války: tanky + letectvo + rychlý postup)
+• 1.9.1939: Německo přepadlo Polsko (záminka – inscenovaný přepad vysílače v Gliwici/Glivicích) – nasazení taktiky blitzkrieg (tanky + letectvo + rychlý postup) → Varšava kapitulovala za 25 dní
 • 3.9.1939: Velká Británie a Francie vyhlásily Německu válku → následovala „podivná válka" (Sitzkrieg) – Spojenci na západní frontě nezahájili ofenzivu
-• 17.9.1939: SSSR podle paktu Ribbentrop–Molotov obsadil východní Polsko → Polsko padlo za 4 týdny a bylo rozděleno
+• 17.9.1939: SSSR podle paktu obsadil východní Polsko (záminka: ochrana Bělorusů a Ukrajinců); 28.9. společná německo-sovětská přehlídka v Brestu Litevském → definitivní rozdělení Polska
 • Listopad 1939 – březen 1940: SSSR napadl Finsko (zimní válka) – Finové kladli statečný odpor
+
+POLSKO ZA OKUPACE:
+• 12.10.1939 zřízen Generální gouvernement (centrum Krakov); okamžitě etnické čistky (zabity miliony Poláků i Židů)
+• Polská exilová vláda odešla do Londýna (Władysław Sikorski); exilová armáda ~250 000 mužů, část zajatců přešla po roce 1941 přes Írán na Západ (gen. Anders)
+• Domácí odboj: Armija Krajowa (Zemská armáda) podřízená londýnské vládě; vznikla i prokomunistická Lublinská vláda
 
 NĚMECKÝ PLÁN ÚTOKU NA ZÁPADĚ:
 • Duben 1940: obsazení Dánska a Norska (přístav Narvik) – přístup k surovinám a základnám (operace Weserübung)
@@ -144,6 +156,18 @@ ROZŠÍŘENÍ KONFLIKTU (1940–41):
 • Balkán (jaro 1941): Německo obsadilo Jugoslávii, Krétu a Řecko, aby zajistilo jižní křídlo před útokem na SSSR
 • Atlantik: konvoje a ponorková válka (bitva o Atlantik); Dálný východ: Čína, Malajsie, Indočína
 
+ROZPAD A OKUPACE JUGOSLÁVIE (1941):
+• Pozadí: Království SHS (1918) → diktatura krále Alexandra I. (1929) → Království Jugoslávie; atentát na Alexandra v Marseille (1934)
+• 25.3.1941 přistoupila Jugoslávie k Paktu tří → lid se bouřil („Raději válku než pakt") → 27.3. proběhl převrat (gen. Mirković)
+• Hitler reagoval 6.4.1941 útokem zahájeným bombardováním Bělehradu (24 německých, 23 italských, 5 maďarských divizí); 10.4. prolomena obrana, král s vládou odešli do exilu do Británie
+• Země rozparcelována: Srbsko (loutkový germanofil Milan Nedić), Slovinsko a další části Třetí říši, Itálii, Bulharsku a Maďarsku
+• Vyhlášen ustašovský Nezávislý stát Chorvatsko (NDH, Ante Pavelić) – pronásledování Srbů, pravoslavných, Židů a Romů (tábor Jasenovac, nástroj „srbosjek")
+
+JUGOSLÁVSKÝ ODBOJ A NĚMECKÉ OFENZIVY (1941–43):
+• Dvě soupeřící centra: četnici Draži Mihailoviće (velkosrbští, pasivní, později kolaborace) × partyzáni Josipa Broze Tita (idea federální Jugoslávie, širší podpora)
+• Povstání začalo 7.7.1941 (krátce vznikla „Užická republika"); Němci provedli za války celkem 7 velkých protipartyzánských ofenziv
+• Fall Weiss (leden 1943) a Fall Schwartz (květen 1943, únik kaňonem Sutjesky, Tito raněn) – partyzány se zničit nepodařilo
+
 OPERACE BARBAROSSA (1941):
 • 22.6.1941: největší pozemní operace dějin – útok na SSSR ve třech směrech (Leningrad, Moskva, Ukrajina/Kavkaz)
 • Zpočátku obrovské sovětské ztráty a německý postup
@@ -160,7 +184,7 @@ ZLOM VÁLKY (1942–1943):
 • Stalingrad (srpen 1942 – 2.2.1943): obklíčení a kapitulace německé 6. armády (Paulus) – rozhodující zlom na východní frontě, přechod iniciativy k SSSR
 
 PŘÍKLAD SPRÁVNÉ ODPOVĚDI:
-"Druhá světová válka začala 1. září 1939 přepadením Polska, které Německo dobylo bleskovou válkou (blitzkrieg); po vyhlášení války Brity a Francouzi (3.9.) následovala 'podivná válka' a 17. září vpadl podle paktu Ribbentrop–Molotov i SSSR. Na jaře 1940 Německo obsadilo Dánsko a Norsko a 10. května udeřilo na západě – přes 'neprostupné' Ardeny prorazilo do týla Spojenců, kteří se museli evakuovat z Dunkerque (zachráněno 338 256 mužů). 22. června kapitulovala Francie (jih ovládl Pétainův režim ve Vichy, odpor vedl z Londýna de Gaulle) a premiérem Británie se stal Churchill. V bitvě o Anglii (červenec–říjen 1940) ale Luftwaffe nezískala vzdušnou převahu nad RAF – vyznamenali se i českoslovenští a polští letci – a Hitler invazi odpískal. 22. června 1941 zahájil operaci Barbarossa proti SSSR; první velký neúspěch přišel v bitvě o Moskvu (zima 1941). Válka se stala světovou 7. prosince 1941, kdy Japonsko přepadlo Pearl Harbor a do války vstoupily USA. Zlom nastal v letech 1942–43: u Midway (červen 1942), u El Alameinu (listopad 1942) a především u Stalingradu (kapitulace 2. února 1943), čímž iniciativa přešla ke spojencům."
+"Druhá světová válka začala 1. září 1939 přepadením Polska, které Německo dobylo bleskovou válkou (blitzkrieg); po vyhlášení války Brity a Francouzi (3.9.) následovala 'podivná válka' a 17. září vpadl podle paktu Ribbentrop–Molotov i SSSR. Polsko bylo rozděleno, Němci v něm zřídili Generální gouvernement a exilová vláda Sikorského odešla do Londýna. Na jaře 1940 Německo obsadilo Dánsko a Norsko a 10. května udeřilo na západě – přes 'neprostupné' Ardeny prorazilo do týla Spojenců, kteří se museli evakuovat z Dunkerque (zachráněno 338 256 mužů). 22. června kapitulovala Francie (jih ovládl Pétainův režim ve Vichy, odpor vedl z Londýna de Gaulle) a premiérem Británie se stal Churchill. V bitvě o Anglii (červenec–říjen 1940) ale Luftwaffe nezískala vzdušnou převahu nad RAF – vyznamenali se i českoslovenští a polští letci – a Hitler invazi odpískal. Na jaře 1941 Německo po vojenském převratu obsadilo i Jugoslávii a Řecko – v Jugoslávii vznikl ustašovský NDH a rozhořel se Titův partyzánský odboj. 22. června 1941 zahájil operaci Barbarossa proti SSSR; první velký neúspěch přišel v bitvě o Moskvu (zima 1941). Válka se stala světovou 7. prosince 1941, kdy Japonsko přepadlo Pearl Harbor a do války vstoupily USA. Zlom nastal v letech 1942–43: u Midway (červen 1942), u El Alameinu (listopad 1942) a především u Stalingradu (kapitulace 2. února 1943), čímž iniciativa přešla ke spojencům."
       `
     },
     {
@@ -169,12 +193,19 @@ PŘÍKLAD SPRÁVNÉ ODPOVĚDI:
       summary: `🔑 KURSK (VII/1943): největší tanková bitva, iniciativa definitivně u SSSR
 🔑 ITÁLIE: Sicílie (VII/1943), pád Mussoliniho, kapitulace (IX/1943), Monte Cassino, Saló; Mussolini † 28.4.1945
 🔑 NORMANDIE: 6.6.1944 (Overlord); Valkýra (20.7.1944); osvobození Paříže (VIII/1944)
-🔑 POVSTÁNÍ 1944: Paříž, Varšava, SNP (29.8.); Ardeny (XII/1944) = poslední něm. ofenziva
+🔑 POVSTÁNÍ 1944: Paříž, Varšavské povstání (AK; 15 tis. + 200 tis. civilistů), SNP (29.8.); Ardeny (XII/1944) = poslední něm. ofenziva
+🔑 JUGOSLÁVIE: Tito uznán Velkou trojkou; AVNOJ → federativní Jugoslávie (6 republik); >1,1 mil. obětí
 🔑 KONEC: Drážďany (II/1945), setkání na Labi, Berlín, Hitler † 30.4.; kapitulace 8.5.1945; Hirošima/Nagasaki, Japonsko 2.9.1945`,
       content: `
 VÝCHODNÍ FRONTA – SOVĚTSKÝ POSTUP:
 • Bitva u Kurska (červenec 1943): největší tanková bitva dějin; Hitler musel přerušit postup kvůli přesunu jednotek na Sicílii → iniciativa definitivně přešla k Rudé armádě
 • Operace Bagration (léto 1944): zničení německé skupiny armád Střed, rychlý postup Rudé armády na západ
+
+OSVOBOZENÍ JUGOSLÁVIE A NÁSTUP TITA:
+• 1943: Spojenci se odvrátili od pasivního Mihailoviće a uznali Titovy partyzány; Tito byl Velkou trojkou uznán za „samostatného spojeneckého vrchního velitele"
+• Po kapitulaci Itálie (1943) partyzáni zesílili → Tito „nejsilnějším mužem na Balkáně"; na zasedáních AVNOJ vznikl základ federativní Jugoslávie
+• 14.10.1944 osvobozen Bělehrad (s pomocí Rudé armády, která se pak stáhla); v květnu 1945 dobyt Záhřeb, poslední Němci se vzdali 12.5.
+• Vznikla Socialistická federativní republika Jugoslávie (6 republik) v čele s Titem; osvobození stálo přes 1,1 milionu životů
 
 ITÁLIE – „MĚKKÉ PODBŘIŠÍ EVROPY":
 • Červenec 1943: vylodění Spojenců na Sicílii a pomalý postup na sever
@@ -193,7 +224,7 @@ ZÁPADNÍ FRONTA – DEN D (OPERACE OVERLORD):
 
 POVSTÁNÍ A ATENTÁT (1944):
 • 20. července 1944: pokus o převrat – operace „Valkýra", atentát na Hitlera ve „Vlčím doupěti" (von Stauffenberg) – neúspěšný
-• Srpen 1944: povstání v Paříži, ve Varšavě a Slovenské národní povstání (SNP, 29.8.)
+• Srpen 1944: osvobození Paříže; Varšavské povstání (Armija Krajowa, 1.8.–3.10. – padlo ~15 tis. vojáků a 200 tis. civilistů, Rudá armáda zůstala stát za Vislou); Slovenské národní povstání (SNP, 29.8.)
 • Karpatsko-dukelská operace (září 1944)
 • Ardenská ofenziva (prosinec 1944 – leden 1945): poslední velká německá ofenziva na západě – neúspěšná (ztráty USA a UK i Wehrmachtu v desetitisících)
 
@@ -212,7 +243,7 @@ PORÁŽKA JAPONSKA:
 • 2.9.1945: kapitulace Japonska (na palubě USS Missouri) – konec 2. světové války
 
 PŘÍKLAD SPRÁVNÉ ODPOVĚDI:
-"V letech 1943–45 přešli spojenci do ofenzivy na všech frontách. Na východě sovětské vítězství u Kurska (červenec 1943), největší tankové bitvě dějin, definitivně přeneslo iniciativu na Rudou armádu, která operací Bagration (1944) postupovala na západ. Spojenci se v červenci 1943 vylodili na Sicílii, padl Mussolini a Itálie kapitulovala, byť Němci obsadili sever (Monte Cassino, republika Saló). Klíčovým okamžikem bylo vylodění v Normandii 6. června 1944 (operace Overlord) pod velením Eisenhowera a Montgomeryho – největší invaze dějin a osvobození Paříže. Proběhla povstání (Paříž, Varšava, SNP) i neúspěšný atentát na Hitlera (Valkýra, 20.7.1944) a poslední německá ofenziva v Ardenách (zima 1944/45) selhala. Po Jaltě následovalo bombardování Drážďan, setkání na Labi, bitva o Berlín, 30. dubna 1945 Hitlerova sebevražda a 8. května (v Moskvě 9. května) kapitulace Německa. V Pacifiku ukončily válku atomové bomby na Hirošimu a Nagasaki (6. a 9. srpna 1945) spolu se vstupem SSSR; Japonsko kapitulovalo 2. září 1945, čímž skončila druhá světová válka."
+"V letech 1943–45 přešli spojenci do ofenzivy na všech frontách. Na východě sovětské vítězství u Kurska (červenec 1943), největší tankové bitvě dějin, definitivně přeneslo iniciativu na Rudou armádu, která operací Bagration (1944) postupovala na západ. Spojenci se v červenci 1943 vylodili na Sicílii, padl Mussolini a Itálie kapitulovala, byť Němci obsadili sever (Monte Cassino, republika Saló). Klíčovým okamžikem bylo vylodění v Normandii 6. června 1944 (operace Overlord) pod velením Eisenhowera a Montgomeryho – největší invaze dějin a osvobození Paříže. Proběhla povstání (Paříž, Varšava, SNP) i neúspěšný atentát na Hitlera (Valkýra, 20.7.1944) a poslední německá ofenziva v Ardenách (zima 1944/45) selhala. Na Balkáně byli Velkou trojkou uznáni Titovi partyzáni, kteří s pomocí Rudé armády osvobodili Bělehrad (14.10.1944) a položili základ federativní Jugoslávie. Po Jaltě následovalo bombardování Drážďan, setkání na Labi, bitva o Berlín, 30. dubna 1945 Hitlerova sebevražda a 8. května (v Moskvě 9. května) kapitulace Německa. V Pacifiku ukončily válku atomové bomby na Hirošimu a Nagasaki (6. a 9. srpna 1945) spolu se vstupem SSSR; Japonsko kapitulovalo 2. září 1945, čímž skončila druhá světová válka."
       `
     },
     {
@@ -343,6 +374,7 @@ ROZDĚLENÍ EVROPY A POČÁTEK STUDENÉ VÁLKY:
 • Svět se stal bipolárním – dvě supervelmoci USA a SSSR; zárodek studené války
 • Expanze SSSR do východní a střední Evropy → legitimizace komunismu, příklon doleva i v západní Evropě
 • „Železná opona" rozdělila Evropu; sovětizace střední a východní Evropy (Československo – únor 1948)
+• Příklad sovětizace: Polsko 1945–47 – zábor území SSSR, likvidace londýnské exilové reprezentace, politické a etnické čistky, pogrom v Kielcích
 
 DALŠÍ DŮSLEDKY:
 • Posun hranic: Polsko posunuto na západ (Odra–Nisa), SSSR si ponechal zisky z let 1939–1941
@@ -440,6 +472,8 @@ GENEZE NACISTICKÉHO VYHLAZOVACÍHO PROGRAMU:
 SOUSTŘEĎOVÁNÍ – GHETTOIZACE (POLSKO):
 • První krok k systematické likvidaci; první ghetto už v říjnu 1939 v Piotrkowě Trybunalském (Generální gouvernement)
 • Únor 1940: ghetto v Lodži; říjen 1940: největší ghetto ve Varšavě (téměř půl milionu Židů)
+• Varšavské ghetto: ~450 000 Židů na 4,5 % rozlohy města (37 % obyvatel), přísun jen ~1125 kalorií denně; většina odvezena do Treblinky; duben–květen 1943 povstání v ghettu
+• Irena Sendlerowa (Żegota) zachránila asi 2500 židovských dětí; byla zatčena, mučena gestapem a odsouzena k smrti (popravě unikla)
 • Další velká ghetta v Krakově, Tarnowě, Sosnowci a na dalších asi 650 místech
 • Funkce: shromáždění Židů před deportací do vyhlazovacích táborů + nepřímá likvidace (hladomor, nemoci, vyčerpání, otrocká práce)
 
@@ -515,136 +549,6 @@ PŘÍKLAD SPRÁVNÉ ODPOVĚDI:
 "Šoa (holocaust) bylo systematické, státem organizované pronásledování a vyvražďování Židů nacistickým Německem jako praktická aplikace 'konečného řešení židovské otázky'. Program se rodil postupně – od Hitlerova 'proroctví' (1939) a vzniku RSHA (Himmler, Heydrich, Eichmannův 'Židovský referát') přes ghettoizaci v Polsku a vyvražďování oddíly Einsatzgruppen na východě až po konferenci ve Wannsee (20.1.1942), která vyhlazování koordinovala. Zahynulo přibližně 6 milionů Židů, tedy zhruba dvě třetiny evropské židovské populace, nejvíce z Polska (asi 3 miliony). Vedle Židů byly vyvražďovány i další skupiny – sovětští zajatci, Poláci, Romové (porajmos), hendikepovaní či homosexuálové. Šest vyhlazovacích táborů vzniklo na území dnešního Polska (Osvětim, Treblinka, Bełżec, Sobibór, Majdanek, Chełmno), kde se v rámci Akce Reinhard vraždilo plynem Cyklon B (Treblinka přes 870 tisíc obětí). V českých zemích bylo zavražděno přes 80 tisíc Židů. Jednotlivé země se zachovaly různě – Dánsko své Židy zachránilo, zatímco Slovenský štát je vydával z vlastní iniciativy. Holocaust je dnes terčem popírání (v ČR trestný čin), které vychází z antisemitismu a snahy revidovat výsledky války; samostatným jevem je 'holocaustový průmysl' Normana Finkelsteina, jenž kritizuje zneužívání památky obětí, aniž by holocaust zpochybňoval."
       `
     },
-    {
-      id: 8,
-      title: "Polsko za války a po válce (1939–1947)",
-      summary: `🔑 PIŁSUDSKI: maršál a obnovitel Polska; 1926 sanační režim („diktatura v rukavičkách"), strach ze SSSR
-🔑 ROZDĚLENÍ: pakt Ribbentrop–Molotov (23.8.1939) → 1.9. útok Německa, 17.9. SSSR; Gen. gouvernement (Krakov)
-🔑 ODBOJ: exilová vláda (Sikorski) v Londýně, Armija Krajowa; Varšavské ghetto (1943), Varšavské povstání (1944)
-🔑 KATYŇ (jaro 1940): Berijův rozkaz, NKVD; 22–25 tis. zavražděných; odhalení 1943, přiznání SSSR až 1990
-🔑 PO VÁLCE: sovětizace 1945–47, zábor území, čistky, pogrom v Kielcích; epilog – Smolensk 2010`,
-      content: `
-JÓZEF PIŁSUDSKI A MEZIVÁLEČNÉ POLSKO:
-• Józef Klemens Piłsudski (1867–1935): maršál a obnovitel svobodného Polska, vůdce a vrchní velitel státu (1918–1922), poté autokrat (1926–1935)
-• Za 1. světové války nejprve spolupráce s Němci, pak vězněn; socialista
-• 1926: sanační režim – „diktatura v rukavičkách"; orientace na Francii; strach ze SSSR + smlouva s Německem
-• Podstata polské situace: pokus sovětských bolševiků vyvézt revoluci do Evropy × polský nacionalismus
-
-POLSKÉ OBAVY A ROZDĚLENÍ ZEMĚ (1939):
-• Po 15.3.1939 (okupace zbytku Česko-Slovenska) obavy Polska → spojenecká dohoda s Velkou Británií a Francií
-• Hitler reaguje vypovězením smlouvy o neútočení; 22.3. obsazuje litevskou Klajpedu (Memel); narůstají provokace
-• Goebbelsův tisk vede kampaň o „utiskovaných" Němcích v Polsku; Hitler žádá sporný přístav Gdaňsk
-• Pakt Molotov–Ribbentrop (23.8.1939): dohoda o neútočení + tajný dodatek o parcelaci Polska a Pobaltí
-• 1.9.1939: záminkou zinscenované přepadení vysílače v Gliwici; časně obsazen Gdaňsk
-• 3.9.1939: VB a Francie vyhlašují válku; blesková válka → za 25 dní kapitulace Varšavy
-• 17.9.: sovětské jednotky překračují hranici (záminka: ochrana běloruské a ukrajinské populace)
-• 28.9.: společná přehlídka německých a sovětských vojsk v Brestu Litevském → definitivní rozdělení Polska
-
-POLÁCI ZA VÁLKY:
-• 12.10.1939 zřízen Generální gouvernement (centrum Krakov); okamžitě etnické čistky (zabito cca 3 mil. Poláků a 3 mil. Židů)
-• Polská exilová vláda do Londýna (Władysław Sikorski); exilová armáda cca 250 000 mužů (Francie, Norsko, UK, sev. Afrika, Itálie aj.)
-• Domácí odboj: Armija Krajowa (Zemská armáda) podřízená londýnské vládě
-• Po útoku na SSSR (1941): odchod polských zajatců přes Írán na Západ (gen. Władysław Anders) × vytvoření Polské lidové armády a prokomunistické Lublinské vlády
-
-VARŠAVSKÉ GHETTO A IRENA SENDLEROWA:
-• Od roku 1940 do varšavského ghetta násilně sestěhováno asi 450 000 Židů
-• Ghetto tvořilo jen 4,5 % rozlohy města, ale soustředilo 37 % obyvatel; přísun jen ~1125 kalorií denně
-• Většina obyvatel odvezena do vyhlazovacího tábora Treblinka; duben–květen 1943 povstání v ghettu
-• Irena Sendlerowa (1910–2008): sociální pracovnice, členka dětského oddělení Rady pro pomoc Židům (Żegota)
-• Za války zachránila asi 2500 židovských dětí; zatčena a mučena gestapem, odsouzena k smrti, s pomocí Żegoty popravě unikla
-• Po roce 1945 pronásledována; 1965 prohlášena Jad Vašem za spravedlivou mezi národy, 2003 Řád bílého orla
-
-VARŠAVSKÉ POVSTÁNÍ (1.8.–3.10.1944):
-• Armija Krajowa zahájila povstání proti Němcům; 15 000 zabitých vojáků AK + 200 000 civilistů
-• Nacistická represe + pasivita Rudé armády, která zůstala stát za Vislou
-
-KATYŇSKÝ MASAKR (JARO 1940):
-• Při útoku SSSR na Polsko (1939) zajato mnoho vojáků a civilní inteligence → deportace do Ruska, Běloruska a na Ukrajinu
-• Na příkaz NKVD a přímý Berijův rozkaz („není žádoucí držet prominentní nepřátelské zajatce") povražděni
-• Popravy v Katyni, Ostaškovu a Starobělsku; celkem 22 000–25 000 mužů (15 000 důstojníků + 10 000 příslušníků inteligence)
-• Duben 1943: odhaleny první hroby (zajatci stříleni do týla); exilová vláda podezírá SSSR, žádá Mezinárodní červený kříž
-• Smrt (vražda?) gen. Sikorského 1943; SSSR vinu popírá (i u Norimberského procesu), Spojenci důkazy zamlčují
-• SSSR vinu popíral až do roku 1990; téma zpracoval i film „Katyň" (Andrzej Wajda, 2007)
-
-POLSKO 1945–1947 (SOVĚTIZACE):
-• Sovětizace + zábor území; zatčení a poprava členů londýnské exilové vlády; zákaz návratu exilového vojska
-• Regionální občanská válka: komunistická Lidová armáda × prolondýnská Armia Krajowa × UPA (banderovci)
-• Transfery obyvatelstva, politické a etnické čistky (80 000 mrtvých Poláků × 20 000 Ukrajinců), pogrom v Kielcích
-
-EPILOG – SMOLENSK 2010:
-• 10.4.2010 letecká tragédie u Smolenska (cesta k uctění obětí Katyně): 96 mrtvých
-• Mezi oběťmi prezident Lech Kaczyński s první dámou, poslední exilový prezident Kaczorowski a celé velení polské armády
-
-PŘÍKLAD SPRÁVNÉ ODPOVĚDI:
-"Meziválečné Polsko obnovil maršál Józef Piłsudski, který od roku 1926 vládl sanačnímu režimu – 'diktatuře v rukavičkách' – orientovanému na Francii a obávajícímu se SSSR. O osudu země rozhodl pakt Ribbentrop–Molotov (23.8.1939) s tajným dodatkem o rozdělení Polska: 1. září 1939 zaútočilo Německo (záminkou byl zinscenovaný přepad vysílače v Gliwici), 17. září vpadl ze východu SSSR a Polsko bylo rozděleno. Němci zřídili Generální gouvernement a rozpoutali teror, exilová vláda Władysława Sikorského odešla do Londýna a doma vznikla Armija Krajowa. Tragédií byl katyňský masakr (jaro 1940), při němž NKVD na Berijův rozkaz povraždila 22–25 tisíc polských důstojníků a příslušníků inteligence; SSSR vinu přiznal až roku 1990. Ve varšavském ghettu zahynuly statisíce Židů (povstání 1943) – tisíce dětí ale zachránila Irena Sendlerowa. Varšavské povstání 1944 Němci krvavě potlačili, zatímco Rudá armáda zůstala stát za Vislou. Po válce (1945–47) bylo Polsko sovětizováno, jeho hranice posunuty a doprovázely je čistky a pogromy. Symbolickým epilogem se stala letecká tragédie u Smolenska (2010), při níž zahynul prezident Lech Kaczyński i velení polské armády."
-      `
-    },
-    {
-      id: 9,
-      title: "Jugoslávie za 2. světové války",
-      summary: `🔑 POZADÍ: Království SHS (1918) → diktatura Alexandra I. (1929) → Království Jugoslávie; atentát 1934 (Marseille)
-🔑 1941: 25.3. přistoupení k Paktu tří → 27.3. převrat → 6.4. německý útok (bombardování Bělehradu); exil do Británie
-🔑 OKUPACE: rozparcelování (Nedić v Srbsku, Itálie, Bulharsko, Maďarsko); NDH – ustašovci (Pavelić), Jasenovac
-🔑 ODBOJ: Četnici (Mihailović, pasivní, později kolaborace) × Partyzáni (Tito) – federální idea
-🔑 VÝSLEDEK: AVNOJ, Tito „nejsilnější muž na Balkáně", SFRJ (6 republik); přes 1,1 mil. padlých`,
-      content: `
-POZADÍ – OD KRÁLOVSTVÍ SHS K JUGOSLÁVII:
-• 1.12.1918 vyhlášeno Království Srbů, Chorvatů a Slovinců (Království SHS) – regent Alexandr I. Karadjordjević
-• Stát postaven na iluzi jednotného národa: „Srbové vládnou, Chorvati diskutují a Slovinci platí"
-• Problémy: separatismus, napětí v Kosovu, negramotnost, slabá ekonomika
-• 6.1.1929: „šestojanuarská diktatura" – Alexandr zrušil ústavu a parlament; stát přejmenován na Království Jugoslávie, rozdělen do 9 bánovin podle řek
-• 9.10.1934: atentát na Alexandra I. v Marseille (člen VMRO Vlado Černozemski) → nastupuje nezletilý Petr II., vládne regentská rada (Pavel)
-
-CESTA K ROZPADU A NĚMECKÝ ÚTOK (1941):
-• Srpen 1939: zřízena Chorvatská bánovina (pakt Cvetković–Maček, tzv. „srbský Mnichov") – Chorvatům ale autonomie nestačí
-• Po vypuknutí války vláda vyhlašuje neutralitu, Hitler ale tlačí na opuštění neutrality (přístup k surovinám a strategickému prostoru)
-• 25.3.1941: Jugoslávie přistupuje k Paktu tří → obyvatelstvo se bouří: „Raději válku než pakt.", „Raději hrob než otroctví."
-• 27.3.1941: převrat skupiny důstojníků (gen. Borivoje Mirković) – regent Pavel sesazen, Petr II. dosazen na trůn
-• 6.4.1941: Hitler reaguje útokem zahájeným bombardováním Bělehradu (24 německých, 23 italských, 5 maďarských divizí); 10.4. prolomena obrana
-• Petr II. s vládou odcházejí do exilu do Británie
-
-OKUPACE A ROZPARCELOVÁNÍ:
-• Němci okupují Srbsko, Banát a část Kosova; do čela dosazen germanofil Milan Nedić (opora: srbští fašisté ZBOR, kolaborantské oddíly)
-• Slovinsko: dvě třetiny území připojeny k Třetí říši, rozsáhlá germanizace
-• Itálie: anexe Dalmácie, černohorského pobřeží, části Slovinska, Kosova a záp. Makedonie
-• Bulharsko: Vardarská Makedonie, část Kosova a jižního Srbska; Maďarsko: Bačka, Baranja, Mezimuří, Zámuří
-
-NEZÁVISLÝ STÁT CHORVATSKO (NDH) A USTAŠA:
-• 10.4.1941 vyhlášen ustašovci (Slavko Kvaternik) Nezávislý stát Chorvatsko (Nezavisna država hrvatska – NDH), v čele Ante Pavelić
-• Ustaša: chorvatské ultranacionální hnutí s fašistickým programem (založeno 1930), cíl – rozbití Jugoslávie a samostatné Chorvatsko
-• Diskriminace a pronásledování Srbů: zákaz cyrilice, povinné označení páskou s „P" (pravoslavný), pogromy – zabito přes 120 tisíc lidí
-• Koncentrační tábory Jasenovac, Rab, Jagodno; násilná rekatolizace; vysídlení na 200 tisíc Srbů
-• „Srbosjek" – zvláštní nůž používaný ustašovci k rychlému podřezávání vězňů
-
-ČETNICI A PARTYZÁNI – DVĚ CENTRA ODBOJE:
-• Četnici – Dragoljub (Draža) Mihailović (1893–1946): velkosrbský, šovinistický plán; veskrze pasivní, vyčkávací taktika (strach z represí); měli podporu exilové vlády; v opozici ke komunistům; později kolaborovali s Němci proti partyzánům
-• Partyzáni: upustili od rozbití Jugoslávie, přistoupili na ideu federálního státu; ultralevicový, ale ne nacionalistický program → širší přijetí; většina partyzánů přitom nebyli komunisté
-• Vrchní velitel: maršál Josip Broz Tito (1892–1980) – otec Chorvat, matka Slovinka, profesionální revolucionář a generální tajemník KSJ
-
-POVSTÁNÍ A NĚMECKÉ OFENZIVY:
-• Povstání začalo 7.7.1941 (útok na hlídku v Bela Crkvi); partyzáni získali území kolem Užice („Užická republika")
-• Němci provedli za války celkem 7 velkých protipartyzánských ofenziv
-• Leden 1943: Fall Weiss (80 tis. vojáků Osy × 40 tis. partyzánů) – povstalci unikli; květen 1943: Fall Schwartz (117 tis. vojáků Osy) – únik kaňonem Sutjesky, Tito raněn
-• 1943: Londýn se odvrátil od pasivního Mihailoviće a uznal partyzány; Tito uznán Velkou trojkou za „samostatného spojeneckého vrchního velitele"
-• Po kapitulaci Itálie (1943) získala partyzánská armáda mnoho zbraní → Tito „nejsilnějším mužem na Balkáně"
-
-AVNOJ A VZNIK FEDERATIVNÍ JUGOSLÁVIE:
-• Zasedání AVNOJ deklarovala záměr vytvořit federativní Jugoslávii ze šesti republik s rovnoprávnými národy
-• Němečtí obyvatelé automaticky ztratili občanství a majetek (konfiskace)
-• Zvolen Národní výbor osvobození Jugoslávie (NKOJ) jako prozatímní vláda; Tito jmenován maršálem a premiérem; exilová vláda odvolána, králi zakázán návrat do referenda
-• Květen 1944: Němci se pokusili zajmout Titovo velení – ukořistili jen jeho uniformu (Tito přesunut na ostrov Vis)
-• Šubašić–Tito: dohoda o uznání AVNOJ; 26.8.1944 král Petr II. uznal Tita za vrchního velitele armády
-• 14.10.1944 dobyt Bělehrad (s pomocí Rudé armády, která se pak stáhla); v květnu 1945 vstup do Záhřebu, poslední Němci se vzdali 12.5.
-• Král abdikoval 18.1.1945; nová vláda 7.3.1945 (Tito premiérem) → Socialistická federativní republika Jugoslávie (Srbsko, Chorvatsko, Makedonie, Černá Hora, Bosna a Hercegovina, Slovinsko)
-
-CENA ZA OSVOBOZENÍ:
-• Přes 1,1 milionu padlých: 237 tis. vojáků NOA a 200 tis. kolaborantů
-• Podle národností: 530 tis. Srbů, 197 tis. Chorvatů, 103 tis. muslimů, 57 tis. Židů, 42 tis. Slovinců, 20 tis. Černohorců, 18 tis. Romů, 6 tis. Makedonců
-
-PŘÍKLAD SPRÁVNÉ ODPOVĚDI:
-"Jugoslávie vznikla roku 1918 jako Království SHS, postavené na iluzi jednotného národa; po diktatuře a přejmenování na Království Jugoslávie (1929) i atentátu na krále Alexandra (1934) zůstávala vnitřně rozervaná. Když 25. března 1941 přistoupila k Paktu tří, vyvolalo to převrat (27.3.) a Hitler 6. dubna zemi napadl (bombardováním Bělehradu); král s vládou odešli do exilu. Země byla rozparcelována mezi Německo (loutkový Nedić v Srbsku), Itálii, Bulharsko a Maďarsko a vznikl ustašovský Nezávislý stát Chorvatsko (Pavelić), který v táborech jako Jasenovac vyvraždil statisíce Srbů, Židů a Romů. Odboj se rozdělil na dvě centra: pasivní, velkosrbské a později kolaborující četniky Draži Mihailoviće a komunisty vedené partyzány Josipa Broze Tita, kteří prosazovali federální stát a získali širší podporu. Přes sedm německých ofenziv (Fall Weiss, Fall Schwartz) partyzáni přežili, byli uznáni Velkou trojkou a po kapitulaci Itálie zesílili. Na zasedáních AVNOJ vznikl základ federativní Jugoslávie šesti republik v čele s Titem. Osvobození ale stálo přes 1,1 milionu životů – velkou část obětí přitom zavinily vnitřní boje a kolaborace."
-      `
-    }
   ],
   quizQuestions: [
     {
@@ -1050,7 +954,7 @@ export default function App() {
               📜 Dějepis 2.B
             </h1>
             <p style={{ fontSize: '0.9rem', color: '#888', margin: '0.25rem 0 0 0', fontStyle: 'italic' }}>
-              2. světová válka • Fronty • Velká trojka • Šoa • Polsko • Jugoslávie • 1939–1945
+              2. světová válka • Fronty • Velká trojka • Šoa • 1939–1945
             </p>
           </div>
           <nav style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -1078,7 +982,7 @@ export default function App() {
             <div style={{ background: 'rgba(201, 162, 39, 0.1)', border: '1px solid #c9a227', borderRadius: '8px', padding: '1.5rem', marginBottom: '2rem' }}>
               <h2 style={{ color: '#c9a227', margin: '0 0 0.5rem 0', fontSize: '1.3rem' }}>🎯 Jak se učit na test</h2>
               <p style={{ margin: 0, lineHeight: 1.6 }}>
-                Test pokrývá <strong>9 témat</strong> z období 2. světové války (1939–1945) – látka je zpracovaná přesně podle prezentací (Polsko, holocaust, Velká trojka, Jugoslávie, západní fronta). U témat <strong style={{color: '#4CAF50'}}>1, 4, 6 a 7</strong> jsou navíc <strong style={{color: '#4CAF50'}}>OTÁZKY Z TEXTU (OTAZ)</strong> – nauč se strukturu a klíčové vzorové odpovědi. Každé téma má rychlé shrnutí (🔑), podrobný výklad i <strong style={{color: '#4CAF50'}}>příklad správné odpovědi</strong>.
+                Test pokrývá <strong>7 témat</strong> (= 7 zkušebních otázek) z období 2. světové války (1939–1945); látka je opravená a doplněná přesně podle prezentací (Polsko, holocaust, Velká trojka, Jugoslávie, západní fronta). U témat <strong style={{color: '#4CAF50'}}>1, 4, 6 a 7</strong> jsou navíc <strong style={{color: '#4CAF50'}}>OTÁZKY Z TEXTU (OTAZ)</strong> – nauč se strukturu a klíčové vzorové odpovědi. Každé téma má rychlé shrnutí (🔑), podrobný výklad i <strong style={{color: '#4CAF50'}}>příklad správné odpovědi</strong>.
               </p>
             </div>
 
@@ -1130,7 +1034,7 @@ export default function App() {
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
               <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>⚡</div>
               <h2 style={{ color: '#c9a227', margin: '0 0 0.5rem 0' }}>Rychlé opakování před testem</h2>
-              <p style={{ color: '#888', margin: 0 }}>Klíčové body ze všech 9 témat na jednom místě</p>
+              <p style={{ color: '#888', margin: 0 }}>Klíčové body ze všech 7 témat na jednom místě</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {studyData.hlavniOtazky.map((topic) => (
@@ -1153,7 +1057,7 @@ export default function App() {
               <div style={{ textAlign: 'center', padding: '3rem 0' }}>
                 <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✍️</div>
                 <h2 style={{ color: '#c9a227', margin: '0 0 1rem 0', fontSize: '2rem' }}>Kvíz – 2. světová válka</h2>
-                <p style={{ color: '#aaa', marginBottom: '2rem', fontSize: '1.1rem' }}>{studyData.quizQuestions.length} otázek ze všech 9 témat</p>
+                <p style={{ color: '#aaa', marginBottom: '2rem', fontSize: '1.1rem' }}>{studyData.quizQuestions.length} otázek ze všech 7 témat</p>
                 <button onClick={startQuiz} style={{ padding: '1rem 3rem', background: '#c9a227', color: '#1a1a2e', border: 'none', borderRadius: '8px', fontSize: '1.2rem', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' }}>Začít kvíz</button>
               </div>
             )}
