@@ -18,6 +18,15 @@
     "file": "artifacts/francais-vacances-comparaison.html"
   },
   {
+    "title": "Srovnávací test z matematiky — kompletní příprava",
+    "subject": "Math",
+    "topic": "Výrazy, nerovnice, absolutní hodnota, funkce, goniometrie, geometrie, analytická geometrie",
+    "template": "mixed",
+    "collection": "",
+    "date": "2026-06-04",
+    "file": "artifacts/matematika-srovnavaci-test-priprava.html"
+  },
+  {
     "title": "Pevné látky & mechanika tuhého tělesa — příprava na test",
     "subject": "Physics",
     "topic": "Pevné látky · Krystaly · Deformace · Moment síly · Páka · Tuhé těleso",
