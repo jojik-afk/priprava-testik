@@ -1,0 +1,644 @@
+// @title Chemie - Názvosloví anorganických sloučenin
+// @subject Chemistry
+// @topic Chemistry
+// @template practice
+
+import React, { useState, useCallback, useMemo } from 'react';
+
+/* ════════════════════════════════════════════════════════════════
+   QUIZ ENGINE (z assets/quiz-engine.jsx)
+   ════════════════════════════════════════════════════════════════ */
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function shuffleQuestions(questions) {
+  return questions.map(q => {
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const shuffledOptions = shuffledIndices.map(i => q.options[i]);
+    const newCorrect = q.correct.map(oldIdx => shuffledIndices.indexOf(oldIdx));
+    return { ...q, options: shuffledOptions, correct: newCorrect };
+  });
+}
+function arrEqual(a, b) {
+  if (!a || !b) return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+function QuizEngine({ questions, accentColor = "#22d3ee" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+
+  const shuffledQuestions = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = shuffledQuestions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffledQuestions.filter((qq, i) => revealed[i] && arrEqual(answers[i] || [], qq.correct)).length;
+  const pct = Math.round((score / shuffledQuestions.length) * 100);
+
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? (answers[i] || []) : []);
+  }, [answers, shuffledQuestions]);
+  const handleSingleSelect = useCallback((optionIdx) => {
+    if (isRevealed) return;
+    setAnswers(prev => ({ ...prev, [idx]: [optionIdx] }));
+    setRevealed(prev => ({ ...prev, [idx]: true }));
+  }, [idx, isRevealed]);
+  const toggleMulti = useCallback((optionIdx) => {
+    if (isRevealed) return;
+    setPendingMulti(prev => prev.includes(optionIdx) ? prev.filter(i => i !== optionIdx) : [...prev, optionIdx]);
+  }, [isRevealed]);
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0) return;
+    setAnswers(prev => ({ ...prev, [idx]: [...pendingMulti] }));
+    setRevealed(prev => ({ ...prev, [idx]: true }));
+  }, [idx, pendingMulti]);
+  const restart = useCallback(() => {
+    setIdx(0); setAnswers({}); setRevealed({}); setPendingMulti([]); setShowResults(false);
+    setShuffleKey(k => k + 1);
+  }, []);
+
+  if (showResults) {
+    const msg = pct >= 90 ? "Výborně! Názvosloví máš v malíku!"
+      : pct >= 70 ? "Dobré! Pár přípon ještě dolaď a jsi za vodou."
+      : pct >= 50 ? "Slušný základ — projeď si znovu přípony a thiosoli."
+      : "Ještě to chce zabrat. Vrať se na Teorii a Tahák, pak zkus znovu!";
+    return (
+      <div style={S.resultsWrap}>
+        <div style={S.resultsCard}>
+          <div style={S.resultsScore}>{score} / {shuffledQuestions.length}</div>
+          <div style={S.resultsPct}>{pct} %</div>
+          <div style={S.resultsMsg}>{msg}</div>
+          <button style={{ ...S.btn, background: accentColor + "66", border: `1px solid ${accentColor}` }} onClick={restart}>
+            Začít znovu
+          </button>
+        </div>
+      </div>
+    );
+  }
+  const activeSet = isMulti ? (isRevealed ? myAnswer : pendingMulti) : myAnswer;
+  return (
+    <div style={S.wrap}>
+      <div style={S.dotBar}>
+        {shuffledQuestions.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx) bg = accentColor;
+          else if (revealed[i]) bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
+          return <div key={i} onClick={() => goTo(i)} title={`Otázka ${i + 1}`} style={{ ...S.dot, background: bg }} />;
+        })}
+      </div>
+      <div style={S.card}>
+        <div style={S.qNum}>Otázka {idx + 1} / {shuffledQuestions.length}{q.cat ? ` · ${q.cat}` : ""}</div>
+        <div style={S.qText}>{q.question}</div>
+        <div style={S.optionsList}>
+          {q.options.map((opt, i) => {
+            let border = "1px solid rgba(255,255,255,0.12)";
+            let bg = "rgba(255,255,255,0.04)";
+            if (isRevealed) {
+              if (q.correct.includes(i)) { bg = "rgba(34,197,94,0.15)"; border = "1px solid #22c55e"; }
+              else if (activeSet.includes(i)) { bg = "rgba(239,68,68,0.15)"; border = "1px solid #ef4444"; }
+            } else if (activeSet.includes(i)) { bg = accentColor + "18"; border = `1px solid ${accentColor}`; }
+            return (
+              <div key={i} style={{ ...S.option, background: bg, border }} onClick={() => isMulti ? toggleMulti(i) : handleSingleSelect(i)}>
+                {isMulti && <span style={S.checkbox}>{activeSet.includes(i) ? "☑" : "☐"}</span>}
+                <span>{opt}</span>
+              </div>
+            );
+          })}
+        </div>
+        {isMulti && !isRevealed && (
+          <button style={{ ...S.btn, opacity: pendingMulti.length === 0 ? 0.4 : 1 }} onClick={submitMulti} disabled={pendingMulti.length === 0}>
+            Potvrdit
+          </button>
+        )}
+        {isRevealed && (
+          <div style={{ ...S.feedback, borderColor: isCorrect ? "#22c55e" : "#ef4444" }}>
+            <div style={S.feedbackHeader}>{isCorrect ? "Správně!" : "Špatně"}</div>
+            {!isCorrect && <div style={S.feedbackCorrect}>Správná odpověď: {q.correct.map(i => q.options[i]).join(", ")}</div>}
+            <div style={S.feedbackExplanation}>{q.explanation}</div>
+            {q.tip && <div style={S.feedbackTip}>Tip: {q.tip}</div>}
+          </div>
+        )}
+      </div>
+      <div style={S.navRow}>
+        <button style={S.btn} onClick={() => goTo(idx - 1)} disabled={idx === 0}>← Předchozí</button>
+        {idx < shuffledQuestions.length - 1
+          ? <button style={S.btn} onClick={() => goTo(idx + 1)}>Další →</button>
+          : <button style={{ ...S.btn, background: accentColor + "55", border: `1px solid ${accentColor}` }} onClick={() => setShowResults(true)}>Výsledky →</button>}
+      </div>
+    </div>
+  );
+}
+const S = {
+  wrap: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "680px", margin: "0 auto", padding: "16px" },
+  dotBar: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" },
+  dot: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease" },
+  card: { background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "24px", transition: "all 0.4s ease" },
+  qNum: { color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "6px" },
+  qText: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+  optionsList: { display: "flex", flexDirection: "column", gap: "10px" },
+  option: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px" },
+  checkbox: { fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" },
+  btn: { marginTop: "12px", padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
+  feedback: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: "1px solid", background: "rgba(255,255,255,0.03)" },
+  feedbackHeader: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+  feedbackCorrect: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+  feedbackExplanation: { color: "rgba(255,255,255,0.75)", fontSize: "14px", lineHeight: 1.55 },
+  feedbackTip: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+  navRow: { display: "flex", justifyContent: "space-between" },
+  resultsWrap: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
+  resultsCard: { textAlign: "center", background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "24px", padding: "40px 48px" },
+  resultsScore: { color: "#fff", fontSize: "52px", fontWeight: 800, lineHeight: 1.1 },
+  resultsPct: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+  resultsMsg: { color: "rgba(255,255,255,0.8)", fontSize: "17px", lineHeight: 1.5, maxWidth: "340px", margin: "0 auto 24px" },
+};
+
+/* ════════════════════════════════════════════════════════════════
+   DATA
+   ════════════════════════════════════════════════════════════════ */
+
+// ── Přípony kationtů (oxidační číslo → přípona) ──
+const CATION_SUFFIX = [
+  ["I", "-ný", "sodný Na, draselný K, stříbrný Ag, měďný Cu"],
+  ["II", "-natý", "vápenatý Ca, hořečnatý Mg, zinečnatý Zn, měďnatý Cu, barnatý Ba"],
+  ["III", "-itý", "hlinitý Al, železitý Fe, chromitý Cr"],
+  ["IV", "-ičitý", "uhličitý C, křemičitý Si, seleničitý Se, cíničitý Sn"],
+  ["V", "-ičný / -ečný", "dusičný N, fosforečný P, antimoničný Sb, bromičný Br"],
+  ["VI", "-ový", "sírový S, chromový Cr, wolframový W, selenový Se"],
+  ["VII", "-istý", "chloristý Cl, manganistý Mn, jodistý I"],
+  ["VIII", "-ičelý", "osmičelý Os, xenoničelý Xe"],
+];
+
+// ── Přípony aniontů oxokyselin (sůl) ──
+const ANION_SUFFIX = [
+  ["I", "-nan", "chlornan ClO⁻, dusnan? "],
+  ["II", "-natan", "—"],
+  ["III", "-itan", "dusitan NO₂⁻, siřičitan? boritan BO₃³⁻"],
+  ["IV", "-ičitan", "uhličitan CO₃²⁻, křemičitan SiO₃²⁻, seleničitan SeO₃²⁻"],
+  ["V", "-ičnan / -ečnan", "dusičnan NO₃⁻, fosforečnan PO₄³⁻, bromičnan BrO₃⁻"],
+  ["VI", "-an", "síran SO₄²⁻, chroman CrO₄²⁻, wolframan WO₄²⁻, manganan MnO₄²⁻"],
+  ["VII", "-istan", "chloristan ClO₄⁻, manganistan MnO₄⁻, jodistan"],
+  ["VIII", "-ičelan", "osmičelan, xenoničelan"],
+];
+
+// ── Theory sections (collapsible) ──
+const THEORY = [
+  {
+    icon: "🔢", title: "1. Oxidační číslo — základ všeho",
+    blocks: [
+      { h: "Co to je", t: "Oxidační číslo je náboj, který by atom měl, kdyby všechny vazby byly iontové. Píše se římskou číslicí jako horní index vpravo (např. S^VI). Z oxidačního čísla plynou VŠECHNY přípony v názvu." },
+      { h: "Pravidla pro určení", t: "1) Volný prvek = 0 (např. O₂, Fe). 2) Kyslík = −II (výjimka peroxidy −I). 3) Vodík = +I (v hydridech kovů −I). 4) Kov I.A skupiny = +I, II.A = +II. 5) Fluor vždy −I. 6) Součet oxidačních čísel ve vzorci = náboj částice (u neutrální molekuly = 0)." },
+      { h: "Výpočet — příklad H₂SO₄", t: "H je +I (2×(+1)=+2), O je −II (4×(−2)=−8). Molekula je neutrální → součet = 0. Pro síru: x + 2 − 8 = 0 → x = +6. Síra má oxidační číslo VI → kyselina sírová.", f: "2(+1) + x + 4(−2) = 0  ⟹  x = +VI" },
+      { h: "Výpočet u aniontu — MnO₄⁻", t: "O je −II (4×(−2)=−8), náboj iontu je −1. Pro mangan: x − 8 = −1 → x = +7 (VII) → manganistan.", f: "x + 4(−2) = −1  ⟹  x = +VII" },
+    ],
+  },
+  {
+    icon: "🏷️", title: "2. Osm přípon — kationt (kladná část)",
+    blocks: [
+      { h: "Logika", t: "Druhá část názvu (přídavné jméno) říká oxidační číslo kladného atomu. Naučit se těchto 8 přípon zpaměti je 50 % úspěchu u testu." },
+      { table: "cation" },
+      { h: "Pozor na -ičný vs -ečný", t: "U oxidačního čísla V se používá -ičný i -ečný — záleží na zvyku u daného prvku: dusičný, ale fosforečný. Není v tom logika, je to potřeba si zapamatovat: fosforečný, chlorečný, manganečný." },
+    ],
+  },
+  {
+    icon: "🧱", title: "3. Dvouprvkové sloučeniny (-id)",
+    blocks: [
+      { h: "Schéma", t: "Podstatné jméno = záporný prvek s koncovkou -id (oxid, sulfid, chlorid, fluorid, bromid, jodid, nitrid, hydrid, kyanid CN⁻). Přídavné jméno = kladný prvek s příponou podle oxidačního čísla. Záporný prvek má pevné oxidační číslo: O −II, S −II, halogeny −I." },
+      { h: "Křížové pravidlo", t: "Oxidační čísla (bez znamének) se „prohodí“ do indexů. Pak se index zkrátí na nejmenší celá čísla.", f: "Al^III + O^(−II)  →  Al₂O₃   (3 a 2 se prohodí)" },
+      { h: "Příklady", t: "fluorid vápenatý: Ca^II, F^(−I) → CaF₂. sulfid antimoničný: Sb^V, S^(−II) → Sb₂S₅. oxid hlinitý: Al^III, O^(−II) → Al₂O₃." },
+    ],
+  },
+  {
+    icon: "🧪", title: "4. Kyseliny",
+    blocks: [
+      { h: "Bezkyslíkaté", t: "Vznikají rozpuštěním halogenovodíků a podobných ve vodě: HCl kyselina chlorovodíková, HBr bromovodíková, H₂S sirovodíková (sulfan), HCN kyanovodíková. Název: kyselina + prvek + -ovodíková." },
+      { h: "Kyslíkaté (oxokyseliny) — sestavení vzorce", t: "Z přípony zjistíš oxidační číslo centrálního atomu. Pak: u LICHÉHO oxidačního čísla píšeš 1 H, u SUDÉHO 2 H. Počet kyslíků = (počet H + oxidační číslo) / 2." },
+      { h: "Vzorec krok za krokem", t: "kyselina sírová: S má VI (sudé → H₂). O = (2 + 6)/2 = 4 → H₂SO₄. kyselina dusičná: N má V (liché → H). O = (1 + 5)/2 = 3 → HNO₃. kyselina chlorná: Cl má I (liché → H). O = (1+1)/2 = 1 → HClO.", f: "počet O = (počet H + ox. číslo) / 2" },
+      { h: "Více centrálních atomů (di-, tri-)", t: "Předpona di-, tri- před názvem říká počet centrálních atomů. kyselina dichromová: 2× Cr^VI → anion Cr₂O₇²⁻ → H₂Cr₂O₇. kyselina difosforečná: H₄P₂O₇." },
+    ],
+  },
+  {
+    icon: "🧂", title: "5. Soli kyslíkatých kyselin",
+    blocks: [
+      { h: "Princip", t: "Sůl = vodík z kyseliny nahradíš kovem. Podstatné jméno soli vznikne ze jména kyseliny: -ová → -an, -ičitá → -ičitan, -ičná/ečná → -ičnan/ečnan, -itá → -itan, -ná → -nan, -istá → -istan." },
+      { table: "anion" },
+      { h: "Postup u názvu → vzorec", t: "1) Z přípony soli urči anion (jeho vzorec a náboj). 2) Z přídavného jména urči kationt a jeho náboj. 3) Křížovým pravidlem dej náboje do indexů a zkrať. Vícenásobné skupiny dej do závorky." },
+      { h: "Příklad: síran hlinitý", t: "síran = SO₄²⁻ (náboj 2−). hlinitý = Al³⁺. Křížově: Al₂(SO₄)₃. Zkontroluj náboj: 2×(+3) = +6, 3×(−2) = −6 → sedí.", f: "Al³⁺ + SO₄²⁻  →  Al₂(SO₄)₃" },
+    ],
+  },
+  {
+    icon: "💧", title: "6. Hydrogensoli a hydráty",
+    blocks: [
+      { h: "Hydrogensoli", t: "Vodík z kyseliny je nahrazen jen ČÁSTEČNĚ. Předpona hydrogen- (1 H) nebo dihydrogen- (2 H) před názvem aniontu. Náboj aniontu se o každý zbylý vodík sníží." },
+      { h: "Příklad", t: "dihydrogenfosforečnan amonný: fosforečnan PO₄³⁻, přidáme 2 H → H₂PO₄⁻ (náboj jen 1−). Kationt NH₄⁺. → NH₄H₂PO₄. hydrogensulfid kademnatý: HS⁻, Cd²⁺ → Cd(HS)₂.", f: "PO₄³⁻ + 2H⁺  →  H₂PO₄⁻" },
+      { h: "Hydráty (krystalová voda)", t: "Sůl má ve své krystalové mřížce vodu. Píše se · n H₂O. Předpona řecky podle počtu: penta = 5, hexa = 6, hepta = 7. pentahydrát síranu měďnatého = CuSO₄·5H₂O. hexahydrát chloridu strontnatého = SrCl₂·6H₂O." },
+    ],
+  },
+  {
+    icon: "🟡", title: "7. Thiosloučeniny (síra místo kyslíku)",
+    blocks: [
+      { h: "Princip", t: "Předpona thio- znamená, že atom síry (S) nahradil atom kyslíku (O) v aniontu. thio = 1 O→S, dithio = 2 O→S, trithio = 3 O→S." },
+      { h: "Příklady", t: "thiosíran S₂O₃²⁻ (ze síranu SO₄²⁻, 1 O nahrazen S). kyselina thiosírová H₂S₂O₃. dithiowolframan WO₂S₂²⁻ (z wolframanu WO₄²⁻, 2 O→S). trithiouhličitan CS₃²⁻ (z uhličitanu CO₃²⁻, všechny 3 O→S) → s Ba²⁺ dá BaCS₃." },
+    ],
+  },
+  {
+    icon: "⚙️", title: "8. Křemičitany a vícenásobné anionty",
+    blocks: [
+      { h: "Křemík (vždy Si^IV)", t: "křemičitan = SiO₃²⁻ (metaforma). tetraoxokřemičitan / orthokřemičitan = SiO₄⁴⁻ (předpona tetraoxo říká 4 atomy kyslíku). Sr₂SiO₄ = tetraoxokřemičitan strontnatý (2× Sr²⁺ vyrovná náboj 4−)." },
+      { h: "Více centrálních atomů", t: "di-, tri- před názvem aniontu = počet centrálních atomů. dikřemičitan Si₂O₅²⁻ (K₂Si₂O₅). difosforečnan P₂O₇⁴⁻. trifosforečnan P₃O₁₀⁵⁻ (Ag₅P₃O₁₀)." },
+      { h: "Pozor na předpony u KOVU", t: "Pokud je v názvu např. „dizinečnatý“, číslovka di- u KOVU říká počet atomů kovu ve vzorci. difosforečnan dizinečnatý = Zn₂P₂O₇ (2 Zn, anion P₂O₇⁴⁻)." },
+    ],
+  },
+];
+
+// ── Worked examples ──
+const EXAMPLES = [
+  { dir: "Název → vzorec", name: "fluorid vápenatý", answer: "CaF₂", diff: "Easy",
+    steps: ["Záporná část: fluorid → F má oxidační číslo −I.", "Kladná část: vápenatý → Ca má +II.", "Křížové pravidlo: indexy 1 (Ca) a 2 (F) → CaF₂."] },
+  { dir: "Název → vzorec", name: "dusitan draselný", answer: "KNO₂", diff: "Easy",
+    steps: ["Přípona -itan → centrální atom (N) má oxidační číslo III → anion dusitan NO₂⁻.", "draselný → K⁺.", "Náboje 1+ a 1− → KNO₂."] },
+  { dir: "Název → vzorec", name: "síran hlinitý", answer: "Al₂(SO₄)₃", diff: "Medium",
+    steps: ["síran = SO₄²⁻ (S má VI, přípona -an).", "hlinitý = Al³⁺.", "Křížově: Al₃₊ dostane index 2, SO₄²⁻ index 3 → Al₂(SO₄)₃.", "Kontrola: 2×3 = 6 kladných, 3×2 = 6 záporných ✓"] },
+  { dir: "Název → vzorec", name: "sulfid antimoničný", answer: "Sb₂S₅", diff: "Medium",
+    steps: ["sulfid → S má −II.", "antimoničný → přípona -ičný = oxidační číslo V → Sb⁵⁺.", "Křížově: Sb₂S₅ (5 a 2 se prohodí)."] },
+  { dir: "Název → vzorec", name: "kyselina dichromová", answer: "H₂Cr₂O₇", diff: "Hard",
+    steps: ["di- → 2 atomy chromu. -ová → Cr má VI.", "Anion dichroman = Cr₂O₇²⁻ (náboj 2−).", "Doplníme 2 H na vyrovnání → H₂Cr₂O₇."] },
+  { dir: "Název → vzorec", name: "kyanid rtuťnatý", answer: "Hg(CN)₂", diff: "Medium",
+    steps: ["kyanid = CN⁻ (skupinový anion, náboj 1−).", "rtuťnatý → Hg²⁺.", "Dvě skupiny CN do závorky → Hg(CN)₂."] },
+  { dir: "Název → vzorec", name: "hydrogensulfid kademnatý", answer: "Cd(HS)₂", diff: "Medium",
+    steps: ["sulfid S²⁻ + 1 H (hydrogen-) → HS⁻ (náboj 1−).", "kademnatý → Cd²⁺.", "Dvě skupiny HS → Cd(HS)₂."] },
+  { dir: "Název → vzorec", name: "dihydrogenfosforečnan amonný", answer: "NH₄H₂PO₄", diff: "Hard",
+    steps: ["fosforečnan = PO₄³⁻ (P má V).", "dihydrogen- → přidáme 2 H⁺ → H₂PO₄⁻ (náboj klesne na 1−).", "amonný = NH₄⁺.", "Náboje 1+ a 1− → NH₄H₂PO₄."] },
+  { dir: "Název → vzorec", name: "bromičnan hořečnatý", answer: "Mg(BrO₃)₂", diff: "Medium",
+    steps: ["-ičnan → Br má V → bromičnan BrO₃⁻ (náboj 1−).", "hořečnatý → Mg²⁺.", "Dvě skupiny BrO₃ → Mg(BrO₃)₂."] },
+  { dir: "Název → vzorec", name: "trithiouhličitan barnatý", answer: "BaCS₃", diff: "Hard",
+    steps: ["uhličitan = CO₃²⁻.", "trithio- → všechny 3 atomy O nahradí S → CS₃²⁻.", "barnatý → Ba²⁺. Náboje 2+ a 2− → BaCS₃."] },
+  { dir: "Název → vzorec", name: "seleničitan hlinitý", answer: "Al₂(SeO₃)₃", diff: "Medium",
+    steps: ["-ičitan → Se má IV → seleničitan SeO₃²⁻.", "hlinitý → Al³⁺.", "Křížově: Al₂(SeO₃)₃."] },
+  { dir: "Název → vzorec", name: "difosforečnan dizinečnatý", answer: "Zn₂P₂O₇", diff: "Hard",
+    steps: ["difosforečnan: 2 P (di-), P má V → anion P₂O₇⁴⁻ (náboj 4−).", "dizinečnatý: di- u kovu = 2 atomy Zn²⁺ (celkem 4+).", "Náboje se vyrovnají → Zn₂P₂O₇."] },
+  { dir: "Název → vzorec", name: "pentahydrát síranu měďnatého", answer: "CuSO₄·5H₂O", diff: "Medium",
+    steps: ["síran měďnatý: SO₄²⁻ + Cu²⁺ → CuSO₄.", "penta- = 5 molekul krystalové vody.", "→ CuSO₄·5H₂O (modrá skalice)."] },
+  { dir: "Vzorec → název", name: "KMnO₄", answer: "manganistan draselný", diff: "Medium",
+    steps: ["K⁺ (I). O₄ = −8. Náboj molekuly 0 → Mn = +7 (VII).", "Oxidační číslo VII u aniontu → přípona -istan → manganistan.", "→ manganistan draselný."] },
+  { dir: "Vzorec → název", name: "K₂MnO₄", answer: "manganan draselný", diff: "Medium",
+    steps: ["2 K⁺ = +2. O₄ = −8. Náboj 0 → Mn = +6 (VI).", "Oxidační číslo VI → přípona -an → manganan.", "→ manganan draselný. (Pozor, nezaměnit s manganistanem!)"] },
+  { dir: "Vzorec → název", name: "(NH₄)₂Cr₂O₇", answer: "dichroman amonný", diff: "Hard",
+    steps: ["Kationt NH₄⁺ (amonný), 2×.", "Anion Cr₂O₇: 2 Cr, O₇ = −14, náboj aniontu 2− → každý Cr = +6 (VI).", "2 atomy Cr → di-, přípona -an → dichroman.", "→ dichroman amonný."] },
+  { dir: "Vzorec → název", name: "CaWO₂S₂", answer: "dithiowolframan vápenatý", diff: "Hard",
+    steps: ["Vyjdeme z wolframanu WO₄²⁻ (W má VI).", "2 atomy kyslíku jsou nahrazeny sírou → WO₂S₂²⁻ = dithiowolframan.", "Ca²⁺ (vápenatý). → dithiowolframan vápenatý."] },
+  { dir: "Vzorec → název", name: "BaSO₄", answer: "síran barnatý", diff: "Easy",
+    steps: ["SO₄²⁻ = síran (S má VI).", "Ba²⁺ = barnatý.", "→ síran barnatý."] },
+  { dir: "Vzorec → název", name: "SrCl₂·6H₂O", answer: "hexahydrát chloridu strontnatého", diff: "Medium",
+    steps: ["SrCl₂ = chlorid strontnatý (Sr²⁺, Cl⁻).", "·6H₂O = 6 molekul krystalové vody → hexahydrát.", "→ hexahydrát chloridu strontnatého."] },
+  { dir: "Vzorec → název", name: "Na₂H₃IO₆", answer: "trihydrogenjodistan sodný", diff: "Hard",
+    steps: ["Vyjdeme z jodistanu (I má VII). Plný anion IO₆⁵⁻.", "3 vodíky (trihydrogen-) → H₃IO₆²⁻ (náboj 2−).", "2 Na⁺ vyrovná → trihydrogenjodistan sodný."] },
+  { dir: "Vzorec → název", name: "Li₂WO₄", answer: "wolframan lithný", diff: "Medium",
+    steps: ["WO₄: O₄ = −8, 2 Li⁺ = +2 → W = +6 (VI).", "VI → přípona -an → wolframan.", "→ wolframan lithný."] },
+  { dir: "Vzorec → název", name: "NH₄NO₃", answer: "dusičnan amonný", diff: "Easy",
+    steps: ["NO₃⁻ = dusičnan (N má V, přípona -ičnan).", "NH₄⁺ = amonný.", "→ dusičnan amonný (běžné hnojivo)."] },
+  { dir: "Vzorec → název", name: "H₂S", answer: "sulfan (kyselina sirovodíková)", diff: "Easy",
+    steps: ["Bezkyslíkatá sloučenina vodíku a síry.", "Systematicky sulfan; jako kyselina ve vodě → kyselina sirovodíková."] },
+  { dir: "Vzorec → název", name: "H₂S₂O₃", answer: "kyselina thiosírová", diff: "Hard",
+    steps: ["Vyjdeme z kyseliny sírové H₂SO₄.", "Jeden atom kyslíku je nahrazen sírou → H₂S₂O₃.", "Předpona thio- → kyselina thiosírová (anion thiosíran S₂O₃²⁻)."] },
+  { dir: "Vzorec → název", name: "K₂Si₂O₅", answer: "dikřemičitan draselný", diff: "Hard",
+    steps: ["Anion Si₂O₅²⁻: 2 atomy Si (di-), Si má vždy IV.", "Přípona -ičitan → dikřemičitan.", "2 K⁺ → dikřemičitan draselný."] },
+  { dir: "Vzorec → název", name: "Sr₂SiO₄", answer: "tetraoxokřemičitan strontnatý", diff: "Hard",
+    steps: ["Anion SiO₄⁴⁻ má 4 atomy O → předpona tetraoxo (orthokřemičitan).", "Náboj 4−, vyrovnají 2 Sr²⁺.", "→ tetraoxokřemičitan strontnatý."] },
+];
+
+// ── Quiz questions ──
+const QUIZ = [
+  { cat: "Oxidační číslo", type: "single", question: "Jaké je oxidační číslo manganu v KMnO₄?", options: ["VI", "VII", "IV", "II"], correct: [1],
+    explanation: "K⁺ je +I, čtyři O dávají −8. Molekula je neutrální: +1 + x − 8 = 0 → x = +7 (VII).", tip: "VII → manganistan. VI by byl manganan (K₂MnO₄)." },
+  { cat: "Oxidační číslo", type: "single", question: "Jaké je oxidační číslo síry v aniontu SO₄²⁻?", options: ["+IV", "+VI", "+II", "+VIII"], correct: [1],
+    explanation: "O₄ = −8, náboj aniontu je −2. Pro síru: x − 8 = −2 → x = +6 (VI)." },
+  { cat: "Přípony", type: "single", question: "Která přípona kationtu odpovídá oxidačnímu číslu V?", options: ["-ičitý", "-ičný / -ečný", "-ový", "-natý"], correct: [1],
+    explanation: "I -ný, II -natý, III -itý, IV -ičitý, V -ičný/-ečný, VI -ový, VII -istý, VIII -ičelý." },
+  { cat: "Přípony", type: "single", question: "Sůl s oxidačním číslem centrálního atomu VI má příponu:", options: ["-istan", "-an", "-ičnan", "-itan"], correct: [1],
+    explanation: "VI → -an (síran, chroman, wolframan, manganan). Pozor: VII → -istan (manganistan)." },
+  { cat: "Název → vzorec", type: "single", question: "Vzorec sloučeniny síran hlinitý je:", options: ["AlSO₄", "Al₂(SO₄)₃", "Al₃(SO₄)₂", "Al(SO₄)₃"], correct: [1],
+    explanation: "Al³⁺ a SO₄²⁻ se kříží: Al₂(SO₄)₃. Kontrola náboje: 2×3 = 3×2 = 6. ✓" },
+  { cat: "Název → vzorec", type: "single", question: "Vzorec sloučeniny sulfid antimoničný je:", options: ["Sb₂S₃", "SbS₂", "Sb₂S₅", "Sb₅S₂"], correct: [2],
+    explanation: "antimoničný = Sb^V, sulfid = S^(−II). Křížově Sb₂S₅.", tip: "-ičný = oxidační číslo V." },
+  { cat: "Název → vzorec", type: "single", question: "Vzorec sloučeniny dihydrogenfosforečnan amonný je:", options: ["(NH₄)₃PO₄", "NH₄H₂PO₄", "(NH₄)₂HPO₄", "NH₄HPO₄"], correct: [1],
+    explanation: "fosforečnan PO₄³⁻ + 2 H → H₂PO₄⁻ (náboj 1−). S NH₄⁺ → NH₄H₂PO₄." },
+  { cat: "Název → vzorec", type: "single", question: "Vzorec sloučeniny bromičnan hořečnatý je:", options: ["MgBrO₃", "Mg(BrO₃)₂", "Mg(BrO₂)₂", "Mg₂BrO₃"], correct: [1],
+    explanation: "-ičnan → Br^V → BrO₃⁻. S Mg²⁺ → Mg(BrO₃)₂." },
+  { cat: "Vzorec → název", type: "single", question: "Jak se jmenuje K₂MnO₄?", options: ["manganistan draselný", "manganan draselný", "manganičitan draselný", "manganitan draselný"], correct: [1],
+    explanation: "Mn má zde VI (2 K = +2, O₄ = −8 → Mn = +6). VI → -an → manganan.", tip: "KMnO₄ (VII) = manganistan, K₂MnO₄ (VI) = manganan." },
+  { cat: "Vzorec → název", type: "single", question: "Jak se jmenuje (NH₄)₂Cr₂O₇?", options: ["chroman amonný", "dichroman amonný", "dichroman draselný", "dichromid amonný"], correct: [1],
+    explanation: "Cr₂O₇²⁻ = dichroman (2 atomy Cr, každý VI), kationt NH₄⁺ = amonný." },
+  { cat: "Thiosoli", type: "single", question: "Předpona „thio-“ v názvu znamená, že:", options: ["jeden atom kyslíku byl nahrazen sírou", "přibyla molekula vody", "přibyl vodík", "jde o kyselinu"], correct: [0],
+    explanation: "thio = 1 O→S, dithio = 2 O→S, trithio = 3 O→S. Např. thiosíran S₂O₃²⁻ ze síranu SO₄²⁻." },
+  { cat: "Thiosoli", type: "single", question: "Vzorec sloučeniny trithiouhličitan barnatý je:", options: ["BaCO₃", "BaCS₃", "Ba(CS₃)₂", "BaC₃S"], correct: [1],
+    explanation: "uhličitan CO₃²⁻, trithio = všechny 3 O→S → CS₃²⁻. S Ba²⁺ → BaCS₃." },
+  { cat: "Hydráty", type: "single", question: "Jak se jmenuje CuSO₄·5H₂O?", options: ["pentahydrát síranu měďného", "pentahydrát síranu měďnatého", "hexahydrát síranu měďnatého", "síran měďnatý"], correct: [1],
+    explanation: "Cu²⁺ (měďnatý), SO₄²⁻, 5 molekul vody → penta. Modrá skalice." },
+  { cat: "Kyseliny", type: "single", question: "Kolik atomů kyslíku má kyselina sírová H₂SO₄ podle pravidla O = (H + ox.č.)/2?", options: ["3", "4", "2", "5"], correct: [1],
+    explanation: "S má VI (sudé → 2 H). O = (2 + 6)/2 = 4 → H₂SO₄." },
+  { cat: "Kyseliny", type: "single", question: "Vzorec kyseliny dusičné je:", options: ["HNO₂", "HNO₃", "H₂NO₃", "HNO"], correct: [1],
+    explanation: "N má V (liché → 1 H). O = (1 + 5)/2 = 3 → HNO₃. (HNO₂ = kyselina dusitá.)" },
+  { cat: "Křemičitany", type: "single", question: "Co znamená „tetraoxokřemičitan“ oproti „křemičitanu“?", options: ["anion SiO₄⁴⁻ se 4 atomy kyslíku (ortho)", "kyselou sůl", "thiosůl", "hydrát"], correct: [0],
+    explanation: "tetraoxo = 4 atomy O → SiO₄⁴⁻ (orthokřemičitan). Obyčejný křemičitan = SiO₃²⁻ (meta)." },
+  { cat: "Mix", type: "multi", question: "Které vzorce jsou přiřazené SPRÁVNĚ? (vyber všechny správné)",
+    options: ["fluorid vápenatý = CaF₂", "dusitan draselný = KNO₃", "kyanid rtuťnatý = Hg(CN)₂", "wolframan lithný = Li₂WO₄"],
+    correct: [0, 2, 3],
+    explanation: "dusitan draselný je KNO₂ (dusitan NO₂⁻, N má III). KNO₃ by byl dusičnan draselný. Ostatní tři jsou správně." },
+  { cat: "Mix", type: "multi", question: "Které z těchto látek obsahují kationt s oxidačním číslem +II? (vyber všechny)",
+    options: ["síran barnatý BaSO₄", "síran hlinitý Al₂(SO₄)₃", "kyanid rtuťnatý Hg(CN)₂", "hydrogensulfid kademnatý Cd(HS)₂"],
+    correct: [0, 2, 3],
+    explanation: "Ba²⁺, Hg²⁺ i Cd²⁺ jsou +II (-natý). Hliník v síranu hlinitém je +III (-itý)." },
+  { cat: "Vzorec → název", type: "single", question: "Jak se jmenuje H₂S₂O₃?", options: ["kyselina siřičitá", "kyselina disírová", "kyselina thiosírová", "kyselina sírová"], correct: [2],
+    explanation: "Z H₂SO₄ je jeden O nahrazen sírou → H₂S₂O₃ = kyselina thiosírová (anion thiosíran)." },
+  { cat: "Předpony", type: "single", question: "V názvu „difosforečnan dizinečnatý“ co znamená „di-“ ve slově dizinečnatý?", options: ["2 atomy fosforu", "2 atomy zinku ve vzorci", "2 molekuly vody", "dvojnásobný náboj"], correct: [1],
+    explanation: "di- u kovu (zinečnatý) = počet atomů kovu. Vzorec Zn₂P₂O₇: anion P₂O₇⁴⁻ + 2 Zn²⁺." },
+];
+
+// ── Flashcards (name ↔ formula / key ions) ──
+const FLASHCARDS = [
+  { front: "síran", back: "SO₄²⁻  (S má VI)" },
+  { front: "siřičitan", back: "SO₃²⁻  (S má IV)" },
+  { front: "dusičnan", back: "NO₃⁻  (N má V)" },
+  { front: "dusitan", back: "NO₂⁻  (N má III)" },
+  { front: "uhličitan", back: "CO₃²⁻  (C má IV)" },
+  { front: "fosforečnan", back: "PO₄³⁻  (P má V)" },
+  { front: "manganistan / manganan", back: "MnO₄⁻ (Mn VII) / MnO₄²⁻ (Mn VI)" },
+  { front: "chroman / dichroman", back: "CrO₄²⁻ / Cr₂O₇²⁻  (Cr má VI)" },
+  { front: "chlornan / chlorečnan / chloristan", back: "ClO⁻ (I) / ClO₃⁻ (V) / ClO₄⁻ (VII)" },
+  { front: "amonný kationt", back: "NH₄⁺" },
+  { front: "kyanid", back: "CN⁻" },
+  { front: "Přípony kationtu I–IV", back: "I -ný · II -natý · III -itý · IV -ičitý" },
+  { front: "Přípony kationtu V–VIII", back: "V -ičný/-ečný · VI -ový · VII -istý · VIII -ičelý" },
+  { front: "Přípony soli I–IV", back: "I -nan · II -natan · III -itan · IV -ičitan" },
+  { front: "Přípony soli V–VIII", back: "V -ičnan/-ečnan · VI -an · VII -istan · VIII -ičelan" },
+  { front: "thio- / dithio- / trithio-", back: "1 / 2 / 3 atomy O nahrazeny sírou (S)" },
+  { front: "Počet O v oxokyselině", back: "O = (počet H + oxidační číslo) / 2" },
+  { front: "křemičitan / tetraoxokřemičitan", back: "SiO₃²⁻ (meta) / SiO₄⁴⁻ (ortho)" },
+];
+
+/* ════════════════════════════════════════════════════════════════
+   APP
+   ════════════════════════════════════════════════════════════════ */
+export default function App() {
+  const [tab, setTab] = useState("teorie");
+  const [openTheory, setOpenTheory] = useState(0);
+  const [openExample, setOpenExample] = useState({});
+  const [exampleFilter, setExampleFilter] = useState("Vše");
+  const [card, setCard] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+
+  const ACCENT = "#22d3ee";
+  const tabs = [
+    ["teorie", "📖 Teorie"],
+    ["priklady", "✍️ Příklady"],
+    ["kviz", "🎯 Kvíz"],
+    ["karticky", "🃏 Kartičky"],
+    ["tahak", "📋 Tahák"],
+  ];
+
+  const diffStyle = (d) => d === "Easy" ? { bg: "rgba(34,197,94,0.18)", c: "#86efac", label: "Easy ✨" }
+    : d === "Medium" ? { bg: "rgba(234,179,8,0.18)", c: "#fde68a", label: "Medium ⚡" }
+    : { bg: "rgba(239,68,68,0.18)", c: "#fca5a5", label: "Hard 🔥" };
+
+  const filters = ["Vše", "Název → vzorec", "Vzorec → název"];
+  const shownExamples = EXAMPLES.filter(e => exampleFilter === "Vše" || e.dir === exampleFilter);
+
+  const renderTable = (kind) => {
+    const data = kind === "cation" ? CATION_SUFFIX : ANION_SUFFIX;
+    const head = kind === "cation" ? ["Ox. číslo", "Přípona kationtu", "Příklady"] : ["Ox. číslo", "Přípona soli", "Příklady aniontů"];
+    return (
+      <div style={{ overflowX: "auto", margin: "8px 0 4px" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+          <thead>
+            <tr>{head.map((h, i) => <th key={i} style={{ textAlign: "left", padding: "8px 10px", color: ACCENT, borderBottom: "1px solid rgba(255,255,255,0.15)", fontFamily: "'JetBrains Mono', monospace" }}>{h}</th>)}</tr>
+          </thead>
+          <tbody>
+            {data.map((row, i) => (
+              <tr key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                <td style={{ padding: "8px 10px", fontWeight: 700, color: "#fff", fontFamily: "'JetBrains Mono', monospace" }}>{row[0]}</td>
+                <td style={{ padding: "8px 10px", color: "#a5f3fc", fontFamily: "'JetBrains Mono', monospace" }}>{row[1]}</td>
+                <td style={{ padding: "8px 10px", color: "rgba(255,255,255,0.7)" }}>{row[2]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#0a0a1a", fontFamily: "'Exo 2', system-ui, sans-serif", color: "#e0e6ed", position: "relative", overflow: "hidden" }}>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Audiowide&family=JetBrains+Mono:wght@400;700&display=swap" />
+      <style>{`
+        @keyframes gridScroll { 0% { background-position: 0 0; } 100% { background-position: 0 60px; } }
+        @keyframes sunPulse { 0%,100% { opacity: .55; } 50% { opacity: .8; } }
+        @keyframes floatP { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        .syn-grid { position: fixed; inset: 0; pointer-events: none; z-index: 0;
+          background-image: linear-gradient(rgba(34,211,238,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,.14) 1px, transparent 1px);
+          background-size: 60px 60px; transform: perspective(380px) rotateX(62deg); transform-origin: bottom;
+          top: 55%; animation: gridScroll 6s linear infinite; mask-image: linear-gradient(transparent, #000 60%); }
+        .syn-sun { position: fixed; left: 50%; top: 18%; width: 320px; height: 320px; transform: translateX(-50%);
+          border-radius: 50%; background: radial-gradient(circle, #6366f1 0%, #a855f7 45%, transparent 70%);
+          filter: blur(20px); animation: sunPulse 5s ease-in-out infinite; z-index: 0; pointer-events: none; }
+        .syn-p { position: fixed; width: 6px; height: 6px; border-radius: 50%; background: #22d3ee; box-shadow: 0 0 12px #22d3ee; z-index: 0; pointer-events: none; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; transition: all 0.4s ease; }
+        .tabbtn { padding: 12px 20px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: #9aa6b5; border-radius: 999px; cursor: pointer; font-size: 15px; font-weight: 600; transition: all 0.4s ease; font-family: 'Exo 2', sans-serif; }
+        .tabbtn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+        .tabbtn.active { color: #06121a; background: linear-gradient(135deg, #22d3ee, #6366f1); border-color: transparent; box-shadow: 0 4px 22px rgba(34,211,238,.4); }
+        .acc { animation: slideIn .5s ease; }
+        .fbox { background: rgba(0,0,0,.32); border-left: 3px solid #22d3ee; padding: 10px 14px; border-radius: 0 10px 10px 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #a5f3fc; margin-top: 8px; }
+        .flip { perspective: 1200px; }
+        .flip-inner { position: relative; width: 100%; height: 240px; transition: transform 0.4s; transform-style: preserve-3d; cursor: pointer; }
+        .flip-inner.is-flipped { transform: rotateY(180deg); }
+        .flip-face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; text-align: center; padding: 28px; border-radius: 20px; }
+        .flip-back { transform: rotateY(180deg); }
+        h1,h2,h3 { font-family: 'Audiowide', 'Exo 2', sans-serif; }
+      `}</style>
+      <div className="syn-sun" />
+      <div className="syn-grid" />
+      <div className="syn-p" style={{ left: "12%", top: "30%", animation: "floatP 9s ease-in-out infinite" }} />
+      <div className="syn-p" style={{ left: "82%", top: "24%", animation: "floatP 11s ease-in-out infinite" }} />
+      <div className="syn-p" style={{ left: "70%", top: "60%", animation: "floatP 13s ease-in-out infinite" }} />
+      <div className="syn-p" style={{ left: "22%", top: "70%", animation: "floatP 8s ease-in-out infinite" }} />
+
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "920px", margin: "0 auto", padding: "28px 16px 60px" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "8px" }}>
+          <h1 style={{ fontSize: "30px", margin: 0, color: "#fff", letterSpacing: "1px", textShadow: "0 0 22px rgba(34,211,238,.5)" }}>Názvosloví</h1>
+          <div style={{ color: "rgba(255,255,255,0.6)", marginTop: "6px", fontSize: "15px" }}>Anorganické sloučeniny · kompletní příprava na test</div>
+        </div>
+
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: "10px", justifyContent: "center", flexWrap: "wrap", margin: "22px 0 26px" }}>
+          {tabs.map(([id, label]) => (
+            <button key={id} className={`tabbtn ${tab === id ? "active" : ""}`} onClick={() => setTab(id)}>{label}</button>
+          ))}
+        </div>
+
+        {/* ─── TEORIE ─── */}
+        {tab === "teorie" && (
+          <div className="acc" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {THEORY.map((sec, i) => {
+              const open = openTheory === i;
+              return (
+                <div key={i} className="glass" style={{ overflow: "hidden" }}>
+                  <div onClick={() => setOpenTheory(open ? -1 : i)} style={{ padding: "16px 20px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: "17px", fontWeight: 700, color: "#fff" }}>{sec.icon} {sec.title}</span>
+                    <span style={{ color: ACCENT, fontSize: "20px", transition: "transform 0.4s ease", transform: open ? "rotate(45deg)" : "none" }}>+</span>
+                  </div>
+                  {open && (
+                    <div style={{ padding: "0 20px 20px" }}>
+                      {sec.blocks.map((b, j) => (
+                        <div key={j} style={{ marginTop: "14px" }}>
+                          {b.table ? renderTable(b.table) : (
+                            <>
+                              <div style={{ color: ACCENT, fontWeight: 700, fontSize: "15px", marginBottom: "4px" }}>{b.h}</div>
+                              <div style={{ color: "rgba(255,255,255,0.78)", fontSize: "15px", lineHeight: 1.6 }}>{b.t}</div>
+                              {b.f && <div className="fbox">{b.f}</div>}
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ─── PŘÍKLADY ─── */}
+        {tab === "priklady" && (
+          <div className="acc">
+            <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "14px", textAlign: "center", marginBottom: "16px" }}>
+              {EXAMPLES.length} řešených příkladů z materiálů od profesorky. Klikni na příklad a zkus ho vyřešit, pak rozbal řešení.
+            </div>
+            <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "18px" }}>
+              {filters.map(f => (
+                <button key={f} onClick={() => setExampleFilter(f)} style={{
+                  padding: "7px 16px", borderRadius: "999px", cursor: "pointer", fontSize: "13px", fontWeight: 600,
+                  fontFamily: "'Exo 2', sans-serif", transition: "all 0.4s ease",
+                  border: exampleFilter === f ? `1px solid ${ACCENT}` : "1px solid rgba(255,255,255,0.12)",
+                  background: exampleFilter === f ? ACCENT + "22" : "rgba(255,255,255,0.04)",
+                  color: exampleFilter === f ? "#a5f3fc" : "#9aa6b5",
+                }}>{f}</button>
+              ))}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {shownExamples.map((ex, i) => {
+                const ds = diffStyle(ex.diff);
+                const open = openExample[ex.name];
+                return (
+                  <div key={i} className="glass" style={{ padding: "16px 20px" }}>
+                    <div onClick={() => setOpenExample(p => ({ ...p, [ex.name]: !p[ex.name] }))} style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
+                      <div>
+                        <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.45)", marginBottom: "3px" }}>{ex.dir}</div>
+                        <div style={{ fontSize: "18px", fontWeight: 700, color: "#fff", fontFamily: "'JetBrains Mono', monospace" }}>{ex.name}</div>
+                      </div>
+                      <span style={{ fontSize: "12px", fontWeight: 700, padding: "4px 10px", borderRadius: "999px", background: ds.bg, color: ds.c, whiteSpace: "nowrap" }}>{ds.label}</span>
+                    </div>
+                    {open && (
+                      <div className="acc" style={{ marginTop: "14px", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "14px" }}>
+                        <ol style={{ margin: 0, paddingLeft: "20px", color: "rgba(255,255,255,0.8)", fontSize: "14px", lineHeight: 1.7 }}>
+                          {ex.steps.map((s, k) => <li key={k}>{s}</li>)}
+                        </ol>
+                        <div style={{ marginTop: "12px", padding: "12px 16px", borderRadius: "12px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.4)" }}>
+                          <span style={{ color: "#86efac", fontWeight: 700, fontSize: "13px" }}>VÝSLEDEK: </span>
+                          <span style={{ color: "#fff", fontWeight: 700, fontSize: "17px", fontFamily: "'JetBrains Mono', monospace" }}>{ex.answer}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ─── KVÍZ ─── */}
+        {tab === "kviz" && (
+          <div className="acc">
+            <QuizEngine questions={QUIZ} accentColor={ACCENT} />
+          </div>
+        )}
+
+        {/* ─── KARTIČKY ─── */}
+        {tab === "karticky" && (
+          <div className="acc" style={{ maxWidth: "520px", margin: "0 auto" }}>
+            <div style={{ textAlign: "center", color: "rgba(255,255,255,0.6)", fontSize: "14px", marginBottom: "14px" }}>
+              Klikni na kartičku pro otočení · {card + 1} / {FLASHCARDS.length}
+            </div>
+            <div className="flip" onClick={() => setFlipped(f => !f)}>
+              <div className={`flip-inner ${flipped ? "is-flipped" : ""}`}>
+                <div className="flip-face glass" style={{ border: `1px solid ${ACCENT}55` }}>
+                  <span style={{ fontSize: "24px", fontWeight: 700, color: "#fff", fontFamily: "'JetBrains Mono', monospace" }}>{FLASHCARDS[card].front}</span>
+                </div>
+                <div className="flip-face flip-back glass" style={{ background: "rgba(34,211,238,0.1)", border: `1px solid ${ACCENT}` }}>
+                  <span style={{ fontSize: "21px", fontWeight: 700, color: "#a5f3fc", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.5 }}>{FLASHCARDS[card].back}</span>
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "18px" }}>
+              <button className="tabbtn" onClick={() => { setCard(c => (c - 1 + FLASHCARDS.length) % FLASHCARDS.length); setFlipped(false); }}>← Předchozí</button>
+              <button className="tabbtn" onClick={() => { setCard(c => (c + 1) % FLASHCARDS.length); setFlipped(false); }}>Další →</button>
+            </div>
+            <div style={{ display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginTop: "16px" }}>
+              {FLASHCARDS.map((_, i) => (
+                <div key={i} onClick={() => { setCard(i); setFlipped(false); }} style={{ width: "12px", height: "12px", borderRadius: "50%", cursor: "pointer", background: i === card ? ACCENT : "#4b5563", transition: "background 0.4s ease" }} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ─── TAHÁK ─── */}
+        {tab === "tahak" && (
+          <div className="acc" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div className="glass" style={{ padding: "18px 22px" }}>
+              <h3 style={{ color: "#fff", fontSize: "17px", marginTop: 0 }}>🏷️ Přípony KATIONTU (kladná část)</h3>
+              {renderTable("cation")}
+            </div>
+            <div className="glass" style={{ padding: "18px 22px" }}>
+              <h3 style={{ color: "#fff", fontSize: "17px", marginTop: 0 }}>🧂 Přípony SOLI (anion)</h3>
+              {renderTable("anion")}
+            </div>
+            <div className="glass" style={{ padding: "18px 22px" }}>
+              <h3 style={{ color: "#fff", fontSize: "17px", marginTop: 0 }}>🔑 Klíčová pravidla</h3>
+              <div className="fbox">Počet O v oxokyselině = (počet H + oxidační číslo) / 2</div>
+              <div className="fbox">Liché ox. číslo → 1 H · Sudé ox. číslo → 2 H</div>
+              <div className="fbox">Křížové pravidlo: ox. čísla (bez znamének) → indexy, pak zkrátit</div>
+              <div className="fbox">thio = 1 O→S · dithio = 2 O→S · trithio = 3 O→S</div>
+              <div className="fbox">hydrogen- = +1 H (náboj aniontu −1) · dihydrogen- = +2 H (náboj −2)</div>
+              <div className="fbox">hydrát: penta = 5, hexa = 6, hepta = 7 · H₂O (· n H₂O)</div>
+              <div className="fbox">křemičitan SiO₃²⁻ · tetraoxokřemičitan SiO₄⁴⁻ · Si vždy IV</div>
+            </div>
+            <div className="glass" style={{ padding: "18px 22px" }}>
+              <h3 style={{ color: "#fff", fontSize: "17px", marginTop: 0 }}>⚠️ Časté chyby (nezaměň!)</h3>
+              <ul style={{ color: "rgba(255,255,255,0.8)", fontSize: "14px", lineHeight: 1.8, margin: 0, paddingLeft: "20px" }}>
+                <li>manganistan MnO₄⁻ (VII) ↔ manganan MnO₄²⁻ (VI)</li>
+                <li>dusičnan NO₃⁻ (V) ↔ dusitan NO₂⁻ (III)</li>
+                <li>síran SO₄²⁻ (VI) ↔ siřičitan SO₃²⁻ (IV)</li>
+                <li>chroman CrO₄²⁻ ↔ dichroman Cr₂O₇²⁻ (oba Cr má VI)</li>
+                <li>-ičný (dusičný) vs -ečný (fosforečný) — obojí je ox. číslo V</li>
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
