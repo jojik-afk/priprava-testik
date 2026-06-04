@@ -18,6 +18,15 @@
     "file": "artifacts/francais-vacances-comparaison.html"
   },
   {
+    "title": "Fyzika přezkoušení — Pevné látky · Tekutiny · Změny skupenství",
+    "subject": "Physics",
+    "topic": "Deformace · Teplotní roztažnost · Hydrostatika · Bernoulli · Povrchové napětí · Kapilarita · Skupenské teplo · Fázový diagram",
+    "template": "study-app",
+    "collection": "",
+    "date": "2026-06-04",
+    "file": "artifacts/fyzika-prezkouseni-pevne-latky-tekutiny-skupenstvi.html"
+  },
+  {
     "title": "Srovnávací test z matematiky — kompletní příprava",
     "subject": "Math",
     "topic": "Výrazy, nerovnice, absolutní hodnota, funkce, goniometrie, geometrie, analytická geometrie",
