@@ -1,0 +1,2830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sociologie — kompletní příprava na test (Keller & klasici)</title>
+    <meta name="subject" content="Společenské vědy">
+    <meta name="topic" content="Sociologie — kultura, socializace, klasici, sociální nerovnost">
+    <meta name="template" content="mixed">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/sociologie-keller-test.jsx
+import { useState, useCallback, useMemo } from "react";
+import { jsxDEV, Fragment } from "react/jsx-dev-runtime";
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function shuffleQuestions(questions) {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const shuffledOptions = shuffledIndices.map((i) => q.options[i]);
+    const newCorrect = q.correct.map((oldIdx) => shuffledIndices.indexOf(oldIdx));
+    return { ...q, options: shuffledOptions, correct: newCorrect };
+  });
+}
+function arrEqual(a, b) {
+  if (!a || !b)
+    return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+function QuizEngine({ questions, accentColor = "#a855f7" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  const shuffledQuestions = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = shuffledQuestions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffledQuestions.filter((qq, i) => revealed[i] && arrEqual(answers[i] || [], qq.correct)).length;
+  const pct = Math.round(score / shuffledQuestions.length * 100);
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, shuffledQuestions]);
+  const handleSingleSelect = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [optionIdx] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, isRevealed]);
+  const toggleMulti = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setPendingMulti((prev) => prev.includes(optionIdx) ? prev.filter((i) => i !== optionIdx) : [...prev, optionIdx]);
+  }, [isRevealed]);
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [...pendingMulti] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, pendingMulti]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPendingMulti([]);
+    setShowResults(false);
+    setShuffleKey((k) => k + 1);
+  }, []);
+  if (showResults) {
+    const msg = pct >= 90 ? "Výborně! Máš to perfektně zvládnuté!" : pct >= 70 ? "Dobře! Téměř máš vše zvládnuté." : pct >= 50 ? "Mohlo by to být lepší, ale jdeš správným směrem." : "Potřebuješ více přípravy. Opakuj a bude to!";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: QS.resultsWrap,
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: QS.resultsCard,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: QS.resultsScore,
+            children: [
+              score,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: QS.resultsPct,
+            children: [
+              pct,
+              " %"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: QS.resultsMsg,
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...QS.btn, background: accentColor + "66", border: `1px solid ${accentColor}` },
+            onClick: restart,
+            children: "Začít znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  const activeSet = isMulti ? isRevealed ? myAnswer : pendingMulti : myAnswer;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: QS.wrap,
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: QS.dotBar,
+        children: shuffledQuestions.map((_, i) => {
+          let bg = "#4b5563";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#22c55e" : "#ef4444";
+          return /* @__PURE__ */ jsxDEV("div", {
+            onClick: () => goTo(i),
+            title: `Otázka ${i + 1}`,
+            style: { ...QS.dot, background: bg }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: QS.card,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: QS.qNum,
+            children: [
+              "Otázka ",
+              idx + 1,
+              " / ",
+              shuffledQuestions.length,
+              isMulti ? " — více správných odpovědí" : ""
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: QS.qText,
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: QS.optionsList,
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(255,255,255,0.12)";
+              let bg = "rgba(255,255,255,0.04)";
+              if (isRevealed) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(34,197,94,0.15)";
+                  border = "1px solid #22c55e";
+                } else if (activeSet.includes(i)) {
+                  bg = "rgba(239,68,68,0.15)";
+                  border = "1px solid #ef4444";
+                }
+              } else if (activeSet.includes(i)) {
+                bg = accentColor + "18";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("div", {
+                style: { ...QS.option, background: bg, border },
+                onClick: () => isMulti ? toggleMulti(i) : handleSingleSelect(i),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: QS.checkbox,
+                    children: activeSet.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRevealed && /* @__PURE__ */ jsxDEV("button", {
+            style: { ...QS.btn, opacity: pendingMulti.length === 0 ? 0.4 : 1 },
+            onClick: submitMulti,
+            disabled: pendingMulti.length === 0,
+            children: "Potvrdit"
+          }, undefined, false, undefined, this),
+          isRevealed && /* @__PURE__ */ jsxDEV("div", {
+            style: { ...QS.feedback, borderColor: isCorrect ? "#22c55e" : "#ef4444" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: QS.feedbackHeader,
+                children: isCorrect ? "Správně!" : "Špatně"
+              }, undefined, false, undefined, this),
+              !isCorrect && /* @__PURE__ */ jsxDEV("div", {
+                style: QS.feedbackCorrect,
+                children: [
+                  "Správná odpověď: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: QS.feedbackExplanation,
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: QS.feedbackTip,
+                children: [
+                  "Tip: ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: QS.navRow,
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: QS.btn,
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          idx < shuffledQuestions.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: QS.btn,
+            onClick: () => goTo(idx + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: { ...QS.btn, background: accentColor + "55", border: `1px solid ${accentColor}` },
+            onClick: () => setShowResults(true),
+            children: "Výsledky →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var QS = {
+  wrap: { display: "flex", flexDirection: "column", gap: "16px", maxWidth: "680px", margin: "0 auto", padding: "16px" },
+  dotBar: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" },
+  dot: { width: "22px", height: "22px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease" },
+  card: { background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "24px", transition: "all 0.4s ease" },
+  qNum: { color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "6px" },
+  qText: { color: "#fff", fontSize: "18px", fontWeight: 600, lineHeight: 1.5, marginBottom: "20px" },
+  optionsList: { display: "flex", flexDirection: "column", gap: "10px" },
+  option: { padding: "12px 16px", borderRadius: "12px", color: "#fff", cursor: "pointer", transition: "all 0.4s ease", display: "flex", alignItems: "center", gap: "10px", userSelect: "none", fontSize: "15px" },
+  checkbox: { fontSize: "18px", minWidth: "20px", color: "rgba(255,255,255,0.7)" },
+  btn: { marginTop: "12px", padding: "10px 22px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "10px", color: "#fff", cursor: "pointer", fontSize: "15px", transition: "all 0.4s ease" },
+  feedback: { marginTop: "20px", padding: "16px", borderRadius: "14px", border: "1px solid", background: "rgba(255,255,255,0.03)" },
+  feedbackHeader: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+  feedbackCorrect: { color: "#86efac", fontSize: "14px", marginBottom: "6px" },
+  feedbackExplanation: { color: "rgba(255,255,255,0.7)", fontSize: "14px", lineHeight: 1.5 },
+  feedbackTip: { color: "#fbbf24", fontSize: "13px", marginTop: "8px", fontStyle: "italic" },
+  navRow: { display: "flex", justifyContent: "space-between" },
+  resultsWrap: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "280px" },
+  resultsCard: { textAlign: "center", background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "24px", padding: "40px 48px" },
+  resultsScore: { color: "#fff", fontSize: "52px", fontWeight: 800, lineHeight: 1.1 },
+  resultsPct: { color: "rgba(255,255,255,0.45)", fontSize: "22px", marginBottom: "16px" },
+  resultsMsg: { color: "rgba(255,255,255,0.8)", fontSize: "17px", lineHeight: 1.5, marginBottom: "24px", maxWidth: "340px", margin: "0 auto 24px" }
+};
+var ACCENT = "#f59e0b";
+var ACCENT2 = "#fb923c";
+var glass = {
+  background: "rgba(255,255,255,0.05)",
+  backdropFilter: "blur(20px)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "20px",
+  transition: "all 0.4s ease"
+};
+var T = {
+  h2: { color: "#fff", fontSize: "22px", fontWeight: 700, margin: "0 0 12px" },
+  h3: { color: ACCENT, fontSize: "16px", fontWeight: 700, margin: "18px 0 8px" },
+  p: { color: "rgba(255,255,255,0.78)", fontSize: "15px", lineHeight: 1.65, margin: "0 0 10px" },
+  li: { color: "rgba(255,255,255,0.78)", fontSize: "15px", lineHeight: 1.6, marginBottom: "6px" },
+  strong: { color: "#fff", fontWeight: 600 },
+  term: { color: ACCENT, fontWeight: 600 }
+};
+function Term({ children }) {
+  return /* @__PURE__ */ jsxDEV("span", {
+    style: T.term,
+    children
+  }, undefined, false, undefined, this);
+}
+function B({ children }) {
+  return /* @__PURE__ */ jsxDEV("strong", {
+    style: T.strong,
+    children
+  }, undefined, false, undefined, this);
+}
+function Collapse({ title, badge, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { ...glass, marginBottom: "14px", overflow: "hidden" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        onClick: () => setOpen((o) => !o),
+        style: { padding: "16px 20px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", userSelect: "none" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" },
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { color: "#fff", fontWeight: 700, fontSize: "16.5px" },
+                children: title
+              }, undefined, false, undefined, this),
+              badge && /* @__PURE__ */ jsxDEV("span", {
+                style: { fontSize: "12px", color: ACCENT, background: ACCENT + "1d", border: `1px solid ${ACCENT}55`, borderRadius: "999px", padding: "2px 10px" },
+                children: badge
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: ACCENT, fontSize: "18px", transform: open ? "rotate(90deg)" : "none", transition: "transform 0.4s ease" },
+            children: "▸"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      open && /* @__PURE__ */ jsxDEV("div", {
+        style: { padding: "0 20px 20px" },
+        children
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function Reveal({ label = "Zobrazit odpověď", children }) {
+  const [open, setOpen] = useState(false);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { marginTop: "10px" },
+    children: !open ? /* @__PURE__ */ jsxDEV("button", {
+      onClick: () => setOpen(true),
+      style: { padding: "8px 18px", background: ACCENT + "22", border: `1px solid ${ACCENT}66`, borderRadius: "10px", color: ACCENT, cursor: "pointer", fontSize: "14px", transition: "all 0.4s ease" },
+      children: [
+        "\uD83D\uDC41 ",
+        label
+      ]
+    }, undefined, true, undefined, this) : /* @__PURE__ */ jsxDEV("div", {
+      style: { background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.35)", borderRadius: "12px", padding: "14px 16px", marginTop: "4px" },
+      children
+    }, undefined, false, undefined, this)
+  }, undefined, false, undefined, this);
+}
+function CompareTable({ leftTitle, rightTitle, rows }) {
+  const cell = { padding: "10px 14px", fontSize: "14px", color: "rgba(255,255,255,0.8)", lineHeight: 1.5, verticalAlign: "top", borderBottom: "1px solid rgba(255,255,255,0.07)" };
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { overflowX: "auto", margin: "10px 0" },
+    children: /* @__PURE__ */ jsxDEV("table", {
+      style: { width: "100%", borderCollapse: "collapse", minWidth: "440px" },
+      children: [
+        /* @__PURE__ */ jsxDEV("thead", {
+          children: /* @__PURE__ */ jsxDEV("tr", {
+            children: [
+              rows[0].length === 3 && /* @__PURE__ */ jsxDEV("th", {
+                style: { ...cell, color: "rgba(255,255,255,0.45)", fontSize: "12px", textTransform: "uppercase" }
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("th", {
+                style: { ...cell, color: ACCENT, fontWeight: 700, fontSize: "14px" },
+                children: leftTitle
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("th", {
+                style: { ...cell, color: "#60a5fa", fontWeight: 700, fontSize: "14px" },
+                children: rightTitle
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("tbody", {
+          children: rows.map((r, i) => /* @__PURE__ */ jsxDEV("tr", {
+            children: [
+              r.length === 3 && /* @__PURE__ */ jsxDEV("td", {
+                style: { ...cell, color: "#fff", fontWeight: 600, whiteSpace: "nowrap" },
+                children: r[0]
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("td", {
+                style: cell,
+                children: r[r.length - 2]
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("td", {
+                style: cell,
+                children: r[r.length - 1]
+              }, undefined, false, undefined, this)
+            ]
+          }, i, true, undefined, this))
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  }, undefined, false, undefined, this);
+}
+var quizQuestions = [
+  {
+    question: "Které z následujících hledisek bylo dominantní v Marxově rozdělení společnosti do tříd? (typová otázka z testu)",
+    type: "single",
+    options: ["míra politického vlivu", "prestiž povolání", "míra vzdělanosti", "vztah k výrobním prostředkům"],
+    correct: [3],
+    explanation: "Marx dělí společnost na třídy podle vztahu k výrobním prostředkům: buržoazie výrobní prostředky (továrny, půdu, kapitál) vlastní, proletariát vlastní jen svou pracovní sílu, kterou musí prodávat.",
+    tip: "Marx = ekonomika především. Vlastníš výrobní prostředky → buržoazie; nevlastníš → proletariát."
+  },
+  {
+    question: "„Řád a do značné míry schopnost jednat získáváme teprve při jednání s druhými lidmi, protože v kontaktu s druhými se učíme rozumět nejen tomu, jak jednat a které chování je ‚správné‘, ale i nejzákladnější představu o tom, co věci jsou a jaké je jejich místo ve světě.“ — Jaký proces popisuje výchozí text? (typová otázka z testu)",
+    type: "single",
+    options: ["socializaci", "vznik legitimity vlády", "sociální kontrolu", "vznik veřejného mínění"],
+    correct: [0],
+    explanation: "Text popisuje socializaci — proces, při kterém se z biologického tvora stává kulturní bytost: v kontaktu s druhými se učíme normám, hodnotám a chápání světa.",
+    tip: "Klíčová slova „\x01“ = socializace."
+  },
+  {
+    question: "Kdo napsal spis Kapitál?",
+    type: "single",
+    options: ["Karel Marx", "Max Weber", "Auguste Comte", "Émile Durkheim"],
+    correct: [0],
+    explanation: "Kapitál (Das Kapital) je hlavní dílo Karla Marxe — analýza kapitalismu, nadhodnoty a odcizení práce.",
+    tip: "Typová otázka z testu: Kapitál → Marx, chápající sociologie → Weber, pozitivní věda → Comte."
+  },
+  {
+    question: "S kým je spojen pojem „\x01“?",
+    type: "single",
+    options: ["Max Weber", "Auguste Comte", "Talcott Parsons", "Ferdinand Tönnies"],
+    correct: [0],
+    explanation: "Chápající (verstehende) sociologie je koncept Maxe Webera: sociolog má porozumět smyslu, který lidé svému jednání sami přikládají, ne jen měřit vnější fakta. S Weberem souvisí i pojem ideální typ a hodnotová neutralita vědy."
+  },
+  {
+    question: "Kdo je autorem pojmu „\x01“ a konceptu pozitivní vědy o společnosti?",
+    type: "single",
+    options: ["Auguste Comte", "Herbert Spencer", "Karel Marx", "T. G. Masaryk"],
+    correct: [0],
+    explanation: "Auguste Comte (1798–1857) je „\x01“ — zavedl samotný název oboru a v Kursu pozitivní filosofie požadoval, aby se společnost zkoumala pozitivně, tj. vědecky: ne PROČ věci jsou, ale JAK spolu jevy souvisejí (zákony, vztahy)."
+  },
+  {
+    question: "Pojem anomie označuje:",
+    type: "single",
+    options: [
+      "stav, kdy přestávají platit staré normy a nové ještě nejsou ustaveny",
+      "úplné ztotožnění člověka se sociální rolí",
+      "odpor ke všemu cizímu",
+      "proces přijetí norem za své"
+    ],
+    correct: [0],
+    explanation: "Anomie (Émile Durkheim) = stav bezzákonnosti či beznormnosti; staré normy tradiční společnosti přestaly platit a nové se ještě neustavily. Typické pro období rychlé společenské změny (např. průmyslová revoluce).",
+    tip: "a-nomos = řecky „\x01“."
+  },
+  {
+    question: "Které složky tvoří podle Kellera sociální status? (více odpovědí)",
+    type: "multi",
+    options: ["majetek", "moc", "prestiž", "národnost", "věk"],
+    correct: [0, 1, 2],
+    explanation: "Sociální status má tři složky: majetek, moc a prestiž. Národnost a věk jsou připsané charakteristiky, ne složky statusu.",
+    tip: "MMP: Majetek – Moc – Prestiž."
+  },
+  {
+    question: "Dělník se vypracuje na ředitele firmy. O jaký typ sociální mobility jde?",
+    type: "single",
+    options: [
+      "vertikální vzestupná",
+      "horizontální",
+      "nepravá",
+      "vertikální sestupná"
+    ],
+    correct: [0],
+    explanation: "Vertikální mobilita = pohyb mezi vrstvami nahoru či dolů (zde vzestup). Horizontální mobilita = změna pozice na stejné úrovni (např. změna zaměstnání ve stejné pozici, stěhování). Nepravá mobilita = status se zdánlivě mění, aniž by se reálně změnilo postavení (posune se celá struktura)."
+  },
+  {
+    question: "Civilizace (v užším smyslu) vzniká, když společnost má: (více odpovědí)",
+    type: "multi",
+    options: ["písmo", "město", "stát", "náboženství", "peníze"],
+    correct: [0, 1, 2],
+    explanation: "Tři znaky civilizace podle Kellera: písmo (umožňuje skladovat informace), město (dává vztahům prostorové vymezení — hradby, tržiště, fórum) a stát (monopol na legitimní použití násilí). Náboženství a směna existují i v necivilizovaných kulturách.",
+    tip: "Písmo – Město – Stát. Civilizace = užší pojem, kultura = širší (vše, čím se lišíme od zvířat)."
+  },
+  {
+    question: "Osvojování profesních znalostí pro trh práce je příkladem:",
+    type: "single",
+    options: ["sekundární socializace", "primární socializace", "resocializace", "internalizace"],
+    correct: [0],
+    explanation: "Sekundární socializace = osvojení profesních znalostí a dovedností pro uplatnění na trhu práce. Primární socializace = základní kulturní normy (slušné chování, respekt k druhým). Resocializace = nové osvojení norem, např. po návratu z vězení."
+  },
+  {
+    question: "Internalizace znamená, že člověk:",
+    type: "single",
+    options: [
+      "přijme normy „\x01“ a dodržuje je dobrovolně",
+      "je k dodržování norem otevřeně donucen",
+      "normy odmítá a vymezuje se proti nim",
+      "se vrací do společnosti po dlouhém vyloučení"
+    ],
+    correct: [0],
+    explanation: "Internalizace = zvnitřnění norem; člověk je přijme za vlastní a dodržuje je dobrovolně, bez vnějšího donucení. Je to nejúčinnější forma sociální kontroly — moderní společnost ji doplňuje skrytými formami manipulace (reklama, média)."
+  },
+  {
+    question: "Role „\x01“ nebo „\x01“ je podle Kellera role:",
+    type: "single",
+    options: ["vnucená", "připsaná", "získaná", "referenční"],
+    correct: [0],
+    explanation: "Vnucené role jsou přiděleny bez našeho přičinění (nezaměstnaný, bezdomovec). Připsané role nemůžeme odmítnout (věk, pohlaví, národnost). Získané role jsme si vydobyli (uznání, majetek).",
+    tip: "Připsaná = narodíš se s ní. Získaná = vydobudeš si ji. Vnucená = přidělí ti ji okolnosti."
+  },
+  {
+    question: "Váleční zločinci, kteří se hájili slovy „\x01“, jsou v učebnici příkladem:",
+    type: "single",
+    options: [
+      "naprostého ztotožnění s rolí",
+      "rolové distance",
+      "konfliktu mezi rolemi",
+      "odmítnutí role"
+    ],
+    correct: [0],
+    explanation: "Naprosté ztotožnění s rolí = člověk ztrácí svobodnou vůli a odpovědnost. Opačný extrém (naprosté odmítání rolí) by rozložil společnost. Řešením je přiměřená rolová distance: roli plním, ale nenechám se jí zcela pohltit."
+  },
+  {
+    question: "Skupina, v níž člověk není členem, ale orientuje se na její hodnoty a normy, se nazývá:",
+    type: "single",
+    options: ["referenční skupina", "členská skupina", "out-group", "formální skupina"],
+    correct: [0],
+    explanation: "Referenční skupina = vztažná skupina, jejíž hodnoty přejímám, i když do ní nepatřím (např. teenager napodobující profesionální sportovce). Out-group je skupina, vůči níž se vymezuji."
+  },
+  {
+    question: "Které dvojice patří k dělení skupin? (více odpovědí)",
+    type: "multi",
+    options: [
+      "malé × velké",
+      "formální × neformální",
+      "členské × referenční",
+      "připsané × získané",
+      "primární × sekundární"
+    ],
+    correct: [0, 1, 2, 4],
+    explanation: "Skupiny dělíme podle velikosti (malé × velké), formálnosti (formální × neformální), vztahu člověka ke skupině (členská × referenční × out-group) a na primární × sekundární. „\x01“ je dělení rolí, ne skupin."
+  },
+  {
+    question: "Dvoustupňový model komunikace říká, že:",
+    type: "single",
+    options: [
+      "vliv médií na publikum filtrují názoroví vůdci a malé skupiny",
+      "média působí na publikum přímo a bez prostředníků",
+      "informace se šíří nejprve psaným a poté mluveným slovem",
+      "publikum se dělí na optimisty a kritiky"
+    ],
+    correct: [0],
+    explanation: "Média předávají publiku informace, ale postoje se utvářejí přes názorové vůdce v malých skupinách. Proto nejsme vůči médiím bezbranní — jejich vliv je filtrován.",
+    tip: "Stupeň 1: média → názoroví vůdci. Stupeň 2: názoroví vůdci → publikum (postoje)."
+  },
+  {
+    question: "Hodnocení všeho pouze z pozice vlastní kultury, kterou považujeme za jedinou správnou, se nazývá:",
+    type: "single",
+    options: ["etnocentrismus", "xenofobie", "předsudek", "kulturní pluralismus"],
+    correct: [0],
+    explanation: "Etnocentrismus = posuzování jiných kultur měřítky té vlastní. Xenofobie = odpor ke všemu cizímu. Předsudek = apriorní (předem vytvořený) negativní obraz o jednotlivci či skupině. Kulturní pluralismus je naopak řešení: všechny kultury jsou rovnocenné."
+  },
+  {
+    question: "Ferdinand Tönnies rozlišil:",
+    type: "single",
+    options: [
+      "tradiční pospolitost (Gemeinschaft) a moderní společnost (Gesellschaft)",
+      "mechanickou a organickou solidaritu",
+      "teologické, metafyzické a pozitivní stadium",
+      "třídu produktivní a politickou"
+    ],
+    correct: [0],
+    explanation: "Tönnies: Gemeinschaft = tradiční pospolitost (osobní vztahy, sdílené hodnoty, vesnice) × Gesellschaft = moderní společnost (neosobní, účelové, smluvní vztahy). Solidarity jsou Durkheim, stadia Comte, produktivní/politická třída Collins."
+  },
+  {
+    question: "Organická solidarita podle Durkheima drží pohromadě:",
+    type: "single",
+    options: [
+      "moderní společnost — skrze dělbu práce a vzájemnou závislost odlišných lidí",
+      "tradiční společnost — skrze podobnost a sdílené normy všech členů",
+      "rodinu — skrze pokrevní příbuznost",
+      "církev — skrze společnou víru"
+    ],
+    correct: [0],
+    explanation: "Mechanická solidarita (tradiční společnost) = soudržnost z podobnosti — všichni dělají a věří totéž. Organická solidarita (moderní společnost) = soudržnost z odlišnosti — dělba práce nás činí vzájemně závislými jako orgány těla.",
+    tip: "Organická = jako orgány v těle: každý dělá něco jiného, ale nikdo nepřežije sám."
+  },
+  {
+    question: "Které znaky charakterizují moderní společnost podle Kellera (kap. 2)? (více odpovědí)",
+    type: "multi",
+    options: ["generalizace", "individualizace", "funkční diferenciace", "racionalizace", "orientace na tradici"],
+    correct: [0, 1, 2, 3],
+    explanation: "Čtyři znaky moderní společnosti: generalizace (normy platí obecně pro všechny), individualizace (jedinec se vyvazuje z tradičních vazeb), funkční diferenciace (společnost se dělí na specializované subsystémy) a racionalizace (účelové, vypočitatelné jednání). Orientace na tradici je znak tradiční společnosti.",
+    tip: "GIFR: Generalizace, Individualizace, Funkční diferenciace, Racionalizace."
+  },
+  {
+    question: "Které charakteristiky patří k TRADIČNÍ společnosti? (více odpovědí)",
+    type: "multi",
+    options: [
+      "dědičná moc",
+      "cyklické chápání času",
+      "připsaný (pevný) status",
+      "tržní hospodářství",
+      "profesionální byrokracie"
+    ],
+    correct: [0, 1, 2],
+    explanation: "Tradiční společnost: dědičná moc, cyklické chápání času, připsaný status, stavovská struktura, zemědělství, soběstačnost domácností, mytologicko-náboženský výklad světa. Tržní hospodářství a profesionální byrokracie patří k moderní společnosti."
+  },
+  {
+    question: "Jaké je správné pořadí tří stadií vývoje lidského ducha podle Comta?",
+    type: "single",
+    options: [
+      "teologické → metafyzické → pozitivní",
+      "metafyzické → teologické → pozitivní",
+      "pozitivní → metafyzické → teologické",
+      "teologické → pozitivní → metafyzické"
+    ],
+    correct: [0],
+    explanation: "Zákon tří stadií: 1) teologické — jevy vysvětlují bohové a nadpřirozené síly; 2) metafyzické — abstraktní principy a podstaty; 3) pozitivní — věda nezkoumá PROČ, ale JAK: hledá zákony a vztahy mezi jevy.",
+    tip: "T-M-P: Tři Mušketýři Pijou."
+  },
+  {
+    question: "Které druhy kapitálu rozlišuje Pierre Bourdieu? (více odpovědí)",
+    type: "multi",
+    options: ["ekonomický", "sociální", "kulturní", "biologický", "morální"],
+    correct: [0, 1, 2],
+    explanation: "Bourdieu (70. léta 20. století): ekonomický kapitál (majetek, příjmy), sociální kapitál (kontakty, vazby, známosti) a kulturní kapitál (vzdělání, kulturní přehled, vkus). Na kombinaci kapitálů staví i Savageova analýza tříd.",
+    tip: "EKS: Ekonomický, Kulturní, Sociální."
+  },
+  {
+    question: "Jaké jsou tři podoby kulturního kapitálu podle Bourdieua? (více odpovědí)",
+    type: "multi",
+    options: ["vtělený", "objektivizovaný", "institucionalizovaný", "globalizovaný", "privatizovaný"],
+    correct: [0, 1, 2],
+    explanation: "Vtělený (inkorporovaný) = znalosti, vkus a návyky „\x01“; objektivizovaný = vlastněné kulturní předměty (knihy, obrazy, nástroje); institucionalizovaný = formální osvědčení (diplomy, tituly)."
+  },
+  {
+    question: "Sociolog Mike Savage (Social Class in the 21st Century, Velký britský třídní výzkum) rozdělil britskou společnost na:",
+    type: "single",
+    options: [
+      "sedm tříd podle kombinace ekonomického, sociálního a kulturního kapitálu",
+      "dvě třídy podle vztahu k výrobním prostředkům",
+      "tři stavy podle původu",
+      "pět vrstev podle prestiže povolání"
+    ],
+    correct: [0],
+    explanation: "Savage ukázal, že třídy nezmizely: na základě Great British Class Survey popsal 7 tříd podle kombinace tří kapitálů (Bourdieu). Na vrcholu elita (~6 %, disponuje všemi kapitály), na dně prekariát (~15 %, nedostatek všech druhů kapitálu). Konec tradiční politiky založené na konfliktu dělnické a střední třídy.",
+    tip: "Pro Česko podobně Daniel Prokop: Rozděleni svobodou — šest tříd české společnosti."
+  },
+  {
+    question: "Pojem sociálních práv jako součásti občanství rozpracoval ve spise Občanství a sociální třída (1950):",
+    type: "single",
+    options: ["T. H. Marshall", "Talcott Parsons", "Randall Collins", "Charles W. Mills"],
+    correct: [0],
+    explanation: "T. H. Marshall: občanství se vyvíjelo od práv občanských (svobody) přes politická (volit) k právům sociálním (vzdělání, zdraví, zabezpečení) — ta garantuje sociální stát a zmírňují nerovnost."
+  },
+  {
+    question: "Jak se na sociální nerovnost dívá strukturní funkcionalismus (Talcott Parsons)?",
+    type: "single",
+    options: [
+      "nerovnost je užitečná — motivuje lidi obsazovat náročné a důležité pozice",
+      "nerovnost je výsledkem vykořisťování a měla by být odstraněna revolucí",
+      "nerovnost je čistě náhodná a nemá žádnou funkci",
+      "nerovnost vzniká pouze rozdílným vzděláním"
+    ],
+    correct: [0],
+    explanation: "Strukturní funkcionalismus (konsensuální teorie): nerovnost je funkční — odměny motivují schopné, aby zastávali náročné pozice. Teorie konfliktu naopak: nerovnost plyne z moci a privilegií, konflikt o zdroje je hnacím motorem změny (a může být i užitečný — Ch. W. Mills)."
+  },
+  {
+    question: "V polemice o vlivu školy na nerovnost platí: Bourdieu tvrdí, že děti z vyšších vrstev zvýhodňuje ……, zatímco Boudon zdůrazňuje, že volbu školy ovlivňuje …….",
+    type: "single",
+    options: [
+      "kulturní kapitál / ekonomický kapitál",
+      "ekonomický kapitál / kulturní kapitál",
+      "sociální kapitál / biologický kapitál",
+      "vzdělání rodičů / počet sourozenců"
+    ],
+    correct: [0],
+    explanation: "Bourdieu: škola odměňuje kulturní kapitál, který si děti z vyšších vrstev přinášejí z domova (jazyk, vkus, přehled). Boudon: rozhodující je ekonomický kapitál — rodiny zvažují náklady a rizika další školy. Sociální kapitál (kontakty) pak zvýhodňuje po ukončení studia."
+  },
+  {
+    question: "Max Weber ve spise Protestantská etika a duch kapitalismu (1905) zkoumá:",
+    type: "single",
+    options: [
+      "jak náboženská etika (kalvinismus, predestinace) podpořila vznik moderního kapitalismu",
+      "jak kapitalismus zničil náboženství",
+      "ekonomické zákony akumulace kapitálu",
+      "dělbu práce v protestantských zemích"
+    ],
+    correct: [0],
+    explanation: "Weber ukazuje vztah mezi protestantskou (kalvínskou) etikou a „\x01“: víra v predestinaci vedla k askezi, systematické práci a reinvestování zisku — náboženské motivy tak nezáměrně podpořily kapitalismus. Pozn.: jde o opačný směr vysvětlení než u Marxe (ideje ← ekonomika)."
+  },
+  {
+    question: "Kdo je považován za zakladatele české sociologie (a později se stal prezidentem)?",
+    type: "single",
+    options: ["Tomáš Garrigue Masaryk", "Edvard Beneš", "Jan Keller", "Miloslav Petrusek"],
+    correct: [0],
+    explanation: "T. G. Masaryk — první profesor sociologie u nás, autor sociologické studie Sebevražda (1881), pozdější první československý prezident. Jan Keller je autor naší učebnice, Petrusek psal o postmoderních společnostech."
+  }
+];
+var flashcards = [
+  { front: "SOCIALIZACE", back: "Proces, při kterém se z biologického tvora stává kulturní bytost — učíme se chování, normám a hodnotám své společnosti. Primární (základní normy) × sekundární (profesní znalosti)." },
+  { front: "RESOCIALIZACE", back: "Opětovné osvojení norem a začlenění do společnosti — např. po návratu z vězení, po dlouhé nemoci, po emigraci." },
+  { front: "ANOMIE (Durkheim)", back: "Stav „\x01“: staré normy přestaly platit a nové ještě nejsou ustaveny. Typická pro období rychlých společenských změn." },
+  { front: "KULTURA", back: "Širší pojem: vše, čím se lišíme od zvířat — normy, jazyk, vědění, zvyky, obřady, náboženské představy. Klíčovou roli hrají symboly." },
+  { front: "CIVILIZACE", back: "Užší pojem. Vzniká, když společnost má: 1) PÍSMO (skladuje informace), 2) MĚSTO (prostorové vymezení vztahů), 3) STÁT (monopol na legitimní násilí)." },
+  { front: "SOCIÁLNÍ KONTROLA", back: "Způsoby, jimiž společnost zajišťuje dodržování norem: od otevřeného donucení (tradiční spol.) po skryté formy manipulace (moderní spol.). Nejúčinnější je internalizace." },
+  { front: "INTERNALIZACE", back: "Zvnitřnění norem — člověk je přijme „\x01“ a dodržuje je dobrovolně, bez vnějšího nátlaku." },
+  { front: "SOCIÁLNÍ ROLE", back: "Pravidelnosti v jednání spojené s pozicí člověka ve společnosti. Typy: PŘIPSANÉ (věk, pohlaví), ZÍSKANÉ (uznání, majetek), VNUCENÉ (nezaměstnaný)." },
+  { front: "ROLOVÁ DISTANCE", back: "Přiměřený odstup od role: plním ji, ale nenechám se jí pohltit. Extrémy: naprosté ztotožnění („\x01“) × naprosté odmítání (rozpad společnosti)." },
+  { front: "SOCIÁLNÍ STATUS", back: "Postavení člověka ve společnosti. Tři složky: MAJETEK – MOC – PRESTIŽ. Připsaný × získaný status." },
+  { front: "SOCIÁLNÍ MOBILITA", back: "Pohyb mezi sociálními pozicemi. VERTIKÁLNÍ (vzestup/sestup mezi vrstvami) × HORIZONTÁLNÍ (na stejné úrovni). NEPRAVÁ mobilita = zdánlivá změna statusu, reálné postavení se nemění." },
+  { front: "SOCIÁLNÍ STRATIFIKACE", back: "Rozvrstvení společnosti do vrstev/tříd podle majetku, moci a prestiže. Tradiční spol.: stavovská struktura, pevný status. Moderní spol.: třídní struktura, pohyblivý status." },
+  { front: "REFERENČNÍ SKUPINA", back: "Skupina, na jejíž hodnoty a normy se orientuji, i když nejsem jejím členem. (Členská = jsem v ní; out-group = vymezuji se proti ní.)" },
+  { front: "DVOUSTUPŇOVÝ MODEL KOMUNIKACE", back: "Média → publikum: informace. Názoroví vůdci → publikum: postoje. Vliv médií filtrují malé skupiny a názoroví vůdci — nejsme bezbranní." },
+  { front: "ETNOCENTRISMUS", back: "Hodnocení všeho jen z pozice vlastní kultury, kterou považuji za jedinou správnou. Řešení: kulturní pluralismus — všechny kultury jsou rovnocenné." },
+  { front: "PŘEDSUDEK × XENOFOBIE", back: "Předsudek = apriorní (předem vytvořený) negativní obraz o jednotlivci/skupině. Xenofobie = odpor ke všemu cizímu." },
+  { front: "GEMEINSCHAFT × GESELLSCHAFT (Tönnies)", back: "Pospolitost (tradiční): osobní, citové vazby, sdílené hodnoty. Společnost (moderní): neosobní, účelové, smluvní vztahy." },
+  { front: "MECHANICKÁ × ORGANICKÁ SOLIDARITA (Durkheim)", back: "Mechanická (tradiční spol.): soudržnost z PODOBNOSTI. Organická (moderní spol.): soudržnost z ODLIŠNOSTI — dělba práce → vzájemná závislost." },
+  { front: "ZÁKON TŘÍ STADIÍ (Comte)", back: "Vývoj lidského ducha: 1) TEOLOGICKÉ (bohové), 2) METAFYZICKÉ (abstraktní podstaty), 3) POZITIVNÍ (věda — ne PROČ, ale JAK; zákony a vztahy)." },
+  { front: "ODCIZENÍ (Marx)", back: "Práce v kapitalismu vytváří odcizení: dělník nevlastní výrobní prostředky ani produkt své práce; práce ho neuskutečňuje, ale zotročuje." },
+  { front: "CHÁPAJÍCÍ SOCIOLOGIE + IDEÁLNÍ TYP (Weber)", back: "Sociologie má rozumět smyslu, který lidé svému jednání přikládají. Ideální typ = myšlenkový nástroj, „\x01“ model jevu pro srovnávání s realitou." },
+  { front: "ZNAKY MODERNÍ SPOLEČNOSTI", back: "Generalizace, Individualizace, Funkční diferenciace, Racionalizace (GIFR)." },
+  { front: "DRUHY KAPITÁLU (Bourdieu)", back: "EKONOMICKÝ (majetek), SOCIÁLNÍ (kontakty, vazby), KULTURNÍ (vzdělání, vkus). Kulturní: vtělený, objektivizovaný, institucionalizovaný." },
+  { front: "MIKE SAVAGE — 7 TŘÍD", back: "Social Class in the 21st Century (2015), Great British Class Survey: 7 tříd podle kombinace kapitálů. Elita (~6 %) nahoře, prekariát (~15 %) dole. Pro ČR: Daniel Prokop — Rozděleni svobodou (6 tříd)." },
+  { front: "SOCIÁLNÍ STÁT + SOCIÁLNÍ PRÁVA", back: "Stát zmírňující nerovnosti (zabezpečení, zdraví, vzdělání). T. H. Marshall: Občanství a sociální třída (1950) — občanská → politická → sociální práva." },
+  { front: "STRUKTURNÍ FUNKCIONALISMUS × TEORIE KONFLIKTU", back: "Parsons (konsensus): nerovnost je funkční, motivuje. Teorie konfliktu (Mills): nerovnost plyne z moci; konflikt je motorem změny a může být užitečný." }
+];
+var persons = [
+  {
+    name: "Auguste COMTE",
+    years: "1798–1857",
+    country: "\uD83C\uDDEB\uD83C\uDDF7 Francie",
+    emoji: "\uD83E\uDDED",
+    tagline: "Otec sociologie — pozitivismus",
+    points: [
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Zavedl pojem ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "sociologie"
+          }, undefined, false, undefined, this),
+          "; dílo ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "Kurs pozitivní filosofie"
+          }, undefined, false, undefined, this),
+          " (1830–42)."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "Pozitivní věda"
+          }, undefined, false, undefined, this),
+          ": nezkoumá PROČ (příčiny, účely), ale JAK — zákony a vztahy mezi jevy, založené na pozorování."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "Zákon tří stadií"
+          }, undefined, false, undefined, this),
+          ": teologické (bohové, duchové) → metafyzické (abstraktní podstaty) → pozitivní (věda)."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Opory společnosti, o které se podle Comta řád opírá: ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "rodina, majetek/vlastnictví, dělba práce, víra, jazyk"
+          }, undefined, false, undefined, this),
+          "."
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  },
+  {
+    name: "Karel MARX",
+    years: "1818–1883",
+    country: "\uD83C\uDDE9\uD83C\uDDEA Německo",
+    emoji: "⚒️",
+    tagline: "Konflikt, ekonomika, revoluce",
+    points: [
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Dílo ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "Kapitál"
+          }, undefined, false, undefined, this),
+          ". Všechny společnosti jsou založeny na ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "konfliktu"
+          }, undefined, false, undefined, this),
+          "; základním motivem všech společenských změn je ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "ekonomika"
+          }, undefined, false, undefined, this),
+          "."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Třídy podle ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "vztahu k výrobním prostředkům"
+          }, undefined, false, undefined, this),
+          ": buržoazie (vlastní) × proletariát (prodává pracovní sílu). ← typová otázka!"
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Práce v kapitalismu vytváří ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "odcizení"
+          }, undefined, false, undefined, this),
+          "; nadhodnota připadá vlastníkovi kapitálu."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "„\\1“ — ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "historický materialismus"
+          }, undefined, false, undefined, this),
+          ": vývoj není náhodný, lze ho rozpoznat v organizaci ekonomiky."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Společnost lze přebudovat ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "vědeckou kritikou a revoluční akcí"
+          }, undefined, false, undefined, this),
+          " — člověk je formován společností, ale může ji změnit."
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  },
+  {
+    name: "Émile DURKHEIM",
+    years: "1858–1917",
+    country: "\uD83C\uDDEB\uD83C\uDDF7 Francie",
+    emoji: "\uD83D\uDD17",
+    tagline: "Solidarita, anomie, sociální fakta",
+    points: [
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "Anomie"
+          }, undefined, false, undefined, this),
+          " = stav, kdy staré normy přestaly platit a nové ještě nejsou ustaveny."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Dílo ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "Společenská dělba práce"
+          }, undefined, false, undefined, this),
+          ": ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "mechanická solidarita"
+          }, undefined, false, undefined, this),
+          " (tradiční — soudržnost z podobnosti) × ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "organická solidarita"
+          }, undefined, false, undefined, this),
+          " (moderní — soudržnost z odlišnosti skrze dělbu práce)."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Společnost je třeba zkoumat skrze ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "sociální fakta"
+          }, undefined, false, undefined, this),
+          " — působí na nás zvnějšku jako věci (studie Sebevražda)."
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  },
+  {
+    name: "Max WEBER",
+    years: "1864–1920",
+    country: "\uD83C\uDDE9\uD83C\uDDEA Německo",
+    emoji: "\uD83D\uDCDC",
+    tagline: "Chápající sociologie, ideální typ",
+    points: [
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "Chápající (rozumějící) sociologie"
+          }, undefined, false, undefined, this),
+          ": cílem je porozumět smyslu, který jednající lidé svému jednání přikládají. ← typová otázka!"
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "Ideální typ"
+          }, undefined, false, undefined, this),
+          " = myšlenkový nástroj, „\\1“ model jevu (např. byrokracie), s nímž srovnáváme realitu."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Dílo ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "Protestantská etika a duch kapitalismu"
+          }, undefined, false, undefined, this),
+          " (1905): kalvínská víra v predestinaci → askeze, systematická práce, reinvestice zisku → vznik moderního kapitalismu. (Ideje mohou hýbat ekonomikou — obrácený směr než Marx.)"
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Metodologie sociálních věd: věda má být ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "hodnotově neutrální"
+          }, undefined, false, undefined, this),
+          " — popisuje, nehodnotí."
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  },
+  {
+    name: "Herbert SPENCER",
+    years: "1820–1903",
+    country: "\uD83C\uDDEC\uD83C\uDDE7 Anglie",
+    emoji: "\uD83C\uDF31",
+    tagline: "Evolucionismus",
+    points: [
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Společnost se vyvíjí ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "evolučně"
+          }, undefined, false, undefined, this),
+          " jako organismus — od jednoduchých k složitým formám (organicismus)."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Spojován se ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "sociálním darwinismem"
+          }, undefined, false, undefined, this),
+          " („\\1“ přenesené na společnost)."
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  },
+  {
+    name: "Ferdinand TÖNNIES",
+    years: "1855–1936",
+    country: "\uD83C\uDDE9\uD83C\uDDEA Německo",
+    emoji: "\uD83C\uDFD8️",
+    tagline: "Gemeinschaft × Gesellschaft",
+    points: [
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "Gemeinschaft"
+          }, undefined, false, undefined, this),
+          " (pospolitost) = tradiční: osobní, citové vazby, sdílené hodnoty, vesnice."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "Gesellschaft"
+          }, undefined, false, undefined, this),
+          " (společnost) = moderní: neosobní, účelové, smluvní vztahy, město."
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  },
+  {
+    name: "Georg SIMMEL",
+    years: "1858–1918",
+    country: "\uD83C\uDDE9\uD83C\uDDEA Německo",
+    emoji: "\uD83D\uDCB0",
+    tagline: "Peníze v moderní společnosti",
+    points: [
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "Analyzoval roli ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "peněz"
+          }, undefined, false, undefined, this),
+          " v moderní společnosti: peníze zneosobňují vztahy, vše činí směnitelným a vypočitatelným."
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  },
+  {
+    name: "T. G. MASARYK",
+    years: "1850–1937",
+    country: "\uD83C\uDDE8\uD83C\uDDFF Česko",
+    emoji: "\uD83C\uDF93",
+    tagline: "Zakladatel české sociologie",
+    points: [
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: [
+          "První profesor sociologie u nás; sociologická studie ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "Sebevražda"
+          }, undefined, false, undefined, this),
+          " (1881) — sebevražednost jako důsledek rozpadu náboženského rámce moderního člověka."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Fragment, {
+        children: "Pozdější první československý prezident."
+      }, undefined, false, undefined, this)
+    ]
+  }
+];
+var openQuestions = [
+  {
+    q: "Jaký je rozdíl mezi tradiční a moderní společností?",
+    src: "otázka z prezentace (kap. 1)",
+    a: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "Moc a správa:"
+            }, undefined, false, undefined, this),
+            " tradiční — dědičná moc, systematická kontrola celého území není možná × moderní — moc v rámci národního státu, formální organizace, jasné hranice, institucionalizace."
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "Ekonomika:"
+            }, undefined, false, undefined, this),
+            " tradiční — zemědělství a řemesla, soběstačnost domácností, nízká směna × moderní — tržní hospodářství, dělba práce/specializace, profesionální byrokracie."
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "Sociální struktura:"
+            }, undefined, false, undefined, this),
+            " tradiční — stavovská, připsaný/pevný status, stálost myšlení a identity × moderní — třídní, pohyblivý status, dynamičnost (časté změny povolání i bydliště)."
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "Výklad světa:"
+            }, undefined, false, undefined, this),
+            " tradiční — mytologicko-náboženský rámec, cyklické chápání času, orientace na tradici × moderní — vědecký výklad, pozitivní filosofie, lineární čas, racionalizace."
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    q: "Jaký byl původní účel sociologie? Jaké sociální faktory ovlivnily její vývoj?",
+    src: "otázky z prezentace (kap. 1 a 2)",
+    a: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            "Sociologie vznikla v 19. století jako ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "reakce na rozpad tradiční společnosti"
+            }, undefined, false, undefined, this),
+            " — průmyslová revoluce, osvícenství a Velká francouzská revoluce rozbily starý řád (komunitu, kastu, stav). Lidé se stěhovali z venkova do měst, mezi cizí lidi; oddělila se práce a volný čas („\\1“ architektura továren a činžáků); slábla tradiční sociální kontrola → krize, nejistota, anomie."
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            "Původním účelem bylo ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "vědecky porozumět nové (moderní) společnosti"
+            }, undefined, false, undefined, this),
+            ", vysvětlit, co ji drží pohromadě, a pomoci řešit její krize (Comte: sociologie jako pozitivní věda o společnosti; srovnej s rolí kritického realismu v literatuře — Balzac, Dickens)."
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    q: "Co může změnit náš sociální status?",
+    src: "otázka z prezentace (kap. 1)",
+    a: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: /* @__PURE__ */ jsxDEV("p", {
+        style: T.p,
+        children: [
+          "Status = majetek + moc + prestiž. Změnit ho může ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "vzdělání, povolání a kariérní postup, zbohatnutí či zchudnutí, sňatek, získání moci či prestiže"
+          }, undefined, false, undefined, this),
+          " — tedy ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "sociální mobilita"
+          }, undefined, false, undefined, this),
+          " (vertikální = vzestup/sestup, horizontální = pohyb na stejné úrovni). V moderní společnosti je status pohyblivý (získaný), v tradiční byl převážně připsaný. Pozor na ",
+          /* @__PURE__ */ jsxDEV(Term, {
+            children: "nepravou mobilitu"
+          }, undefined, false, undefined, this),
+          ": posune-li se celá společnost, můj status se zdánlivě zvedá, ale relativní postavení se nemění."
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this)
+  },
+  {
+    q: "Dokáže člověk existovat bez společnosti?",
+    src: "otázka z prezentace (kap. 3)",
+    a: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: /* @__PURE__ */ jsxDEV("p", {
+        style: T.p,
+        children: [
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "Ne."
+          }, undefined, false, undefined, this),
+          " Keller to ukazuje na ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "Robinsonu Crusoe"
+          }, undefined, false, undefined, this),
+          ": přežil sám na ostrově jen díky tomu, že si „\\1“ kulturu — vědomosti, návyky a hodnoty naučené v Anglii. Kdyby tam ztroskotal jako malé dítě, stalo by se z něj ",
+          /* @__PURE__ */ jsxDEV(B, {
+            children: "„\\1“"
+          }, undefined, false, undefined, this),
+          " neschopné abstraktního myšlení. Člověk se stává člověkem teprve socializací; bez společnosti by ztratil i „\\1“ kultury."
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this)
+  },
+  {
+    q: "Jak probíhá proces socializace a jsou sociální role, které se v něm vytváří, prospěšné?",
+    src: "otázka z prezentace (kap. 3)",
+    a: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            "Socializací se z biologického tvora stává kulturní bytost: skrze ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "činitele socializace"
+            }, undefined, false, undefined, this),
+            " (tradičně rodina, škola, církev; dnes i média, reklama, vrstevníci, politické strany — a ti si často protiřečí: škola říká „\\1“, reklama „\\1“). Rozlišujeme ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "primární"
+            }, undefined, false, undefined, this),
+            " (základní normy) a ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "sekundární"
+            }, undefined, false, undefined, this),
+            " (profesní znalosti) socializaci."
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            "Role jsou prospěšné: díky nim ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "víme, co od druhých čekat"
+            }, undefined, false, undefined, this),
+            ", a společnost může fungovat. Mají ale rizika — konflikty mezi rolemi (očekávání učitelů × kamarádů) a krajnosti ztotožnění: naprosté ztotožnění ničí svobodnou vůli („\\1“), naprosté odmítání by společnost rozložilo. Řešením je ",
+            /* @__PURE__ */ jsxDEV(Term, {
+              children: "přiměřená rolová distance"
+            }, undefined, false, undefined, this),
+            "."
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    q: "Jaké jsou vztahy mezi jednotlivcem a skupinou a mezi skupinami navzájem?",
+    src: "otázka z prezentace (kap. 3)",
+    a: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            "Jedinec je vždy členem skupin (malé × velké, formální × neformální, primární × sekundární) a skrze ně získává ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "identitu"
+            }, undefined, false, undefined, this),
+            ". Ke skupině může mít vztah ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "členský"
+            }, undefined, false, undefined, this),
+            " (jsem v ní), ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "referenční"
+            }, undefined, false, undefined, this),
+            " (orientuji se na její hodnoty, i když v ní nejsem) nebo se proti ní vymezovat (",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "out-group"
+            }, undefined, false, undefined, this),
+            ")."
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            "Mezi skupinami hrozí ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "etnocentrismus, předsudky a xenofobie"
+            }, undefined, false, undefined, this),
+            "; řešením je kulturní pluralismus. Současné problémy: oslabení funkčnosti skupin (o životech rozhodují vzdálené síly — burzy, korporace) a sociální izolace (staří, nezaměstnaní, marginalizovaní)."
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    q: "Jaké jsou příčiny sociální nerovnosti? Je nerovnost pro společnost ne/výhodná?",
+    src: "otázka z prezentace (sociální nerovnost)",
+    a: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "Příčiny:"
+            }, undefined, false, undefined, this),
+            " nerovné rozdělení majetku, moci a prestiže; rozdílný přístup ke kapitálům (ekonomickému, sociálnímu, kulturnímu — Bourdieu); dědění výhod v rodině; struktura trhu práce."
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "Dva pohledy:"
+            }, undefined, false, undefined, this),
+            " ",
+            /* @__PURE__ */ jsxDEV(Term, {
+              children: "strukturní funkcionalismus"
+            }, undefined, false, undefined, this),
+            " (Parsons): nerovnost je funkční a výhodná — motivuje schopné, aby obsazovali náročné a důležité pozice. ",
+            /* @__PURE__ */ jsxDEV(Term, {
+              children: "Teorie konfliktu"
+            }, undefined, false, undefined, this),
+            ": nerovnost je výsledkem moci a privilegií, plodí napětí; konflikt je ale i motorem změny (Mills: užitečné funkce konfliktu). Příliš velká nerovnost společnost rozkládá (Savage: propast mezi elitou a prekariátem) — proto ji sociální stát skrze sociální práva (Marshall) zmírňuje."
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    q: "Je vzdělání „\x01“ / „\x01“ proti nerovnosti? Vysvětlete.",
+    src: "otázka z prezentace (vzdělání a nerovnost)",
+    a: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "Výtah:"
+            }, undefined, false, undefined, this),
+            " demokratizace vzdělání má zajistit, aby sociální původ neměl vliv na dosažené vzdělání — vzdělanější lidé mají v průměru vyšší platy, prestižnější pozice, menší riziko nezaměstnanosti a více autonomie v práci."
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("p", {
+          style: T.p,
+          children: [
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "Ale škola nerovnost i přenáší:"
+            }, undefined, false, undefined, this),
+            " děti z vyšších vrstev zvýhodňuje kulturní kapitál z domova (Bourdieu), volbu školy ovlivňuje ekonomický kapitál rodiny (Boudon) a po studiu pomáhá sociální kapitál (kontakty). Randall Collins: diplomy slouží „\\1“ k obsazování privilegovaných pozic (kupování diplomů). Vzdělání tak funguje spíše jako ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "pojistka"
+            }, undefined, false, undefined, this),
+            " (od 70. let ve Francii): chrání před pádem dolů, ale vzestup zaručuje méně. Česko má navíc jednu z největších nerovností ve vzdělávání mezi zeměmi OECD (vliv osmiletých gymnázií — rané rozdělování dětí)."
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  }
+];
+var matchingPairs = [
+  { s: "„Právě jsem se vrátil z vězení a snažím si najít práci.“", t: "RESOCIALIZACE", why: "Po vyloučení ze společnosti (vězení) si člověk musí znovu osvojit normy a začlenit se." },
+  { s: "„V dnešní době je pro mě jednoduché dostat se k téměř jakékoliv informaci.“", t: "CIVILIZACE", why: "Civilizace díky písmu umožňuje skladovat (a dnes masově sdílet) informace." },
+  { s: "„Vím, že se musím starat o své dítě.“", t: "SOCIÁLNÍ ROLE", why: "Očekávané pravidelné jednání spojené s pozicí rodiče." },
+  { s: "„Oblékám se jako členové skateboardové komunity, i když mezi ně nepatřím.“", t: "REFERENČNÍ SKUPINA", why: "Orientace na hodnoty a styl skupiny, jejímž členem nejsem." },
+  { s: "„Jsme Češi, a proto držíme při sobě.“", t: "KOLEKTIVNÍ IDENTITA", why: "Sdílené vědomí příslušnosti k velké skupině (národu), jejíž členové se navzájem neznají." },
+  { s: "„Bílá holubice znamená mír.“", t: "SYMBOL", why: "Symboly umožňují mluvit o věcech, které nevidíme — jádro kultury." },
+  { s: "„Jedině naše kuchyně je normální — smažený hmyz je nechutný.“", t: "ETNOCENTRISMUS", why: "Hodnocení cizí kultury výhradně měřítky kultury vlastní." },
+  { s: "„Doma mě odmala učili pozdravit a poděkovat.“", t: "PRIMÁRNÍ SOCIALIZACE", why: "Osvojení základních kulturních norem v rodině." }
+];
+function TheoryTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(Collapse, {
+        title: "1️⃣ Proč je tady vlastně sociologie",
+        badge: "Keller, kap. 1",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Vznik sociologie"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: [
+              "Sociologie vznikla v 19. století jako reakce na přechod od ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "tradiční"
+              }, undefined, false, undefined, this),
+              " k ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "moderní"
+              }, undefined, false, undefined, this),
+              " společnosti. Průmyslová revoluce a osvícenství rozbily tradiční opory života — ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "komunitu, kastu, stav"
+              }, undefined, false, undefined, this),
+              ". Lidé se stěhovali: ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "venkov → město"
+              }, undefined, false, undefined, this),
+              ", od ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "domácích"
+              }, undefined, false, undefined, this),
+              " k ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "cizím"
+              }, undefined, false, undefined, this),
+              "; oddělila se ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "práce a volný čas"
+              }, undefined, false, undefined, this),
+              "; vyrostla „\\1“ architektura (činžáky, továrny). Slábla tradiční ",
+              /* @__PURE__ */ jsxDEV(Term, {
+                children: "sociální kontrola"
+              }, undefined, false, undefined, this),
+              "."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: [
+              "Na tuto krizi reagují zakladatelé: ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "Auguste Comte"
+              }, undefined, false, undefined, this),
+              " (sociologie jako pozitivní věda), ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "Émile Durkheim"
+              }, undefined, false, undefined, this),
+              " (pojem ",
+              /* @__PURE__ */ jsxDEV(Term, {
+                children: "anomie"
+              }, undefined, false, undefined, this),
+              " — staré normy přestaly platit a nové ještě nejsou ustaveny) a ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "Karel Marx"
+              }, undefined, false, undefined, this),
+              " (konflikt tříd)."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Tradiční × moderní společnost (tabulka z pracovního listu HSt 6)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CompareTable, {
+            leftTitle: "TRADIČNÍ společnost",
+            rightTitle: "MODERNÍ společnost",
+            rows: [
+              ["Moc a správa", "dědičná moc; systematická kontrola celého území není možná", "mocenský rámec vytváří národní stát; formální organizace; jasné hranice států; institucionalizace"],
+              ["Ekonomika", "zemědělství a řemeslná výroba; hospodářská soběstačnost domácností; nízká směna", "tržní hospodářství; dělba práce / specializace; profesionální byrokracie"],
+              ["Sociální struktura", "stavovská struktura; připsaný / pevný status; stálost myšlení — stálá identita jedinců", "třídní struktura; pohyblivý status; dynamičnost (časté změny povolání, bydliště)"],
+              ["Výklad světa", "mytologický / náboženský rámec; cyklické chápání času; orientace na tradici", "vědecký výklad; pozitivní filosofie; lineární chápání času; racionalizace"]
+            ]
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Status, stratifikace, mobilita"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Sociální status"
+                  }, undefined, false, undefined, this),
+                  " = postavení ve společnosti; složky: ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "majetek – moc – prestiž"
+                  }, undefined, false, undefined, this),
+                  ". Připsaný × získaný."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Sociální stratifikace"
+                  }, undefined, false, undefined, this),
+                  " = rozvrstvení společnosti (vrstvy, třídy) → ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "sociální nerovnosti"
+                  }, undefined, false, undefined, this),
+                  "."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Sociální mobilita"
+                  }, undefined, false, undefined, this),
+                  " = pohyb mezi pozicemi: ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "vertikální"
+                  }, undefined, false, undefined, this),
+                  " (vzestup/sestup) × ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "horizontální"
+                  }, undefined, false, undefined, this),
+                  " (stejná úroveň)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Nepravá mobilita"
+                  }, undefined, false, undefined, this),
+                  " = status se zdánlivě zvyšuje (roste celá společnost), ale relativní postavení vůči ostatním se nemění."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Sociální role"
+                  }, undefined, false, undefined, this),
+                  " = očekávané jednání spojené s pozicí (podrobně kap. 3)."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapse, {
+        title: "2️⃣ Jak se sociologie vyvíjela",
+        badge: "Keller, kap. 2",
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Klasická sociologie — velké teorie × empirický výzkum"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Tönnies:"
+                  }, undefined, false, undefined, this),
+                  " tradiční pospolitost (",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Gemeinschaft"
+                  }, undefined, false, undefined, this),
+                  ") × moderní společnost (",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Gesellschaft"
+                  }, undefined, false, undefined, this),
+                  ")."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Durkheim:"
+                  }, undefined, false, undefined, this),
+                  " ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "mechanická solidarita"
+                  }, undefined, false, undefined, this),
+                  " (soudržnost z podobnosti — tradiční) × ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "organická solidarita"
+                  }, undefined, false, undefined, this),
+                  " (soudržnost z odlišnosti díky ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "dělbě práce"
+                  }, undefined, false, undefined, this),
+                  " — moderní)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Simmel:"
+                  }, undefined, false, undefined, this),
+                  " role ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "peněz"
+                  }, undefined, false, undefined, this),
+                  " v moderní společnosti — zneosobňují a zvypočitatelňují vztahy."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Hlavní směry 20. století"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Strukturní funkcionalismus"
+                  }, undefined, false, undefined, this),
+                  " (Talcott Parsons) — konsensuální teorie: společnost je systém, jehož části plní funkce; řád stojí na sdílených hodnotách."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Sociologie konfliktu"
+                  }, undefined, false, undefined, this),
+                  " (Ch. W. Mills) — společnost utvářejí konflikty o zdroje a moc; konflikt má i ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "užitečné funkce"
+                  }, undefined, false, undefined, this),
+                  " (vynucuje změnu)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Interpretativní sociologie / symbolický interakcionismus"
+                  }, undefined, false, undefined, this),
+                  " — společnost se tvoří v každodenní interakci; klíčovou roli hraje ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "jazyk"
+                  }, undefined, false, undefined, this),
+                  " a významy."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Teorie sociální směny"
+                  }, undefined, false, undefined, this),
+                  " — jednání jako výměna odměn a nákladů."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  "→ Sociologie je ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "multiparadigmatická"
+                  }, undefined, false, undefined, this),
+                  ": žádné paradigma nevysvětlí společnost samo. Zkoumá ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "normy, hodnoty, instituce"
+                  }, undefined, false, undefined, this),
+                  "."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Znaky moderní společnosti (GIFR)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Generalizace"
+                  }, undefined, false, undefined, this),
+                  " — normy a pravidla platí obecně, pro všechny stejně."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Individualizace"
+                  }, undefined, false, undefined, this),
+                  " — jedinec se vyvazuje z tradičních vazeb, sám volí svou dráhu."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Funkční diferenciace"
+                  }, undefined, false, undefined, this),
+                  " — společnost se dělí na specializované subsystémy (ekonomika, právo, věda…)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Racionalizace"
+                  }, undefined, false, undefined, this),
+                  " — jednání se řídí účelností a vypočitatelností."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapse, {
+        title: "3️⃣ Co (například) tvrdí sociologie",
+        badge: "Keller, kap. 3 — tvoje výpisky",
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Dokáže člověk existovat bez společnosti? NE."
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: [
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "Robinson Crusoe"
+              }, undefined, false, undefined, this),
+              " přežil sám na ostrově jen proto, že si „\\1“ svou kulturu — vědomosti, návyky a hodnoty z Anglie. Kdyby ztroskotal jako malé dítě, stalo by se z něj ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "„\\1“"
+              }, undefined, false, undefined, this),
+              " neschopné abstraktního myšlení."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Kultura × civilizace"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Kultura"
+                  }, undefined, false, undefined, this),
+                  " (širší pojem) = vše, čím se lišíme od zvířat: normy, jazyk, vědění, zvyky odívání, stolování, bydlení, obřady, náboženské představy. Klíčové jsou ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "symboly"
+                  }, undefined, false, undefined, this),
+                  " — umožňují mluvit o minulosti, budoucnosti a o věcech, které nevidíme."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Civilizace"
+                  }, undefined, false, undefined, this),
+                  " (užší pojem) vzniká, když společnost má: ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "1) písmo"
+                  }, undefined, false, undefined, this),
+                  " (skladování informací), ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "2) město"
+                  }, undefined, false, undefined, this),
+                  " (prostorové vymezení vztahů — hradby, tržiště, fórum), ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "3) stát"
+                  }, undefined, false, undefined, this),
+                  " (monopol na legitimní použití násilí)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Kritika civilizace:"
+                  }, undefined, false, undefined, this),
+                  " dala nám mocné nástroje, ale málo moudrosti o cílech → civilizační rizika (ekologické problémy, zbraně hromadného ničení)."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Socializace"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  "Proces, při kterém se z biologického tvora stává ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "kulturní bytost"
+                  }, undefined, false, undefined, this),
+                  ". Bez ní by společnost ztratila „\\1“."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Činitelé:"
+                  }, undefined, false, undefined, this),
+                  " tradičně rodina, škola, církev; moderně + média, reklama, politické strany, vrstevníci. Problém: činitelé si ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "protiřečí"
+                  }, undefined, false, undefined, this),
+                  " (škola: „\\1“ × reklama: „\\1“)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Primární"
+                  }, undefined, false, undefined, this),
+                  " socializace = základní kulturní normy. ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Sekundární"
+                  }, undefined, false, undefined, this),
+                  " = profesní znalosti pro trh práce. ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Resocializace"
+                  }, undefined, false, undefined, this),
+                  " = nové začlenění (po vězení, nemoci…)."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Sociální kontrola"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: [
+              "Škála metod: ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "otevřené donucení"
+              }, undefined, false, undefined, this),
+              " (tradiční společnosti) → ",
+              /* @__PURE__ */ jsxDEV(B, {
+                children: "skryté formy manipulace"
+              }, undefined, false, undefined, this),
+              " (moderní společnost). ",
+              /* @__PURE__ */ jsxDEV(Term, {
+                children: "Internalizace"
+              }, undefined, false, undefined, this),
+              " = člověk přijme normy „\\1“ a dodržuje je dobrovolně. Pozor na manipulativní prvky reklamy, médií a propagandy!"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Sociální role"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  "Pravidelnosti v jednání spojené s pozicí — díky nim ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "víme, co od druhých čekat"
+                  }, undefined, false, undefined, this),
+                  "."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Připsané"
+                  }, undefined, false, undefined, this),
+                  " (nelze odmítnout: věk, pohlaví, národnost) × ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "získané"
+                  }, undefined, false, undefined, this),
+                  " (vydobyté: uznání, majetek) × ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "vnucené"
+                  }, undefined, false, undefined, this),
+                  " (přidělené bez přičinění: nezaměstnaný, bezdomovec)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Problémy:"
+                  }, undefined, false, undefined, this),
+                  " konflikty mezi rolemi (učitelé × kamarádi); míra ztotožnění — naprosté ztotožnění = ztráta svobodné vůle („\\1“) × naprosté odmítání = rozpad společnosti. Řešení: ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "přiměřená rolová distance"
+                  }, undefined, false, undefined, this),
+                  "."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Skupiny"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Podle velikosti:"
+                  }, undefined, false, undefined, this),
+                  " malé (do desítek členů, vztahy tváří v tvář) × velké (národ — členové se neznají, sdílejí identitu)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Podle formálnosti:"
+                  }, undefined, false, undefined, this),
+                  " formální (školy, firmy, úřady — psaná pravidla) × neformální (rodina, parta — nepsaná pravidla)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Podle vztahu člověka:"
+                  }, undefined, false, undefined, this),
+                  " členská × ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "referenční"
+                  }, undefined, false, undefined, this),
+                  " (orientuji se na její hodnoty, i když v ní nejsem) × ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "out-group"
+                  }, undefined, false, undefined, this),
+                  " (vymezuji se proti ní). Dále primární × sekundární. Skupiny dávají ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "identitu"
+                  }, undefined, false, undefined, this),
+                  "."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Současné problémy:"
+                  }, undefined, false, undefined, this),
+                  " oslabení funkčnosti skupin (rozhodují vzdálené síly — burzy, nadnárodní korporace) a sociální izolace (staří, nezaměstnaní, marginalizovaní)."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Masová média a masová kultura"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Optimisté:"
+                  }, undefined, false, undefined, this),
+                  " osvěta, informace, kulturní zážitky × ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "kritici:"
+                  }, undefined, false, undefined, this),
+                  " manipulace, pasivní zábava nízké kvality."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Dvoustupňový model komunikace:"
+                  }, undefined, false, undefined, this),
+                  " média → publikum (informace); ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "názoroví vůdci"
+                  }, undefined, false, undefined, this),
+                  " → publikum (postoje). Nejsme bezbranní — vliv médií filtrují malé skupiny."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Problémy:"
+                  }, undefined, false, undefined, this),
+                  " děti znají svět celebrit lépe než realitu, která je čeká; mozaika vytržených informací bez kontextu; ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "pseudoudálosti"
+                  }, undefined, false, undefined, this),
+                  " vytlačují podstatné zprávy; život ve virtuální realitě."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Předsudky a etnocentrismus"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Etnocentrismus"
+                  }, undefined, false, undefined, this),
+                  " = hodnocení všeho jen z pozice vlastní kultury („\\1“). ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Předsudek"
+                  }, undefined, false, undefined, this),
+                  " = apriorní negativní obraz o jednotlivci/skupině. ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Xenofobie"
+                  }, undefined, false, undefined, this),
+                  " = odpor ke všemu cizímu."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Kdo trpí předsudky:"
+                  }, undefined, false, undefined, this),
+                  " lidé nejistí vlastní pozicí, málo úspěšní, s problémy s identitou. Historicky diskriminovali bílí, majetní, vzdělaní muži (ženy, chudé, jiné rasy)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Řešení — kulturní pluralismus:"
+                  }, undefined, false, undefined, this),
+                  " všechny kultury jsou rovnocenné; postmodernismus zdůrazňuje relativnost pravd; hodnoty jiných kultur je třeba ocenit, ne je mít za „\\1“."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapse, {
+        title: "4️⃣ Sociální nerovnost a kapitály",
+        badge: "Keller, kap. 4 + článek o Savageovi (HSt 1)",
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Dva pohledy na nerovnost"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CompareTable, {
+            leftTitle: "Strukturní funkcionalismus (Parsons)",
+            rightTitle: "Teorie konfliktu",
+            rows: [
+              ["nerovnost je funkční a užitečná — odměny motivují schopné k obsazení náročných pozic", "nerovnost plyne z moci a privilegií; konflikt o zdroje je motorem změny (Mills: užitečné funkce konfliktu)"]
+            ]
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Sociální vrstvy / třídy"
+                  }, undefined, false, undefined, this),
+                  ", ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "střední třída"
+                  }, undefined, false, undefined, this),
+                  ", ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "sociální status"
+                  }, undefined, false, undefined, this),
+                  " — klíčové pojmy stratifikace."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Sociální stát"
+                  }, undefined, false, undefined, this),
+                  " zmírňuje nerovnosti; opírá se o ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "sociální práva"
+                  }, undefined, false, undefined, this),
+                  " — ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "T. H. Marshall: Občanství a sociální třída (1950)"
+                  }, undefined, false, undefined, this),
+                  ": občanská → politická → sociální práva."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Pierre Bourdieu — druhy kapitálu (70. léta 20. stol.)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Ekonomický kapitál"
+                  }, undefined, false, undefined, this),
+                  " = majetek, příjmy."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Sociální kapitál"
+                  }, undefined, false, undefined, this),
+                  " = kontakty, vazby, známosti."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Kulturní kapitál"
+                  }, undefined, false, undefined, this),
+                  " = vzdělání, přehled, vkus — tři podoby: ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "vtělený"
+                  }, undefined, false, undefined, this),
+                  " (v hlavě a těle), ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "objektivizovaný"
+                  }, undefined, false, undefined, this),
+                  " (knihy, obrazy, nástroje), ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "institucionalizovaný"
+                  }, undefined, false, undefined, this),
+                  " (diplomy, tituly)."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Mike Savage — „\\1“ (článek z Respektu)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  "Kniha ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Social Class in the 21st Century"
+                  }, undefined, false, undefined, this),
+                  " (2015); vychází z ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Great British Class Survey"
+                  }, undefined, false, undefined, this),
+                  " (Velký britský třídní výzkum, BBC)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  "Třídy ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "nezmizely"
+                  }, undefined, false, undefined, this),
+                  " — jen je nelze měřit pouze příjmem. Savage popsal ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "7 tříd"
+                  }, undefined, false, undefined, this),
+                  " podle kombinace ekonomického, sociálního a kulturního kapitálu (navazuje na Bourdieua)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  "Na vrcholu ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "elita"
+                  }, undefined, false, undefined, this),
+                  " (~6 % obyvatel, všechny kapitály, od ostatních ji dělí téměř nepřekonatelná propast — ředitelé, právníci, bankéři, lékaři); na dně ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "prekariát"
+                  }, undefined, false, undefined, this),
+                  " (~15 %, nedostatek všech druhů kapitálu — nejisté úvazky, žádné úspory)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: "„\\1“ — skryté nerovnosti pomáhají pochopit úspěch populistů (Johnson, Trump)."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  "Pro Česko obdobně ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Daniel Prokop: Rozděleni svobodou"
+                  }, undefined, false, undefined, this),
+                  " — šest společenských tříd ČR podle tří druhů kapitálu."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: T.h3,
+            children: "Vzdělání jako pojistka proti nerovnosti?"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Vzdělanostní společnost / společnost osvědčení:"
+                  }, undefined, false, undefined, this),
+                  " diplomy rozhodují o přístupu k privilegovaným pozicím. Lidé s vyšším vzděláním mají v průměru vyšší plat, prestižnější pozice, menší nezaměstnanost, více autonomie."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Demokratizace vzdělání:"
+                  }, undefined, false, undefined, this),
+                  " sociální původ nemá mít vliv na dosažené vzdělání — škola jako „\\1“."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Polemika:"
+                  }, undefined, false, undefined, this),
+                  " ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Bourdieu"
+                  }, undefined, false, undefined, this),
+                  " — kulturní kapitál z domova zvýhodňuje děti vyšších vrstev ve škole × ",
+                  /* @__PURE__ */ jsxDEV(Term, {
+                    children: "Boudon"
+                  }, undefined, false, undefined, this),
+                  " — ekonomický kapitál ovlivňuje volbu školy. Sociální kapitál zvýhodňuje po studiu."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "Randall Collins:"
+                  }, undefined, false, undefined, this),
+                  " produktivní třída × politická třída (rozděluje bohatství; „\\1“)."
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: [
+                  "Vzdělání od 70. let (Francie) spíš ",
+                  /* @__PURE__ */ jsxDEV(B, {
+                    children: "pojištění"
+                  }, undefined, false, undefined, this),
+                  " proti pádu než výtah vzhůru. Česko má jednu z největších nerovností ve vzdělávání v OECD (rané dělení dětí — osmiletá gymnázia)."
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function PersonsTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "14px" },
+    children: persons.map((p, i) => /* @__PURE__ */ jsxDEV("div", {
+      style: { ...glass, padding: "20px", animation: `slideIn 0.5s ease ${i * 0.08}s both` },
+      children: [
+        /* @__PURE__ */ jsxDEV("div", {
+          style: { display: "flex", alignItems: "center", gap: "12px", marginBottom: "4px" },
+          children: [
+            /* @__PURE__ */ jsxDEV("span", {
+              style: { fontSize: "28px" },
+              children: p.emoji
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "#fff", fontWeight: 700, fontSize: "17px" },
+                  children: p.name
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.45)", fontSize: "13px" },
+                  children: [
+                    p.years,
+                    " · ",
+                    p.country
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("div", {
+          style: { color: ACCENT, fontSize: "13.5px", fontWeight: 600, margin: "6px 0 10px" },
+          children: p.tagline
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("ul", {
+          style: { paddingLeft: "18px", margin: 0 },
+          children: p.points.map((pt, j) => /* @__PURE__ */ jsxDEV("li", {
+            style: { ...T.li, fontSize: "14px" },
+            children: pt
+          }, j, false, undefined, this))
+        }, undefined, false, undefined, this)
+      ]
+    }, i, true, undefined, this))
+  }, undefined, false, undefined, this);
+}
+function TypoveTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "16px 20px", marginBottom: "16px", borderColor: ACCENT + "55" },
+        children: /* @__PURE__ */ jsxDEV("p", {
+          style: { ...T.p, margin: 0 },
+          children: [
+            "⚠️ ",
+            /* @__PURE__ */ jsxDEV(B, {
+              children: "Tyto úlohy jsou přímo z prezentace p. profesorky"
+            }, undefined, false, undefined, this),
+            " („\\1“) + otevřené otázky z jednotlivých kapitol. Odpovědi jsou skryté — nejdřív si je zkus zodpovědět sám!"
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapse, {
+        title: "Úloha 1 — výběr z možností (Marx)",
+        badge: "přesně z prezentace",
+        defaultOpen: true,
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: "Které z následujících hledisek bylo dominantní v Marxově rozdělení společnosti do tříd?"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: "A) míra politického vlivu   B) prestiž povolání   C) míra vzdělanosti   D) vztah k výrobním prostředkům"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Reveal, {
+            label: "Zobrazit řešení",
+            children: /* @__PURE__ */ jsxDEV("p", {
+              style: { ...T.p, margin: 0 },
+              children: [
+                /* @__PURE__ */ jsxDEV(B, {
+                  children: "D) vztah k výrobním prostředkům."
+                }, undefined, false, undefined, this),
+                " Buržoazie výrobní prostředky vlastní, proletariát prodává svou pracovní sílu. Politický vliv, prestiž a vzdělání jsou hlediska jiných teorií stratifikace (Weber, funkcionalismus, Bourdieu)."
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapse, {
+        title: "Úloha 2 — práce s výchozím textem",
+        badge: "přesně z prezentace",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { ...T.p, fontStyle: "italic", background: "rgba(255,255,255,0.04)", padding: "12px 14px", borderRadius: "10px" },
+            children: "„\\1“ (www.socioweb.cz)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: "Jaký proces popisuje výchozí text?"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: "A) socializaci   B) vznik legitimity vlády   C) sociální kontrolu   D) vznik veřejného mínění"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Reveal, {
+            label: "Zobrazit řešení",
+            children: /* @__PURE__ */ jsxDEV("p", {
+              style: { ...T.p, margin: 0 },
+              children: [
+                /* @__PURE__ */ jsxDEV(B, {
+                  children: "A) socializaci."
+                }, undefined, false, undefined, this),
+                " Klíč: „\\1“ = stávání se kulturní bytostí. Sociální kontrola by zdůrazňovala vynucování norem, ne učení."
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapse, {
+        title: "Úloha 3 — přiřaď pojem/spis k sociologovi",
+        badge: "přesně z prezentace",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: "Ke každému sociologickému pojmu/názvu spisu uveď sociologa, který ho vyložil/napsal:"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { paddingLeft: "20px", margin: 0 },
+            children: [
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: "Kapitál — ?"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: "chápající sociologie — ?"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("li", {
+                style: T.li,
+                children: "pozitivní věda — ?"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV(Reveal, {
+            label: "Zobrazit řešení",
+            children: [
+              /* @__PURE__ */ jsxDEV("ul", {
+                style: { paddingLeft: "20px", margin: 0 },
+                children: [
+                  /* @__PURE__ */ jsxDEV("li", {
+                    style: T.li,
+                    children: /* @__PURE__ */ jsxDEV(B, {
+                      children: "Kapitál → Karel Marx"
+                    }, undefined, false, undefined, this)
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("li", {
+                    style: T.li,
+                    children: /* @__PURE__ */ jsxDEV(B, {
+                      children: "chápající sociologie → Max Weber"
+                    }, undefined, false, undefined, this)
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("li", {
+                    style: T.li,
+                    children: /* @__PURE__ */ jsxDEV(B, {
+                      children: "pozitivní věda → Auguste Comte"
+                    }, undefined, false, undefined, this)
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: { ...T.p, marginTop: "8px", marginBottom: 0 },
+                children: "Dál se může hodit: anomie / Společenská dělba práce → Durkheim; Gemeinschaft–Gesellschaft → Tönnies; Protestantská etika a duch kapitalismu → Weber; druhy kapitálu → Bourdieu; Sebevražda (česká) → Masaryk."
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Collapse, {
+        title: "Úloha 4 — spoj pojem s výrokem (např. 8e)",
+        badge: "rozšířeno podle prezentace",
+        children: [
+          /* @__PURE__ */ jsxDEV("p", {
+            style: T.p,
+            children: "Pojmy: a) REFERENČNÍ SKUPINA · b) KOLEKTIVNÍ IDENTITA · c) SOCIÁLNÍ ROLE · d) RESOCIALIZACE · e) CIVILIZACE · f) SYMBOL · g) ETNOCENTRISMUS · h) PRIMÁRNÍ SOCIALIZACE"
+          }, undefined, false, undefined, this),
+          matchingPairs.map((m, i) => /* @__PURE__ */ jsxDEV("div", {
+            style: { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", padding: "12px 14px", marginBottom: "10px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("p", {
+                style: { ...T.p, fontStyle: "italic", marginBottom: "4px" },
+                children: [
+                  i + 1,
+                  ") ",
+                  m.s
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV(Reveal, {
+                label: "Zobrazit pojem",
+                children: /* @__PURE__ */ jsxDEV("p", {
+                  style: { ...T.p, margin: 0 },
+                  children: [
+                    /* @__PURE__ */ jsxDEV(B, {
+                      children: m.t
+                    }, undefined, false, undefined, this),
+                    " — ",
+                    m.why
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, i, true, undefined, this))
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { ...glass, padding: "16px 20px", margin: "20px 0 14px" },
+        children: /* @__PURE__ */ jsxDEV("h2", {
+          style: { ...T.h2, margin: 0, fontSize: "18px" },
+          children: "✍️ Otevřené otázky z prezentace — s modelovými odpověďmi"
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
+      openQuestions.map((oq, i) => /* @__PURE__ */ jsxDEV(Collapse, {
+        title: oq.q,
+        badge: oq.src,
+        children: /* @__PURE__ */ jsxDEV(Reveal, {
+          label: "Zobrazit modelovou odpověď",
+          children: oq.a
+        }, undefined, false, undefined, this)
+      }, i, false, undefined, this))
+    ]
+  }, undefined, true, undefined, this);
+}
+function FlashcardsTab() {
+  const [idx, setIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const card = flashcards[idx];
+  const go = (d) => {
+    setFlipped(false);
+    setIdx((i) => (i + d + flashcards.length) % flashcards.length);
+  };
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "560px", margin: "0 auto", padding: "8px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        onClick: () => setFlipped((f) => !f),
+        style: { perspective: "1200px", cursor: "pointer", minHeight: "300px" },
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: {
+            position: "relative",
+            width: "100%",
+            minHeight: "300px",
+            transformStyle: "preserve-3d",
+            transition: "transform 0.4s ease",
+            transform: flipped ? "rotateY(180deg)" : "none"
+          },
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { ...glass, position: "absolute", inset: 0, backfaceVisibility: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "28px", textAlign: "center" },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: "rgba(255,255,255,0.35)", fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "14px" },
+                  children: "pojem — klikni pro definici"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { color: ACCENT, fontSize: "24px", fontWeight: 800, lineHeight: 1.3 },
+                  children: card.front
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { ...glass, position: "absolute", inset: 0, backfaceVisibility: "hidden", transform: "rotateY(180deg)", display: "flex", alignItems: "center", justifyContent: "center", padding: "28px", borderColor: ACCENT + "66" },
+              children: /* @__PURE__ */ jsxDEV("div", {
+                style: { color: "rgba(255,255,255,0.88)", fontSize: "15.5px", lineHeight: 1.6, textAlign: "center" },
+                children: card.back
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "18px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            onClick: () => go(-1),
+            style: { ...QS.btn, marginTop: 0 },
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: "rgba(255,255,255,0.5)", fontSize: "14px" },
+            children: [
+              idx + 1,
+              " / ",
+              flashcards.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            onClick: () => go(1),
+            style: { ...QS.btn, marginTop: 0 },
+            children: "Další →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginTop: "14px" },
+        children: flashcards.map((_, i) => /* @__PURE__ */ jsxDEV("div", {
+          onClick: () => {
+            setIdx(i);
+            setFlipped(false);
+          },
+          style: { width: "10px", height: "10px", borderRadius: "50%", cursor: "pointer", transition: "background 0.4s ease", background: i === idx ? ACCENT : "rgba(255,255,255,0.18)" }
+        }, i, false, undefined, this))
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function CheatRow({ k, v }) {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { display: "flex", gap: "12px", padding: "8px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { minWidth: "190px", color: ACCENT, fontWeight: 700, fontSize: "13.5px", fontFamily: "'JetBrains Mono', monospace" },
+        children: k
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "rgba(255,255,255,0.8)", fontSize: "13.5px", lineHeight: 1.55 },
+        children: v
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function CheatBlock({ title, children }) {
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { ...glass, padding: "18px 22px", marginBottom: "14px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px" },
+        children: title
+      }, undefined, false, undefined, this),
+      children
+    ]
+  }, undefined, true, undefined, this);
+}
+function CheatTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(CheatBlock, {
+        title: "\uD83E\uDDE0 Pojmy, které MUSÍŠ umět",
+        children: [
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "socializace",
+            v: "z biologického tvora kulturní bytost; primární (základní normy) × sekundární (profese); resocializace = nové začlenění (vězení)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "internalizace",
+            v: "přijmu normy „za své“ → dodržuji dobrovolně (nejúčinnější sociální kontrola)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "anomie (Durkheim)",
+            v: "staré normy už neplatí, nové ještě nejsou"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "kultura × civilizace",
+            v: "kultura = vše, čím se lišíme od zvířat (symboly!); civilizace = PÍSMO + MĚSTO + STÁT"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "sociální status",
+            v: "MAJETEK + MOC + PRESTIŽ; připsaný × získaný"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "mobilita",
+            v: "vertikální (nahoru/dolů) × horizontální; nepravá = zdánlivá (posun celku)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "role",
+            v: "připsané (věk, pohlaví) × získané (vydobyté) × vnucené (nezaměstnaný); řešení extrémů = rolová distance"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "skupiny",
+            v: "malé×velké; formální×neformální; členská×referenční×out-group; primární×sekundární"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "média",
+            v: "dvoustupňový model: média→informace, názoroví vůdci→postoje; pseudoudálosti"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "etnocentrismus",
+            v: "vlastní kultura jako jediná správná; předsudek = apriorní negativní obraz; xenofobie = odpor k cizímu; řešení = kulturní pluralismus"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(CheatBlock, {
+        title: "\uD83D\uDC64 Kdo – co – dílo (přiřazování!)",
+        children: [
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Comte (1798–1857) \uD83C\uDDEB\uD83C\uDDF7",
+            v: "pojem sociologie, pozitivní věda, zákon tří stadií (teologické→metafyzické→pozitivní); Kurs pozitivní filosofie"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Marx (1818–1883) \uD83C\uDDE9\uD83C\uDDEA",
+            v: "KAPITÁL; konflikt; třídy podle vztahu k výrobním prostředkům; odcizení; historický materialismus"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Durkheim (1858–1917) \uD83C\uDDEB\uD83C\uDDF7",
+            v: "anomie; mechanická × organická solidarita; Společenská dělba práce; sociální fakta"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Weber (1864–1920) \uD83C\uDDE9\uD83C\uDDEA",
+            v: "CHÁPAJÍCÍ sociologie; ideální typ; hodnotová neutralita; Protestantská etika a duch kapitalismu (1905)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Spencer (1820–1903) \uD83C\uDDEC\uD83C\uDDE7",
+            v: "evolucionismus, organicismus"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Tönnies \uD83C\uDDE9\uD83C\uDDEA",
+            v: "Gemeinschaft (pospolitost) × Gesellschaft (společnost)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Simmel \uD83C\uDDE9\uD83C\uDDEA",
+            v: "peníze v moderní společnosti"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Masaryk \uD83C\uDDE8\uD83C\uDDFF",
+            v: "první český sociolog; Sebevražda (1881)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Parsons",
+            v: "strukturní funkcionalismus (konsensus; nerovnost motivuje)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Mills",
+            v: "sociologie konfliktu (užitečné funkce konfliktu)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Marshall",
+            v: "Občanství a sociální třída (1950) — sociální práva"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Bourdieu (70. léta)",
+            v: "kapitál ekonomický + sociální + kulturní (vtělený / objektivizovaný / institucionalizovaný)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Boudon",
+            v: "volbu školy ovlivňuje ekonomický kapitál (polemika s Bourdieuem)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Collins",
+            v: "produktivní × politická třída (kupování diplomů)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Savage (2015)",
+            v: "Social Class in the 21st Century; Great British Class Survey; 7 tříd; elita ~6 % × prekariát ~15 %"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Prokop",
+            v: "Rozděleni svobodou — 6 tříd české společnosti"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Keller",
+            v: "autor učebnice :)"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(CheatBlock, {
+        title: "⚖️ Tradiční × moderní společnost (4 oblasti)",
+        children: [
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "moc a správa",
+            v: "dědičná moc, bez kontroly území × národní stát, formální organizace, instituce"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "ekonomika",
+            v: "zemědělství, soběstačnost, nízká směna × trh, dělba práce, byrokracie"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "sociální struktura",
+            v: "stavy, připsaný status, stálost × třídy, pohyblivý status, dynamičnost"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "výklad světa",
+            v: "mýtus/náboženství, cyklický čas, tradice × věda, lineární čas, racionalizace"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "znaky moderní spol.",
+            v: "GIFR: Generalizace · Individualizace · Funkční diferenciace · Racionalizace"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(CheatBlock, {
+        title: "\uD83D\uDCA1 Mnemotechniky",
+        children: [
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "MMP",
+            v: "status = Majetek, Moc, Prestiž"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Písmo–Město–Stát",
+            v: "tři znaky civilizace"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "T-M-P",
+            v: "Comte: Teologické → Metafyzické → Pozitivní („Tři Mušketýři Pijou“)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "EKS",
+            v: "Bourdieu: Ekonomický, Kulturní, Sociální kapitál"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "organická = orgány",
+            v: "Durkheim: moderní solidarita — každý dělá něco jiného, nikdo nepřežije sám"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(CheatRow, {
+            k: "Kapitál→Marx",
+            v: "chápající sociologie→Weber; pozitivní věda→Comte (typová otázka!)"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var TABS = [
+  { id: "teorie", label: "\uD83D\uDCD6 Teorie", comp: TheoryTab },
+  { id: "osobnosti", label: "\uD83D\uDC64 Osobnosti", comp: PersonsTab },
+  { id: "typove", label: "✍️ Typové otázky", comp: TypoveTab },
+  { id: "kviz", label: "\uD83C\uDFAF Kvíz", comp: () => /* @__PURE__ */ jsxDEV(QuizEngine, {
+    questions: quizQuestions,
+    accentColor: ACCENT
+  }, undefined, false, undefined, this) },
+  { id: "karticky", label: "\uD83C\uDCCF Kartičky", comp: FlashcardsTab },
+  { id: "tahak", label: "\uD83D\uDCCB Tahák", comp: CheatTab }
+];
+function App() {
+  const [tab, setTab] = useState("teorie");
+  const Active = TABS.find((t) => t.id === tab).comp;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { minHeight: "100vh", background: "#0a0a1a", fontFamily: "'Inter', 'Segoe UI', sans-serif", position: "relative", overflow: "hidden" },
+    children: [
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        @keyframes float1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-30px) scale(1.1); } }
+        @keyframes float2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-50px,40px) scale(0.95); } }
+        @keyframes float3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,50px) scale(1.05); } }
+        @keyframes pulse  { 0%,100% { opacity: 0.5; } 50% { opacity: 0.9; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+        button:disabled { opacity: 0.35; cursor: default; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+      `
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "fixed", top: "-120px", left: "-100px", width: "420px", height: "420px", borderRadius: "50%", background: "radial-gradient(circle, rgba(168,85,247,0.22), transparent 70%)", filter: "blur(60px)", animation: "float1 16s ease-in-out infinite, pulse 14s ease-in-out infinite", pointerEvents: "none" }
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "fixed", bottom: "-140px", right: "-120px", width: "480px", height: "480px", borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.18), transparent 70%)", filter: "blur(70px)", animation: "float2 19s ease-in-out infinite, pulse 17s ease-in-out infinite", pointerEvents: "none" }
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "fixed", top: "35%", left: "55%", width: "360px", height: "360px", borderRadius: "50%", background: "radial-gradient(circle, rgba(245,158,11,0.14), transparent 70%)", filter: "blur(65px)", animation: "float3 13s ease-in-out infinite, pulse 12s ease-in-out infinite", pointerEvents: "none" }
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { position: "relative", zIndex: 1, maxWidth: "960px", margin: "0 auto", padding: "28px 18px 60px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { textAlign: "center", marginBottom: "24px", animation: "slideIn 0.5s ease both" },
+            children: [
+              /* @__PURE__ */ jsxDEV("h1", {
+                style: { color: "#fff", fontSize: "30px", fontWeight: 800, margin: "0 0 6px" },
+                children: [
+                  "Sociologie ",
+                  /* @__PURE__ */ jsxDEV("span", {
+                    style: { background: `linear-gradient(90deg, ${ACCENT}, ${ACCENT2})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" },
+                    children: "— příprava na test"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("p", {
+                style: { color: "rgba(255,255,255,0.5)", fontSize: "14.5px", margin: 0 },
+                children: "Keller kap. 1–4 · klasici sociologie · sociální nerovnost · typové otázky z prezentace"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "26px" },
+            children: TABS.map((t) => /* @__PURE__ */ jsxDEV("button", {
+              onClick: () => setTab(t.id),
+              style: {
+                padding: "10px 18px",
+                borderRadius: "999px",
+                fontSize: "14.5px",
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.4s ease",
+                background: tab === t.id ? `linear-gradient(90deg, ${ACCENT}cc, ${ACCENT2}cc)` : "rgba(255,255,255,0.06)",
+                border: tab === t.id ? `1px solid ${ACCENT}` : "1px solid rgba(255,255,255,0.12)",
+                color: tab === t.id ? "#0a0a1a" : "rgba(255,255,255,0.75)"
+              },
+              children: t.label
+            }, t.id, false, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { animation: "slideIn 0.5s ease both" },
+            children: /* @__PURE__ */ jsxDEV(Active, {}, undefined, false, undefined, this)
+          }, tab, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
