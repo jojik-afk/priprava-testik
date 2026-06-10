@@ -314,7 +314,7 @@ const quizQuestions = [
     options: ["socializaci", "vznik legitimity vlády", "sociální kontrolu", "vznik veřejného mínění"],
     correct: [0],
     explanation: "Text popisuje socializaci — proces, při kterém se z biologického tvora stává kulturní bytost: v kontaktu s druhými se učíme normám, hodnotám a chápání světa.",
-    tip: "Klíčová slova „\1“ = socializace."
+    tip: "Klíčová slova „učíme se jednat v kontaktu s druhými“ = socializace."
   },
   {
     question: "Kdo napsal spis Kapitál?",
@@ -325,18 +325,18 @@ const quizQuestions = [
     tip: "Typová otázka z testu: Kapitál → Marx, chápající sociologie → Weber, pozitivní věda → Comte."
   },
   {
-    question: "S kým je spojen pojem „\1“?",
+    question: "S kým je spojen pojem „chápající (rozumějící) sociologie“?",
     type: "single",
     options: ["Max Weber", "Auguste Comte", "Talcott Parsons", "Ferdinand Tönnies"],
     correct: [0],
     explanation: "Chápající (verstehende) sociologie je koncept Maxe Webera: sociolog má porozumět smyslu, který lidé svému jednání sami přikládají, ne jen měřit vnější fakta. S Weberem souvisí i pojem ideální typ a hodnotová neutralita vědy.",
   },
   {
-    question: "Kdo je autorem pojmu „\1“ a konceptu pozitivní vědy o společnosti?",
+    question: "Kdo je autorem pojmu „sociologie“ a konceptu pozitivní vědy o společnosti?",
     type: "single",
     options: ["Auguste Comte", "Herbert Spencer", "Karel Marx", "T. G. Masaryk"],
     correct: [0],
-    explanation: "Auguste Comte (1798–1857) je „\1“ — zavedl samotný název oboru a v Kursu pozitivní filosofie požadoval, aby se společnost zkoumala pozitivně, tj. vědecky: ne PROČ věci jsou, ale JAK spolu jevy souvisejí (zákony, vztahy).",
+    explanation: "Auguste Comte (1798–1857) je „otec sociologie“ — zavedl samotný název oboru a v Kursu pozitivní filosofie požadoval, aby se společnost zkoumala pozitivně, tj. vědecky: ne PROČ věci jsou, ale JAK spolu jevy souvisejí (zákony, vztahy).",
   },
   {
     question: "Pojem anomie označuje:",
@@ -349,7 +349,7 @@ const quizQuestions = [
     ],
     correct: [0],
     explanation: "Anomie (Émile Durkheim) = stav bezzákonnosti či beznormnosti; staré normy tradiční společnosti přestaly platit a nové se ještě neustavily. Typické pro období rychlé společenské změny (např. průmyslová revoluce).",
-    tip: "a-nomos = řecky „\1“."
+    tip: "a-nomos = řecky „bez zákona“."
   },
   {
     question: "Které složky tvoří podle Kellera sociální status? (více odpovědí)",
@@ -390,7 +390,7 @@ const quizQuestions = [
     question: "Internalizace znamená, že člověk:",
     type: "single",
     options: [
-      "přijme normy „\1“ a dodržuje je dobrovolně",
+      "přijme normy „za své“ a dodržuje je dobrovolně",
       "je k dodržování norem otevřeně donucen",
       "normy odmítá a vymezuje se proti nim",
       "se vrací do společnosti po dlouhém vyloučení"
@@ -399,7 +399,7 @@ const quizQuestions = [
     explanation: "Internalizace = zvnitřnění norem; člověk je přijme za vlastní a dodržuje je dobrovolně, bez vnějšího donucení. Je to nejúčinnější forma sociální kontroly — moderní společnost ji doplňuje skrytými formami manipulace (reklama, média).",
   },
   {
-    question: "Role „\1“ nebo „\1“ je podle Kellera role:",
+    question: "Role „nezaměstnaný“ nebo „bezdomovec“ je podle Kellera role:",
     type: "single",
     options: ["vnucená", "připsaná", "získaná", "referenční"],
     correct: [0],
@@ -407,7 +407,7 @@ const quizQuestions = [
     tip: "Připsaná = narodíš se s ní. Získaná = vydobudeš si ji. Vnucená = přidělí ti ji okolnosti."
   },
   {
-    question: "Váleční zločinci, kteří se hájili slovy „\1“, jsou v učebnici příkladem:",
+    question: "Váleční zločinci, kteří se hájili slovy „jen jsem plnil rozkazy“, jsou v učebnici příkladem:",
     type: "single",
     options: [
       "naprostého ztotožnění s rolí",
@@ -436,7 +436,7 @@ const quizQuestions = [
       "primární × sekundární"
     ],
     correct: [0, 1, 2, 4],
-    explanation: "Skupiny dělíme podle velikosti (malé × velké), formálnosti (formální × neformální), vztahu člověka ke skupině (členská × referenční × out-group) a na primární × sekundární. „\1“ je dělení rolí, ne skupin.",
+    explanation: "Skupiny dělíme podle velikosti (malé × velké), formálnosti (formální × neformální), vztahu člověka ke skupině (členská × referenční × out-group) a na primární × sekundární. „Připsané × získané“ je dělení rolí, ne skupin.",
   },
   {
     question: "Dvoustupňový model komunikace říká, že:",
@@ -530,7 +530,7 @@ const quizQuestions = [
     type: "multi",
     options: ["vtělený", "objektivizovaný", "institucionalizovaný", "globalizovaný", "privatizovaný"],
     correct: [0, 1, 2],
-    explanation: "Vtělený (inkorporovaný) = znalosti, vkus a návyky „\1“; objektivizovaný = vlastněné kulturní předměty (knihy, obrazy, nástroje); institucionalizovaný = formální osvědčení (diplomy, tituly).",
+    explanation: "Vtělený (inkorporovaný) = znalosti, vkus a návyky „v hlavě a těle“; objektivizovaný = vlastněné kulturní předměty (knihy, obrazy, nástroje); institucionalizovaný = formální osvědčení (diplomy, tituly).",
   },
   {
     question: "Sociolog Mike Savage (Social Class in the 21st Century, Velký britský třídní výzkum) rozdělil britskou společnost na:",
@@ -586,7 +586,7 @@ const quizQuestions = [
       "dělbu práce v protestantských zemích"
     ],
     correct: [0],
-    explanation: "Weber ukazuje vztah mezi protestantskou (kalvínskou) etikou a „\1“: víra v predestinaci vedla k askezi, systematické práci a reinvestování zisku — náboženské motivy tak nezáměrně podpořily kapitalismus. Pozn.: jde o opačný směr vysvětlení než u Marxe (ideje ← ekonomika).",
+    explanation: "Weber ukazuje vztah mezi protestantskou (kalvínskou) etikou a „duchem kapitalismu“: víra v predestinaci vedla k askezi, systematické práci a reinvestování zisku — náboženské motivy tak nezáměrně podpořily kapitalismus. Pozn.: jde o opačný směr vysvětlení než u Marxe (ideje ← ekonomika).",
   },
   {
     question: "Kdo je považován za zakladatele české sociologie (a později se stal prezidentem)?",
@@ -604,13 +604,13 @@ const quizQuestions = [
 const flashcards = [
   { front: "SOCIALIZACE", back: "Proces, při kterém se z biologického tvora stává kulturní bytost — učíme se chování, normám a hodnotám své společnosti. Primární (základní normy) × sekundární (profesní znalosti)." },
   { front: "RESOCIALIZACE", back: "Opětovné osvojení norem a začlenění do společnosti — např. po návratu z vězení, po dlouhé nemoci, po emigraci." },
-  { front: "ANOMIE (Durkheim)", back: "Stav „\1“: staré normy přestaly platit a nové ještě nejsou ustaveny. Typická pro období rychlých společenských změn." },
+  { front: "ANOMIE (Durkheim)", back: "Stav „bezzákonnosti“: staré normy přestaly platit a nové ještě nejsou ustaveny. Typická pro období rychlých společenských změn." },
   { front: "KULTURA", back: "Širší pojem: vše, čím se lišíme od zvířat — normy, jazyk, vědění, zvyky, obřady, náboženské představy. Klíčovou roli hrají symboly." },
   { front: "CIVILIZACE", back: "Užší pojem. Vzniká, když společnost má: 1) PÍSMO (skladuje informace), 2) MĚSTO (prostorové vymezení vztahů), 3) STÁT (monopol na legitimní násilí)." },
   { front: "SOCIÁLNÍ KONTROLA", back: "Způsoby, jimiž společnost zajišťuje dodržování norem: od otevřeného donucení (tradiční spol.) po skryté formy manipulace (moderní spol.). Nejúčinnější je internalizace." },
-  { front: "INTERNALIZACE", back: "Zvnitřnění norem — člověk je přijme „\1“ a dodržuje je dobrovolně, bez vnějšího nátlaku." },
+  { front: "INTERNALIZACE", back: "Zvnitřnění norem — člověk je přijme „za své“ a dodržuje je dobrovolně, bez vnějšího nátlaku." },
   { front: "SOCIÁLNÍ ROLE", back: "Pravidelnosti v jednání spojené s pozicí člověka ve společnosti. Typy: PŘIPSANÉ (věk, pohlaví), ZÍSKANÉ (uznání, majetek), VNUCENÉ (nezaměstnaný)." },
-  { front: "ROLOVÁ DISTANCE", back: "Přiměřený odstup od role: plním ji, ale nenechám se jí pohltit. Extrémy: naprosté ztotožnění („\1“) × naprosté odmítání (rozpad společnosti)." },
+  { front: "ROLOVÁ DISTANCE", back: "Přiměřený odstup od role: plním ji, ale nenechám se jí pohltit. Extrémy: naprosté ztotožnění („plnil jsem rozkazy“) × naprosté odmítání (rozpad společnosti)." },
   { front: "SOCIÁLNÍ STATUS", back: "Postavení člověka ve společnosti. Tři složky: MAJETEK – MOC – PRESTIŽ. Připsaný × získaný status." },
   { front: "SOCIÁLNÍ MOBILITA", back: "Pohyb mezi sociálními pozicemi. VERTIKÁLNÍ (vzestup/sestup mezi vrstvami) × HORIZONTÁLNÍ (na stejné úrovni). NEPRAVÁ mobilita = zdánlivá změna statusu, reálné postavení se nemění." },
   { front: "SOCIÁLNÍ STRATIFIKACE", back: "Rozvrstvení společnosti do vrstev/tříd podle majetku, moci a prestiže. Tradiční spol.: stavovská struktura, pevný status. Moderní spol.: třídní struktura, pohyblivý status." },
@@ -622,7 +622,7 @@ const flashcards = [
   { front: "MECHANICKÁ × ORGANICKÁ SOLIDARITA (Durkheim)", back: "Mechanická (tradiční spol.): soudržnost z PODOBNOSTI. Organická (moderní spol.): soudržnost z ODLIŠNOSTI — dělba práce → vzájemná závislost." },
   { front: "ZÁKON TŘÍ STADIÍ (Comte)", back: "Vývoj lidského ducha: 1) TEOLOGICKÉ (bohové), 2) METAFYZICKÉ (abstraktní podstaty), 3) POZITIVNÍ (věda — ne PROČ, ale JAK; zákony a vztahy)." },
   { front: "ODCIZENÍ (Marx)", back: "Práce v kapitalismu vytváří odcizení: dělník nevlastní výrobní prostředky ani produkt své práce; práce ho neuskutečňuje, ale zotročuje." },
-  { front: "CHÁPAJÍCÍ SOCIOLOGIE + IDEÁLNÍ TYP (Weber)", back: "Sociologie má rozumět smyslu, který lidé svému jednání přikládají. Ideální typ = myšlenkový nástroj, „\1“ model jevu pro srovnávání s realitou." },
+  { front: "CHÁPAJÍCÍ SOCIOLOGIE + IDEÁLNÍ TYP (Weber)", back: "Sociologie má rozumět smyslu, který lidé svému jednání přikládají. Ideální typ = myšlenkový nástroj, „čistý“ model jevu pro srovnávání s realitou." },
   { front: "ZNAKY MODERNÍ SPOLEČNOSTI", back: "Generalizace, Individualizace, Funkční diferenciace, Racionalizace (GIFR)." },
   { front: "DRUHY KAPITÁLU (Bourdieu)", back: "EKONOMICKÝ (majetek), SOCIÁLNÍ (kontakty, vazby), KULTURNÍ (vzdělání, vkus). Kulturní: vtělený, objektivizovaný, institucionalizovaný." },
   { front: "MIKE SAVAGE — 7 TŘÍD", back: "Social Class in the 21st Century (2015), Great British Class Survey: 7 tříd podle kombinace kapitálů. Elita (~6 %) nahoře, prekariát (~15 %) dole. Pro ČR: Daniel Prokop — Rozděleni svobodou (6 tříd)." },
@@ -652,7 +652,7 @@ const persons = [
       <>Dílo <B>Kapitál</B>. Všechny společnosti jsou založeny na <Term>konfliktu</Term>; základním motivem všech společenských změn je <Term>ekonomika</Term>.</>,
       <>Třídy podle <Term>vztahu k výrobním prostředkům</Term>: buržoazie (vlastní) × proletariát (prodává pracovní sílu). ← typová otázka!</>,
       <>Práce v kapitalismu vytváří <Term>odcizení</Term>; nadhodnota připadá vlastníkovi kapitálu.</>,
-      <>„\1“ — <Term>historický materialismus</Term>: vývoj není náhodný, lze ho rozpoznat v organizaci ekonomiky.</>,
+      <>„Vládnoucí myšlenky nejsou nic jiného než ideový výraz vládnoucích materiálních poměrů“ — <Term>historický materialismus</Term>: vývoj není náhodný, lze ho rozpoznat v organizaci ekonomiky.</>,
       <>Společnost lze přebudovat <B>vědeckou kritikou a revoluční akcí</B> — člověk je formován společností, ale může ji změnit.</>,
     ]
   },
@@ -670,7 +670,7 @@ const persons = [
     tagline: "Chápající sociologie, ideální typ",
     points: [
       <><Term>Chápající (rozumějící) sociologie</Term>: cílem je porozumět smyslu, který jednající lidé svému jednání přikládají. ← typová otázka!</>,
-      <><Term>Ideální typ</Term> = myšlenkový nástroj, „\1“ model jevu (např. byrokracie), s nímž srovnáváme realitu.</>,
+      <><Term>Ideální typ</Term> = myšlenkový nástroj, „čistý“ model jevu (např. byrokracie), s nímž srovnáváme realitu.</>,
       <>Dílo <B>Protestantská etika a duch kapitalismu</B> (1905): kalvínská víra v predestinaci → askeze, systematická práce, reinvestice zisku → vznik moderního kapitalismu. (Ideje mohou hýbat ekonomikou — obrácený směr než Marx.)</>,
       <>Metodologie sociálních věd: věda má být <B>hodnotově neutrální</B> — popisuje, nehodnotí.</>,
     ]
@@ -680,7 +680,7 @@ const persons = [
     tagline: "Evolucionismus",
     points: [
       <>Společnost se vyvíjí <Term>evolučně</Term> jako organismus — od jednoduchých k složitým formám (organicismus).</>,
-      <>Spojován se <B>sociálním darwinismem</B> („\1“ přenesené na společnost).</>,
+      <>Spojován se <B>sociálním darwinismem</B> („přežití nejschopnějších“ přenesené na společnost).</>,
     ]
   },
   {
@@ -727,7 +727,7 @@ const openQuestions = [
     q: "Jaký byl původní účel sociologie? Jaké sociální faktory ovlivnily její vývoj?",
     src: "otázky z prezentace (kap. 1 a 2)",
     a: <>
-      <p style={T.p}>Sociologie vznikla v 19. století jako <B>reakce na rozpad tradiční společnosti</B> — průmyslová revoluce, osvícenství a Velká francouzská revoluce rozbily starý řád (komunitu, kastu, stav). Lidé se stěhovali z venkova do měst, mezi cizí lidi; oddělila se práce a volný čas („\1“ architektura továren a činžáků); slábla tradiční sociální kontrola → krize, nejistota, anomie.</p>
+      <p style={T.p}>Sociologie vznikla v 19. století jako <B>reakce na rozpad tradiční společnosti</B> — průmyslová revoluce, osvícenství a Velká francouzská revoluce rozbily starý řád (komunitu, kastu, stav). Lidé se stěhovali z venkova do měst, mezi cizí lidi; oddělila se práce a volný čas („kasárenská“ architektura továren a činžáků); slábla tradiční sociální kontrola → krize, nejistota, anomie.</p>
       <p style={T.p}>Původním účelem bylo <B>vědecky porozumět nové (moderní) společnosti</B>, vysvětlit, co ji drží pohromadě, a pomoci řešit její krize (Comte: sociologie jako pozitivní věda o společnosti; srovnej s rolí kritického realismu v literatuře — Balzac, Dickens).</p>
     </>
   },
@@ -742,15 +742,15 @@ const openQuestions = [
     q: "Dokáže člověk existovat bez společnosti?",
     src: "otázka z prezentace (kap. 3)",
     a: <>
-      <p style={T.p}><B>Ne.</B> Keller to ukazuje na <B>Robinsonu Crusoe</B>: přežil sám na ostrově jen díky tomu, že si „\1“ kulturu — vědomosti, návyky a hodnoty naučené v Anglii. Kdyby tam ztroskotal jako malé dítě, stalo by se z něj <B>„\1“</B> neschopné abstraktního myšlení. Člověk se stává člověkem teprve socializací; bez společnosti by ztratil i „\1“ kultury.</p>
+      <p style={T.p}><B>Ne.</B> Keller to ukazuje na <B>Robinsonu Crusoe</B>: přežil sám na ostrově jen díky tomu, že si „přivezl“ kulturu — vědomosti, návyky a hodnoty naučené v Anglii. Kdyby tam ztroskotal jako malé dítě, stalo by se z něj <B>„vlčí dítě“</B> neschopné abstraktního myšlení. Člověk se stává člověkem teprve socializací; bez společnosti by ztratil i „kolektivní paměť“ kultury.</p>
     </>
   },
   {
     q: "Jak probíhá proces socializace a jsou sociální role, které se v něm vytváří, prospěšné?",
     src: "otázka z prezentace (kap. 3)",
     a: <>
-      <p style={T.p}>Socializací se z biologického tvora stává kulturní bytost: skrze <B>činitele socializace</B> (tradičně rodina, škola, církev; dnes i média, reklama, vrstevníci, politické strany — a ti si často protiřečí: škola říká „\1“, reklama „\1“). Rozlišujeme <B>primární</B> (základní normy) a <B>sekundární</B> (profesní znalosti) socializaci.</p>
-      <p style={T.p}>Role jsou prospěšné: díky nim <B>víme, co od druhých čekat</B>, a společnost může fungovat. Mají ale rizika — konflikty mezi rolemi (očekávání učitelů × kamarádů) a krajnosti ztotožnění: naprosté ztotožnění ničí svobodnou vůli („\1“), naprosté odmítání by společnost rozložilo. Řešením je <Term>přiměřená rolová distance</Term>.</p>
+      <p style={T.p}>Socializací se z biologického tvora stává kulturní bytost: skrze <B>činitele socializace</B> (tradičně rodina, škola, církev; dnes i média, reklama, vrstevníci, politické strany — a ti si často protiřečí: škola říká „pracuj systematicky“, reklama „užij si teď“). Rozlišujeme <B>primární</B> (základní normy) a <B>sekundární</B> (profesní znalosti) socializaci.</p>
+      <p style={T.p}>Role jsou prospěšné: díky nim <B>víme, co od druhých čekat</B>, a společnost může fungovat. Mají ale rizika — konflikty mezi rolemi (očekávání učitelů × kamarádů) a krajnosti ztotožnění: naprosté ztotožnění ničí svobodnou vůli („plnil jsem rozkazy“), naprosté odmítání by společnost rozložilo. Řešením je <Term>přiměřená rolová distance</Term>.</p>
     </>
   },
   {
@@ -770,11 +770,11 @@ const openQuestions = [
     </>
   },
   {
-    q: "Je vzdělání „\1“ / „\1“ proti nerovnosti? Vysvětlete.",
+    q: "Je vzdělání „výtah“ / „pojistka“ proti nerovnosti? Vysvětlete.",
     src: "otázka z prezentace (vzdělání a nerovnost)",
     a: <>
       <p style={T.p}><B>Výtah:</B> demokratizace vzdělání má zajistit, aby sociální původ neměl vliv na dosažené vzdělání — vzdělanější lidé mají v průměru vyšší platy, prestižnější pozice, menší riziko nezaměstnanosti a více autonomie v práci.</p>
-      <p style={T.p}><B>Ale škola nerovnost i přenáší:</B> děti z vyšších vrstev zvýhodňuje kulturní kapitál z domova (Bourdieu), volbu školy ovlivňuje ekonomický kapitál rodiny (Boudon) a po studiu pomáhá sociální kapitál (kontakty). Randall Collins: diplomy slouží „\1“ k obsazování privilegovaných pozic (kupování diplomů). Vzdělání tak funguje spíše jako <B>pojistka</B> (od 70. let ve Francii): chrání před pádem dolů, ale vzestup zaručuje méně. Česko má navíc jednu z největších nerovností ve vzdělávání mezi zeměmi OECD (vliv osmiletých gymnázií — rané rozdělování dětí).</p>
+      <p style={T.p}><B>Ale škola nerovnost i přenáší:</B> děti z vyšších vrstev zvýhodňuje kulturní kapitál z domova (Bourdieu), volbu školy ovlivňuje ekonomický kapitál rodiny (Boudon) a po studiu pomáhá sociální kapitál (kontakty). Randall Collins: diplomy slouží „politické třídě“ k obsazování privilegovaných pozic (kupování diplomů). Vzdělání tak funguje spíše jako <B>pojistka</B> (od 70. let ve Francii): chrání před pádem dolů, ale vzestup zaručuje méně. Česko má navíc jednu z největších nerovností ve vzdělávání mezi zeměmi OECD (vliv osmiletých gymnázií — rané rozdělování dětí).</p>
     </>
   },
 ];
@@ -800,7 +800,7 @@ function TheoryTab() {
     <div>
       <Collapse title="1️⃣ Proč je tady vlastně sociologie" badge="Keller, kap. 1" defaultOpen>
         <h3 style={T.h3}>Vznik sociologie</h3>
-        <p style={T.p}>Sociologie vznikla v 19. století jako reakce na přechod od <B>tradiční</B> k <B>moderní</B> společnosti. Průmyslová revoluce a osvícenství rozbily tradiční opory života — <B>komunitu, kastu, stav</B>. Lidé se stěhovali: <B>venkov → město</B>, od <B>domácích</B> k <B>cizím</B>; oddělila se <B>práce a volný čas</B>; vyrostla „\1“ architektura (činžáky, továrny). Slábla tradiční <Term>sociální kontrola</Term>.</p>
+        <p style={T.p}>Sociologie vznikla v 19. století jako reakce na přechod od <B>tradiční</B> k <B>moderní</B> společnosti. Průmyslová revoluce a osvícenství rozbily tradiční opory života — <B>komunitu, kastu, stav</B>. Lidé se stěhovali: <B>venkov → město</B>, od <B>domácích</B> k <B>cizím</B>; oddělila se <B>práce a volný čas</B>; vyrostla „kasárenská“ architektura (činžáky, továrny). Slábla tradiční <Term>sociální kontrola</Term>.</p>
         <p style={T.p}>Na tuto krizi reagují zakladatelé: <B>Auguste Comte</B> (sociologie jako pozitivní věda), <B>Émile Durkheim</B> (pojem <Term>anomie</Term> — staré normy přestaly platit a nové ještě nejsou ustaveny) a <B>Karel Marx</B> (konflikt tříd).</p>
 
         <h3 style={T.h3}>Tradiční × moderní společnost (tabulka z pracovního listu HSt 6)</h3>
@@ -849,7 +849,7 @@ function TheoryTab() {
 
       <Collapse title="3️⃣ Co (například) tvrdí sociologie" badge="Keller, kap. 3 — tvoje výpisky">
         <h3 style={T.h3}>Dokáže člověk existovat bez společnosti? NE.</h3>
-        <p style={T.p}><B>Robinson Crusoe</B> přežil sám na ostrově jen proto, že si „\1“ svou kulturu — vědomosti, návyky a hodnoty z Anglie. Kdyby ztroskotal jako malé dítě, stalo by se z něj <B>„\1“</B> neschopné abstraktního myšlení.</p>
+        <p style={T.p}><B>Robinson Crusoe</B> přežil sám na ostrově jen proto, že si „přivezl“ svou kulturu — vědomosti, návyky a hodnoty z Anglie. Kdyby ztroskotal jako malé dítě, stalo by se z něj <B>„vlčí dítě“</B> neschopné abstraktního myšlení.</p>
 
         <h3 style={T.h3}>Kultura × civilizace</h3>
         <ul style={{ paddingLeft: "20px", margin: 0 }}>
@@ -860,19 +860,19 @@ function TheoryTab() {
 
         <h3 style={T.h3}>Socializace</h3>
         <ul style={{ paddingLeft: "20px", margin: 0 }}>
-          <li style={T.li}>Proces, při kterém se z biologického tvora stává <B>kulturní bytost</B>. Bez ní by společnost ztratila „\1“.</li>
-          <li style={T.li}><B>Činitelé:</B> tradičně rodina, škola, církev; moderně + média, reklama, politické strany, vrstevníci. Problém: činitelé si <B>protiřečí</B> (škola: „\1“ × reklama: „\1“).</li>
+          <li style={T.li}>Proces, při kterém se z biologického tvora stává <B>kulturní bytost</B>. Bez ní by společnost ztratila „kolektivní paměť“.</li>
+          <li style={T.li}><B>Činitelé:</B> tradičně rodina, škola, církev; moderně + média, reklama, politické strany, vrstevníci. Problém: činitelé si <B>protiřečí</B> (škola: „pracuj systematicky“ × reklama: „užij si teď!“).</li>
           <li style={T.li}><Term>Primární</Term> socializace = základní kulturní normy. <Term>Sekundární</Term> = profesní znalosti pro trh práce. <Term>Resocializace</Term> = nové začlenění (po vězení, nemoci…).</li>
         </ul>
 
         <h3 style={T.h3}>Sociální kontrola</h3>
-        <p style={T.p}>Škála metod: <B>otevřené donucení</B> (tradiční společnosti) → <B>skryté formy manipulace</B> (moderní společnost). <Term>Internalizace</Term> = člověk přijme normy „\1“ a dodržuje je dobrovolně. Pozor na manipulativní prvky reklamy, médií a propagandy!</p>
+        <p style={T.p}>Škála metod: <B>otevřené donucení</B> (tradiční společnosti) → <B>skryté formy manipulace</B> (moderní společnost). <Term>Internalizace</Term> = člověk přijme normy „za své“ a dodržuje je dobrovolně. Pozor na manipulativní prvky reklamy, médií a propagandy!</p>
 
         <h3 style={T.h3}>Sociální role</h3>
         <ul style={{ paddingLeft: "20px", margin: 0 }}>
           <li style={T.li}>Pravidelnosti v jednání spojené s pozicí — díky nim <B>víme, co od druhých čekat</B>.</li>
           <li style={T.li}><Term>Připsané</Term> (nelze odmítnout: věk, pohlaví, národnost) × <Term>získané</Term> (vydobyté: uznání, majetek) × <Term>vnucené</Term> (přidělené bez přičinění: nezaměstnaný, bezdomovec).</li>
-          <li style={T.li}><B>Problémy:</B> konflikty mezi rolemi (učitelé × kamarádi); míra ztotožnění — naprosté ztotožnění = ztráta svobodné vůle („\1“) × naprosté odmítání = rozpad společnosti. Řešení: <Term>přiměřená rolová distance</Term>.</li>
+          <li style={T.li}><B>Problémy:</B> konflikty mezi rolemi (učitelé × kamarádi); míra ztotožnění — naprosté ztotožnění = ztráta svobodné vůle („plnil jsem rozkazy“) × naprosté odmítání = rozpad společnosti. Řešení: <Term>přiměřená rolová distance</Term>.</li>
         </ul>
 
         <h3 style={T.h3}>Skupiny</h3>
@@ -892,9 +892,9 @@ function TheoryTab() {
 
         <h3 style={T.h3}>Předsudky a etnocentrismus</h3>
         <ul style={{ paddingLeft: "20px", margin: 0 }}>
-          <li style={T.li}><Term>Etnocentrismus</Term> = hodnocení všeho jen z pozice vlastní kultury („\1“). <Term>Předsudek</Term> = apriorní negativní obraz o jednotlivci/skupině. <Term>Xenofobie</Term> = odpor ke všemu cizímu.</li>
+          <li style={T.li}><Term>Etnocentrismus</Term> = hodnocení všeho jen z pozice vlastní kultury („jediné správné“). <Term>Předsudek</Term> = apriorní negativní obraz o jednotlivci/skupině. <Term>Xenofobie</Term> = odpor ke všemu cizímu.</li>
           <li style={T.li}><B>Kdo trpí předsudky:</B> lidé nejistí vlastní pozicí, málo úspěšní, s problémy s identitou. Historicky diskriminovali bílí, majetní, vzdělaní muži (ženy, chudé, jiné rasy).</li>
-          <li style={T.li}><B>Řešení — kulturní pluralismus:</B> všechny kultury jsou rovnocenné; postmodernismus zdůrazňuje relativnost pravd; hodnoty jiných kultur je třeba ocenit, ne je mít za „\1“.</li>
+          <li style={T.li}><B>Řešení — kulturní pluralismus:</B> všechny kultury jsou rovnocenné; postmodernismus zdůrazňuje relativnost pravd; hodnoty jiných kultur je třeba ocenit, ne je mít za „zaostalé“.</li>
         </ul>
       </Collapse>
 
@@ -915,21 +915,21 @@ function TheoryTab() {
           <li style={T.li}><Term>Kulturní kapitál</Term> = vzdělání, přehled, vkus — tři podoby: <B>vtělený</B> (v hlavě a těle), <B>objektivizovaný</B> (knihy, obrazy, nástroje), <B>institucionalizovaný</B> (diplomy, tituly).</li>
         </ul>
 
-        <h3 style={T.h3}>Mike Savage — „\1“ (článek z Respektu)</h3>
+        <h3 style={T.h3}>Mike Savage — „Mít ty správné kapitály“ (článek z Respektu)</h3>
         <ul style={{ paddingLeft: "20px", margin: 0 }}>
           <li style={T.li}>Kniha <B>Social Class in the 21st Century</B> (2015); vychází z <B>Great British Class Survey</B> (Velký britský třídní výzkum, BBC).</li>
           <li style={T.li}>Třídy <B>nezmizely</B> — jen je nelze měřit pouze příjmem. Savage popsal <B>7 tříd</B> podle kombinace ekonomického, sociálního a kulturního kapitálu (navazuje na Bourdieua).</li>
           <li style={T.li}>Na vrcholu <Term>elita</Term> (~6 % obyvatel, všechny kapitály, od ostatních ji dělí téměř nepřekonatelná propast — ředitelé, právníci, bankéři, lékaři); na dně <Term>prekariát</Term> (~15 %, nedostatek všech druhů kapitálu — nejisté úvazky, žádné úspory).</li>
-          <li style={T.li}>„\1“ — skryté nerovnosti pomáhají pochopit úspěch populistů (Johnson, Trump).</li>
+          <li style={T.li}>„Jsme svědky <B>konce tradiční politiky založené na konfliktu dělnické a střední třídy</B>“ — skryté nerovnosti pomáhají pochopit úspěch populistů (Johnson, Trump).</li>
           <li style={T.li}>Pro Česko obdobně <B>Daniel Prokop: Rozděleni svobodou</B> — šest společenských tříd ČR podle tří druhů kapitálu.</li>
         </ul>
 
         <h3 style={T.h3}>Vzdělání jako pojistka proti nerovnosti?</h3>
         <ul style={{ paddingLeft: "20px", margin: 0 }}>
           <li style={T.li}><B>Vzdělanostní společnost / společnost osvědčení:</B> diplomy rozhodují o přístupu k privilegovaným pozicím. Lidé s vyšším vzděláním mají v průměru vyšší plat, prestižnější pozice, menší nezaměstnanost, více autonomie.</li>
-          <li style={T.li}><B>Demokratizace vzdělání:</B> sociální původ nemá mít vliv na dosažené vzdělání — škola jako „\1“.</li>
+          <li style={T.li}><B>Demokratizace vzdělání:</B> sociální původ nemá mít vliv na dosažené vzdělání — škola jako „výtah“.</li>
           <li style={T.li}><B>Polemika:</B> <Term>Bourdieu</Term> — kulturní kapitál z domova zvýhodňuje děti vyšších vrstev ve škole × <Term>Boudon</Term> — ekonomický kapitál ovlivňuje volbu školy. Sociální kapitál zvýhodňuje po studiu.</li>
-          <li style={T.li}><B>Randall Collins:</B> produktivní třída × politická třída (rozděluje bohatství; „\1“).</li>
+          <li style={T.li}><B>Randall Collins:</B> produktivní třída × politická třída (rozděluje bohatství; „kupování diplomů“).</li>
           <li style={T.li}>Vzdělání od 70. let (Francie) spíš <B>pojištění</B> proti pádu než výtah vzhůru. Česko má jednu z největších nerovností ve vzdělávání v OECD (rané dělení dětí — osmiletá gymnázia).</li>
         </ul>
       </Collapse>
@@ -971,7 +971,7 @@ function TypoveTab() {
   return (
     <div>
       <div style={{ ...glass, padding: "16px 20px", marginBottom: "16px", borderColor: ACCENT + "55" }}>
-        <p style={{ ...T.p, margin: 0 }}>⚠️ <B>Tyto úlohy jsou přímo z prezentace p. profesorky</B> („\1“) + otevřené otázky z jednotlivých kapitol. Odpovědi jsou skryté — nejdřív si je zkus zodpovědět sám!</p>
+        <p style={{ ...T.p, margin: 0 }}>⚠️ <B>Tyto úlohy jsou přímo z prezentace p. profesorky</B> („typové otázky v testu ze sociologie — podle učebnice, CERMATu, SCIO-testu“) + otevřené otázky z jednotlivých kapitol. Odpovědi jsou skryté — nejdřív si je zkus zodpovědět sám!</p>
       </div>
 
       <Collapse title="Úloha 1 — výběr z možností (Marx)" badge="přesně z prezentace" defaultOpen>
@@ -983,11 +983,11 @@ function TypoveTab() {
       </Collapse>
 
       <Collapse title="Úloha 2 — práce s výchozím textem" badge="přesně z prezentace">
-        <p style={{ ...T.p, fontStyle: "italic", background: "rgba(255,255,255,0.04)", padding: "12px 14px", borderRadius: "10px" }}>„\1“ (www.socioweb.cz)</p>
+        <p style={{ ...T.p, fontStyle: "italic", background: "rgba(255,255,255,0.04)", padding: "12px 14px", borderRadius: "10px" }}>„Řád a do značné míry schopnost jednat získáváme teprve při jednání s druhými lidmi, protože v kontaktu s druhými se učíme rozumět nejen tomu, jak jednat a které chování je ‚správné‘, ale i nejzákladnější představu o tom, co věci jsou a jaké je jejich místo ve světě.“ (www.socioweb.cz, 10. 4. 2007)</p>
         <p style={T.p}>Jaký proces popisuje výchozí text?</p>
         <p style={T.p}>A) socializaci&nbsp;&nbsp;&nbsp;B) vznik legitimity vlády&nbsp;&nbsp;&nbsp;C) sociální kontrolu&nbsp;&nbsp;&nbsp;D) vznik veřejného mínění</p>
         <Reveal label="Zobrazit řešení">
-          <p style={{ ...T.p, margin: 0 }}><B>A) socializaci.</B> Klíč: „\1“ = stávání se kulturní bytostí. Sociální kontrola by zdůrazňovala vynucování norem, ne učení.</p>
+          <p style={{ ...T.p, margin: 0 }}><B>A) socializaci.</B> Klíč: „v kontaktu s druhými se učíme jednat a chápat svět“ = stávání se kulturní bytostí. Sociální kontrola by zdůrazňovala vynucování norem, ne učení.</p>
         </Reveal>
       </Collapse>
 
