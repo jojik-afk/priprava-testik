@@ -1,5 +1,5 @@
 // @title Sociologie — kompletní příprava na test (Keller & klasici)
-// @subject Společenské vědy
+// @subject Humanities
 // @topic Sociologie — kultura, socializace, klasici, sociální nerovnost
 // @template mixed
 
