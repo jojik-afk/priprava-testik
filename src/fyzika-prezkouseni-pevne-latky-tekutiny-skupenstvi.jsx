@@ -788,6 +788,165 @@ const ORAL = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════════
+   DATA — KAPILÁRNÍ ELEVACE (hluboký výklad pro ústní zkoušení)
+   ═══════════════════════════════════════════════════════════════════ */
+
+const ELEVATION = {
+  intro: 'Kapilární elevace je jev, při kterém v tenké trubičce (kapiláře) vystoupí smáčivá kapalina nad volnou hladinu okolní kapaliny. Čím tenčí kapilára, tím výš kapalina vystoupí. Opačný jev — kdy nesmáčivá kapalina v kapiláře klesne pod okolní hladinu — se nazývá kapilární deprese.',
+
+  sections: [
+    {
+      title: '1. Co se vlastně děje — pozorování',
+      icon: '👀',
+      body: [
+        { type: 'text', text: 'Když ponoříme tenkou skleněnou trubičku (kapiláru) svisle do vody, voda v ní samovolně vystoupí o výšku h NAD hladinu okolní vody. Stojíme nad nálevkou — voda se „sama vyšplhá“ nahoru, ačkoli žádná vnější síla na ni netlačí.' },
+        { type: 'text', text: 'Když místo skleněné kapiláry a vody použijeme rtuť (Hg), nastane pravý opak — rtuť v kapiláře KLESNE pod hladinu. Tomu říkáme kapilární deprese.' },
+        { type: 'highlight', text: 'Klíčové pozorování: voda → smáčí sklo → vystoupí (ELEVACE). Rtuť → nesmáčí sklo → klesne (DEPRESE). Důvod je v silách mezi molekulami.' },
+      ],
+    },
+    {
+      title: '2. Proč se to děje — koheze vs adheze',
+      icon: '🧲',
+      body: [
+        { type: 'text', text: 'Mezi molekulami působí dva druhy přitažlivých sil:' },
+        { type: 'list', items: [
+          'KOHEZNÍ síly — síly mezi molekulami SAMOTNÉ kapaliny navzájem (drží kapalinu pohromadě).',
+          'ADHEZNÍ síly — síly mezi molekulami kapaliny a molekulami pevné STĚNY (přitahují kapalinu ke stěně).',
+        ]},
+        { type: 'text', text: 'Podle toho, která síla převládá, kapalina buď stěnu smáčí, nebo nesmáčí:' },
+        { type: 'list', items: [
+          'Adheze > koheze → kapalina SMÁČÍ stěnu (voda + sklo). Molekuly vody jsou silněji přitahovány ke sklu než k sobě navzájem. Kapalina lne ke stěně, „šplhá“ po ní vzhůru a vytváří DUTÝ meniskus.',
+          'Koheze > adheze → kapalina NESMÁČÍ stěnu (rtuť + sklo). Molekuly rtuti drží silněji k sobě než ke sklu, kapalina se od stěny „odtahuje“ a tvoří VYPOUKLÝ meniskus.',
+        ]},
+        { type: 'highlight', text: 'Adheze vodu „táhne nahoru po skle“, koheze ji „drží pohromadě“. U vody adheze vítězí → voda lne ke stěně → vystoupí. U rtuti vítězí koheze → rtuť se od skla odtahuje → klesne.' },
+      ],
+    },
+    {
+      title: '3. Meniskus — zakřivení povrchu',
+      icon: '🌙',
+      body: [
+        { type: 'text', text: 'Meniskus je tvar povrchu kapaliny v úzké trubičce — zakřivená „čepička“ nahoře.' },
+        { type: 'list', items: [
+          'DUTÝ (konkávní) meniskus — u smáčivé kapaliny (voda ve skle). Povrch je prohnutý dolů jako mistička. Vzniká protože voda lne na okrajích výš ke stěně, uprostřed zůstává níž.',
+          'VYPOUKLÝ (konvexní) meniskus — u nesmáčivé kapaliny (rtuť). Povrch se klene nahoru jako čočka. Vzniká protože rtuť se od stěn odtahuje, uprostřed je výš.',
+        ]},
+        { type: 'text', text: 'Tvar menisku není kosmetický detail — určuje směr KAPILÁRNÍHO TLAKU. To je klíč k tomu, proč kapalina vůbec stoupá nebo klesá.' },
+      ],
+    },
+    {
+      title: '4. Mechanismus — kapilární tlak pod zakřiveným povrchem',
+      icon: '💧',
+      body: [
+        { type: 'text', text: 'Pod libovolně zakřiveným povrchem kapaliny vzniká tzv. kapilární tlak. Je to extra tlak (přídavek k atmosférickému) zaviněný povrchovým napětím a zakřivením povrchu.' },
+        { type: 'formula', text: 'pₖ = 2·σ / r' },
+        { type: 'list', items: [
+          'σ … povrchové napětí [N·m⁻¹]',
+          'r … poloměr KULOVÉHO povrchu (přibližně poloměr kapiláry pro smáčivou kapalinu) [m]',
+        ]},
+        { type: 'text', text: 'Důležitý je SMĚR, do kterého tlak působí — vždy směrem do středu zakřivení:' },
+        { type: 'list', items: [
+          'DUTÝ meniskus (voda): střed zakřivení leží NAD kapalinou → kapilární tlak působí SMĚREM NAHORU. Pod meniskem je tedy menší tlak, než kdyby byl povrch rovný — vzniká „kapilární podtlak“.',
+          'VYPOUKLÝ meniskus (rtuť): střed zakřivení leží POD povrchem → kapilární tlak působí SMĚREM DOLŮ. Pod meniskem je VĚTŠÍ tlak.',
+        ]},
+        { type: 'highlight', text: 'U vody ve skleněné kapiláře vznikne pod dutým meniskem kapilární podtlak. Atmosférický tlak působící na hladinu mimo kapiláru je větší než tlak pod meniskem uvnitř — proto voda VYSTOUPÍ nahoru, dokud hydrostatický tlak sloupce vody tento rozdíl nevyrovná.' },
+      ],
+    },
+    {
+      title: '5. Odvození výšky vzlinutí h',
+      icon: '📐',
+      body: [
+        { type: 'text', text: 'Stoupání se zastaví v momentě rovnováhy: hydrostatický tlak vodního sloupce výšky h se vyrovná kapilárnímu podtlaku pod meniskem.' },
+        { type: 'subheading', text: 'Podmínka rovnováhy:' },
+        { type: 'formula', text: 'p_hydrostatický = p_kapilární' },
+        { type: 'formula', text: 'h · ρ · g = 2·σ / r' },
+        { type: 'subheading', text: 'Z toho vyjádřím h:' },
+        { type: 'formula', text: 'h = 2·σ / (r · ρ · g)' },
+        { type: 'list', items: [
+          'h … výška vzlinutí (kapilární elevace) [m]',
+          'σ … povrchové napětí kapaliny [N·m⁻¹]',
+          'r … poloměr kapiláry [m]',
+          'ρ … hustota kapaliny [kg·m⁻³]',
+          'g … tíhové zrychlení [m·s⁻²]',
+        ]},
+        { type: 'highlight', text: 'Jurinův vztah: h = 2σ/(rρg). Říká, jak vysoko kapalina v kapiláře vystoupí. Vychází přímo z rovnováhy hydrostatického a kapilárního tlaku.' },
+      ],
+    },
+    {
+      title: '6. Na čem výška závisí',
+      icon: '🎚️',
+      body: [
+        { type: 'text', text: 'Ze vztahu h = 2σ/(rρg) lze přímo vyčíst, jak h reaguje na změnu jednotlivých veličin:' },
+        { type: 'list', items: [
+          'h je PŘÍMO úměrné σ — dvakrát větší povrchové napětí → dvakrát vyšší vzlinutí.',
+          'h je NEPŘÍMO úměrné r — dvakrát užší kapilára → dvakrát vyšší vzlinutí. Proto v opravdu tenkých kapilárách stoupá voda velmi vysoko.',
+          'h je NEPŘÍMO úměrné ρ — dvakrát hustší kapalina → poloviční vzlinutí.',
+          'h NEZÁVISÍ na délce kapiláry (jen na poloměru) ani na tom, jak hluboko je ponořená.',
+        ]},
+        { type: 'note', text: 'Praktický výpočet: voda (σ = 0,073 N·m⁻¹, ρ = 1000 kg·m⁻³) v kapiláře o poloměru r = 0,1 mm vystoupí o h ≈ 2·0,073/(10⁻⁴·1000·9,81) ≈ 0,15 m, tedy 15 cm.' },
+      ],
+    },
+    {
+      title: '7. Příklady v přírodě a technice',
+      icon: '🌱',
+      body: [
+        { type: 'text', text: 'Kapilární elevace je všudypřítomný jev — díky ní funguje řada věcí kolem nás:' },
+        { type: 'list', items: [
+          'Vzlínání vody v rostlinách — voda stoupá tenoučkými cévami (xylém) ze země až do listů. Bez kapilární elevace by stromy nemohly dopravovat vodu do koruny.',
+          'Knot svíčky a petrolejové lampy — kapalný vosk/petrolej stoupá kapilárami v knotu k plameni.',
+          'Pijavý papír / hadřík — póry papíru fungují jako kapiláry a nasávají kapalinu.',
+          'Vlhkost zdiva — voda ze základů stoupá pórovitým zdivem až do několika metrů (proto se dělá hydroizolace).',
+          'Penetrace inkoustu v psacím peru, nasávání kávy do cukru namočeného v hrníčku.',
+        ]},
+        { type: 'highlight', text: 'Příroda využívá nepřímou úměru h ~ 1/r — čím tenší kapilára, tím vyšší vzlinutí. Proto mají rostliny vodivá pletiva opravdu úzká.' },
+      ],
+    },
+    {
+      title: '8. Shrnutí pro výklad (osnova)',
+      icon: '🎤',
+      body: [
+        { type: 'text', text: 'Pokud máš vysvětlit kapilární elevaci u tabule, postupuj přesně v tomto pořadí — od pozorování přes mechanismus k výslednému vztahu:' },
+        { type: 'list', items: [
+          '1) ŘEKNI CO TO JE — v tenké kapiláře smáčivá kapalina vystoupí nad okolní hladinu o výšku h.',
+          '2) OBJEV SÍLY — mezi molekulami kapaliny působí koheze, mezi molekulami kapaliny a stěny adheze.',
+          '3) PORUVNEJ — u smáčivé (voda + sklo) adheze > koheze → kapalina lne ke stěně → DUTÝ meniskus.',
+          '4) VYSVĚTLI MENISKUS A TLAK — pod dutým meniskem vzniká kapilární podtlak pₖ = 2σ/r, který „saje“ vodu nahoru.',
+          '5) NAPIŠ ROVNOVÁHU — stoupání se zastaví, když hydrostatický tlak sloupce vyrovná kapilární tlak: h·ρ·g = 2σ/r.',
+          '6) ODVOĎ VÝŠKU — h = 2σ/(r·ρ·g). Komentuj: h ~ σ, h ~ 1/r, h ~ 1/ρ.',
+          '7) UZAVŘI PŘÍKLADEM — vzlínání v rostlinách, knot svíčky, vlhkost zdiva. Zmiň, že nesmáčivá kapalina (rtuť) vykazuje opačný jev = kapilární DEPRESE.',
+        ]},
+      ],
+    },
+  ],
+
+  qa: [
+    {
+      q: 'Proč voda v kapiláře vůbec stoupá nahoru, když nepůsobí žádná vnější síla?',
+      a: 'Působí adhezní síly mezi vodou a stěnou skla. Voda smáčí sklo → na okrajích k němu „šplhá“ a vytváří dutý meniskus. Pod tímto zakřiveným povrchem vzniká podtlak (kapilární tlak působí směrem do středu zakřivení, tedy nahoru). Atmosférický tlak na vnější hladinu je větší než tlak pod meniskem v kapiláře, a tento rozdíl vytlačí vodu vzhůru, dokud hydrostatický tlak vodního sloupce výšky h tento podtlak nevyrovná.',
+    },
+    {
+      q: 'Proč rtuť v kapiláře naopak klesne?',
+      a: 'U rtuti převažuje koheze nad adhezí — rtuť nesmáčí sklo. Meniskus je vypouklý (konvexní), kapilární tlak působí směrem dolů, pod meniskem vzniká přetlak. Atmosférický tlak v kapiláře je tedy „posílen“ kapilárním tlakem a stlačí rtuť pod úroveň okolní hladiny. Říkáme tomu kapilární deprese.',
+    },
+    {
+      q: 'Jaký je vztah pro výšku vzlinutí a odkud se bere?',
+      a: 'h = 2σ/(r·ρ·g). Plyne z rovnováhy: hydrostatický tlak sloupce kapaliny h·ρ·g se musí rovnat kapilárnímu podtlaku 2σ/r. Po vyjádření h dostáváme uvedený vztah, kterému se říká Jurinův.',
+    },
+    {
+      q: 'Proč v tenčí kapiláře kapalina vystoupí výš?',
+      a: 'Protože h je nepřímo úměrné poloměru r (h ~ 1/r). Tenčí kapilára → menší r → větší kapilární tlak pₖ = 2σ/r → větší podtlak pod meniskem → kapalina musí vystoupit do větší výšky, aby vznikla rovnováha s hydrostatickým tlakem sloupce.',
+    },
+    {
+      q: 'Co je to meniskus a jaké jsou jeho druhy?',
+      a: 'Meniskus je zakřivený tvar povrchu kapaliny v kapiláře. Dutý (konkávní, prohnutý dolů) má smáčivá kapalina jako voda ve skle. Vypouklý (konvexní, vyklenutý nahoru) má nesmáčivá kapalina jako rtuť ve skle. Tvar menisku určuje směr kapilárního tlaku, a tím i to, zda nastane elevace nebo deprese.',
+    },
+    {
+      q: 'Kde se s kapilární elevací setkáváme v běžném životě?',
+      a: 'Vzlínání vody v rostlinách (xylém přivádí vodu z kořenů až do koruny), knot svíčky nebo petrolejové lampy, nasávání kapaliny do pijavého papíru či hadříku, vlhkost zdiva z neizolovaných základů, fungování psacího pera, nasáknutí kostky cukru namočené v kávě.',
+    },
+  ],
+};
+
+/* ═══════════════════════════════════════════════════════════════════
    DATA — KARTIČKY
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -885,6 +1044,7 @@ const FORMULAS = [
    ═══════════════════════════════════════════════════════════════════ */
 
 const TABS = [
+  { id: 'elevace', label: '🧪 Kapilární elevace' },
   { id: 'teorie', label: '📚 Teorie' },
   { id: 'priklady', label: '🧮 Příklady' },
   { id: 'kviz', label: '🎯 Kvíz' },
@@ -931,7 +1091,7 @@ function TheoryBlock({ block }) {
 }
 
 export default function App() {
-  const [tab, setTab] = useState('teorie');
+  const [tab, setTab] = useState('elevace');
   const [openSection, setOpenSection] = useState('deformace');
   const [openProblem, setOpenProblem] = useState(null);
   const [cardIdx, setCardIdx] = useState(0);
@@ -1031,6 +1191,122 @@ export default function App() {
             </button>
           ))}
         </div>
+
+        {/* ── TAB: KAPILÁRNÍ ELEVACE (deep dive pro ústní zkoušení) ── */}
+        {tab === 'elevace' && (
+          <div style={{ animation: 'fadeSlide 0.5s ease', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+            {/* Intro card */}
+            <div style={{ ...glass, padding: '20px 24px', borderColor: 'rgba(251,191,36,0.35)', background: 'linear-gradient(135deg, rgba(251,191,36,0.08), rgba(139,92,246,0.06))' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                <span style={{ fontSize: '24px' }}>🧪</span>
+                <div style={{ fontFamily: "'Audiowide', sans-serif", color: '#fbbf24', fontSize: '17px', fontWeight: 700 }}>Kapilární elevace — kompletní výklad</div>
+              </div>
+              <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '14px', lineHeight: 1.75 }}>
+                {ELEVATION.intro}
+              </p>
+              <div style={{ marginTop: '12px', padding: '10px 14px', background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '10px', color: '#fde68a', fontSize: '13px', lineHeight: 1.6 }}>
+                💡 Cíl: U tabule musíš umět souvisle vyložit <b>co se děje</b>, <b>proč se to děje</b> (koheze ↔ adheze), <b>jak vzniká kapilární tlak</b> a <b>odkud se bere vztah h = 2σ/(rρg)</b>. Projdi sekce 1 → 8 popořadě.
+              </div>
+            </div>
+
+            {/* Vizual: elevace vs deprese */}
+            <div style={{ ...glass, padding: '18px 22px' }}>
+              <div style={{ color: '#8b5cf6', fontFamily: "'Audiowide', sans-serif", fontSize: '14px', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ width: '4px', height: '18px', background: '#8b5cf6', borderRadius: '2px', display: 'inline-block' }} />
+                🔬 Porovnání: ELEVACE vs DEPRESE
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+                <div style={{ background: 'rgba(6,182,212,0.08)', border: '1px solid rgba(6,182,212,0.35)', borderRadius: '12px', padding: '14px 16px' }}>
+                  <div style={{ color: '#67e8f9', fontWeight: 700, fontSize: '14px', marginBottom: '8px' }}>💧 ELEVACE (voda + sklo)</div>
+                  <ul style={{ paddingLeft: '18px', color: 'rgba(255,255,255,0.8)', fontSize: '13px', lineHeight: 1.7, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                    <li>Adheze &gt; koheze</li>
+                    <li>Kapalina SMÁČÍ stěnu</li>
+                    <li>Meniskus DUTÝ (konkávní)</li>
+                    <li>Kapilární tlak míří NAHORU</li>
+                    <li>Kapalina VYSTOUPÍ o výšku h</li>
+                  </ul>
+                </div>
+                <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.35)', borderRadius: '12px', padding: '14px 16px' }}>
+                  <div style={{ color: '#fca5a5', fontWeight: 700, fontSize: '14px', marginBottom: '8px' }}>⚗️ DEPRESE (rtuť + sklo)</div>
+                  <ul style={{ paddingLeft: '18px', color: 'rgba(255,255,255,0.8)', fontSize: '13px', lineHeight: 1.7, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                    <li>Koheze &gt; adheze</li>
+                    <li>Kapalina NESMÁČÍ stěnu</li>
+                    <li>Meniskus VYPOUKLÝ (konvexní)</li>
+                    <li>Kapilární tlak míří DOLŮ</li>
+                    <li>Kapalina KLESNE pod hladinu</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Sekce 1–8 */}
+            {ELEVATION.sections.map((sec, i) => (
+              <div key={i} style={{ ...glass, padding: '18px 22px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                  <span style={{ width: '4px', height: '20px', background: '#fbbf24', borderRadius: '2px', display: 'inline-block' }} />
+                  <span style={{ fontSize: '20px' }}>{sec.icon}</span>
+                  <span style={{ color: '#fff', fontFamily: "'Audiowide', sans-serif", fontSize: '15px', fontWeight: 700 }}>{sec.title}</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {sec.body.map((b, j) => {
+                    if (b.type === 'text') return (
+                      <p key={j} style={{ color: 'rgba(255,255,255,0.85)', fontSize: '14.5px', lineHeight: 1.75, margin: '4px 0' }}>{b.text}</p>
+                    );
+                    if (b.type === 'subheading') return (
+                      <p key={j} style={{ color: '#fbbf24', fontWeight: 700, margin: '10px 0 2px', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{b.text}</p>
+                    );
+                    if (b.type === 'list') return (
+                      <ul key={j} style={{ margin: '6px 0', paddingLeft: '22px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {b.items.map((it, k) => (
+                          <li key={k} style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', lineHeight: 1.7 }}>{it}</li>
+                        ))}
+                      </ul>
+                    );
+                    if (b.type === 'formula') return (
+                      <div key={j} style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.35)', borderRadius: '10px', padding: '12px 18px', margin: '8px 0', textAlign: 'center', color: '#fde68a', fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, fontSize: '17px' }}>
+                        {b.text}
+                      </div>
+                    );
+                    if (b.type === 'highlight') return (
+                      <div key={j} style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.4)', borderRadius: '10px', padding: '10px 16px', margin: '8px 0', color: '#c4b5fd', fontSize: '14px', lineHeight: 1.65 }}>
+                        ⚡ {b.text}
+                      </div>
+                    );
+                    if (b.type === 'note') return (
+                      <p key={j} style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: '6px 0', fontSize: '13px', fontStyle: 'italic' }}>{b.text}</p>
+                    );
+                    return null;
+                  })}
+                </div>
+              </div>
+            ))}
+
+            {/* Pravděpodobné otázky */}
+            <div style={{ ...glass, padding: '20px 24px', borderColor: 'rgba(6,182,212,0.35)' }}>
+              <div style={{ color: '#67e8f9', fontFamily: "'Audiowide', sans-serif", fontSize: '15px', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ width: '4px', height: '18px', background: '#06b6d4', borderRadius: '2px', display: 'inline-block' }} />
+                ❓ Pravděpodobné doplňující otázky
+              </div>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '14px', fontStyle: 'italic' }}>
+                Tohle se profesorka může zeptat, aby zjistila, jestli látku skutečně chápeš. Projdi si odpovědi nahlas.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {ELEVATION.qa.map((qa, i) => (
+                  <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '14px 16px' }}>
+                    <div style={{ color: '#67e8f9', fontWeight: 700, fontSize: '14px', marginBottom: '8px' }}>
+                      Q{i + 1}: {qa.q}
+                    </div>
+                    <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', lineHeight: 1.7 }}>
+                      <span style={{ color: '#86efac', fontWeight: 700 }}>A:</span> {qa.a}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        )}
 
         {/* ── TAB: TEORIE ── */}
         {tab === 'teorie' && (

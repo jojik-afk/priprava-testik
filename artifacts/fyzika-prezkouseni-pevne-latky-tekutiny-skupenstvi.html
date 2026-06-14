@@ -923,6 +923,158 @@ var ORAL = [
     ]
   }
 ];
+var ELEVATION = {
+  intro: "Kapilární elevace je jev, při kterém v tenké trubičce (kapiláře) vystoupí smáčivá kapalina nad volnou hladinu okolní kapaliny. Čím tenčí kapilára, tím výš kapalina vystoupí. Opačný jev — kdy nesmáčivá kapalina v kapiláře klesne pod okolní hladinu — se nazývá kapilární deprese.",
+  sections: [
+    {
+      title: "1. Co se vlastně děje — pozorování",
+      icon: "\uD83D\uDC40",
+      body: [
+        { type: "text", text: "Když ponoříme tenkou skleněnou trubičku (kapiláru) svisle do vody, voda v ní samovolně vystoupí o výšku h NAD hladinu okolní vody. Stojíme nad nálevkou — voda se „sama vyšplhá“ nahoru, ačkoli žádná vnější síla na ni netlačí." },
+        { type: "text", text: "Když místo skleněné kapiláry a vody použijeme rtuť (Hg), nastane pravý opak — rtuť v kapiláře KLESNE pod hladinu. Tomu říkáme kapilární deprese." },
+        { type: "highlight", text: "Klíčové pozorování: voda → smáčí sklo → vystoupí (ELEVACE). Rtuť → nesmáčí sklo → klesne (DEPRESE). Důvod je v silách mezi molekulami." }
+      ]
+    },
+    {
+      title: "2. Proč se to děje — koheze vs adheze",
+      icon: "\uD83E\uDDF2",
+      body: [
+        { type: "text", text: "Mezi molekulami působí dva druhy přitažlivých sil:" },
+        { type: "list", items: [
+          "KOHEZNÍ síly — síly mezi molekulami SAMOTNÉ kapaliny navzájem (drží kapalinu pohromadě).",
+          "ADHEZNÍ síly — síly mezi molekulami kapaliny a molekulami pevné STĚNY (přitahují kapalinu ke stěně)."
+        ] },
+        { type: "text", text: "Podle toho, která síla převládá, kapalina buď stěnu smáčí, nebo nesmáčí:" },
+        { type: "list", items: [
+          "Adheze > koheze → kapalina SMÁČÍ stěnu (voda + sklo). Molekuly vody jsou silněji přitahovány ke sklu než k sobě navzájem. Kapalina lne ke stěně, „šplhá“ po ní vzhůru a vytváří DUTÝ meniskus.",
+          "Koheze > adheze → kapalina NESMÁČÍ stěnu (rtuť + sklo). Molekuly rtuti drží silněji k sobě než ke sklu, kapalina se od stěny „odtahuje“ a tvoří VYPOUKLÝ meniskus."
+        ] },
+        { type: "highlight", text: "Adheze vodu „táhne nahoru po skle“, koheze ji „drží pohromadě“. U vody adheze vítězí → voda lne ke stěně → vystoupí. U rtuti vítězí koheze → rtuť se od skla odtahuje → klesne." }
+      ]
+    },
+    {
+      title: "3. Meniskus — zakřivení povrchu",
+      icon: "\uD83C\uDF19",
+      body: [
+        { type: "text", text: "Meniskus je tvar povrchu kapaliny v úzké trubičce — zakřivená „čepička“ nahoře." },
+        { type: "list", items: [
+          "DUTÝ (konkávní) meniskus — u smáčivé kapaliny (voda ve skle). Povrch je prohnutý dolů jako mistička. Vzniká protože voda lne na okrajích výš ke stěně, uprostřed zůstává níž.",
+          "VYPOUKLÝ (konvexní) meniskus — u nesmáčivé kapaliny (rtuť). Povrch se klene nahoru jako čočka. Vzniká protože rtuť se od stěn odtahuje, uprostřed je výš."
+        ] },
+        { type: "text", text: "Tvar menisku není kosmetický detail — určuje směr KAPILÁRNÍHO TLAKU. To je klíč k tomu, proč kapalina vůbec stoupá nebo klesá." }
+      ]
+    },
+    {
+      title: "4. Mechanismus — kapilární tlak pod zakřiveným povrchem",
+      icon: "\uD83D\uDCA7",
+      body: [
+        { type: "text", text: "Pod libovolně zakřiveným povrchem kapaliny vzniká tzv. kapilární tlak. Je to extra tlak (přídavek k atmosférickému) zaviněný povrchovým napětím a zakřivením povrchu." },
+        { type: "formula", text: "pₖ = 2·σ / r" },
+        { type: "list", items: [
+          "σ … povrchové napětí [N·m⁻¹]",
+          "r … poloměr KULOVÉHO povrchu (přibližně poloměr kapiláry pro smáčivou kapalinu) [m]"
+        ] },
+        { type: "text", text: "Důležitý je SMĚR, do kterého tlak působí — vždy směrem do středu zakřivení:" },
+        { type: "list", items: [
+          "DUTÝ meniskus (voda): střed zakřivení leží NAD kapalinou → kapilární tlak působí SMĚREM NAHORU. Pod meniskem je tedy menší tlak, než kdyby byl povrch rovný — vzniká „kapilární podtlak“.",
+          "VYPOUKLÝ meniskus (rtuť): střed zakřivení leží POD povrchem → kapilární tlak působí SMĚREM DOLŮ. Pod meniskem je VĚTŠÍ tlak."
+        ] },
+        { type: "highlight", text: "U vody ve skleněné kapiláře vznikne pod dutým meniskem kapilární podtlak. Atmosférický tlak působící na hladinu mimo kapiláru je větší než tlak pod meniskem uvnitř — proto voda VYSTOUPÍ nahoru, dokud hydrostatický tlak sloupce vody tento rozdíl nevyrovná." }
+      ]
+    },
+    {
+      title: "5. Odvození výšky vzlinutí h",
+      icon: "\uD83D\uDCD0",
+      body: [
+        { type: "text", text: "Stoupání se zastaví v momentě rovnováhy: hydrostatický tlak vodního sloupce výšky h se vyrovná kapilárnímu podtlaku pod meniskem." },
+        { type: "subheading", text: "Podmínka rovnováhy:" },
+        { type: "formula", text: "p_hydrostatický = p_kapilární" },
+        { type: "formula", text: "h · ρ · g = 2·σ / r" },
+        { type: "subheading", text: "Z toho vyjádřím h:" },
+        { type: "formula", text: "h = 2·σ / (r · ρ · g)" },
+        { type: "list", items: [
+          "h … výška vzlinutí (kapilární elevace) [m]",
+          "σ … povrchové napětí kapaliny [N·m⁻¹]",
+          "r … poloměr kapiláry [m]",
+          "ρ … hustota kapaliny [kg·m⁻³]",
+          "g … tíhové zrychlení [m·s⁻²]"
+        ] },
+        { type: "highlight", text: "Jurinův vztah: h = 2σ/(rρg). Říká, jak vysoko kapalina v kapiláře vystoupí. Vychází přímo z rovnováhy hydrostatického a kapilárního tlaku." }
+      ]
+    },
+    {
+      title: "6. Na čem výška závisí",
+      icon: "\uD83C\uDF9A️",
+      body: [
+        { type: "text", text: "Ze vztahu h = 2σ/(rρg) lze přímo vyčíst, jak h reaguje na změnu jednotlivých veličin:" },
+        { type: "list", items: [
+          "h je PŘÍMO úměrné σ — dvakrát větší povrchové napětí → dvakrát vyšší vzlinutí.",
+          "h je NEPŘÍMO úměrné r — dvakrát užší kapilára → dvakrát vyšší vzlinutí. Proto v opravdu tenkých kapilárách stoupá voda velmi vysoko.",
+          "h je NEPŘÍMO úměrné ρ — dvakrát hustší kapalina → poloviční vzlinutí.",
+          "h NEZÁVISÍ na délce kapiláry (jen na poloměru) ani na tom, jak hluboko je ponořená."
+        ] },
+        { type: "note", text: "Praktický výpočet: voda (σ = 0,073 N·m⁻¹, ρ = 1000 kg·m⁻³) v kapiláře o poloměru r = 0,1 mm vystoupí o h ≈ 2·0,073/(10⁻⁴·1000·9,81) ≈ 0,15 m, tedy 15 cm." }
+      ]
+    },
+    {
+      title: "7. Příklady v přírodě a technice",
+      icon: "\uD83C\uDF31",
+      body: [
+        { type: "text", text: "Kapilární elevace je všudypřítomný jev — díky ní funguje řada věcí kolem nás:" },
+        { type: "list", items: [
+          "Vzlínání vody v rostlinách — voda stoupá tenoučkými cévami (xylém) ze země až do listů. Bez kapilární elevace by stromy nemohly dopravovat vodu do koruny.",
+          "Knot svíčky a petrolejové lampy — kapalný vosk/petrolej stoupá kapilárami v knotu k plameni.",
+          "Pijavý papír / hadřík — póry papíru fungují jako kapiláry a nasávají kapalinu.",
+          "Vlhkost zdiva — voda ze základů stoupá pórovitým zdivem až do několika metrů (proto se dělá hydroizolace).",
+          "Penetrace inkoustu v psacím peru, nasávání kávy do cukru namočeného v hrníčku."
+        ] },
+        { type: "highlight", text: "Příroda využívá nepřímou úměru h ~ 1/r — čím tenší kapilára, tím vyšší vzlinutí. Proto mají rostliny vodivá pletiva opravdu úzká." }
+      ]
+    },
+    {
+      title: "8. Shrnutí pro výklad (osnova)",
+      icon: "\uD83C\uDFA4",
+      body: [
+        { type: "text", text: "Pokud máš vysvětlit kapilární elevaci u tabule, postupuj přesně v tomto pořadí — od pozorování přes mechanismus k výslednému vztahu:" },
+        { type: "list", items: [
+          "1) ŘEKNI CO TO JE — v tenké kapiláře smáčivá kapalina vystoupí nad okolní hladinu o výšku h.",
+          "2) OBJEV SÍLY — mezi molekulami kapaliny působí koheze, mezi molekulami kapaliny a stěny adheze.",
+          "3) PORUVNEJ — u smáčivé (voda + sklo) adheze > koheze → kapalina lne ke stěně → DUTÝ meniskus.",
+          "4) VYSVĚTLI MENISKUS A TLAK — pod dutým meniskem vzniká kapilární podtlak pₖ = 2σ/r, který „saje“ vodu nahoru.",
+          "5) NAPIŠ ROVNOVÁHU — stoupání se zastaví, když hydrostatický tlak sloupce vyrovná kapilární tlak: h·ρ·g = 2σ/r.",
+          "6) ODVOĎ VÝŠKU — h = 2σ/(r·ρ·g). Komentuj: h ~ σ, h ~ 1/r, h ~ 1/ρ.",
+          "7) UZAVŘI PŘÍKLADEM — vzlínání v rostlinách, knot svíčky, vlhkost zdiva. Zmiň, že nesmáčivá kapalina (rtuť) vykazuje opačný jev = kapilární DEPRESE."
+        ] }
+      ]
+    }
+  ],
+  qa: [
+    {
+      q: "Proč voda v kapiláře vůbec stoupá nahoru, když nepůsobí žádná vnější síla?",
+      a: "Působí adhezní síly mezi vodou a stěnou skla. Voda smáčí sklo → na okrajích k němu „šplhá“ a vytváří dutý meniskus. Pod tímto zakřiveným povrchem vzniká podtlak (kapilární tlak působí směrem do středu zakřivení, tedy nahoru). Atmosférický tlak na vnější hladinu je větší než tlak pod meniskem v kapiláře, a tento rozdíl vytlačí vodu vzhůru, dokud hydrostatický tlak vodního sloupce výšky h tento podtlak nevyrovná."
+    },
+    {
+      q: "Proč rtuť v kapiláře naopak klesne?",
+      a: "U rtuti převažuje koheze nad adhezí — rtuť nesmáčí sklo. Meniskus je vypouklý (konvexní), kapilární tlak působí směrem dolů, pod meniskem vzniká přetlak. Atmosférický tlak v kapiláře je tedy „posílen“ kapilárním tlakem a stlačí rtuť pod úroveň okolní hladiny. Říkáme tomu kapilární deprese."
+    },
+    {
+      q: "Jaký je vztah pro výšku vzlinutí a odkud se bere?",
+      a: "h = 2σ/(r·ρ·g). Plyne z rovnováhy: hydrostatický tlak sloupce kapaliny h·ρ·g se musí rovnat kapilárnímu podtlaku 2σ/r. Po vyjádření h dostáváme uvedený vztah, kterému se říká Jurinův."
+    },
+    {
+      q: "Proč v tenčí kapiláře kapalina vystoupí výš?",
+      a: "Protože h je nepřímo úměrné poloměru r (h ~ 1/r). Tenčí kapilára → menší r → větší kapilární tlak pₖ = 2σ/r → větší podtlak pod meniskem → kapalina musí vystoupit do větší výšky, aby vznikla rovnováha s hydrostatickým tlakem sloupce."
+    },
+    {
+      q: "Co je to meniskus a jaké jsou jeho druhy?",
+      a: "Meniskus je zakřivený tvar povrchu kapaliny v kapiláře. Dutý (konkávní, prohnutý dolů) má smáčivá kapalina jako voda ve skle. Vypouklý (konvexní, vyklenutý nahoru) má nesmáčivá kapalina jako rtuť ve skle. Tvar menisku určuje směr kapilárního tlaku, a tím i to, zda nastane elevace nebo deprese."
+    },
+    {
+      q: "Kde se s kapilární elevací setkáváme v běžném životě?",
+      a: "Vzlínání vody v rostlinách (xylém přivádí vodu z kořenů až do koruny), knot svíčky nebo petrolejové lampy, nasávání kapaliny do pijavého papíru či hadříku, vlhkost zdiva z neizolovaných základů, fungování psacího pera, nasáknutí kostky cukru namočené v kávě."
+    }
+  ]
+};
 var FLASHCARDS = [
   { front: "Normálové napětí", back: `σ = F / S   [Pa]
 
@@ -1075,6 +1227,7 @@ var FORMULAS = [
   }
 ];
 var TABS = [
+  { id: "elevace", label: "\uD83E\uDDEA Kapilární elevace" },
   { id: "teorie", label: "\uD83D\uDCDA Teorie" },
   { id: "priklady", label: "\uD83E\uDDEE Příklady" },
   { id: "kviz", label: "\uD83C\uDFAF Kvíz" },
@@ -1128,7 +1281,7 @@ function TheoryBlock({ block }) {
   return null;
 }
 function App() {
-  const [tab, setTab] = useState("teorie");
+  const [tab, setTab] = useState("elevace");
   const [openSection, setOpenSection] = useState("deformace");
   const [openProblem, setOpenProblem] = useState(null);
   const [cardIdx, setCardIdx] = useState(0);
@@ -1257,6 +1410,241 @@ function App() {
               children: t.label
             }, t.id, false, undefined, this))
           }, undefined, false, undefined, this),
+          tab === "elevace" && /* @__PURE__ */ jsxDEV("div", {
+            style: { animation: "fadeSlide 0.5s ease", display: "flex", flexDirection: "column", gap: "14px" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { ...glass, padding: "20px 24px", borderColor: "rgba(251,191,36,0.35)", background: "linear-gradient(135deg, rgba(251,191,36,0.08), rgba(139,92,246,0.06))" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { fontSize: "24px" },
+                        children: "\uD83E\uDDEA"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { fontFamily: "'Audiowide', sans-serif", color: "#fbbf24", fontSize: "17px", fontWeight: 700 },
+                        children: "Kapilární elevace — kompletní výklad"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: { color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.75 },
+                    children: ELEVATION.intro
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { marginTop: "12px", padding: "10px 14px", background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", borderRadius: "10px", color: "#fde68a", fontSize: "13px", lineHeight: 1.6 },
+                    children: [
+                      "\uD83D\uDCA1 Cíl: U tabule musíš umět souvisle vyložit ",
+                      /* @__PURE__ */ jsxDEV("b", {
+                        children: "co se děje"
+                      }, undefined, false, undefined, this),
+                      ", ",
+                      /* @__PURE__ */ jsxDEV("b", {
+                        children: "proč se to děje"
+                      }, undefined, false, undefined, this),
+                      " (koheze ↔ adheze), ",
+                      /* @__PURE__ */ jsxDEV("b", {
+                        children: "jak vzniká kapilární tlak"
+                      }, undefined, false, undefined, this),
+                      " a ",
+                      /* @__PURE__ */ jsxDEV("b", {
+                        children: "odkud se bere vztah h = 2σ/(rρg)"
+                      }, undefined, false, undefined, this),
+                      ". Projdi sekce 1 → 8 popořadě."
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { ...glass, padding: "18px 22px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#8b5cf6", fontFamily: "'Audiowide', sans-serif", fontSize: "14px", fontWeight: 700, marginBottom: "14px", display: "flex", alignItems: "center", gap: "8px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { width: "4px", height: "18px", background: "#8b5cf6", borderRadius: "2px", display: "inline-block" }
+                      }, undefined, false, undefined, this),
+                      "\uD83D\uDD2C Porovnání: ELEVACE vs DEPRESE"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { background: "rgba(6,182,212,0.08)", border: "1px solid rgba(6,182,212,0.35)", borderRadius: "12px", padding: "14px 16px" },
+                        children: [
+                          /* @__PURE__ */ jsxDEV("div", {
+                            style: { color: "#67e8f9", fontWeight: 700, fontSize: "14px", marginBottom: "8px" },
+                            children: "\uD83D\uDCA7 ELEVACE (voda + sklo)"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("ul", {
+                            style: { paddingLeft: "18px", color: "rgba(255,255,255,0.8)", fontSize: "13px", lineHeight: 1.7, display: "flex", flexDirection: "column", gap: "3px" },
+                            children: [
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Adheze > koheze"
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Kapalina SMÁČÍ stěnu"
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Meniskus DUTÝ (konkávní)"
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Kapilární tlak míří NAHORU"
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Kapalina VYSTOUPÍ o výšku h"
+                              }, undefined, false, undefined, this)
+                            ]
+                          }, undefined, true, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.35)", borderRadius: "12px", padding: "14px 16px" },
+                        children: [
+                          /* @__PURE__ */ jsxDEV("div", {
+                            style: { color: "#fca5a5", fontWeight: 700, fontSize: "14px", marginBottom: "8px" },
+                            children: "⚗️ DEPRESE (rtuť + sklo)"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("ul", {
+                            style: { paddingLeft: "18px", color: "rgba(255,255,255,0.8)", fontSize: "13px", lineHeight: 1.7, display: "flex", flexDirection: "column", gap: "3px" },
+                            children: [
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Koheze > adheze"
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Kapalina NESMÁČÍ stěnu"
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Meniskus VYPOUKLÝ (konvexní)"
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Kapilární tlak míří DOLŮ"
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("li", {
+                                children: "Kapalina KLESNE pod hladinu"
+                              }, undefined, false, undefined, this)
+                            ]
+                          }, undefined, true, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              ELEVATION.sections.map((sec, i) => /* @__PURE__ */ jsxDEV("div", {
+                style: { ...glass, padding: "18px 22px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { width: "4px", height: "20px", background: "#fbbf24", borderRadius: "2px", display: "inline-block" }
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { fontSize: "20px" },
+                        children: sec.icon
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { color: "#fff", fontFamily: "'Audiowide', sans-serif", fontSize: "15px", fontWeight: 700 },
+                        children: sec.title
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "flex", flexDirection: "column", gap: "6px" },
+                    children: sec.body.map((b, j) => {
+                      if (b.type === "text")
+                        return /* @__PURE__ */ jsxDEV("p", {
+                          style: { color: "rgba(255,255,255,0.85)", fontSize: "14.5px", lineHeight: 1.75, margin: "4px 0" },
+                          children: b.text
+                        }, j, false, undefined, this);
+                      if (b.type === "subheading")
+                        return /* @__PURE__ */ jsxDEV("p", {
+                          style: { color: "#fbbf24", fontWeight: 700, margin: "10px 0 2px", fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.05em" },
+                          children: b.text
+                        }, j, false, undefined, this);
+                      if (b.type === "list")
+                        return /* @__PURE__ */ jsxDEV("ul", {
+                          style: { margin: "6px 0", paddingLeft: "22px", display: "flex", flexDirection: "column", gap: "6px" },
+                          children: b.items.map((it, k) => /* @__PURE__ */ jsxDEV("li", {
+                            style: { color: "rgba(255,255,255,0.8)", fontSize: "14px", lineHeight: 1.7 },
+                            children: it
+                          }, k, false, undefined, this))
+                        }, j, false, undefined, this);
+                      if (b.type === "formula")
+                        return /* @__PURE__ */ jsxDEV("div", {
+                          style: { background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.35)", borderRadius: "10px", padding: "12px 18px", margin: "8px 0", textAlign: "center", color: "#fde68a", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, fontSize: "17px" },
+                          children: b.text
+                        }, j, false, undefined, this);
+                      if (b.type === "highlight")
+                        return /* @__PURE__ */ jsxDEV("div", {
+                          style: { background: "rgba(139,92,246,0.12)", border: "1px solid rgba(139,92,246,0.4)", borderRadius: "10px", padding: "10px 16px", margin: "8px 0", color: "#c4b5fd", fontSize: "14px", lineHeight: 1.65 },
+                          children: [
+                            "⚡ ",
+                            b.text
+                          ]
+                        }, j, true, undefined, this);
+                      if (b.type === "note")
+                        return /* @__PURE__ */ jsxDEV("p", {
+                          style: { color: "rgba(255,255,255,0.6)", lineHeight: 1.6, margin: "6px 0", fontSize: "13px", fontStyle: "italic" },
+                          children: b.text
+                        }, j, false, undefined, this);
+                      return null;
+                    })
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this)),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { ...glass, padding: "20px 24px", borderColor: "rgba(6,182,212,0.35)" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#67e8f9", fontFamily: "'Audiowide', sans-serif", fontSize: "15px", fontWeight: 700, marginBottom: "14px", display: "flex", alignItems: "center", gap: "8px" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        style: { width: "4px", height: "18px", background: "#06b6d4", borderRadius: "2px", display: "inline-block" }
+                      }, undefined, false, undefined, this),
+                      "❓ Pravděpodobné doplňující otázky"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: { color: "rgba(255,255,255,0.6)", fontSize: "13px", marginBottom: "14px", fontStyle: "italic" },
+                    children: "Tohle se profesorka může zeptat, aby zjistila, jestli látku skutečně chápeš. Projdi si odpovědi nahlas."
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "flex", flexDirection: "column", gap: "12px" },
+                    children: ELEVATION.qa.map((qa, i) => /* @__PURE__ */ jsxDEV("div", {
+                      style: { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", padding: "14px 16px" },
+                      children: [
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "#67e8f9", fontWeight: 700, fontSize: "14px", marginBottom: "8px" },
+                          children: [
+                            "Q",
+                            i + 1,
+                            ": ",
+                            qa.q
+                          ]
+                        }, undefined, true, undefined, this),
+                        /* @__PURE__ */ jsxDEV("div", {
+                          style: { color: "rgba(255,255,255,0.8)", fontSize: "14px", lineHeight: 1.7 },
+                          children: [
+                            /* @__PURE__ */ jsxDEV("span", {
+                              style: { color: "#86efac", fontWeight: 700 },
+                              children: "A:"
+                            }, undefined, false, undefined, this),
+                            " ",
+                            qa.a
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, i, true, undefined, this))
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
           tab === "teorie" && /* @__PURE__ */ jsxDEV("div", {
             style: { animation: "fadeSlide 0.5s ease", display: "flex", flexDirection: "column", gap: "10px" },
             children: [
