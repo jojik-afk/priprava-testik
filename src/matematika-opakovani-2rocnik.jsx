@@ -1737,11 +1737,6 @@ export default function App() {
           transform: "perspective(320px) rotateX(62deg)", transformOrigin: "bottom",
           animation: "gridMove 3.2s linear infinite", opacity: 0.55,
         }} />
-        {/* horizont */}
-        <div style={{
-          position: "absolute", left: 0, right: 0, bottom: "42vh", height: "1px",
-          background: `linear-gradient(90deg, transparent, ${PINK}bb, transparent)`, boxShadow: `0 0 22px ${PINK}88`,
-        }} />
         {/* částice */}
         {[...Array(16)].map((_, i) => (
           <div key={i} style={{
