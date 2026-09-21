@@ -4,52 +4,39 @@
 
 ## Design System
 
-### Theme & Background
-- Base background colour: `#0a0a1a` (deep navy/black)
-- Animated background — choose by subject:
-  - **Math / Physics / Chemistry:** Synthwave — grid floor, neon sun, floating particles
-  - **All other subjects:** Floating translucent gradient circles (purple / blue / amber) with `blur` and `pulse` animations
+**The visual identity comes from `references/themes.md` — read it and use the theme for the
+subject at hand.** Each subject has its own background, surface treatment, typography, corner
+radius and motion character. Do not default to dark glassmorphism; it is no longer the house
+style, it is just one option among several.
 
-### Cards — Glassmorphism (use everywhere)
-```css
-background: rgba(255, 255, 255, 0.05);
-backdrop-filter: blur(20px);
-border: 1px solid rgba(255, 255, 255, 0.1);
-border-radius: 20px;
-transition: all 0.4s ease;   /* NEVER 0.2s or 0.3s — Jonas explicitly flagged this */
-```
+### Invariants (apply in every theme)
 
-### Navigation
-- Horizontal tab bar, pill-shaped or rounded buttons
-- Active tab: subject accent colour
-- No dropdown menus
-- Status indicators use colour alone — **no legends** (exception: annotated diagrams in `other-types.md`)
+- **Fonts** loaded from Google Fonts via CDN `<link>`. Use exactly the pairing the theme names.
+- **Readability:** body text ≥ 16px, line-height ≥ 1.6, contrast ratio ≥ 4.5:1.
+- **Navigation:** one clear top-level switcher (tabs, segmented control or sidebar — the theme's
+  shape language decides which). Never dropdown menus.
+- **Status indicators** use colour alone — no legends (exception: annotated diagrams in
+  `other-types.md`).
+- **Transitions:** use the theme's motion timing. Where a theme does not specify one, use
+  0.4–0.5s — never 0.2s or 0.3s. A theme may name a faster timing deliberately (Informatika,
+  Drony, Dějepis); that is the theme's call, not a shortcut.
+- **Mobile:** single column below 640px, tabs scroll horizontally, tap targets ≥ 44px.
 
-### Accent Colours by Subject
-| Subject area | Palette |
-|---|---|
-| Literature / humanities | Amber / orange |
-| Sciences (physics, chemistry) | Cyan / indigo / purple |
-| Biology | Emerald / teal |
-| Languages (French) | Cyan / blue |
-| Math | Neon pink + cyan |
+### Base animation timings (override with the theme's own motion character)
 
-### Typography — Google Fonts via CDN `<link>`
-| Context | Font combo |
-|---|---|
-| Synthwave / math apps | Exo 2 (body) + Audiowide (headers) |
-| General apps | Segoe UI or Inter (body) |
-| Formulas / code blocks | JetBrains Mono |
-
-### Animation Timings
 | Element | Duration |
 |---|---|
-| Background gradient cycle | 20–40s |
-| Floating background elements | 12–20s |
-| Card hover / transitions | 0.4–0.5s |
+| Background ambient cycle | 20–40s |
 | Slide-in content | 0.5–0.6s, staggered 0.08s per card |
 | Progress bars | 0.8s |
 | Flashcard flip | 0.4s |
+
+### Varying within a subject
+
+Two artifacts for the same subject share the theme but must not look identical. Vary at least
+two of: section layout (tabs vs. sidebar vs. long scroll), header treatment, accent balance,
+which signature element leads. If the user says an artifact looks like the last one, change the
+layout first — not the colours.
 
 ---
 
@@ -63,13 +50,10 @@ Use the pre-built component in `assets/quiz-engine.jsx`. Read that file, copy th
 
 **Props:**
 - `questions` — array (format below)
-- `accentColor` — hex string; pick the subject accent colour from the table above. Default is purple.
+- `accentColor` — hex string; use the primary accent from the subject's theme in `themes.md`.
 
-**Built-in features:**
-- **Answer randomization** — options are shuffled on load so correct answer isn't always "A"
-- **Re-shuffle on restart** — when user clicks "Začít znovu", options are reshuffled for reusability
-- Single-select and multi-select question types
-- Dot navigation, feedback panel, results screen
+The quiz engine's own styling must be restyled to match the active theme (surface fill, border,
+radius, fonts). Only its logic is fixed, not its look.
 
 **Question object format:**
 ```js

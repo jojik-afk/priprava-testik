@@ -33,7 +33,7 @@ The most common artifact type. A full-featured single-page application covering 
 ### 5. Formula / Cheat-Sheet Section
 - Dedicated tab or section — not buried inside theory
 - All key formulas, constants, rules the user must memorise
-- Use **JetBrains Mono** font for formulas
+- Set formulas in the theme's mono font from `themes.md`; if the theme names none, use **JetBrains Mono**
 - Group by sub-topic if there are many
 
 ---

@@ -16,9 +16,11 @@ description: >
 
 ## Step 2 — Load and build
 
-1. **Always** read `references/base.md` first. It contains the design system, quiz engine spec, and technical rules shared by every artifact type.
-2. **Then** read the type file identified in Step 1.
-3. Build the artifact strictly per the loaded specs. Do not skip sections or simplify defaults.
+1. **Always** read `references/base.md` first — shared invariants, quiz engine spec, technical rules.
+2. **Always** read `references/themes.md` and use the theme for the subject at hand. Each subject
+   has its own visual identity; there is no single default look.
+3. **Then** read the type file identified in Step 1.
+4. Build the artifact strictly per the loaded specs. Do not skip sections or simplify defaults.
 
 ## Global rules (no exceptions)
 

@@ -11,7 +11,7 @@
 - Keyboard navigation: left/right arrow keys + spacebar
 - Index dots showing current position + total card count
 - **Speaker notes panel:** visible alongside the slide on desktop; toggleable on mobile
-- Design: glassmorphism cards from `base.md`, subject accent colours
+- Design: use the subject's theme from `themes.md` — slide surfaces, fonts and motion all follow it
 
 **Seen for:** C.S. Lewis "The Great Divorce" presentation, Czech literature oral exam prep.
 
@@ -26,7 +26,7 @@
 - Colour-code regions / parts distinctly
 - Label each part with leader lines pointing to it, or use hover-to-reveal tooltips
 - Include a **legend at the bottom** — this is the one artifact type where a legend is appropriate (it's a reference diagram, not a quiz UI)
-- Design: dark background from `base.md`, accent colours match the subject (emerald / teal for biology)
+- Design: the subject's theme from `themes.md` (e.g. biology → "Herbář": light moss background, organic shapes, curved leader lines)
 
 **Seen for:** Hlemýžď zahradní (garden snail) — full body diagram with all organs labelled.
 
@@ -86,6 +86,6 @@
 **Build:**
 - Faithfully reproduce the original page layout — match its structure and visual organisation
 - Fill-in-the-blank fields or multiple-choice options with inline answer checking (immediate feedback on selection)
-- **Design note:** This is the one type where matching the provided source layout takes priority over the default dark glassmorphism theme from `base.md`. If the original is a light, textbook-style page, match that look.
+- **Design note:** This is the one type that overrides `themes.md` entirely — reproducing the provided source layout takes priority over the subject theme. If the original is a light, textbook-style page, match that look.
 
 **Seen for:** English grammar — future forms (going to / present continuous / will).
