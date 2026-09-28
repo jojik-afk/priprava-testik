@@ -833,6 +833,24 @@ h2 .hash{color:var(--acc); font-family:'JetBrains Mono',monospace; font-size:16p
 .fc-dot{width:24px; height:24px; border:0; padding:7px; background:var(--line); background-clip:content-box; cursor:pointer; transition:all var(--t)}
 .fc-dot.is-on{background:var(--acc); transform:scale(1.35)}
 
+/* ── Vzorový test ───────────────────────────────────── */
+.ti{margin:0}
+.ti-h{display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap}
+.ti-n{font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; color:var(--acc);
+  border:1px solid rgba(46,230,168,.45); min-width:30px; height:30px; display:flex; align-items:center;
+  justify-content:center; flex:none; transition:all var(--t)}
+.ti-n.is-ok{background:var(--ok); border-color:var(--ok); color:#0d1117}
+.ti-n.is-bad{background:var(--bad); border-color:var(--bad); color:#0d1117}
+.ti-q{flex:1; min-width:200px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16.5px; line-height:1.5}
+.ti-tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.06em; color:var(--acc2);
+  border:1px solid rgba(176,108,240,.45); padding:3px 8px; white-space:nowrap; flex:none; align-self:center}
+.ti-ans{margin-bottom:12px}
+.ti-ans .eq{margin:10px 0}
+.ti-score{position:sticky; top:8px; z-index:4}
+.ti-score-row{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
+.ti-bar{margin-top:12px; height:6px; background:rgba(255,255,255,.07)}
+.ti-bar-fill{height:100%; background:linear-gradient(90deg,var(--acc),var(--acc2)); transition:width .8s cubic-bezier(.22,.8,.3,1)}
+
 /* ── Kvíz ───────────────────────────────────────────── */
 .qz{display:flex; flex-direction:column; gap:16px; max-width:700px; margin:0 auto; width:100%}
 .qz-dots{display:flex; gap:7px; justify-content:center; flex-wrap:wrap}
@@ -878,6 +896,8 @@ h2 .hash{color:var(--acc); font-family:'JetBrains Mono',monospace; font-size:16p
   .tile{width:62px; height:70px} .tile b{font-size:25px}
   .fc-in{min-height:280px}
   .fold-b{display:none}
+  .ti-score{position:static}
+  .ti-tag{display:none}
 }
 @media (max-width:420px){ .tiles{display:none} }
 `;
@@ -1311,6 +1331,67 @@ var QUESTIONS = [
     tip: "Sodná sůl kyseliny chlorné NaClO je známé SAVO."
   },
   {
+    question: "Jaký typ krystalu tvoří jod v pevném skupenství?",
+    type: "single",
+    options: [
+      "Molekulový — v mřížce jsou celé molekuly I₂ držené slabými van der Waalsovými silami",
+      "Atomový (kovalentní) — atomy jodu jsou propojené pevnými vazbami jako v diamantu",
+      "Iontový — mřížku tvoří ionty I⁺ a I⁻",
+      "Kovový — jod má kovový lesk, proto i kovovou mřížku"
+    ],
+    correct: [0],
+    explanation: "Jde o molekulový krystal. Slabé van der Waalsovy síly mezi molekulami I₂ se snadno překonají, proto má jod nízkou teplotu tání a přímo SUBLIMUJE na fialové páry. Atomový krystal (diamant) má naopak extrémně vysokou teplotu tání.",
+    tip: "Slabé mezimolekulové síly → sublimace. Kdyby to byl atomový krystal, jod by se nedal zahřát ani v kahanu."
+  },
+  {
+    question: "Jodová tinktura je:",
+    type: "single",
+    options: ["5% roztok jodu v ethanolu", "5% roztok jodu ve vodě", "2% roztok jodu ve vodě", "5% roztok jodidu draselného ve vodě"],
+    correct: [0],
+    explanation: "Jod je nepolární látka, a ta se ve vodě prakticky nerozpouští — rozpustí se ale v ethanolu nebo v sirouhlíku CS₂. Jodová tinktura je proto 5% roztok jodu v lihu (s přídavkem KI, který rozpustnost dál zvyšuje).",
+    tip: "Podobné se rozpouští v podobném. Nepolární jod → líh, ne voda."
+  },
+  {
+    question: "Chlorové vápno je směs:",
+    type: "single",
+    options: [
+      "chloridu a chlornanu vápenatého — CaCl₂ a Ca(ClO)₂",
+      "chloridu a chlornanu sodného — NaCl a NaClO",
+      "chloru a chlornanu sodného",
+      "chloru a chlorečnanu draselného"
+    ],
+    correct: [0],
+    explanation: "Chlorové vápno vzniká zaváděním chloru do hašeného vápna, takže obsahuje vápenaté soli. Chlornan SODNÝ NaClO je účinná látka SAVA — to je něco jiného. V testu bývají obě možnosti vedle sebe.",
+    tip: "Vápno → vápenatý. Sodné soli tam nemají co dělat."
+  },
+  {
+    question: "Označ všechna pravdivá tvrzení o sulfanu:",
+    type: "multi",
+    options: [
+      "Vzniká rozkladem (hnitím) bílkovin",
+      "Jeho vodný roztok barví lakmus do červena",
+      "Má pouze redukční účinky",
+      "Je to toxický plyn se zápachem po zkažených vejcích",
+      "Jeho vodný roztok barví lakmus do modra"
+    ],
+    correct: [0, 1, 2, 3],
+    explanation: "Vodný roztok sulfanu je slabá kyselina sulfanová, takže lakmus barví do ČERVENA — do modra ho barví zásady. Síra je v aminokyselinách cysteinu a methioninu, proto sulfan vzniká hnitím bílkovin. Oxidační číslo −II je pro síru minimum, takže sulfan může působit jen jako redukční činidlo.",
+    tip: "Kyselina → lakmus červený. Zásada → modrý."
+  },
+  {
+    question: "Kyselina sírová má silné dehydratační účinky. Jak vypadá rovnice její reakce s glukosou?",
+    type: "single",
+    options: [
+      "C₆H₁₂O₆ → 6 C + 6 H₂O",
+      "C₆H₁₂O₆ + 6 O₂ → 6 CO₂ + 6 H₂O",
+      "C₆H₁₂O₆ + H₂SO₄ → C₆H₁₂SO₄ + 3 H₂O",
+      "C₆H₁₂O₆ → 3 C₂H₅OH + 3 CO₂"
+    ],
+    correct: [0],
+    explanation: "Vzorec glukosy se dá číst jako 6 C · 6 H₂O, tedy uhlík „obalený“ vodou. Koncentrovaná H₂SO₄ tu vodu odejme a zbude černý porézní uhlík. Kyselina se při tom nespotřebuje, proto se píše nad šipku. Druhá možnost je spalování, čtvrtá alkoholové kvašení.",
+    tip: "Spočítej si to: 6 C + 6 H₂O dá přesně C₆H₁₂O₆."
+  },
+  {
     question: "Proč má fluor ve sloučeninách VŽDY oxidační číslo −I, zatímco ostatní halogeny mohou mít i kladná?",
     type: "single",
     options: [
@@ -1358,6 +1439,13 @@ var CARDS = [
   { tag: "Halogeny", front: "Interhalogeny", back: "Sloučeniny dvou různých halogenů (ClF, BrF₃, IF₅, IF₇). Centrální je těžší halogen s kladným ox. číslem. Velmi reaktivní, silná fluorační činidla, hydrolyzují." },
   { tag: "Oxokyseliny Cl", front: "Oxokyseliny chloru a jejich soli", back: "HClO chlorná → chlornany (SAVO = NaClO) · HClO₂ chloritá → chloritany · HClO₃ chlorečná → chlorečnany · HClO₄ chloristá → chloristany. Síla roste s ox. číslem." },
   { tag: "Oxokyseliny Cl", front: "Chlorová voda", back: "Cl₂ + H₂O ⇄ HCl + HClO (disproporcionace). HClO má dezinfekční a bělicí účinky → chlorace pitné vody a bazénů." },
+  { tag: "Praxe", front: "Jodová tinktura je?", back: "5% roztok jodu v ETHANOLU (s přídavkem KI). Ve vodě je jod prakticky nerozpustný — je nepolární, a podobné se rozpouští v podobném." },
+  { tag: "Praxe", front: "Chlorové vápno vs. SAVO", back: "Chlorové vápno = směs CaCl₂ a Ca(ClO)₂ (chlorid a chlornan VÁPENATÝ). SAVO = NaClO, chlornan SODNÝ. V testu bývají vedle sebe." },
+  { tag: "Halogeny", front: "Jaký krystal tvoří pevný jod?", back: "MOLEKULOVÝ krystal — v mřížce sedí celé molekuly I₂, drží je jen slabé van der Waalsovy síly. Proto nízká teplota tání a sublimace. (Atomový krystal je diamant.)" },
+  { tag: "Halogeny", front: "Čím je nebezpečný chlor?", back: "Toxický žlutozelený plyn — leptá dýchací cesty a může vyvolat edém (otok) plic. Za 1. sv. války bojová látka." },
+  { tag: "Sulfan", front: "Jak sulfan vzniká v přírodě a jak barví lakmus?", back: "Vzniká rozkladem (hnitím) bílkovin — síra je v cysteinu a methioninu. Jeho vodný roztok je KYSELINA, takže lakmus barví do ČERVENA." },
+  { tag: "Kyseliny", front: "Dehydratace glukosy kyselinou sírovou", back: "C₆H₁₂O₆ → 6 C + 6 H₂O (nad šipkou H₂SO₄). Vzorec glukosy = uhlík „obalený“ vodou; kyselina vodu odejme a zbude černý uhlík." },
+  { tag: "Jod", front: "Proč se jodizuje kuchyňská sůl?", back: "Jod je součástí thyroxinu, hormonu štítné žlázy. Nedostatek způsobuje strumu, proto se do soli přidává KI nebo KIO₃." },
   { tag: "Chytačka", front: "Má fluor někdy kladné oxidační číslo?", back: "Nikdy. Je nejelektronegativnější prvek vůbec, proto má vždy −I. Neexistují oxidy fluoru, jen fluoridy kyslíku (OF₂)." }
 ];
 var NAZVY = [
@@ -1437,8 +1525,1093 @@ function NazvyDrill() {
     ]
   }, undefined, true, undefined, this);
 }
+function norm(s) {
+  return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[.,;:!?()"'–—-]/g, " ").replace(/\s+/g, " ").trim();
+}
+var SAMPLE = [
+  {
+    n: 1,
+    type: "multi",
+    q: "O halogenech platí:",
+    options: [
+      "za n.p. jsou jednoatomové",
+      "mají vysokou elektronegativitu, proto ochotně tvoří halogenidy",
+      "jejich schopnost tvořit anionty roste s poklesem elektronegativity",
+      "za n.p. tvoří dvouatomové molekuly"
+    ],
+    correct: [1, 3],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Halogeny tvoří ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "dvouatomové molekuly X₂"
+        }, undefined, false, undefined, this),
+        " — jednoatomové jsou vzácné plyny. Vysoká elektronegativita znamená, že ochotně přijímají elektron a tvoří halogenidy. Schopnost tvořit anionty ale s poklesem elektronegativity ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "klesá"
+        }, undefined, false, undefined, this),
+        " (proto F₂ > Cl₂ > Br₂ > I₂), ne roste."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Tvrzení s „roste s poklesem“ je obrácené naruby — klasická past."
+  },
+  {
+    n: 2,
+    type: "fill",
+    q: "Jedním z nejdůležitějších zdrojů halogenů je ……………… voda.",
+    accept: ["morska", "morska voda"],
+    answer: "mořská",
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Mořská voda je nejhojnějším zdrojem halogenidových aniontů ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "X⁻"
+        }, undefined, false, undefined, this),
+        " — hlavně chloridů. Elementární halogeny ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "X₂"
+        }, undefined, false, undefined, this),
+        " příroda nezná."
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    n: 3,
+    type: "multi",
+    q: "Elektronovou konfiguraci nejbližšího vzácného plynu mohou atomy halogenů získat:",
+    options: [
+      "přijetím jednoho elektronu",
+      "v kovalentních sloučeninách vytvořením jedné σ a jedné π vazby",
+      "tvorbou dvouatomové molekuly halogenu",
+      "vznikem halogenidového aniontu X⁻ v iontových sloučeninách"
+    ],
+    correct: [0, 2, 3],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Halogenu chybí do oktetu ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "jeden"
+        }, undefined, false, undefined, this),
+        " elektron. Získá ho buď úplným přijetím (vznik aniontu ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "X⁻"
+        }, undefined, false, undefined, this),
+        ", iontové sloučeniny), nebo sdílením jednoho elektronového páru — tedy ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "jednou σ vazbou"
+        }, undefined, false, undefined, this),
+        " (v ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "X₂"
+        }, undefined, false, undefined, this),
+        " i v ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "HX"
+        }, undefined, false, undefined, this),
+        "). Dvojná vazba (σ + π) by znamenala dva sdílené páry, tedy o elektron navíc — to by oktet překročilo."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Halogen = jedna vazba. Chybí mu jeden elektron, tak tvoří jednu σ vazbu."
+  },
+  {
+    n: 4,
+    type: "multi",
+    q: "Volné halogeny se připravují:",
+    options: [
+      "rozkladem kyslíkatých sloučenin halogenů",
+      "oxidací halogenidových aniontů",
+      "elektrolýzou roztoků halogenidů",
+      "elektrolýzou tavenin alkalických kovů"
+    ],
+    correct: [1, 2],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Oxidace ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "X⁻"
+        }, undefined, false, undefined, this),
+        " na ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "X₂"
+        }, undefined, false, undefined, this),
+        " je standardní laboratorní cesta (",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "MnO₂ + 4 HCl → MnCl₂ + Cl₂ + 2 H₂O"
+        }, undefined, false, undefined, this),
+        ") a elektrolýza roztoku halogenidu je průmyslová výroba chloru ze solanky. Rozkladem kyslíkatých sloučenin vzniká ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "kyslík"
+        }, undefined, false, undefined, this),
+        ", ne halogen. A „taveniny alkalických kovů“ žádný halogen neobsahují — kdyby tam stálo ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "taveniny halogenidů"
+        }, undefined, false, undefined, this),
+        " alkalických kovů, bylo by to správně."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "U poslední možnosti si přečti, co tam opravdu je: tavenina KOVŮ, ne halogenidů."
+  },
+  {
+    n: 5,
+    type: "fill",
+    q: "Jeden z halogenů a mnohé jeho sloučeniny mají bělicí a dezinfekční účinky. O který halogen se jedná?",
+    accept: ["chlor", "cl", "cl2"],
+    answer: "chlor",
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Chlor a jeho kyslíkaté sloučeniny: ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "Cl₂ + H₂O ⇄ HCl + HClO"
+        }, undefined, false, undefined, this),
+        " (chlorová voda), ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "NaClO"
+        }, undefined, false, undefined, this),
+        " = SAVO, chlorové vápno. Účinnou látkou je kyselina chlorná, která uvolňuje atomární kyslík."
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    n: 6,
+    type: "single",
+    q: "Jodová tinktura je:",
+    options: [
+      "2% roztok jodu ve vodě",
+      "5% roztok jodu v ethanolu",
+      "5% roztok jodu ve vodě"
+    ],
+    correct: [1],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Jodová tinktura je ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "5% roztok jodu v ethanolu"
+        }, undefined, false, undefined, this),
+        " (s přídavkem jodidu draselného, který rozpustnost zvyšuje). Ve vodě je jod prakticky nerozpustný — je to nepolární látka, a ta se rozpouští v nepolárních či méně polárních rozpouštědlech (ethanol, ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "CS₂"
+        }, undefined, false, undefined, this),
+        ")."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Podobné se rozpouští v podobném. Jod je nepolární → líh ano, voda ne."
+  },
+  {
+    n: 7,
+    type: "multi",
+    q: "Jaký typ krystalu vytváří jod v pevném skupenství a jaké vlastnosti z toho vyplývají?",
+    options: [
+      "molekulový krystal",
+      "při zahřátí sublimuje",
+      "atomový krystal",
+      "slabé van der Waalsovy síly působí v pevném skupenství mezi molekulami"
+    ],
+    correct: [0, 1, 3],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "V uzlových bodech mřížky sedí celé molekuly ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "I₂"
+        }, undefined, false, undefined, this),
+        " — jde tedy o ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "molekulový krystal"
+        }, undefined, false, undefined, this),
+        ". Drží je jen slabé van der Waalsovy síly, takže stačí málo energie a krystal se rozpadne: jod ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "sublimuje"
+        }, undefined, false, undefined, this),
+        " (přechází rovnou na fialové páry). Atomový (kovalentní) krystal je třeba diamant — ten má naopak extrémně vysokou teplotu tání."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Slabé mezimolekulové síly = nízká teplota tání = sublimace."
+  },
+  {
+    n: 8,
+    type: "multi",
+    q: "Chlor:",
+    options: [
+      "je za n.p. plyn",
+      "je toxický, může způsobit edém plic",
+      "ve sloučeninách nabývá pouze oxidačního čísla −I",
+      "není rozpustný ve vodě"
+    ],
+    correct: [0, 1],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Chlor je žlutozelený toxický plyn — za 1. světové války se použil jako bojová látka právě proto, že leptá dýchací cesty a vyvolává otok (edém) plic. Ve sloučeninách má ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "−I, ale i I, III, V a VII"
+        }, undefined, false, undefined, this),
+        " (HClO až HClO₄) — „pouze −I“ platí jedině pro fluor. A ve vodě se rozpouští, vzniká chlorová voda."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "„Pouze −I“ = fluor. U chloru je to vždycky špatně."
+  },
+  {
+    n: 9,
+    type: "fill",
+    q: "V hormonu štítné žlázy, thyroxinu, se nachází atomy halogenu, jehož správnou hladinu můžeme udržovat přijímáním kuchyňské soli obohacené o tento prvek. O který halogen se jedná?",
+    accept: ["jod", "i", "i2", "iod"],
+    answer: "jod",
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Jod. Jeho nedostatek vede ke ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "strumě"
+        }, undefined, false, undefined, this),
+        " (zvětšení štítné žlázy), proto se kuchyňská sůl jodizuje (přidává se ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "KI"
+        }, undefined, false, undefined, this),
+        " nebo ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "KIO₃"
+        }, undefined, false, undefined, this),
+        "). V přírodě je jod v chaluhách a mořských řasách."
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    n: 10,
+    type: "multi",
+    q: "O halogenovodících platí:",
+    options: [
+      "HCl (aq) se nachází v žaludku",
+      "HF se používá při leptání skla",
+      "HI (aq) je nejslabší halogenovodíkovou kyselinou",
+      "za n.p. se jedná o bezbarvé, ostře zapáchající plyny, rozpustné ve vodě"
+    ],
+    correct: [0, 1, 3],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Síla halogenovodíkových kyselin ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "roste"
+        }, undefined, false, undefined, this),
+        " směrem dolů: ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "HF < HCl < HBr < HI"
+        }, undefined, false, undefined, this),
+        ". ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "HI je tedy nejsilnější"
+        }, undefined, false, undefined, this),
+        ", nejslabší je HF (krátká pevná vazba + vodíkové můstky). HCl je v žaludeční šťávě (0,3–0,4 %, pH 1–3), HF leptá sklo: ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "SiO₂ + 4 HF → SiF₄ + 2 H₂O"
+        }, undefined, false, undefined, this),
+        "."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Nejelektronegativnější fluor dává NEJSLABŠÍ kyselinu. Zapamatuj si to jako výjimku."
+  },
+  {
+    n: 11,
+    type: "open",
+    q: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Doplňte a vyčíslete:",
+        /* @__PURE__ */ jsxDEV("div", {
+          className: "m",
+          style: { display: "block", marginTop: 10, padding: "10px 12px", lineHeight: 2 },
+          children: [
+            "NaCl + H₂SO₄ →",
+            /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+            "Cl₂ + KI →",
+            /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+            "MnO₂ + HCl → ……… + MnCl₂ + H₂O",
+            /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+            "I₂ + CaF₂ →"
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this),
+    answer: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV(Eq, {
+          left: "NaCl + H₂SO₄",
+          right: "NaHSO₄ + HCl",
+          note: "Vytěsnění těkavé kyseliny netěkavou. Za vyšší teploty reaguje i druhý vodík: 2 NaCl + H₂SO₄ → Na₂SO₄ + 2 HCl."
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          left: "Cl₂ + 2 KI",
+          right: "2 KCl + I₂",
+          note: "Chlor je silnější oxidační činidlo než jod, proto ho z jodidu vytěsní. Roztok zhnědne."
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          left: "MnO₂ + 4 HCl",
+          right: "Cl₂ + MnCl₂ + 2 H₂O",
+          note: "Laboratorní příprava chloru oxidací chlorovodíku."
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          left: "I₂ + CaF₂",
+          right: "nereaguje",
+          note: "Obráceně to nejde: jod je slabší oxidační činidlo než fluor, takže ho z fluoridu vytěsnit nedokáže."
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this),
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Poslední rovnice je chyták — tři fungují, čtvrtá ne. Pravidlo: ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "silnější halogen (výš v tabulce) vytěsní slabší"
+        }, undefined, false, undefined, this),
+        ", nikdy naopak."
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    n: 12,
+    type: "single",
+    q: "Chlorové vápno je směs:",
+    options: [
+      "chloridu a chlornanu vápenatého",
+      "chloru a chlornanu sodného",
+      "chloridu a chlornanu sodného",
+      "chloru a chlorečnanu draselného"
+    ],
+    correct: [0],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Chlorové vápno vzniká zaváděním chloru do hašeného vápna a je to směs ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "CaCl₂"
+        }, undefined, false, undefined, this),
+        " a ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "Ca(ClO)₂"
+        }, undefined, false, undefined, this),
+        " — tedy ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "chloridu a chlornanu vápenatého"
+        }, undefined, false, undefined, this),
+        ". Používá se k dezinfekci. Chlornan ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "sodný"
+        }, undefined, false, undefined, this),
+        " ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "NaClO"
+        }, undefined, false, undefined, this),
+        " je SAVO, to je něco jiného."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Vápno → vápenatý. Sodné soli sem nepatří."
+  },
+  {
+    n: 13,
+    type: "open",
+    q: "Seřaďte kyseliny od nejslabší po nejsilnější, zapište vzorci: kyselina chloritá · kyselina chlorná · kyselina chlorečná · kyselina chloristá",
+    answer: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV("div", {
+          className: "eq",
+          children: /* @__PURE__ */ jsxDEV("div", {
+            className: "eq-row",
+            children: /* @__PURE__ */ jsxDEV("span", {
+              className: "eq-l",
+              children: "HClO < HClO₂ < HClO₃ < HClO₄"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this)
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV("div", {
+          style: { marginTop: 10 },
+          children: [
+            "chlorná (I) → chloritá (III) → chlorečná (V) → ",
+            /* @__PURE__ */ jsxDEV("b", {
+              children: "chloristá (VII)"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this),
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "S rostoucím oxidačním číslem chloru přibývají atomy kyslíku, které odtahují elektronovou hustotu od vazby ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "O–H"
+        }, undefined, false, undefined, this),
+        ", takže se ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "H⁺"
+        }, undefined, false, undefined, this),
+        " odštěpuje snáz. Kyselina chloristá patří k nejsilnějším známým kyselinám. Zároveň platí, že ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "stálost roste"
+        }, undefined, false, undefined, this),
+        " a ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "oxidační účinky klesají"
+        }, undefined, false, undefined, this),
+        " stejným směrem."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Víc kyslíků = silnější kyselina. Funguje to i u síry: H₂SO₃ < H₂SO₄."
+  },
+  {
+    n: 14,
+    type: "fill",
+    q: "Elektronová konfigurace valenční vrstvy chalkogenů je ……………… a počet valenčních elektronů je roven ……… .",
+    accept: ["ns2 np4 6", "ns2np4 6", "ns2 np4 sest", "ns2 np4 a 6"],
+    answer: "ns² np⁴ · 6 valenčních elektronů",
+    hint: "Napiš obojí, např. „ns2 np4 6“.",
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "VI.A skupina → 6 valenčních elektronů → ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "ns² np⁴"
+        }, undefined, false, undefined, this),
+        ". Do oktetu chybí 2 elektrony, proto je základní vaznost ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "II"
+        }, undefined, false, undefined, this),
+        "."
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    n: 15,
+    type: "multi",
+    q: "O síře platí:",
+    options: [
+      "v přírodě se nachází pouze ve formě sloučenin",
+      "za n.p. má pevné skupenství",
+      "nachází se v bílkovinách, je biogenním prvkem",
+      "její atomy mohou být ve sloučeninách maximálně 4-vazné",
+      "rozpouští se v sirouhlíku"
+    ],
+    correct: [1, 2, 4],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Síra se v přírodě vyskytuje i ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "volná"
+        }, undefined, false, undefined, this),
+        " (Sicílie, Polsko, Japonsko, okolí sopek), takže „pouze ve sloučeninách“ neplatí — to je pravda o halogenech. Díky volným 3d-orbitalům může být až ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "6-vazná"
+        }, undefined, false, undefined, this),
+        " (",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "H₂SO₄"
+        }, undefined, false, undefined, this),
+        ", ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "SO₃"
+        }, undefined, false, undefined, this),
+        "), ne jen 4-vazná. Je žlutá pevná látka, nerozpustná ve vodě, ale rozpustná v sirouhlíku ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "CS₂"
+        }, undefined, false, undefined, this),
+        ", a je biogenním prvkem (cystein, methionin)."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Dvě pasti v jedné otázce: „pouze ve sloučeninách“ (to jsou halogeny) a „maximálně 4-vazné“ (je 6)."
+  },
+  {
+    n: 16,
+    type: "single",
+    q: "Běžnými krystalografickými strukturami síry jsou:",
+    options: [
+      "kosočtverečná a jednoklonná s molekulami S₈",
+      "plastická a kosočtverečná síra",
+      "kosočtverečná a jednoklonná s molekulami S₆",
+      "plastická a jednoklonná s molekulami S₈"
+    ],
+    correct: [0],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Obě ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "krystalické"
+        }, undefined, false, undefined, this),
+        " modifikace — kosočtverečná (α, stabilní do 96 °C) i jednoklonná (β, nad 96 °C) — jsou stavěné z ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "osmiatomových"
+        }, undefined, false, undefined, this),
+        " cyklických molekul ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "S₈"
+        }, undefined, false, undefined, this),
+        ". Plastická síra je ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "amorfní"
+        }, undefined, false, undefined, this),
+        ", tedy nekrystalická, a do této otázky nepatří."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Krystalografické = krystalické. Plastická síra je amorfní, hned ji vyškrtni."
+  },
+  {
+    n: 17,
+    type: "fill",
+    q: "Atomy síry mají v sulfanu a sulfidech oxidační číslo ……… .",
+    accept: ["ii", "2", "ii ", "minus ii", "minus 2", "-ii", "-2"],
+    answer: "−II",
+    hint: "Stačí napsat „-II“ nebo „-2“.",
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "V ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "H₂S"
+        }, undefined, false, undefined, this),
+        " i v sulfidech (",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "Na₂S"
+        }, undefined, false, undefined, this),
+        ", ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "ZnS"
+        }, undefined, false, undefined, this),
+        ") má síra ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "−II"
+        }, undefined, false, undefined, this),
+        " — své nejnižší možné oxidační číslo. Proto můžou tyto látky působit už jen jako ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "redukční činidla"
+        }, undefined, false, undefined, this),
+        "."
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    n: 18,
+    type: "open",
+    q: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Síra existuje v různých amorfních formách. Doplňte názvy k níže uvedeným charakteristikám:",
+        /* @__PURE__ */ jsxDEV("ul", {
+          style: { marginTop: 8 },
+          children: [
+            /* @__PURE__ */ jsxDEV("li", {
+              children: "vzniká při náhlém ochlazení kapalné síry ve vodě — ………"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("li", {
+              children: "vzniká při ochlazení par vroucí síry na chladných stěnách nádoby — ………"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this),
+    answer: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV("div", {
+          children: [
+            /* @__PURE__ */ jsxDEV("b", {
+              children: "náhlé ochlazení kapalné síry ve vodě"
+            }, undefined, false, undefined, this),
+            " → ",
+            /* @__PURE__ */ jsxDEV("span", {
+              className: "k",
+              children: "plastická síra"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsxDEV("div", {
+          style: { marginTop: 8 },
+          children: [
+            /* @__PURE__ */ jsxDEV("b", {
+              children: "ochlazení par na chladných stěnách"
+            }, undefined, false, undefined, this),
+            " → ",
+            /* @__PURE__ */ jsxDEV("span", {
+              className: "k",
+              children: "sirný květ"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      ]
+    }, undefined, true, undefined, this),
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Obě jsou ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "amorfní"
+        }, undefined, false, undefined, this),
+        " (nekrystalické) formy. Plastická síra vzniká z ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "kapaliny"
+        }, undefined, false, undefined, this),
+        " — dlouhé řetězce se nestihnou uspořádat do kruhů a zůstanou zamotané, proto je pružná. Sirný květ vzniká z ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "par"
+        }, undefined, false, undefined, this),
+        " — jemný žlutý prášek na studené stěně."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Kapalina → plastická. Páry → květ (jako jinovatka na okně)."
+  },
+  {
+    n: 19,
+    type: "multi",
+    q: "Sulfan:",
+    options: [
+      "jeho vodný roztok barví lakmus do modra",
+      "je toxický plyn se zápachem po zkažených vejcích",
+      "je dobře rozpustný ve vodě",
+      "má pouze redukční účinky",
+      "vzniká rozkladem bílkovin"
+    ],
+    correct: [1, 2, 3, 4],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Vodný roztok sulfanu je ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "kyselina"
+        }, undefined, false, undefined, this),
+        " (slabá dvojsytná kyselina sulfanová), takže lakmus barví do ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "červena"
+        }, undefined, false, undefined, this),
+        ", ne do modra — modrý je lakmus v zásadách. Zbytek sedí: je toxický, páchne po zkažených vejcích, rozpouští se ve vodě na sulfanovou vodu, má díky oxidačnímu číslu −II pouze redukční účinky a vzniká hnitím (rozkladem) bílkovin, protože síra je v aminokyselinách cysteinu a methioninu."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Kyselina → lakmus červený. Zásada → lakmus modrý."
+  },
+  {
+    n: 20,
+    type: "fill",
+    q: "Oxid siřičitý v atmosféře je příčinou ……………………… .",
+    accept: ["kyselych destu", "kyseleho deste", "kysele deste", "kyselych dest", "kyselé dešťů"],
+    answer: "kyselých dešťů",
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "SO₂ se ve vzdušné vlhkosti rozpouští na kyselinu siřičitou, která okyseluje srážky. Kyselé deště ničí zejména ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "jehličnaté lesy"
+        }, undefined, false, undefined, this),
+        ", způsobují korozi a ohrožují lidské zdraví. Do atmosféry se SO₂ dostává hlavně spalováním ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "hnědého uhlí"
+        }, undefined, false, undefined, this),
+        "."
+      ]
+    }, undefined, true, undefined, this)
+  },
+  {
+    n: 21,
+    type: "open",
+    q: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Oxid siřičitý vykazuje redukční i oxidační účinky. Zapište reakci oxidu siřičitého s ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "kyslíkem"
+        }, undefined, false, undefined, this),
+        " a se ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "sulfanem"
+        }, undefined, false, undefined, this),
+        ". Rovnice vyčíslete a uveďte, kde působí SO₂ jako oxidační a kde jako redukční činidlo."
+      ]
+    }, undefined, true, undefined, this),
+    answer: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV(Eq, {
+          left: "2 SO₂ + O₂",
+          right: "2 SO₃",
+          above: "kat. V₂O₅",
+          rev: true,
+          note: "Síra jde ze IV na VI → SO₂ se OXIDUJE → je REDUKČNÍ činidlo."
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsxDEV(Eq, {
+          left: "SO₂ + 2 H₂S",
+          right: "3 S + 2 H₂O",
+          note: "Síra jde ze IV na 0 → SO₂ se REDUKUJE → je OXIDAČNÍ činidlo."
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this),
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Síra má v ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "SO₂"
+        }, undefined, false, undefined, this),
+        " oxidační číslo ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "IV"
+        }, undefined, false, undefined, this),
+        ", což je uprostřed jejího rozsahu (−II až VI). Proto může jít oběma směry. Zapamatuj si pravidlo: látka, která se ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "oxiduje"
+        }, undefined, false, undefined, this),
+        ", je ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "redukční"
+        }, undefined, false, undefined, this),
+        " činidlo, a naopak."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Činidlo se vždy jmenuje OPAČNĚ, než co se s ním děje."
+  },
+  {
+    n: 22,
+    type: "open",
+    q: "Která ze sloučenin má vyšší teplotu varu — voda, nebo sulfan? Vysvětlete.",
+    answer: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        /* @__PURE__ */ jsxDEV("span", {
+          className: "k",
+          children: "Voda"
+        }, undefined, false, undefined, this),
+        " — vře při 100 °C, sulfan už při −60 °C."
+      ]
+    }, undefined, true, undefined, this),
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Mezi molekulami vody působí ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "vodíkové můstky"
+        }, undefined, false, undefined, this),
+        ", protože vodík je vázán na silně elektronegativní kyslík. Rozbít je stojí hodně energie → vysoká teplota varu. Síra má elektronegativitu nízkou, vazba ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "S–H"
+        }, undefined, false, undefined, this),
+        " je jen slabě polární a vodíkové můstky ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "nevznikají"
+        }, undefined, false, undefined, this),
+        " — zbývají jen slabé van der Waalsovy síly."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Past: sulfan je TĚŽŠÍ (34 g/mol) než voda (18), a přesto vře dřív. Nerozhoduje hmotnost, ale typ mezimolekulové síly."
+  },
+  {
+    n: 23,
+    type: "fill",
+    q: "Při ředění kyseliny sírové vodou postupujeme tak, že ……………… přiléváme do ……………… .",
+    accept: ["kyselinu do vody", "kyselina do vody", "kyselinu vody"],
+    answer: "kyselinu přiléváme do vody",
+    hint: "Napiš to celé, např. „kyselinu do vody“.",
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Vždy ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "kyselinu do vody"
+        }, undefined, false, undefined, this),
+        ", nikdy naopak. Rozpouštění uvolňuje obrovské množství tepla; kdybys lil vodu do kyseliny, první kapky by se okamžitě začaly vařit a rozstříkly by kyselinu kolem."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Pomůcka: „Kyselinu do vody, ne vodu do kyseliny — jinak z tebe budou trosky.“"
+  },
+  {
+    n: 24,
+    type: "open",
+    q: "Kyselina sírová má silné dehydratační účinky. Zapište rovnicí reakci glukosy s kyselinou sírovou. Vyčíslete.",
+    answer: /* @__PURE__ */ jsxDEV(Eq, {
+      left: "C₆H₁₂O₆",
+      right: "6 C + 6 H₂O",
+      above: "H₂SO₄",
+      note: "Kyselina sírová odejme z glukosy veškerou vodu a zůstane černý porézní uhlík."
+    }, undefined, false, undefined, this),
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Glukosa má vzorec ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "C₆H₁₂O₆"
+        }, undefined, false, undefined, this),
+        ", což se dá číst jako ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "6 C · 6 H₂O"
+        }, undefined, false, undefined, this),
+        " — uhlík „obalený“ vodou. Koncentrovaná kyselina sírová tu vodu odejme a zůstane ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "čistý uhlík"
+        }, undefined, false, undefined, this),
+        ". V praxi je to známý pokus s cukrem, ze kterého vyleze černý „sloup“. Kyselina sama se při tom nespotřebuje, píše se proto nad šipku."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Spočítej si to: 6 C + 6 H₂O = C₆H₁₂O₆. Sedí to přesně."
+  },
+  {
+    n: 25,
+    type: "single",
+    q: "Které z uvedených chemických reakcí potvrzují oxidační vlastnosti kyseliny sírové?",
+    options: [
+      "Zn + H₂SO₄ → H₂ + ZnSO₄",
+      "2 NaOH + H₂SO₄ → Na₂SO₄ + 2 H₂O",
+      "Cu + H₂SO₄ → CuSO₄ + SO₂ + H₂O",
+      "CaCl₂ + H₂SO₄ → CaSO₄ + 2 HCl"
+    ],
+    correct: [2],
+    exp: /* @__PURE__ */ jsxDEV(Fragment, {
+      children: [
+        "Oxidačními účinky se u kyseliny sírové myslí to, že se ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "sama redukuje"
+        }, undefined, false, undefined, this),
+        " — síra jde z VI na IV a vzniká ",
+        /* @__PURE__ */ jsxDEV(M, {
+          children: "SO₂"
+        }, undefined, false, undefined, this),
+        ". To se děje jen u ",
+        /* @__PURE__ */ jsxDEV("b", {
+          children: "koncentrované"
+        }, undefined, false, undefined, this),
+        " kyseliny, a jedině reakce s mědí to ukazuje (navíc měď je ušlechtilý kov, ten by se v pouhé kyselině nerozpustil). Neutralizace s NaOH a vytěsnění HCl z chloridu nejsou redoxní reakce vůbec. U zinku sice vzniká vodík, ale to umí i zředěná kyselina — a ta podle vaší definice oxidační účinky nemá."
+      ]
+    }, undefined, true, undefined, this),
+    tip: "Hledej v rovnici SO₂. Je tam? Pak kyselina oxidovala."
+  }
+];
+function TestItem({ item, onResult }) {
+  const [sel, setSel] = useState([]);
+  const [txt, setTxt] = useState("");
+  const [done, setDone] = useState(false);
+  const [ok, setOk] = useState(false);
+  const isChoice = item.type === "single" || item.type === "multi";
+  const isMulti = item.type === "multi";
+  const finish = (good) => {
+    setDone(true);
+    setOk(good);
+    onResult(item.n, good);
+  };
+  const pick = (i) => {
+    if (done)
+      return;
+    if (isMulti) {
+      setSel((s) => s.includes(i) ? s.filter((x) => x !== i) : [...s, i]);
+      return;
+    }
+    setSel([i]);
+    finish(arrEqual([i], item.correct));
+  };
+  const submitMulti = () => {
+    if (!sel.length)
+      return;
+    finish(arrEqual(sel, item.correct));
+  };
+  const submitFill = () => {
+    const v = norm(txt);
+    if (!v)
+      return;
+    finish(item.accept.some((a) => v.includes(norm(a)) || norm(a).includes(v)));
+  };
+  return /* @__PURE__ */ jsxDEV(Box, {
+    className: "ti",
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "ti-h",
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            className: "ti-n" + (done ? ok ? " is-ok" : " is-bad" : ""),
+            children: item.n
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            className: "ti-q",
+            children: item.q
+          }, undefined, false, undefined, this),
+          isMulti && /* @__PURE__ */ jsxDEV("span", {
+            className: "ti-tag",
+            children: "více správných"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      isChoice && /* @__PURE__ */ jsxDEV("div", {
+        className: "qz-opts",
+        style: { marginTop: 14 },
+        children: item.options.map((o, i) => {
+          let cls = "qz-opt";
+          if (done) {
+            if (item.correct.includes(i))
+              cls += " is-ok";
+            else if (sel.includes(i))
+              cls += " is-bad";
+          } else if (sel.includes(i))
+            cls += " is-sel";
+          return /* @__PURE__ */ jsxDEV("div", {
+            className: cls,
+            onClick: () => pick(i),
+            children: [
+              isMulti && /* @__PURE__ */ jsxDEV("span", {
+                className: "qz-cb",
+                children: sel.includes(i) ? "☑" : "☐"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                children: o
+              }, undefined, false, undefined, this)
+            ]
+          }, i, true, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      isMulti && !done && /* @__PURE__ */ jsxDEV("button", {
+        className: "btn",
+        onClick: submitMulti,
+        disabled: !sel.length,
+        children: "Potvrdit"
+      }, undefined, false, undefined, this),
+      item.type === "fill" && !done && /* @__PURE__ */ jsxDEV("div", {
+        className: "numchk",
+        style: { marginTop: 14 },
+        children: [
+          item.hint && /* @__PURE__ */ jsxDEV("label", {
+            className: "numchk-l",
+            children: item.hint
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "numchk-row",
+            children: [
+              /* @__PURE__ */ jsxDEV("input", {
+                className: "numchk-i",
+                style: { width: 260 },
+                value: txt,
+                placeholder: "tvoje odpověď",
+                onChange: (e) => setTxt(e.target.value),
+                onKeyDown: (e) => {
+                  if (e.key === "Enter")
+                    submitFill();
+                }
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("button", {
+                className: "btn btn-mini",
+                onClick: submitFill,
+                children: "Zkontrolovat"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("button", {
+                className: "btn btn-mini",
+                onClick: () => finish(false),
+                children: "Nevím, ukaž"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      item.type === "open" && !done && /* @__PURE__ */ jsxDEV("button", {
+        className: "btn btn-reveal",
+        onClick: () => finish(true),
+        children: "\uD83D\uDD12 Zobrazit vzorovou odpověď"
+      }, undefined, false, undefined, this),
+      done && /* @__PURE__ */ jsxDEV("div", {
+        className: "qz-fb " + (ok ? "is-ok" : "is-bad"),
+        style: { marginTop: 16 },
+        children: [
+          isChoice && /* @__PURE__ */ jsxDEV("div", {
+            className: "qz-fb-h",
+            children: ok ? "Správně" : "Špatně"
+          }, undefined, false, undefined, this),
+          item.type === "fill" && /* @__PURE__ */ jsxDEV(Fragment, {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "qz-fb-h",
+                children: ok ? "Správně" : "Správná odpověď"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "qz-fb-c",
+                children: item.answer
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          item.type === "open" && /* @__PURE__ */ jsxDEV("div", {
+            className: "ti-ans",
+            children: item.answer
+          }, undefined, false, undefined, this),
+          !ok && isChoice && /* @__PURE__ */ jsxDEV("div", {
+            className: "qz-fb-c",
+            children: [
+              "Správně je: ",
+              item.correct.map((i) => item.options[i]).join(" · ")
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "qz-fb-e",
+            children: item.exp
+          }, undefined, false, undefined, this),
+          item.tip && /* @__PURE__ */ jsxDEV("div", {
+            className: "qz-fb-t",
+            children: [
+              "\uD83D\uDCA1 ",
+              item.tip
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            className: "btn btn-mini",
+            style: { marginTop: 12 },
+            onClick: () => {
+              setDone(false);
+              setSel([]);
+              setTxt("");
+            },
+            children: "Zkusit znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function VzorovyTest() {
+  const [res, setRes] = useState({});
+  const onResult = useCallback((n, good2) => setRes((r) => ({ ...r, [n]: good2 })), []);
+  const answered = Object.keys(res).length;
+  const good = Object.values(res).filter(Boolean).length;
+  const pct = answered ? Math.round(good / answered * 100) : 0;
+  return /* @__PURE__ */ jsxDEV(Fragment, {
+    children: [
+      /* @__PURE__ */ jsxDEV(Box, {
+        tone: "acc",
+        className: "ti-score",
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "ti-score-row",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "bx-h",
+                    style: { marginBottom: 4 },
+                    children: "Postup testem"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { color: "#a6b2c2", fontSize: 14.5 },
+                    children: [
+                      "Vyřešeno ",
+                      /* @__PURE__ */ jsxDEV("b", {
+                        style: { color: "#e7ecf2" },
+                        children: answered
+                      }, undefined, false, undefined, this),
+                      " z 25",
+                      answered > 0 && /* @__PURE__ */ jsxDEV(Fragment, {
+                        children: [
+                          " · úspěšnost ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            style: { color: pct >= 70 ? "#2ee6a8" : "#ffcc66" },
+                            children: [
+                              pct,
+                              " %"
+                            ]
+                          }, undefined, true, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("button", {
+                className: "btn btn-mini",
+                onClick: () => setRes({}),
+                children: "Vynulovat počítadlo"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "ti-bar",
+            children: /* @__PURE__ */ jsxDEV("div", {
+              className: "ti-bar-fill",
+              style: { width: `${answered / 25 * 100}%` }
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      SAMPLE.map((it) => /* @__PURE__ */ jsxDEV(TestItem, {
+        item: it,
+        onResult
+      }, it.n, false, undefined, this))
+    ]
+  }, undefined, true, undefined, this);
+}
 var SECTIONS = [
   { id: "prehled", label: "Přehled", icon: "◆" },
+  { id: "vzorovy", label: "Vzorový test", icon: "✓" },
   { id: "sira", label: "Síra", icon: "S" },
   { id: "slouc-s", label: "Sloučeniny síry", icon: "S" },
   { id: "halogeny", label: "Halogeny", icon: "X" },
@@ -1533,15 +2706,11 @@ function App() {
                 /* @__PURE__ */ jsxDEV("p", {
                   className: "sub",
                   children: [
-                    "Příprava na úterní test z chemie · postaveno na prezentacích ",
+                    "Příprava na test z chemie · ",
                     /* @__PURE__ */ jsxDEV("b", {
-                      children: "Chalkogeny"
+                      children: "vzorový test"
                     }, undefined, false, undefined, this),
-                    " a ",
-                    /* @__PURE__ */ jsxDEV("b", {
-                      children: "Halogeny"
-                    }, undefined, false, undefined, this),
-                    " a na obou pracovních listech (včetně vyplněného klíče)."
+                    " od paní profesorky, obě prezentace a oba pracovní listy včetně vyplněného klíče."
                   ]
                 }, undefined, true, undefined, this)
               ]
@@ -1615,29 +2784,33 @@ function App() {
                           /* @__PURE__ */ jsxDEV("li", {
                             children: [
                               /* @__PURE__ */ jsxDEV("b", {
-                                children: "20 min"
+                                children: "25 min"
                               }, undefined, false, undefined, this),
-                              " — projdi ",
+                              " — ",
                               /* @__PURE__ */ jsxDEV("b", {
-                                children: "Síru"
+                                children: "Vzorový test"
                               }, undefined, false, undefined, this),
-                              " a ",
-                              /* @__PURE__ */ jsxDEV("b", {
-                                children: "Sloučeniny síry"
-                              }, undefined, false, undefined, this),
-                              ", rozbaluj jen to, co neumíš."
+                              " nanečisto. Projdi všech 25 otázek a u každé si přečti vysvětlení."
                             ]
                           }, undefined, true, undefined, this),
                           /* @__PURE__ */ jsxDEV("li", {
                             children: [
                               /* @__PURE__ */ jsxDEV("b", {
-                                children: "15 min"
+                                children: "20 min"
                               }, undefined, false, undefined, this),
-                              " — ",
+                              " — dolaď, co ti ve vzorovém testu nevyšlo: ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "Síra"
+                              }, undefined, false, undefined, this),
+                              ", ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "Sloučeniny síry"
+                              }, undefined, false, undefined, this),
+                              ", ",
                               /* @__PURE__ */ jsxDEV("b", {
                                 children: "Halogeny"
                               }, undefined, false, undefined, this),
-                              " a ",
+                              ", ",
                               /* @__PURE__ */ jsxDEV("b", {
                                 children: "Sloučeniny halogenů"
                               }, undefined, false, undefined, this),
@@ -1671,7 +2844,7 @@ function App() {
                           /* @__PURE__ */ jsxDEV("li", {
                             children: [
                               /* @__PURE__ */ jsxDEV("b", {
-                                children: "15 min"
+                                children: "10 min"
                               }, undefined, false, undefined, this),
                               " — ",
                               /* @__PURE__ */ jsxDEV("b", {
@@ -1683,13 +2856,13 @@ function App() {
                           /* @__PURE__ */ jsxDEV("li", {
                             children: [
                               /* @__PURE__ */ jsxDEV("b", {
-                                children: "10 min"
+                                children: "5 min"
                               }, undefined, false, undefined, this),
                               " — ",
                               /* @__PURE__ */ jsxDEV("b", {
-                                children: "Kvíz"
+                                children: "Vzorový test"
                               }, undefined, false, undefined, this),
-                              ", pak si projdi, co ti nesedlo."
+                              " ještě jednou, tentokrát bez nápovědy."
                             ]
                           }, undefined, true, undefined, this),
                           /* @__PURE__ */ jsxDEV("li", {
@@ -1881,13 +3054,46 @@ function App() {
                   }, undefined, true, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              sec === "sira" && /* @__PURE__ */ jsxDEV(Fragment, {
+              sec === "vzorovy" && /* @__PURE__ */ jsxDEV(Fragment, {
                 children: [
                   /* @__PURE__ */ jsxDEV("h2", {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
                         children: "02"
+                      }, undefined, false, undefined, this),
+                      "Vzorový test od paní profesorky"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    className: "lead",
+                    children: [
+                      "Všech 25 otázek v původním pořadí a znění. U výběrových otázek klikej na odpovědi, u doplňovaček piš do políčka, u otevřených si nejdřív odpověz na papír a pak odhal vzor. Ke každé otázce je vysvětlení — ",
+                      /* @__PURE__ */ jsxDEV("b", {
+                        children: "i k těm, které trefíš"
+                      }, undefined, false, undefined, this),
+                      ", protože v ostrém testu může být otázka postavená jinak."
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV(W, {
+                    children: [
+                      "Osm otázek z 25 má ",
+                      /* @__PURE__ */ jsxDEV("b", {
+                        children: "víc než jednu správnou odpověď"
+                      }, undefined, false, undefined, this),
+                      ". Označené jsou štítkem „více správných“ — v papírovém testu to poznáš podle toho, že u možností nejsou písmena a), b), c)."
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV(VzorovyTest, {}, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              sec === "sira" && /* @__PURE__ */ jsxDEV(Fragment, {
+                children: [
+                  /* @__PURE__ */ jsxDEV("h2", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "hash",
+                        children: "03"
                       }, undefined, false, undefined, this),
                       "Chalkogeny a elementární síra"
                     ]
@@ -2386,7 +3592,7 @@ function App() {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
-                        children: "03"
+                        children: "04"
                       }, undefined, false, undefined, this),
                       "Sloučeniny síry"
                     ]
@@ -2463,13 +3669,33 @@ function App() {
                       /* @__PURE__ */ jsxDEV("p", {
                         children: [
                           /* @__PURE__ */ jsxDEV("b", {
+                            children: "Vznik v přírodě:"
+                          }, undefined, false, undefined, this),
+                          " sulfan vzniká ",
+                          /* @__PURE__ */ jsxDEV(K, {
+                            children: "rozkladem (hnitím) bílkovin"
+                          }, undefined, false, undefined, this),
+                          " — síra je v aminokyselinách cysteinu a methioninu. Proto páchnou zkažená vejce i bahno v rybnících."
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("p", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
                             children: "Vodný roztok"
                           }, undefined, false, undefined, this),
                           " = slabá ",
                           /* @__PURE__ */ jsxDEV(K, {
                             children: "dvojsytná kyselina sulfanová"
                           }, undefined, false, undefined, this),
-                          " (také sulfanová voda nebo sirovodíková kyselina). Odtud dvě řady solí:"
+                          " (také sulfanová voda nebo sirovodíková kyselina). Protože je to ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "kyselina"
+                          }, undefined, false, undefined, this),
+                          ", barví lakmus do ",
+                          /* @__PURE__ */ jsxDEV(K, {
+                            children: "červena"
+                          }, undefined, false, undefined, this),
+                          " — nikdy do modra. Odtud dvě řady solí:"
                         ]
                       }, undefined, true, undefined, this),
                       /* @__PURE__ */ jsxDEV("ul", {
@@ -2835,6 +4061,21 @@ function App() {
                       /* @__PURE__ */ jsxDEV("p", {
                         children: [
                           /* @__PURE__ */ jsxDEV("b", {
+                            children: "Dehydratační účinky:"
+                          }, undefined, false, undefined, this),
+                          " koncentrovaná kyselina odnímá látkám vodu. U glukosy zbude čistý uhlík — známý pokus, kdy z kádinky s cukrem vyleze černý porézní „sloup“:"
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV(Eq, {
+                        left: "C₆H₁₂O₆",
+                        right: "6 C + 6 H₂O",
+                        above: "H₂SO₄",
+                        note: "Vzorec glukosy se dá číst jako 6 C · 6 H₂O — uhlík „obalený“ vodou. Kyselina se nespotřebuje, proto se píše nad šipku.",
+                        hidden: true
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("p", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
                             children: "Porovnání síly s kyselinou siřičitou:"
                           }, undefined, false, undefined, this),
                           " ",
@@ -3072,7 +4313,7 @@ function App() {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
-                        children: "04"
+                        children: "05"
                       }, undefined, false, undefined, this),
                       "Halogeny — VII.A skupina"
                     ]
@@ -3188,6 +4429,39 @@ function App() {
                       /* @__PURE__ */ jsxDEV("p", {
                         children: [
                           /* @__PURE__ */ jsxDEV("b", {
+                            children: "Proč se mění skupenství?"
+                          }, undefined, false, undefined, this),
+                          " Ve všech případech jde o ",
+                          /* @__PURE__ */ jsxDEV(K, {
+                            children: "molekulové krystaly"
+                          }, undefined, false, undefined, this),
+                          " — v mřížce sedí celé molekuly ",
+                          /* @__PURE__ */ jsxDEV(M, {
+                            children: "X₂"
+                          }, undefined, false, undefined, this),
+                          ", které drží jen slabé ",
+                          /* @__PURE__ */ jsxDEV(K, {
+                            children: "van der Waalsovy síly"
+                          }, undefined, false, undefined, this),
+                          ". S rostoucí velikostí molekuly tyto síly rostou, proto F₂ a Cl₂ plyny, Br₂ kapalina a I₂ pevná látka. U jodu stačí málo energie a krystal se rozpadne rovnou na páry — ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "sublimuje"
+                          }, undefined, false, undefined, this),
+                          "."
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV(W, {
+                        children: [
+                          "Jod tvoří ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "molekulový"
+                          }, undefined, false, undefined, this),
+                          ", nikoli atomový krystal. Atomový (kovalentní) krystal je třeba diamant — ten má naopak extrémně vysokou teplotu tání."
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("p", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
                             children: "Trend:"
                           }, undefined, false, undefined, this),
                           " s rostoucím protonovým číslem roste atomový poloměr a klesá elektronegativita, takže ",
@@ -3265,7 +4539,19 @@ function App() {
                               /* @__PURE__ */ jsxDEV("b", {
                                 children: "Jod"
                               }, undefined, false, undefined, this),
-                              " v chaluhách a mořských řasách; v těle je součástí hormonů štítné žlázy."
+                              " v chaluhách a mořských řasách; v těle je součástí ",
+                              /* @__PURE__ */ jsxDEV(K, {
+                                children: "thyroxinu"
+                              }, undefined, false, undefined, this),
+                              ", hormonu štítné žlázy. Jeho nedostatek způsobuje ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "strumu"
+                              }, undefined, false, undefined, this),
+                              " (zvětšení štítné žlázy), proto se kuchyňská sůl ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "jodizuje"
+                              }, undefined, false, undefined, this),
+                              " (přidává se KI nebo KIO₃)."
                             ]
                           }, undefined, true, undefined, this)
                         ]
@@ -3446,7 +4732,7 @@ function App() {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
-                        children: "05"
+                        children: "06"
                       }, undefined, false, undefined, this),
                       "Sloučeniny halogenů"
                     ]
@@ -3667,7 +4953,61 @@ function App() {
                     ]
                   }, undefined, true, undefined, this),
                   /* @__PURE__ */ jsxDEV(Fold, {
-                    title: "5.3 · Interhalogeny",
+                    title: "5.3 · Praktické využití halogenů",
+                    badge: "ZNÁT NAZPAMĚŤ",
+                    children: [
+                      /* @__PURE__ */ jsxDEV(Tab, {
+                        head: ["Látka", "Složení", "K čemu"],
+                        rows: [
+                          ["jodová tinktura", "5% roztok jodu v ethanolu", "dezinfekce ran; ve vodě je jod prakticky nerozpustný, proto líh"],
+                          ["chlorové vápno", "směs CaCl₂ a Ca(ClO)₂", "dezinfekce; vzniká zaváděním chloru do hašeného vápna"],
+                          ["SAVO", "NaClO — chlornan sodný", "bělení a dezinfekce v domácnosti"],
+                          ["chlorová voda", "Cl₂ + H₂O ⇄ HCl + HClO", "chlorace pitné vody a bazénů"],
+                          ["fluoridy", "NaF, SnF₂", "zubní pasty — zpevňují sklovinu"],
+                          ["kyselina solná", "HCl (aq)", "žaludeční šťáva 0,3–0,4 %, pH 1–3"]
+                        ]
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV(W, {
+                        children: [
+                          "Nepleť si ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "chlorové vápno"
+                          }, undefined, false, undefined, this),
+                          " (chlorid a chlornan ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "vápenatý"
+                          }, undefined, false, undefined, this),
+                          ") se ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "SAVEM"
+                          }, undefined, false, undefined, this),
+                          " (chlornan ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "sodný"
+                          }, undefined, false, undefined, this),
+                          "). V testu to bývá vedle sebe jako dvě možnosti."
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("p", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "Toxicita chloru:"
+                          }, undefined, false, undefined, this),
+                          " ",
+                          /* @__PURE__ */ jsxDEV(M, {
+                            children: "Cl₂"
+                          }, undefined, false, undefined, this),
+                          " je jedovatý — leptá dýchací cesty a může vyvolat ",
+                          /* @__PURE__ */ jsxDEV(K, {
+                            children: "edém (otok) plic"
+                          }, undefined, false, undefined, this),
+                          ". Za 1. světové války se proto použil jako bojová látka."
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV(Fold, {
+                    title: "5.4 · Interhalogeny",
                     badge: "DOPLNĚNÝ SNÍMEK",
                     children: [
                       /* @__PURE__ */ jsxDEV("p", {
@@ -3751,7 +5091,7 @@ function App() {
                     ]
                   }, undefined, true, undefined, this),
                   /* @__PURE__ */ jsxDEV(Fold, {
-                    title: "5.4 · Kyslíkaté sloučeniny halogenů",
+                    title: "5.5 · Kyslíkaté sloučeniny halogenů",
                     badge: "DOPLNĚNÝ SNÍMEK",
                     children: [
                       /* @__PURE__ */ jsxDEV("p", {
@@ -3901,7 +5241,7 @@ function App() {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
-                        children: "06"
+                        children: "07"
                       }, undefined, false, undefined, this),
                       "Rovnice — zkus si doplnit pravou stranu"
                     ]
@@ -4155,7 +5495,7 @@ function App() {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
-                        children: "07"
+                        children: "08"
                       }, undefined, false, undefined, this),
                       "Řešené příklady z pracovních listů"
                     ]
@@ -5127,7 +6467,7 @@ function App() {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
-                        children: "08"
+                        children: "09"
                       }, undefined, false, undefined, this),
                       "Názvosloví z pracovního listu"
                     ]
@@ -5235,7 +6575,7 @@ function App() {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
-                        children: "09"
+                        children: "10"
                       }, undefined, false, undefined, this),
                       "Kvíz — ",
                       QUESTIONS.length,
@@ -5264,7 +6604,7 @@ function App() {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
-                        children: "10"
+                        children: "11"
                       }, undefined, false, undefined, this),
                       "Kartičky — ",
                       CARDS.length,
@@ -5286,7 +6626,7 @@ function App() {
                     children: [
                       /* @__PURE__ */ jsxDEV("span", {
                         className: "hash",
-                        children: "11"
+                        children: "12"
                       }, undefined, false, undefined, this),
                       "Tahák — vše, co musíš umět nazpaměť"
                     ]
@@ -5495,6 +6835,27 @@ function App() {
                     ]
                   }, undefined, true, undefined, this),
                   /* @__PURE__ */ jsxDEV(Box, {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        className: "bx-h",
+                        children: "Praktické využití a triviální názvy"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV(Tab, {
+                        head: ["Látka", "Složení", "K čemu"],
+                        rows: [
+                          ["jodová tinktura", "5% roztok jodu v ethanolu", "dezinfekce ran"],
+                          ["chlorové vápno", "CaCl₂ + Ca(ClO)₂", "dezinfekce"],
+                          ["SAVO", "NaClO", "bělení, dezinfekce"],
+                          ["chlorová voda", "Cl₂ + H₂O ⇄ HCl + HClO", "chlorace vody"],
+                          ["oleum", "SO₃ v konc. H₂SO₄", "meziprodukt výroby H₂SO₄"],
+                          ["lučavka královská", "3 HCl : 1 HNO₃", "jediné, co rozpustí zlato"],
+                          ["sirný knot", "hořící síra → SO₂", "dezinfekce úlů a vinných sudů"],
+                          ["barnatá kaše", "BaSO₄ (nerozpustný)", "RTG kontrastní látka"]
+                        ]
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV(Box, {
                     tone: "warn",
                     children: [
                       /* @__PURE__ */ jsxDEV("div", {
@@ -5609,6 +6970,54 @@ function App() {
                                 children: "HCl v žaludku"
                               }, undefined, false, undefined, this),
                               " 0,3–0,4 %, pH 1–3, aktivuje pepsin."
+                            ]
+                          }, undefined, true, undefined, this),
+                          /* @__PURE__ */ jsxDEV("li", {
+                            children: [
+                              "Jod tvoří ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "molekulový"
+                              }, undefined, false, undefined, this),
+                              " krystal (van der Waalsovy síly) → ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "sublimuje"
+                              }, undefined, false, undefined, this),
+                              ". Jodová tinktura = 5 % jodu ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "v ethanolu"
+                              }, undefined, false, undefined, this),
+                              "."
+                            ]
+                          }, undefined, true, undefined, this),
+                          /* @__PURE__ */ jsxDEV("li", {
+                            children: [
+                              "Sulfan vzniká ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "rozkladem bílkovin"
+                              }, undefined, false, undefined, this),
+                              " a jeho roztok barví lakmus ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "červeně"
+                              }, undefined, false, undefined, this),
+                              " (je to kyselina)."
+                            ]
+                          }, undefined, true, undefined, this),
+                          /* @__PURE__ */ jsxDEV("li", {
+                            children: [
+                              "Dehydratace glukosy: ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "C₆H₁₂O₆ → 6 C + 6 H₂O"
+                              }, undefined, false, undefined, this),
+                              " (nad šipkou H₂SO₄)."
+                            ]
+                          }, undefined, true, undefined, this),
+                          /* @__PURE__ */ jsxDEV("li", {
+                            children: [
+                              "Ředění: ",
+                              /* @__PURE__ */ jsxDEV("b", {
+                                children: "kyselinu do vody"
+                              }, undefined, false, undefined, this),
+                              ", nikdy naopak."
                             ]
                           }, undefined, true, undefined, this)
                         ]

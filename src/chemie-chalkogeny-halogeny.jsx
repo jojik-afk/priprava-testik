@@ -523,6 +523,24 @@ h2 .hash{color:var(--acc); font-family:'JetBrains Mono',monospace; font-size:16p
 .fc-dot{width:24px; height:24px; border:0; padding:7px; background:var(--line); background-clip:content-box; cursor:pointer; transition:all var(--t)}
 .fc-dot.is-on{background:var(--acc); transform:scale(1.35)}
 
+/* ── Vzorový test ───────────────────────────────────── */
+.ti{margin:0}
+.ti-h{display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap}
+.ti-n{font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; color:var(--acc);
+  border:1px solid rgba(46,230,168,.45); min-width:30px; height:30px; display:flex; align-items:center;
+  justify-content:center; flex:none; transition:all var(--t)}
+.ti-n.is-ok{background:var(--ok); border-color:var(--ok); color:#0d1117}
+.ti-n.is-bad{background:var(--bad); border-color:var(--bad); color:#0d1117}
+.ti-q{flex:1; min-width:200px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16.5px; line-height:1.5}
+.ti-tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.06em; color:var(--acc2);
+  border:1px solid rgba(176,108,240,.45); padding:3px 8px; white-space:nowrap; flex:none; align-self:center}
+.ti-ans{margin-bottom:12px}
+.ti-ans .eq{margin:10px 0}
+.ti-score{position:sticky; top:8px; z-index:4}
+.ti-score-row{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
+.ti-bar{margin-top:12px; height:6px; background:rgba(255,255,255,.07)}
+.ti-bar-fill{height:100%; background:linear-gradient(90deg,var(--acc),var(--acc2)); transition:width .8s cubic-bezier(.22,.8,.3,1)}
+
 /* ── Kvíz ───────────────────────────────────────────── */
 .qz{display:flex; flex-direction:column; gap:16px; max-width:700px; margin:0 auto; width:100%}
 .qz-dots{display:flex; gap:7px; justify-content:center; flex-wrap:wrap}
@@ -568,6 +586,8 @@ h2 .hash{color:var(--acc); font-family:'JetBrains Mono',monospace; font-size:16p
   .tile{width:62px; height:70px} .tile b{font-size:25px}
   .fc-in{min-height:280px}
   .fold-b{display:none}
+  .ti-score{position:static}
+  .ti-tag{display:none}
 }
 @media (max-width:420px){ .tiles{display:none} }
 `;
@@ -1005,6 +1025,67 @@ const QUESTIONS = [
     tip: "Sodná sůl kyseliny chlorné NaClO je známé SAVO.",
   },
   {
+    question: "Jaký typ krystalu tvoří jod v pevném skupenství?",
+    type: "single",
+    options: [
+      "Molekulový — v mřížce jsou celé molekuly I₂ držené slabými van der Waalsovými silami",
+      "Atomový (kovalentní) — atomy jodu jsou propojené pevnými vazbami jako v diamantu",
+      "Iontový — mřížku tvoří ionty I⁺ a I⁻",
+      "Kovový — jod má kovový lesk, proto i kovovou mřížku",
+    ],
+    correct: [0],
+    explanation: "Jde o molekulový krystal. Slabé van der Waalsovy síly mezi molekulami I₂ se snadno překonají, proto má jod nízkou teplotu tání a přímo SUBLIMUJE na fialové páry. Atomový krystal (diamant) má naopak extrémně vysokou teplotu tání.",
+    tip: "Slabé mezimolekulové síly → sublimace. Kdyby to byl atomový krystal, jod by se nedal zahřát ani v kahanu.",
+  },
+  {
+    question: "Jodová tinktura je:",
+    type: "single",
+    options: ["5% roztok jodu v ethanolu", "5% roztok jodu ve vodě", "2% roztok jodu ve vodě", "5% roztok jodidu draselného ve vodě"],
+    correct: [0],
+    explanation: "Jod je nepolární látka, a ta se ve vodě prakticky nerozpouští — rozpustí se ale v ethanolu nebo v sirouhlíku CS₂. Jodová tinktura je proto 5% roztok jodu v lihu (s přídavkem KI, který rozpustnost dál zvyšuje).",
+    tip: "Podobné se rozpouští v podobném. Nepolární jod → líh, ne voda.",
+  },
+  {
+    question: "Chlorové vápno je směs:",
+    type: "single",
+    options: [
+      "chloridu a chlornanu vápenatého — CaCl₂ a Ca(ClO)₂",
+      "chloridu a chlornanu sodného — NaCl a NaClO",
+      "chloru a chlornanu sodného",
+      "chloru a chlorečnanu draselného",
+    ],
+    correct: [0],
+    explanation: "Chlorové vápno vzniká zaváděním chloru do hašeného vápna, takže obsahuje vápenaté soli. Chlornan SODNÝ NaClO je účinná látka SAVA — to je něco jiného. V testu bývají obě možnosti vedle sebe.",
+    tip: "Vápno → vápenatý. Sodné soli tam nemají co dělat.",
+  },
+  {
+    question: "Označ všechna pravdivá tvrzení o sulfanu:",
+    type: "multi",
+    options: [
+      "Vzniká rozkladem (hnitím) bílkovin",
+      "Jeho vodný roztok barví lakmus do červena",
+      "Má pouze redukční účinky",
+      "Je to toxický plyn se zápachem po zkažených vejcích",
+      "Jeho vodný roztok barví lakmus do modra",
+    ],
+    correct: [0, 1, 2, 3],
+    explanation: "Vodný roztok sulfanu je slabá kyselina sulfanová, takže lakmus barví do ČERVENA — do modra ho barví zásady. Síra je v aminokyselinách cysteinu a methioninu, proto sulfan vzniká hnitím bílkovin. Oxidační číslo −II je pro síru minimum, takže sulfan může působit jen jako redukční činidlo.",
+    tip: "Kyselina → lakmus červený. Zásada → modrý.",
+  },
+  {
+    question: "Kyselina sírová má silné dehydratační účinky. Jak vypadá rovnice její reakce s glukosou?",
+    type: "single",
+    options: [
+      "C₆H₁₂O₆ → 6 C + 6 H₂O",
+      "C₆H₁₂O₆ + 6 O₂ → 6 CO₂ + 6 H₂O",
+      "C₆H₁₂O₆ + H₂SO₄ → C₆H₁₂SO₄ + 3 H₂O",
+      "C₆H₁₂O₆ → 3 C₂H₅OH + 3 CO₂",
+    ],
+    correct: [0],
+    explanation: "Vzorec glukosy se dá číst jako 6 C · 6 H₂O, tedy uhlík „obalený“ vodou. Koncentrovaná H₂SO₄ tu vodu odejme a zbude černý porézní uhlík. Kyselina se při tom nespotřebuje, proto se píše nad šipku. Druhá možnost je spalování, čtvrtá alkoholové kvašení.",
+    tip: "Spočítej si to: 6 C + 6 H₂O dá přesně C₆H₁₂O₆.",
+  },
+  {
     question: "Proč má fluor ve sloučeninách VŽDY oxidační číslo −I, zatímco ostatní halogeny mohou mít i kladná?",
     type: "single",
     options: [
@@ -1056,6 +1137,13 @@ const CARDS = [
   { tag: "Halogeny", front: "Interhalogeny", back: "Sloučeniny dvou různých halogenů (ClF, BrF₃, IF₅, IF₇). Centrální je těžší halogen s kladným ox. číslem. Velmi reaktivní, silná fluorační činidla, hydrolyzují." },
   { tag: "Oxokyseliny Cl", front: "Oxokyseliny chloru a jejich soli", back: "HClO chlorná → chlornany (SAVO = NaClO) · HClO₂ chloritá → chloritany · HClO₃ chlorečná → chlorečnany · HClO₄ chloristá → chloristany. Síla roste s ox. číslem." },
   { tag: "Oxokyseliny Cl", front: "Chlorová voda", back: "Cl₂ + H₂O ⇄ HCl + HClO (disproporcionace). HClO má dezinfekční a bělicí účinky → chlorace pitné vody a bazénů." },
+  { tag: "Praxe", front: "Jodová tinktura je?", back: "5% roztok jodu v ETHANOLU (s přídavkem KI). Ve vodě je jod prakticky nerozpustný — je nepolární, a podobné se rozpouští v podobném." },
+  { tag: "Praxe", front: "Chlorové vápno vs. SAVO", back: "Chlorové vápno = směs CaCl₂ a Ca(ClO)₂ (chlorid a chlornan VÁPENATÝ). SAVO = NaClO, chlornan SODNÝ. V testu bývají vedle sebe." },
+  { tag: "Halogeny", front: "Jaký krystal tvoří pevný jod?", back: "MOLEKULOVÝ krystal — v mřížce sedí celé molekuly I₂, drží je jen slabé van der Waalsovy síly. Proto nízká teplota tání a sublimace. (Atomový krystal je diamant.)" },
+  { tag: "Halogeny", front: "Čím je nebezpečný chlor?", back: "Toxický žlutozelený plyn — leptá dýchací cesty a může vyvolat edém (otok) plic. Za 1. sv. války bojová látka." },
+  { tag: "Sulfan", front: "Jak sulfan vzniká v přírodě a jak barví lakmus?", back: "Vzniká rozkladem (hnitím) bílkovin — síra je v cysteinu a methioninu. Jeho vodný roztok je KYSELINA, takže lakmus barví do ČERVENA." },
+  { tag: "Kyseliny", front: "Dehydratace glukosy kyselinou sírovou", back: "C₆H₁₂O₆ → 6 C + 6 H₂O (nad šipkou H₂SO₄). Vzorec glukosy = uhlík „obalený“ vodou; kyselina vodu odejme a zbude černý uhlík." },
+  { tag: "Jod", front: "Proč se jodizuje kuchyňská sůl?", back: "Jod je součástí thyroxinu, hormonu štítné žlázy. Nedostatek způsobuje strumu, proto se do soli přidává KI nebo KIO₃." },
   { tag: "Chytačka", front: "Má fluor někdy kladné oxidační číslo?", back: "Nikdy. Je nejelektronegativnější prvek vůbec, proto má vždy −I. Neexistují oxidy fluoru, jen fluoridy kyslíku (OF₂)." },
 ];
 
@@ -1114,8 +1202,389 @@ function NazvyDrill() {
 /* ═══════════════════════════════════════════════════════════════════
    APLIKACE
    ═══════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   VZOROVÝ TEST OD PANÍ PROFESORKY — 25 otázek, přesně v jejím pořadí
+   ═══════════════════════════════════════════════════════════════════ */
+
+/** Normalizace pro doplňovačky: malá písmena, bez diakritiky, bez interpunkce. */
+function norm(s) {
+  return (s || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[.,;:!?()"'–—-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const SAMPLE = [
+  {
+    n: 1, type: "multi", q: "O halogenech platí:",
+    options: [
+      "za n.p. jsou jednoatomové",
+      "mají vysokou elektronegativitu, proto ochotně tvoří halogenidy",
+      "jejich schopnost tvořit anionty roste s poklesem elektronegativity",
+      "za n.p. tvoří dvouatomové molekuly",
+    ],
+    correct: [1, 3],
+    exp: <>Halogeny tvoří <b>dvouatomové molekuly X₂</b> — jednoatomové jsou vzácné plyny. Vysoká elektronegativita znamená, že ochotně přijímají elektron a tvoří halogenidy. Schopnost tvořit anionty ale s poklesem elektronegativity <b>klesá</b> (proto F₂ &gt; Cl₂ &gt; Br₂ &gt; I₂), ne roste.</>,
+    tip: "Tvrzení s „roste s poklesem“ je obrácené naruby — klasická past.",
+  },
+  {
+    n: 2, type: "fill", q: "Jedním z nejdůležitějších zdrojů halogenů je ……………… voda.",
+    accept: ["morska", "morska voda"], answer: "mořská",
+    exp: <>Mořská voda je nejhojnějším zdrojem halogenidových aniontů <M>X⁻</M> — hlavně chloridů. Elementární halogeny <M>X₂</M> příroda nezná.</>,
+  },
+  {
+    n: 3, type: "multi", q: "Elektronovou konfiguraci nejbližšího vzácného plynu mohou atomy halogenů získat:",
+    options: [
+      "přijetím jednoho elektronu",
+      "v kovalentních sloučeninách vytvořením jedné σ a jedné π vazby",
+      "tvorbou dvouatomové molekuly halogenu",
+      "vznikem halogenidového aniontu X⁻ v iontových sloučeninách",
+    ],
+    correct: [0, 2, 3],
+    exp: <>Halogenu chybí do oktetu <b>jeden</b> elektron. Získá ho buď úplným přijetím (vznik aniontu <M>X⁻</M>, iontové sloučeniny), nebo sdílením jednoho elektronového páru — tedy <b>jednou σ vazbou</b> (v <M>X₂</M> i v <M>HX</M>). Dvojná vazba (σ + π) by znamenala dva sdílené páry, tedy o elektron navíc — to by oktet překročilo.</>,
+    tip: "Halogen = jedna vazba. Chybí mu jeden elektron, tak tvoří jednu σ vazbu.",
+  },
+  {
+    n: 4, type: "multi", q: "Volné halogeny se připravují:",
+    options: [
+      "rozkladem kyslíkatých sloučenin halogenů",
+      "oxidací halogenidových aniontů",
+      "elektrolýzou roztoků halogenidů",
+      "elektrolýzou tavenin alkalických kovů",
+    ],
+    correct: [1, 2],
+    exp: <>Oxidace <M>X⁻</M> na <M>X₂</M> je standardní laboratorní cesta (<M>MnO₂ + 4 HCl → MnCl₂ + Cl₂ + 2 H₂O</M>) a elektrolýza roztoku halogenidu je průmyslová výroba chloru ze solanky. Rozkladem kyslíkatých sloučenin vzniká <b>kyslík</b>, ne halogen. A „taveniny alkalických kovů“ žádný halogen neobsahují — kdyby tam stálo <b>taveniny halogenidů</b> alkalických kovů, bylo by to správně.</>,
+    tip: "U poslední možnosti si přečti, co tam opravdu je: tavenina KOVŮ, ne halogenidů.",
+  },
+  {
+    n: 5, type: "fill", q: "Jeden z halogenů a mnohé jeho sloučeniny mají bělicí a dezinfekční účinky. O který halogen se jedná?",
+    accept: ["chlor", "cl", "cl2"], answer: "chlor",
+    exp: <>Chlor a jeho kyslíkaté sloučeniny: <M>Cl₂ + H₂O ⇄ HCl + HClO</M> (chlorová voda), <M>NaClO</M> = SAVO, chlorové vápno. Účinnou látkou je kyselina chlorná, která uvolňuje atomární kyslík.</>,
+  },
+  {
+    n: 6, type: "single", q: "Jodová tinktura je:",
+    options: [
+      "2% roztok jodu ve vodě",
+      "5% roztok jodu v ethanolu",
+      "5% roztok jodu ve vodě",
+    ],
+    correct: [1],
+    exp: <>Jodová tinktura je <b>5% roztok jodu v ethanolu</b> (s přídavkem jodidu draselného, který rozpustnost zvyšuje). Ve vodě je jod prakticky nerozpustný — je to nepolární látka, a ta se rozpouští v nepolárních či méně polárních rozpouštědlech (ethanol, <M>CS₂</M>).</>,
+    tip: "Podobné se rozpouští v podobném. Jod je nepolární → líh ano, voda ne.",
+  },
+  {
+    n: 7, type: "multi", q: "Jaký typ krystalu vytváří jod v pevném skupenství a jaké vlastnosti z toho vyplývají?",
+    options: [
+      "molekulový krystal",
+      "při zahřátí sublimuje",
+      "atomový krystal",
+      "slabé van der Waalsovy síly působí v pevném skupenství mezi molekulami",
+    ],
+    correct: [0, 1, 3],
+    exp: <>V uzlových bodech mřížky sedí celé molekuly <M>I₂</M> — jde tedy o <b>molekulový krystal</b>. Drží je jen slabé van der Waalsovy síly, takže stačí málo energie a krystal se rozpadne: jod <b>sublimuje</b> (přechází rovnou na fialové páry). Atomový (kovalentní) krystal je třeba diamant — ten má naopak extrémně vysokou teplotu tání.</>,
+    tip: "Slabé mezimolekulové síly = nízká teplota tání = sublimace.",
+  },
+  {
+    n: 8, type: "multi", q: "Chlor:",
+    options: [
+      "je za n.p. plyn",
+      "je toxický, může způsobit edém plic",
+      "ve sloučeninách nabývá pouze oxidačního čísla −I",
+      "není rozpustný ve vodě",
+    ],
+    correct: [0, 1],
+    exp: <>Chlor je žlutozelený toxický plyn — za 1. světové války se použil jako bojová látka právě proto, že leptá dýchací cesty a vyvolává otok (edém) plic. Ve sloučeninách má <b>−I, ale i I, III, V a VII</b> (HClO až HClO₄) — „pouze −I“ platí jedině pro fluor. A ve vodě se rozpouští, vzniká chlorová voda.</>,
+    tip: "„Pouze −I“ = fluor. U chloru je to vždycky špatně.",
+  },
+  {
+    n: 9, type: "fill", q: "V hormonu štítné žlázy, thyroxinu, se nachází atomy halogenu, jehož správnou hladinu můžeme udržovat přijímáním kuchyňské soli obohacené o tento prvek. O který halogen se jedná?",
+    accept: ["jod", "i", "i2", "iod"], answer: "jod",
+    exp: <>Jod. Jeho nedostatek vede ke <b>strumě</b> (zvětšení štítné žlázy), proto se kuchyňská sůl jodizuje (přidává se <M>KI</M> nebo <M>KIO₃</M>). V přírodě je jod v chaluhách a mořských řasách.</>,
+  },
+  {
+    n: 10, type: "multi", q: "O halogenovodících platí:",
+    options: [
+      "HCl (aq) se nachází v žaludku",
+      "HF se používá při leptání skla",
+      "HI (aq) je nejslabší halogenovodíkovou kyselinou",
+      "za n.p. se jedná o bezbarvé, ostře zapáchající plyny, rozpustné ve vodě",
+    ],
+    correct: [0, 1, 3],
+    exp: <>Síla halogenovodíkových kyselin <b>roste</b> směrem dolů: <M>HF &lt; HCl &lt; HBr &lt; HI</M>. <b>HI je tedy nejsilnější</b>, nejslabší je HF (krátká pevná vazba + vodíkové můstky). HCl je v žaludeční šťávě (0,3–0,4 %, pH 1–3), HF leptá sklo: <M>SiO₂ + 4 HF → SiF₄ + 2 H₂O</M>.</>,
+    tip: "Nejelektronegativnější fluor dává NEJSLABŠÍ kyselinu. Zapamatuj si to jako výjimku.",
+  },
+  {
+    n: 11, type: "open", q: <>Doplňte a vyčíslete:
+      <div className="m" style={{ display: "block", marginTop: 10, padding: "10px 12px", lineHeight: 2 }}>
+        NaCl + H₂SO₄ →<br />
+        Cl₂ + KI →<br />
+        MnO₂ + HCl → ……… + MnCl₂ + H₂O<br />
+        I₂ + CaF₂ →
+      </div></>,
+    answer: <>
+      <Eq left="NaCl + H₂SO₄" right="NaHSO₄ + HCl" note="Vytěsnění těkavé kyseliny netěkavou. Za vyšší teploty reaguje i druhý vodík: 2 NaCl + H₂SO₄ → Na₂SO₄ + 2 HCl." />
+      <Eq left="Cl₂ + 2 KI" right="2 KCl + I₂" note="Chlor je silnější oxidační činidlo než jod, proto ho z jodidu vytěsní. Roztok zhnědne." />
+      <Eq left="MnO₂ + 4 HCl" right="Cl₂ + MnCl₂ + 2 H₂O" note="Laboratorní příprava chloru oxidací chlorovodíku." />
+      <Eq left="I₂ + CaF₂" right="nereaguje" note="Obráceně to nejde: jod je slabší oxidační činidlo než fluor, takže ho z fluoridu vytěsnit nedokáže." />
+    </>,
+    exp: <>Poslední rovnice je chyták — tři fungují, čtvrtá ne. Pravidlo: <b>silnější halogen (výš v tabulce) vytěsní slabší</b>, nikdy naopak.</>,
+  },
+  {
+    n: 12, type: "single", q: "Chlorové vápno je směs:",
+    options: [
+      "chloridu a chlornanu vápenatého",
+      "chloru a chlornanu sodného",
+      "chloridu a chlornanu sodného",
+      "chloru a chlorečnanu draselného",
+    ],
+    correct: [0],
+    exp: <>Chlorové vápno vzniká zaváděním chloru do hašeného vápna a je to směs <M>CaCl₂</M> a <M>Ca(ClO)₂</M> — tedy <b>chloridu a chlornanu vápenatého</b>. Používá se k dezinfekci. Chlornan <b>sodný</b> <M>NaClO</M> je SAVO, to je něco jiného.</>,
+    tip: "Vápno → vápenatý. Sodné soli sem nepatří.",
+  },
+  {
+    n: 13, type: "open", q: "Seřaďte kyseliny od nejslabší po nejsilnější, zapište vzorci: kyselina chloritá · kyselina chlorná · kyselina chlorečná · kyselina chloristá",
+    answer: <>
+      <div className="eq"><div className="eq-row"><span className="eq-l">HClO &lt; HClO₂ &lt; HClO₃ &lt; HClO₄</span></div></div>
+      <div style={{ marginTop: 10 }}>chlorná (I) → chloritá (III) → chlorečná (V) → <b>chloristá (VII)</b></div>
+    </>,
+    exp: <>S rostoucím oxidačním číslem chloru přibývají atomy kyslíku, které odtahují elektronovou hustotu od vazby <M>O–H</M>, takže se <M>H⁺</M> odštěpuje snáz. Kyselina chloristá patří k nejsilnějším známým kyselinám. Zároveň platí, že <b>stálost roste</b> a <b>oxidační účinky klesají</b> stejným směrem.</>,
+    tip: "Víc kyslíků = silnější kyselina. Funguje to i u síry: H₂SO₃ < H₂SO₄.",
+  },
+  {
+    n: 14, type: "fill", q: "Elektronová konfigurace valenční vrstvy chalkogenů je ……………… a počet valenčních elektronů je roven ……… .",
+    accept: ["ns2 np4 6", "ns2np4 6", "ns2 np4 sest", "ns2 np4 a 6"], answer: "ns² np⁴ · 6 valenčních elektronů",
+    hint: "Napiš obojí, např. „ns2 np4 6“.",
+    exp: <>VI.A skupina → 6 valenčních elektronů → <M>ns² np⁴</M>. Do oktetu chybí 2 elektrony, proto je základní vaznost <b>II</b>.</>,
+  },
+  {
+    n: 15, type: "multi", q: "O síře platí:",
+    options: [
+      "v přírodě se nachází pouze ve formě sloučenin",
+      "za n.p. má pevné skupenství",
+      "nachází se v bílkovinách, je biogenním prvkem",
+      "její atomy mohou být ve sloučeninách maximálně 4-vazné",
+      "rozpouští se v sirouhlíku",
+    ],
+    correct: [1, 2, 4],
+    exp: <>Síra se v přírodě vyskytuje i <b>volná</b> (Sicílie, Polsko, Japonsko, okolí sopek), takže „pouze ve sloučeninách“ neplatí — to je pravda o halogenech. Díky volným 3d-orbitalům může být až <b>6-vazná</b> (<M>H₂SO₄</M>, <M>SO₃</M>), ne jen 4-vazná. Je žlutá pevná látka, nerozpustná ve vodě, ale rozpustná v sirouhlíku <M>CS₂</M>, a je biogenním prvkem (cystein, methionin).</>,
+    tip: "Dvě pasti v jedné otázce: „pouze ve sloučeninách“ (to jsou halogeny) a „maximálně 4-vazné“ (je 6).",
+  },
+  {
+    n: 16, type: "single", q: "Běžnými krystalografickými strukturami síry jsou:",
+    options: [
+      "kosočtverečná a jednoklonná s molekulami S₈",
+      "plastická a kosočtverečná síra",
+      "kosočtverečná a jednoklonná s molekulami S₆",
+      "plastická a jednoklonná s molekulami S₈",
+    ],
+    correct: [0],
+    exp: <>Obě <b>krystalické</b> modifikace — kosočtverečná (α, stabilní do 96 °C) i jednoklonná (β, nad 96 °C) — jsou stavěné z <b>osmiatomových</b> cyklických molekul <M>S₈</M>. Plastická síra je <b>amorfní</b>, tedy nekrystalická, a do této otázky nepatří.</>,
+    tip: "Krystalografické = krystalické. Plastická síra je amorfní, hned ji vyškrtni.",
+  },
+  {
+    n: 17, type: "fill", q: "Atomy síry mají v sulfanu a sulfidech oxidační číslo ……… .",
+    accept: ["ii", "2", "ii ", "minus ii", "minus 2", "-ii", "-2"], answer: "−II",
+    hint: "Stačí napsat „-II“ nebo „-2“.",
+    exp: <>V <M>H₂S</M> i v sulfidech (<M>Na₂S</M>, <M>ZnS</M>) má síra <b>−II</b> — své nejnižší možné oxidační číslo. Proto můžou tyto látky působit už jen jako <b>redukční činidla</b>.</>,
+  },
+  {
+    n: 18, type: "open", q: <>Síra existuje v různých amorfních formách. Doplňte názvy k níže uvedeným charakteristikám:
+      <ul style={{ marginTop: 8 }}>
+        <li>vzniká při náhlém ochlazení kapalné síry ve vodě — ………</li>
+        <li>vzniká při ochlazení par vroucí síry na chladných stěnách nádoby — ………</li>
+      </ul></>,
+    answer: <>
+      <div><b>náhlé ochlazení kapalné síry ve vodě</b> → <span className="k">plastická síra</span></div>
+      <div style={{ marginTop: 8 }}><b>ochlazení par na chladných stěnách</b> → <span className="k">sirný květ</span></div>
+    </>,
+    exp: <>Obě jsou <b>amorfní</b> (nekrystalické) formy. Plastická síra vzniká z <b>kapaliny</b> — dlouhé řetězce se nestihnou uspořádat do kruhů a zůstanou zamotané, proto je pružná. Sirný květ vzniká z <b>par</b> — jemný žlutý prášek na studené stěně.</>,
+    tip: "Kapalina → plastická. Páry → květ (jako jinovatka na okně).",
+  },
+  {
+    n: 19, type: "multi", q: "Sulfan:",
+    options: [
+      "jeho vodný roztok barví lakmus do modra",
+      "je toxický plyn se zápachem po zkažených vejcích",
+      "je dobře rozpustný ve vodě",
+      "má pouze redukční účinky",
+      "vzniká rozkladem bílkovin",
+    ],
+    correct: [1, 2, 3, 4],
+    exp: <>Vodný roztok sulfanu je <b>kyselina</b> (slabá dvojsytná kyselina sulfanová), takže lakmus barví do <b>červena</b>, ne do modra — modrý je lakmus v zásadách. Zbytek sedí: je toxický, páchne po zkažených vejcích, rozpouští se ve vodě na sulfanovou vodu, má díky oxidačnímu číslu −II pouze redukční účinky a vzniká hnitím (rozkladem) bílkovin, protože síra je v aminokyselinách cysteinu a methioninu.</>,
+    tip: "Kyselina → lakmus červený. Zásada → lakmus modrý.",
+  },
+  {
+    n: 20, type: "fill", q: "Oxid siřičitý v atmosféře je příčinou ……………………… .",
+    accept: ["kyselych destu", "kyseleho deste", "kysele deste", "kyselych dest", "kyselé dešťů"], answer: "kyselých dešťů",
+    exp: <>SO₂ se ve vzdušné vlhkosti rozpouští na kyselinu siřičitou, která okyseluje srážky. Kyselé deště ničí zejména <b>jehličnaté lesy</b>, způsobují korozi a ohrožují lidské zdraví. Do atmosféry se SO₂ dostává hlavně spalováním <b>hnědého uhlí</b>.</>,
+  },
+  {
+    n: 21, type: "open", q: <>Oxid siřičitý vykazuje redukční i oxidační účinky. Zapište reakci oxidu siřičitého s <b>kyslíkem</b> a se <b>sulfanem</b>. Rovnice vyčíslete a uveďte, kde působí SO₂ jako oxidační a kde jako redukční činidlo.</>,
+    answer: <>
+      <Eq left="2 SO₂ + O₂" right="2 SO₃" above="kat. V₂O₅" rev note="Síra jde ze IV na VI → SO₂ se OXIDUJE → je REDUKČNÍ činidlo." />
+      <Eq left="SO₂ + 2 H₂S" right="3 S + 2 H₂O" note="Síra jde ze IV na 0 → SO₂ se REDUKUJE → je OXIDAČNÍ činidlo." />
+    </>,
+    exp: <>Síra má v <M>SO₂</M> oxidační číslo <b>IV</b>, což je uprostřed jejího rozsahu (−II až VI). Proto může jít oběma směry. Zapamatuj si pravidlo: látka, která se <b>oxiduje</b>, je <b>redukční</b> činidlo, a naopak.</>,
+    tip: "Činidlo se vždy jmenuje OPAČNĚ, než co se s ním děje.",
+  },
+  {
+    n: 22, type: "open", q: "Která ze sloučenin má vyšší teplotu varu — voda, nebo sulfan? Vysvětlete.",
+    answer: <><span className="k">Voda</span> — vře při 100 °C, sulfan už při −60 °C.</>,
+    exp: <>Mezi molekulami vody působí <b>vodíkové můstky</b>, protože vodík je vázán na silně elektronegativní kyslík. Rozbít je stojí hodně energie → vysoká teplota varu. Síra má elektronegativitu nízkou, vazba <M>S–H</M> je jen slabě polární a vodíkové můstky <b>nevznikají</b> — zbývají jen slabé van der Waalsovy síly.</>,
+    tip: "Past: sulfan je TĚŽŠÍ (34 g/mol) než voda (18), a přesto vře dřív. Nerozhoduje hmotnost, ale typ mezimolekulové síly.",
+  },
+  {
+    n: 23, type: "fill", q: "Při ředění kyseliny sírové vodou postupujeme tak, že ……………… přiléváme do ……………… .",
+    accept: ["kyselinu do vody", "kyselina do vody", "kyselinu vody"], answer: "kyselinu přiléváme do vody",
+    hint: "Napiš to celé, např. „kyselinu do vody“.",
+    exp: <>Vždy <b>kyselinu do vody</b>, nikdy naopak. Rozpouštění uvolňuje obrovské množství tepla; kdybys lil vodu do kyseliny, první kapky by se okamžitě začaly vařit a rozstříkly by kyselinu kolem.</>,
+    tip: "Pomůcka: „Kyselinu do vody, ne vodu do kyseliny — jinak z tebe budou trosky.“",
+  },
+  {
+    n: 24, type: "open", q: "Kyselina sírová má silné dehydratační účinky. Zapište rovnicí reakci glukosy s kyselinou sírovou. Vyčíslete.",
+    answer: <Eq left="C₆H₁₂O₆" right="6 C + 6 H₂O" above="H₂SO₄" note="Kyselina sírová odejme z glukosy veškerou vodu a zůstane černý porézní uhlík." />,
+    exp: <>Glukosa má vzorec <M>C₆H₁₂O₆</M>, což se dá číst jako <M>6 C · 6 H₂O</M> — uhlík „obalený“ vodou. Koncentrovaná kyselina sírová tu vodu odejme a zůstane <b>čistý uhlík</b>. V praxi je to známý pokus s cukrem, ze kterého vyleze černý „sloup“. Kyselina sama se při tom nespotřebuje, píše se proto nad šipku.</>,
+    tip: "Spočítej si to: 6 C + 6 H₂O = C₆H₁₂O₆. Sedí to přesně.",
+  },
+  {
+    n: 25, type: "single", q: "Které z uvedených chemických reakcí potvrzují oxidační vlastnosti kyseliny sírové?",
+    options: [
+      "Zn + H₂SO₄ → H₂ + ZnSO₄",
+      "2 NaOH + H₂SO₄ → Na₂SO₄ + 2 H₂O",
+      "Cu + H₂SO₄ → CuSO₄ + SO₂ + H₂O",
+      "CaCl₂ + H₂SO₄ → CaSO₄ + 2 HCl",
+    ],
+    correct: [2],
+    exp: <>Oxidačními účinky se u kyseliny sírové myslí to, že se <b>sama redukuje</b> — síra jde z VI na IV a vzniká <M>SO₂</M>. To se děje jen u <b>koncentrované</b> kyseliny, a jedině reakce s mědí to ukazuje (navíc měď je ušlechtilý kov, ten by se v pouhé kyselině nerozpustil). Neutralizace s NaOH a vytěsnění HCl z chloridu nejsou redoxní reakce vůbec. U zinku sice vzniká vodík, ale to umí i zředěná kyselina — a ta podle vaší definice oxidační účinky nemá.</>,
+    tip: "Hledej v rovnici SO₂. Je tam? Pak kyselina oxidovala.",
+  },
+];
+
+/** Jedna položka vzorového testu. */
+function TestItem({ item, onResult }) {
+  const [sel, setSel] = useState([]);
+  const [txt, setTxt] = useState("");
+  const [done, setDone] = useState(false);
+  const [ok, setOk] = useState(false);
+
+  const isChoice = item.type === "single" || item.type === "multi";
+  const isMulti = item.type === "multi";
+
+  const finish = (good) => { setDone(true); setOk(good); onResult(item.n, good); };
+
+  const pick = (i) => {
+    if (done) return;
+    if (isMulti) { setSel(s => s.includes(i) ? s.filter(x => x !== i) : [...s, i]); return; }
+    setSel([i]); finish(arrEqual([i], item.correct));
+  };
+
+  const submitMulti = () => { if (!sel.length) return; finish(arrEqual(sel, item.correct)); };
+  const submitFill = () => {
+    const v = norm(txt);
+    if (!v) return;
+    finish(item.accept.some(a => v.includes(norm(a)) || norm(a).includes(v)));
+  };
+
+  return (
+    <Box className="ti">
+      <div className="ti-h">
+        <span className={"ti-n" + (done ? (ok ? " is-ok" : " is-bad") : "")}>{item.n}</span>
+        <span className="ti-q">{item.q}</span>
+        {isMulti && <span className="ti-tag">více správných</span>}
+      </div>
+
+      {isChoice && (
+        <div className="qz-opts" style={{ marginTop: 14 }}>
+          {item.options.map((o, i) => {
+            let cls = "qz-opt";
+            if (done) {
+              if (item.correct.includes(i)) cls += " is-ok";
+              else if (sel.includes(i)) cls += " is-bad";
+            } else if (sel.includes(i)) cls += " is-sel";
+            return (
+              <div key={i} className={cls} onClick={() => pick(i)}>
+                {isMulti && <span className="qz-cb">{sel.includes(i) ? "☑" : "☐"}</span>}
+                <span>{o}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {isMulti && !done && <button className="btn" onClick={submitMulti} disabled={!sel.length}>Potvrdit</button>}
+
+      {item.type === "fill" && !done && (
+        <div className="numchk" style={{ marginTop: 14 }}>
+          {item.hint && <label className="numchk-l">{item.hint}</label>}
+          <div className="numchk-row">
+            <input className="numchk-i" style={{ width: 260 }} value={txt} placeholder="tvoje odpověď"
+                   onChange={e => setTxt(e.target.value)}
+                   onKeyDown={e => { if (e.key === "Enter") submitFill(); }} />
+            <button className="btn btn-mini" onClick={submitFill}>Zkontrolovat</button>
+            <button className="btn btn-mini" onClick={() => finish(false)}>Nevím, ukaž</button>
+          </div>
+        </div>
+      )}
+
+      {item.type === "open" && !done && (
+        <button className="btn btn-reveal" onClick={() => finish(true)}>🔒 Zobrazit vzorovou odpověď</button>
+      )}
+
+      {done && (
+        <div className={"qz-fb " + (ok ? "is-ok" : "is-bad")} style={{ marginTop: 16 }}>
+          {isChoice && <div className="qz-fb-h">{ok ? "Správně" : "Špatně"}</div>}
+          {item.type === "fill" && (
+            <>
+              <div className="qz-fb-h">{ok ? "Správně" : "Správná odpověď"}</div>
+              <div className="qz-fb-c">{item.answer}</div>
+            </>
+          )}
+          {item.type === "open" && <div className="ti-ans">{item.answer}</div>}
+          {!ok && isChoice && (
+            <div className="qz-fb-c">Správně je: {item.correct.map(i => item.options[i]).join(" · ")}</div>
+          )}
+          <div className="qz-fb-e">{item.exp}</div>
+          {item.tip && <div className="qz-fb-t">💡 {item.tip}</div>}
+          <button className="btn btn-mini" style={{ marginTop: 12 }}
+                  onClick={() => { setDone(false); setSel([]); setTxt(""); }}>Zkusit znovu</button>
+        </div>
+      )}
+    </Box>
+  );
+}
+
+/** Celý vzorový test s počítadlem. */
+function VzorovyTest() {
+  const [res, setRes] = useState({});
+  const onResult = useCallback((n, good) => setRes(r => ({ ...r, [n]: good })), []);
+  const answered = Object.keys(res).length;
+  const good = Object.values(res).filter(Boolean).length;
+  const pct = answered ? Math.round((good / answered) * 100) : 0;
+
+  return (
+    <>
+      <Box tone="acc" className="ti-score">
+        <div className="ti-score-row">
+          <div>
+            <div className="bx-h" style={{ marginBottom: 4 }}>Postup testem</div>
+            <div style={{ color: "#a6b2c2", fontSize: 14.5 }}>
+              Vyřešeno <b style={{ color: "#e7ecf2" }}>{answered}</b> z 25
+              {answered > 0 && <> · úspěšnost <b style={{ color: pct >= 70 ? "#2ee6a8" : "#ffcc66" }}>{pct} %</b></>}
+            </div>
+          </div>
+          <button className="btn btn-mini" onClick={() => setRes({})}>Vynulovat počítadlo</button>
+        </div>
+        <div className="ti-bar"><div className="ti-bar-fill" style={{ width: `${(answered / 25) * 100}%` }} /></div>
+      </Box>
+      {SAMPLE.map(it => <TestItem key={it.n} item={it} onResult={onResult} />)}
+    </>
+  );
+}
+
 const SECTIONS = [
   { id: "prehled",  label: "Přehled",          icon: "◆" },
+  { id: "vzorovy",  label: "Vzorový test",     icon: "✓" },
   { id: "sira",     label: "Síra",             icon: "S" },
   { id: "slouc-s",  label: "Sloučeniny síry",  icon: "S" },
   { id: "halogeny", label: "Halogeny",         icon: "X" },
@@ -1150,7 +1619,7 @@ export default function App() {
           <div className="hdr-txt">
             <h1>Chalkogeny <span className="sep">·</span> Halogeny</h1>
             <p className="sub">
-              Příprava na úterní test z chemie · postaveno na prezentacích <b>Chalkogeny</b> a <b>Halogeny</b> a na obou pracovních listech (včetně vyplněného klíče).
+              Příprava na test z chemie · <b>vzorový test</b> od paní profesorky, obě prezentace a oba pracovní listy včetně vyplněného klíče.
             </p>
           </div>
         </div>
@@ -1182,12 +1651,12 @@ export default function App() {
               <Box tone="acc">
                 <div className="bx-h">Plán na dnešní večer (asi 90 minut)</div>
                 <ol style={{ paddingLeft: 20, margin: 0 }}>
-                  <li><b>20 min</b> — projdi <b>Síru</b> a <b>Sloučeniny síry</b>, rozbaluj jen to, co neumíš.</li>
-                  <li><b>15 min</b> — <b>Halogeny</b> a <b>Sloučeniny halogenů</b>.</li>
+                  <li><b>25 min</b> — <b>Vzorový test</b> nanečisto. Projdi všech 25 otázek a u každé si přečti vysvětlení.</li>
+                  <li><b>20 min</b> — dolaď, co ti ve vzorovém testu nevyšlo: <b>Síra</b>, <b>Sloučeniny síry</b>, <b>Halogeny</b>, <b>Sloučeniny halogenů</b>.</li>
                   <li><b>15 min</b> — <b>Rovnice</b>: zkus si nejdřív doplnit pravou stranu z hlavy, pak odhal.</li>
                   <li><b>15 min</b> — <b>Řešené příklady</b> (hlavně výpočet SO₂ a Beketovova řada).</li>
-                  <li><b>15 min</b> — <b>Názvosloví</b> — thio-, peroxo-, di-, hydráty.</li>
-                  <li><b>10 min</b> — <b>Kvíz</b>, pak si projdi, co ti nesedlo.</li>
+                  <li><b>10 min</b> — <b>Názvosloví</b> — thio-, peroxo-, di-, hydráty.</li>
+                  <li><b>5 min</b> — <b>Vzorový test</b> ještě jednou, tentokrát bez nápovědy.</li>
                   <li>Ráno před testem — už jen <b>Tahák</b> a <b>Kartičky</b>.</li>
                 </ol>
               </Box>
@@ -1236,10 +1705,28 @@ export default function App() {
             </>
           )}
 
-          {/* ═══════════ 02 · SÍRA ═══════════ */}
+          {/* ═══════════ 02 · VZOROVÝ TEST ═══════════ */}
+          {sec === "vzorovy" && (
+            <>
+              <h2><span className="hash">02</span>Vzorový test od paní profesorky</h2>
+              <p className="lead">
+                Všech 25 otázek v původním pořadí a znění. U výběrových otázek klikej na odpovědi,
+                u doplňovaček piš do políčka, u otevřených si nejdřív odpověz na papír a pak odhal vzor.
+                Ke každé otázce je vysvětlení — <b>i k těm, které trefíš</b>, protože v ostrém testu může být
+                otázka postavená jinak.
+              </p>
+              <W>
+                Osm otázek z 25 má <b>víc než jednu správnou odpověď</b>. Označené jsou štítkem „více správných“ —
+                v papírovém testu to poznáš podle toho, že u možností nejsou písmena a), b), c).
+              </W>
+              <VzorovyTest />
+            </>
+          )}
+
+          {/* ═══════════ 03 · SÍRA ═══════════ */}
           {sec === "sira" && (
             <>
-              <h2><span className="hash">02</span>Chalkogeny a elementární síra</h2>
+              <h2><span className="hash">03</span>Chalkogeny a elementární síra</h2>
               <p className="lead">Klikni na téma a rozbal si výklad. Vše nejdůležitější najdeš zkráceně i v <K>Taháku</K>.</p>
 
               <Fold title="2.1 · Chalkogeny — co to je a proč se tak jmenují" badge="ZÁKLAD" open>
@@ -1329,7 +1816,7 @@ export default function App() {
           {/* ═══════════ 03 · SLOUČENINY SÍRY ═══════════ */}
           {sec === "slouc-s" && (
             <>
-              <h2><span className="hash">03</span>Sloučeniny síry</h2>
+              <h2><span className="hash">04</span>Sloučeniny síry</h2>
               <p className="lead">Od bezkyslíkatých (sulfan a sulfidy) přes oxidy až po kyseliny a jejich soli.</p>
 
               <Fold title="3.1 · Sulfan H₂S a jeho soli" badge="BEZKYSLÍKATÉ" open>
@@ -1339,7 +1826,8 @@ export default function App() {
                 <W>Past: sulfan má <b>větší</b> molární hmotnost než voda (34 vs. 18 g/mol), a přesto je plynný. O skupenství tedy nerozhoduje hmotnost molekuly, ale typ mezimolekulových sil.</W>
                 <p><b>Příprava:</b></p>
                 <Eq left="FeS + 2 HCl" right="FeCl₂ + H₂S" note="Silnější kyselina vytěsní slabší (sulfanovou) z její soli." hidden />
-                <p><b>Vodný roztok</b> = slabá <K>dvojsytná kyselina sulfanová</K> (také sulfanová voda nebo sirovodíková kyselina). Odtud dvě řady solí:</p>
+                <p><b>Vznik v přírodě:</b> sulfan vzniká <K>rozkladem (hnitím) bílkovin</K> — síra je v aminokyselinách cysteinu a methioninu. Proto páchnou zkažená vejce i bahno v rybnících.</p>
+                <p><b>Vodný roztok</b> = slabá <K>dvojsytná kyselina sulfanová</K> (také sulfanová voda nebo sirovodíková kyselina). Protože je to <b>kyselina</b>, barví lakmus do <K>červena</K> — nikdy do modra. Odtud dvě řady solí:</p>
                 <ul>
                   <li><K>sulfidy</K> — anion <M>S²⁻</M>; rozpustné jsou jen sulfidy I.A, II.A skupiny a <M>(NH₄)₂S</M></li>
                   <li><K>hydrogensulfidy</K> — anion <M>HS⁻</M>; ty jsou ve vodě rozpustné</li>
@@ -1388,6 +1876,8 @@ export default function App() {
               <Fold title="3.5 · Kyselina sírová H₂SO₄ a reakce s kovy" badge="JÁDRO TESTU">
                 <p><b>Vlastnosti:</b> silná dvojsytná kyselina, <K>žíravina</K> (poškozuje tkáně), <K>hygroskopická</K> — odnímá látkám vodu (cukr po jejím přilití zuhelnatí), má <K>oxidační účinky</K>.</p>
                 <p><b>Anionty:</b> <M>SO₄²⁻</M> síranový a <M>HSO₄⁻</M> hydrogensíranový.</p>
+                <p><b>Dehydratační účinky:</b> koncentrovaná kyselina odnímá látkám vodu. U glukosy zbude čistý uhlík — známý pokus, kdy z kádinky s cukrem vyleze černý porézní „sloup“:</p>
+                <Eq left="C₆H₁₂O₆" right="6 C + 6 H₂O" above="H₂SO₄" note="Vzorec glukosy se dá číst jako 6 C · 6 H₂O — uhlík „obalený“ vodou. Kyselina se nespotřebuje, proto se píše nad šipku." hidden />
                 <p><b>Porovnání síly s kyselinou siřičitou:</b> <K>H₂SO₄ je silnější</K>. Síra v ní má vyšší oxidační číslo (VI proti IV) a je obklopena více atomy kyslíku, které odtahují elektronovou hustotu od vazby O–H — vodík se tedy odštěpí snáz.</p>
                 <W>Ředění: <b>vždy lijeme kyselinu do vody</b>, nikdy naopak. Rozpouštění uvolňuje velké množství tepla a voda by se rozstříkla.</W>
 
@@ -1431,7 +1921,7 @@ export default function App() {
           {/* ═══════════ 04 · HALOGENY ═══════════ */}
           {sec === "halogeny" && (
             <>
-              <h2><span className="hash">04</span>Halogeny — VII.A skupina</h2>
+              <h2><span className="hash">05</span>Halogeny — VII.A skupina</h2>
               <p className="lead">Nejreaktivnější nekovy periodické tabulky. Prezentace končí třemi nevyplněnými snímky — ty najdeš v oddílu <K>Sloučeniny halogenů</K>.</p>
 
               <Fold title="4.1 · Charakteristika skupiny" badge="ZÁKLAD" open>
@@ -1448,6 +1938,8 @@ export default function App() {
                   ["brom Br₂", "kapalina", "červenohnědý", "jediný nekovový prvek kapalný za n.p."],
                   ["jod I₂", "pevná látka", "fialový", "sublimuje — fialové páry"],
                 ]} />
+                <p><b>Proč se mění skupenství?</b> Ve všech případech jde o <K>molekulové krystaly</K> — v mřížce sedí celé molekuly <M>X₂</M>, které drží jen slabé <K>van der Waalsovy síly</K>. S rostoucí velikostí molekuly tyto síly rostou, proto F₂ a Cl₂ plyny, Br₂ kapalina a I₂ pevná látka. U jodu stačí málo energie a krystal se rozpadne rovnou na páry — <b>sublimuje</b>.</p>
+                <W>Jod tvoří <b>molekulový</b>, nikoli atomový krystal. Atomový (kovalentní) krystal je třeba diamant — ten má naopak extrémně vysokou teplotu tání.</W>
                 <p><b>Trend:</b> s rostoucím protonovým číslem roste atomový poloměr a klesá elektronegativita, takže <K>oxidační účinky klesají</K>:</p>
                 <div className="eq"><div className="eq-row"><span className="eq-l">F₂ &gt; Cl₂ &gt; Br₂ &gt; I₂</span><span className="eq-r">oxidační účinky klesají s rostoucím Z</span></div></div>
               </Fold>
@@ -1463,7 +1955,7 @@ export default function App() {
                 <ul>
                   <li><b>Mořská voda</b> — nejhojnější zdroj halogenidových aniontů.</li>
                   <li><b>Fluor</b> v kostech a zubní sklovině (proto fluoridy v zubních pastách).</li>
-                  <li><b>Jod</b> v chaluhách a mořských řasách; v těle je součástí hormonů štítné žlázy.</li>
+                  <li><b>Jod</b> v chaluhách a mořských řasách; v těle je součástí <K>thyroxinu</K>, hormonu štítné žlázy. Jeho nedostatek způsobuje <b>strumu</b> (zvětšení štítné žlázy), proto se kuchyňská sůl <b>jodizuje</b> (přidává se KI nebo KIO₃).</li>
                 </ul>
               </Fold>
 
@@ -1502,7 +1994,7 @@ export default function App() {
           {/* ═══════════ 05 · SLOUČENINY HALOGENŮ ═══════════ */}
           {sec === "slouc-x" && (
             <>
-              <h2><span className="hash">05</span>Sloučeniny halogenů</h2>
+              <h2><span className="hash">06</span>Sloučeniny halogenů</h2>
               <p className="lead">
                 Poslední tři snímky prezentace (Příprava halogenidů, Interhalogeny, Kyslíkaté sloučeniny) jsou prázdné —
                 doplňovaly se v hodině. Tady je jejich obsah doplněný.
@@ -1541,7 +2033,20 @@ export default function App() {
                 <p><b>Důkaz halogenidů dusičnanem stříbrným:</b> <M>AgCl</M> bílá sraženina · <M>AgBr</M> nažloutlá · <M>AgI</M> žlutá. <M>AgF</M> je jako jediný rozpustný.</p>
               </Fold>
 
-              <Fold title="5.3 · Interhalogeny" badge="DOPLNĚNÝ SNÍMEK">
+              <Fold title="5.3 · Praktické využití halogenů" badge="ZNÁT NAZPAMĚŤ">
+                <Tab head={["Látka", "Složení", "K čemu"]} rows={[
+                  ["jodová tinktura", "5% roztok jodu v ethanolu", "dezinfekce ran; ve vodě je jod prakticky nerozpustný, proto líh"],
+                  ["chlorové vápno", "směs CaCl₂ a Ca(ClO)₂", "dezinfekce; vzniká zaváděním chloru do hašeného vápna"],
+                  ["SAVO", "NaClO — chlornan sodný", "bělení a dezinfekce v domácnosti"],
+                  ["chlorová voda", "Cl₂ + H₂O ⇄ HCl + HClO", "chlorace pitné vody a bazénů"],
+                  ["fluoridy", "NaF, SnF₂", "zubní pasty — zpevňují sklovinu"],
+                  ["kyselina solná", "HCl (aq)", "žaludeční šťáva 0,3–0,4 %, pH 1–3"],
+                ]} />
+                <W>Nepleť si <b>chlorové vápno</b> (chlorid a chlornan <b>vápenatý</b>) se <b>SAVEM</b> (chlornan <b>sodný</b>). V testu to bývá vedle sebe jako dvě možnosti.</W>
+                <p><b>Toxicita chloru:</b> <M>Cl₂</M> je jedovatý — leptá dýchací cesty a může vyvolat <K>edém (otok) plic</K>. Za 1. světové války se proto použil jako bojová látka.</p>
+              </Fold>
+
+              <Fold title="5.4 · Interhalogeny" badge="DOPLNĚNÝ SNÍMEK">
                 <p><K>Interhalogeny</K> jsou sloučeniny <b>dvou různých halogenů</b> obecného typu <M>XYₙ</M>, kde n = 1, 3, 5, 7.</p>
                 <ul>
                   <li>Centrálním atomem je <b>těžší</b> (méně elektronegativní) halogen a má <b>kladné</b> oxidační číslo.</li>
@@ -1557,7 +2062,7 @@ export default function App() {
                 <p>Jsou <b>velmi reaktivní</b>, působí jako silná oxidační a fluorační činidla a s vodou <b>hydrolyzují</b>.</p>
               </Fold>
 
-              <Fold title="5.4 · Kyslíkaté sloučeniny halogenů" badge="DOPLNĚNÝ SNÍMEK">
+              <Fold title="5.5 · Kyslíkaté sloučeniny halogenů" badge="DOPLNĚNÝ SNÍMEK">
                 <p>Kyslík je elektronegativnější než Cl, Br a I, takže v jejich kyslíkatých sloučeninách má halogen <K>kladné oxidační číslo</K>.</p>
                 <W>U fluoru to <b>neplatí</b> — fluor je elektronegativnější než kyslík, takže <M>OF₂</M> není „oxid fluoritý“, ale <b>fluorid kyslíku</b>. Oxidy fluoru neexistují.</W>
                 <p><b>Oxokyseliny chloru</b> — umět nazpaměť celou tabulku:</p>
@@ -1594,7 +2099,7 @@ export default function App() {
           {/* ═══════════ 06 · ROVNICE ═══════════ */}
           {sec === "rovnice" && (
             <>
-              <h2><span className="hash">06</span>Rovnice — zkus si doplnit pravou stranu</h2>
+              <h2><span className="hash">07</span>Rovnice — zkus si doplnit pravou stranu</h2>
               <p className="lead">
                 U každé rovnice je pravá strana skrytá. Nejdřív si ji zkus napsat na papír, pak klikni na
                 <b> „? odhalit pravou stranu“</b>. Zvlášť si hlídej <K>vyčíslení</K> — to je v testu polovina bodů.
@@ -1652,7 +2157,7 @@ export default function App() {
           {/* ═══════════ 07 · ŘEŠENÉ PŘÍKLADY ═══════════ */}
           {sec === "priklady" && (
             <>
-              <h2><span className="hash">07</span>Řešené příklady z pracovních listů</h2>
+              <h2><span className="hash">08</span>Řešené příklady z pracovních listů</h2>
               <p className="lead">
                 Všechny úlohy pocházejí z obou pracovních listů. <b>Řešení je vždy skryté</b> — nejdřív si to zkus sám,
                 teprve pak odhal.
@@ -1844,7 +2349,7 @@ export default function App() {
           {/* ═══════════ 08 · NÁZVOSLOVÍ ═══════════ */}
           {sec === "nazvy" && (
             <>
-              <h2><span className="hash">08</span>Názvosloví z pracovního listu</h2>
+              <h2><span className="hash">09</span>Názvosloví z pracovního listu</h2>
               <p className="lead">
                 Přesně ty sloučeniny, které byly v PL. Přepni směr tlačítkem a projeď si to oběma způsoby —
                 v testu můžou chtít obojí.
@@ -1868,7 +2373,7 @@ export default function App() {
           {/* ═══════════ 09 · KVÍZ ═══════════ */}
           {sec === "kviz" && (
             <>
-              <h2><span className="hash">09</span>Kvíz — {QUESTIONS.length} otázek</h2>
+              <h2><span className="hash">10</span>Kvíz — {QUESTIONS.length} otázek</h2>
               <p className="lead">
                 Otázky pokrývají obě témata. U otázek označených <b>„více správných“</b> zaškrtni všechny správné možnosti
                 a potvrď. Pořadí možností se při každém spuštění zamíchá.
@@ -1880,7 +2385,7 @@ export default function App() {
           {/* ═══════════ 10 · KARTIČKY ═══════════ */}
           {sec === "karticky" && (
             <>
-              <h2><span className="hash">10</span>Kartičky — {CARDS.length} ks</h2>
+              <h2><span className="hash">11</span>Kartičky — {CARDS.length} ks</h2>
               <p className="lead">Klikni na kartičku a otoč ji. Ideální na poslední opakování ráno před testem.</p>
               <Flashcards cards={CARDS} />
             </>
@@ -1889,7 +2394,7 @@ export default function App() {
           {/* ═══════════ 11 · TAHÁK ═══════════ */}
           {sec === "tahak" && (
             <>
-              <h2><span className="hash">11</span>Tahák — vše, co musíš umět nazpaměť</h2>
+              <h2><span className="hash">12</span>Tahák — vše, co musíš umět nazpaměť</h2>
               <p className="lead">Jedna stránka, na které je všechno podstatné. Projeď si ji jako poslední věc před testem.</p>
 
               <Box tone="acc">
@@ -1980,6 +2485,20 @@ export default function App() {
                 </Box>
               </div>
 
+              <Box>
+                <div className="bx-h">Praktické využití a triviální názvy</div>
+                <Tab head={["Látka", "Složení", "K čemu"]} rows={[
+                  ["jodová tinktura", "5% roztok jodu v ethanolu", "dezinfekce ran"],
+                  ["chlorové vápno", "CaCl₂ + Ca(ClO)₂", "dezinfekce"],
+                  ["SAVO", "NaClO", "bělení, dezinfekce"],
+                  ["chlorová voda", "Cl₂ + H₂O ⇄ HCl + HClO", "chlorace vody"],
+                  ["oleum", "SO₃ v konc. H₂SO₄", "meziprodukt výroby H₂SO₄"],
+                  ["lučavka královská", "3 HCl : 1 HNO₃", "jediné, co rozpustí zlato"],
+                  ["sirný knot", "hořící síra → SO₂", "dezinfekce úlů a vinných sudů"],
+                  ["barnatá kaše", "BaSO₄ (nerozpustný)", "RTG kontrastní látka"],
+                ]} />
+              </Box>
+
               <Box tone="warn">
                 <div className="bx-h bx-h--w">Deset vět, které stačí znát nazpaměť</div>
                 <ol style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
@@ -1993,6 +2512,10 @@ export default function App() {
                   <li>Zlato rozpouští jen <b>lučavka královská</b> — 3 díly HCl : 1 díl HNO₃.</li>
                   <li><b>Fluor nelze připravit oxidací</b>, protože je nejsilnější oxidační činidlo — jen elektrolýzou.</li>
                   <li><b>HF leptá sklo</b> (SiO₂ + 4 HF → SiF₄ + 2 H₂O). <b>HCl v žaludku</b> 0,3–0,4 %, pH 1–3, aktivuje pepsin.</li>
+                  <li>Jod tvoří <b>molekulový</b> krystal (van der Waalsovy síly) → <b>sublimuje</b>. Jodová tinktura = 5 % jodu <b>v ethanolu</b>.</li>
+                  <li>Sulfan vzniká <b>rozkladem bílkovin</b> a jeho roztok barví lakmus <b>červeně</b> (je to kyselina).</li>
+                  <li>Dehydratace glukosy: <b>C₆H₁₂O₆ → 6 C + 6 H₂O</b> (nad šipkou H₂SO₄).</li>
+                  <li>Ředění: <b>kyselinu do vody</b>, nikdy naopak.</li>
                 </ol>
               </Box>
             </>
