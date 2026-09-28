@@ -1012,6 +1012,38 @@ const PROBLEMS = [
     res:"Est-ce que je peux emprunter un stylo ? × Est-ce que tu peux me prêter un stylo ?",
   },
   {
+    d:"m", topic:"Ukazovací zájmena",
+    task:"Doplň ce / cet / cette / ces: ___ pull, ___ imperméable, ___ jupe, ___ bottes, ___ ordinateur.",
+    given:"Rozhoduje rod a číslo francouzského podstatného jména a první hláska slova.",
+    rule:"ce = m. rod před souhláskou · cet = m. rod před samohláskou nebo němým h · cette = ž. rod · ces = množné číslo obou rodů.",
+    steps:["le pull — m. rod, začíná na p → ce pull.","l'imperméable — m. rod, začíná na samohlásku → cet imperméable.","la jupe — ž. rod → cette jupe.","les bottes — množné číslo → ces bottes.","l'ordinateur — m. rod, samohláska → cet ordinateur."],
+    res:"ce pull · cet imperméable · cette jupe · ces bottes · cet ordinateur",
+  },
+  {
+    d:"h", topic:"Ukazovací zájmena",
+    task:"Přelož: „Tenhle muž je můj soused, tahle kočka je moje a tyhle pomeranče jsou shnilé.“",
+    given:"Čeština rozlišuje tenhle / tahle / tohle jinak než francouzština — řídíš se francouzským rodem.",
+    rule:"Ukazovací zájmeno se shoduje s podstatným jménem, ne s českým překladem. V množném čísle je vždy ces.",
+    steps:["l'homme — m. rod před samohláskou → Cet homme.","le chat — m. rod → Ce chat. Ale tady je podmět kočka: le chat je ve francouzštině mužský → Ce chat est à moi.","les oranges — množné číslo → Ces oranges, přídavné jméno v ž. mn. č. → pourries."],
+    res:"Cet homme est mon voisin, ce chat est à moi et ces oranges sont pourries.",
+  },
+  {
+    d:"m", topic:"Doplňování sloves",
+    task:"Doplň správný tvar: « Vous ___ (faire) quelle taille ? » · « Nous ___ (finir) à six heures. » · « Ils ___ (prendre) le métro. »",
+    given:"U každé věty nejdřív urči osobu a teprve potom skupinu slovesa.",
+    rule:"faire je nepravidelné (vous faites), finir je 2. skupina se vsuvkou -iss- (nous finissons), prendre zdvojuje -nn- ve 3. os. mn. č. (ils prennent).",
+    steps:["Vous + faire → faites (jedna ze tří výjimek vedle vous êtes a vous dites).","Nous + finir → finissons, ne „finons“.","Ils + prendre → prennent, ne „prendent“."],
+    res:"Vous faites quelle taille ? · Nous finissons à six heures. · Ils prennent le métro.",
+  },
+  {
+    d:"h", topic:"Psaní vět — cesta",
+    task:"Napiš 4 věty, jak se dostat z nádraží ke knihovně. Použij rozkaz pro vous, řadovou číslovku a spojku puis.",
+    given:"Radíš cizímu člověku → vykání, tedy rozkaz ve tvaru vous bez zájmena.",
+    rule:"Struktura: Prenez / Tournez / Continuez / Traversez + určení místa. Věty spojuj pomocí puis, et nebo ensuite. Účel vyjádři přes pour + infinitiv.",
+    steps:["Začni od nádraží a veď ho krok za krokem — každá věta jeden pokyn.","Střídej slovesa, neopakuj třikrát Tournez.","Na konci řekni, kde se budova nachází (en face de, à côté de + stažený člen)."],
+    res:"Prenez la première rue à droite. Continuez tout droit jusqu'à la place. Traversez la place, puis tournez à gauche. La bibliothèque est en face de l'église.",
+  },
+  {
     d:"m", topic:"Počasí",
     task:"Popiš čtyřmi větami: prší, je 30 °C, fouká vítr, sněží.",
     given:"Popis počasí je neosobní – podmět je vždy il nebo il y a.",
@@ -1054,6 +1086,119 @@ const SENTENCES = [
   { fr:"On place le tableau entre les deux fenêtres.", cz:"Obraz dáme mezi dvě okna.", topic:"Bydlení" },
   { fr:"On va au théâtre ? – Avec plaisir !", cz:"Půjdeme do divadla? – S radostí!", topic:"Program" },
   { fr:"Je ne peux pas, je suis désolé.", cz:"Nemůžu, je mi líto.", topic:"Program" },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   DOPLŇOVÁNÍ SLOVES DO VĚT — typ úlohy, který v testu bývá
+   ═══════════════════════════════════════════════════════════════════ */
+
+const GAPFILL = [
+  { s:"Je ___ le plat du jour, s'il vous plaît.", inf:"vouloir", a:["veux","voudrais"], cz:"Chtěl bych pokrm dne, prosím.", note:"Zdvořile se v restauraci říká je voudrais." },
+  { s:"Vous ___ comment ? — Par carte.", inf:"payer", a:["payez"], cz:"Jak budete platit? — Kartou." },
+  { s:"Nous ___ au restaurant tous les vendredis.", inf:"manger", a:["mangeons"], cz:"Jíme v restauraci každý pátek.", note:"Pozor na -e- před -ons kvůli výslovnosti." },
+  { s:"Elles ___ beaucoup d'amis à Paris.", inf:"avoir", a:["ont"], cz:"Mají v Paříži hodně kamarádů." },
+  { s:"Tu ___ prêt ? On part !", inf:"être", a:["es"], cz:"Jsi připravený? Jdeme!" },
+  { s:"Je ___ à la boulangerie pour acheter du pain.", inf:"aller", a:["vais"], cz:"Jdu do pekařství koupit chleba." },
+  { s:"Ils ___ le métro pour aller au musée.", inf:"prendre", a:["prennent"], cz:"Jezdí do muzea metrem.", note:"Zdvojené -nn- ve 3. os. mn. č." },
+  { s:"Vous ___ quelle taille ?", inf:"faire", a:["faites"], cz:"Jakou máte velikost?", note:"vous faites — bez -ez." },
+  { s:"Elle ___ une entrée et un dessert.", inf:"choisir", a:["choisit"], cz:"Vybírá si předkrm a dezert." },
+  { s:"Nous ___ les devoirs à six heures.", inf:"finir", a:["finissons"], cz:"Končíme úkoly v šest.", note:"2. skupina — vsuvka -iss-." },
+  { s:"Est-ce que tu ___ me prêter un stylo ?", inf:"pouvoir", a:["peux"], cz:"Můžeš mi půjčit pero?" },
+  { s:"Je ___ bien ce quartier, j'habite ici.", inf:"connaître", a:["connais"], cz:"Tuhle čtvrť dobře znám, bydlím tady." },
+  { s:"Ils ___ où est la gare.", inf:"savoir", a:["savent"], cz:"Vědí, kde je nádraží." },
+  { s:"Nous ___ un peu d'eau.", inf:"boire", a:["buvons"], cz:"Pijeme trochu vody.", note:"Kmen buv- v 1. a 2. os. mn. č." },
+  { s:"Il ___ un pull noir et un pantalon bleu.", inf:"mettre", a:["met"], cz:"Obléká si černý svetr a modré kalhoty." },
+  { s:"Vous ___ avec nous au théâtre ?", inf:"venir", a:["venez"], cz:"Půjdete s námi do divadla?" },
+  { s:"On ___ des croissants dans cette boulangerie.", inf:"vendre", a:["vend"], cz:"V téhle pekárně prodávají croissanty.", note:"3. skupina na -re: ve 3. os. j. č. bez koncovky." },
+  { s:"J'___ de la viande à la boucherie.", inf:"acheter", a:["achète"], cz:"Kupuji maso v řeznictví.", note:"è ve všech tvarech kromě nous / vous." },
+  { s:"Nous ___ dans la banlieue de Lyon.", inf:"habiter", a:["habitons"], cz:"Bydlíme na předměstí Lyonu." },
+  { s:"Tu ___ les desserts ?", inf:"aimer", a:["aimes"], cz:"Máš rád dezerty?" },
+  { s:"Vous ___ français ?", inf:"parler", a:["parlez"], cz:"Mluvíte francouzsky?" },
+  { s:"Elle ___ au premier étage.", inf:"monter", a:["monte"], cz:"Jde do prvního patra." },
+  { s:"Je me ___ à sept heures du matin.", inf:"lever", a:["lève"], cz:"Vstávám v sedm ráno.", note:"Zvratné sloveso: je me lève." },
+  { s:"Il se ___ tous les matins.", inf:"raser", a:["rase"], cz:"Holí se každé ráno." },
+  { s:"Nous nous ___ à vélo.", inf:"déplacer", a:["déplaçons"], cz:"Přepravujeme se na kole.", note:"ç před -ons kvůli výslovnosti [s]." },
+  { s:"Elles se ___ tard le soir.", inf:"coucher", a:["couchent"], cz:"Chodí spát pozdě večer." },
+  { s:"Je m'___ vite quand je suis fatigué.", inf:"endormir", a:["endors"], cz:"Usnu rychle, když jsem unavený." },
+  { s:"Comment tu te ___ ? — À pied.", inf:"déplacer", a:["déplaces"], cz:"Jak se přepravuješ? — Pěšky." },
+  { s:"___ à gauche, puis continuez tout droit. (vous)", inf:"tourner", a:["tournez"], cz:"Zahněte vlevo a pak pokračujte rovně.", note:"Rozkaz pro vous = tvar vous bez zájmena." },
+  { s:"___ la première rue à droite. (vous)", inf:"prendre", a:["prenez"], cz:"Dejte se první ulicí vpravo." },
+  { s:"___ le Pont Neuf, puis tournez à gauche. (vous)", inf:"traverser", a:["traversez"], cz:"Přejděte Pont Neuf a potom zahněte vlevo." },
+  { s:"Il ne ___ jamais d'argent sur lui.", inf:"avoir", a:["a"], cz:"Nikdy u sebe nemá peníze.", note:"Zápor ne… jamais obklopuje sloveso." },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   PSANÍ VĚT — produkce podle zadání (directions, počasí, popis)
+   ═══════════════════════════════════════════════════════════════════ */
+
+const WRITING = [
+  {
+    id:"dir",
+    title:"Cesta — napiš 7 vět",
+    brief:"Turista stojí před nádražím (la gare) a hledá knihovnu (la bibliothèque). Napiš mu 7 vět, jak se tam dostane. Použij rozkazovací způsob pro vous.",
+    need: [
+      { lab:"tázací úvod (Excusez-moi / Où est…)", alts:["excusez-moi","ou est","pardon"] },
+      { lab:"tournez à gauche / à droite", alts:["tournez"] },
+      { lab:"tout droit (continuez)", alts:["tout droit"] },
+      { lab:"prenez la … rue", alts:["prenez"] },
+      { lab:"traversez (le pont / la place)", alts:["traversez"] },
+      { lab:"řadová číslovka (première / deuxième)", alts:["premiere","deuxieme","troisieme"] },
+      { lab:"puis / et pro spojení vět", alts:["puis","ensuite","et apres"] },
+      { lab:"pour + infinitiv (účel)", alts:["pour prendre","pour acheter","pour aller","pour arriver","pour trouver"] },
+      { lab:"název místa z banque (rue, pont, place, arrêt…)", alts:["la rue","le pont","la place","l arret","l avenue","le boulevard","la bibliotheque"] },
+    ],
+    model: [
+      "Excusez-moi, je cherche la bibliothèque, s'il vous plaît.",
+      "Prenez la première rue à droite après la gare.",
+      "Continuez tout droit jusqu'à la place.",
+      "Traversez la place, puis tournez à gauche.",
+      "Prenez l'avenue Victor Hugo et continuez tout droit.",
+      "La bibliothèque est en face de l'église, à côté de la poste.",
+      "Vous pouvez aussi prendre le bus numéro 12 pour arriver plus vite.",
+    ],
+  },
+  {
+    id:"meteo",
+    title:"Počasí — napiš 5 vět",
+    brief:"Popiš počasí ve čtyřech ročních obdobích a nakonec dnešní počasí. Vystřídej všechny tři konstrukce: il pleut / il neige, il fait…, il y a du…",
+    need: [
+      { lab:"il fait + přídavné jméno nebo teplota", alts:["il fait"] },
+      { lab:"il y a du / de l' + podstatné jméno", alts:["il y a du","il y a de l"] },
+      { lab:"il pleut nebo il neige", alts:["il pleut","il neige"] },
+      { lab:"en hiver", alts:["en hiver"] },
+      { lab:"au printemps", alts:["au printemps"] },
+      { lab:"en été", alts:["en ete"] },
+      { lab:"en automne", alts:["en automne"] },
+      { lab:"stupně (degrés)", alts:["degre","°c","c."] },
+    ],
+    model: [
+      "En hiver, il fait froid et il neige souvent.",
+      "Au printemps, il y a du soleil, mais il pleut aussi.",
+      "En été, il fait chaud : il fait trente degrés.",
+      "En automne, il y a du vent et beaucoup de nuages.",
+      "Aujourd'hui, il fait beau et il fait vingt degrés.",
+    ],
+  },
+  {
+    id:"desc",
+    title:"Popis s ukazovacími zájmeny — napiš 5 vět",
+    brief:"Popiš oblečení a věci ve výloze. V každé větě použij ukazovací zájmeno (ce / cet / cette / ces) a barvu se správnou shodou.",
+    need: [
+      { lab:"ce + mužský rod", alts:["ce pull","ce manteau","ce pantalon","ce chapeau","ce gilet","ce sac","ce jean","ce short"] },
+      { lab:"cet + samohláska", alts:["cet imper","cet ordinateur","cet homme","cet arret","cet endroit","cet oiseau","cet objet"] },
+      { lab:"cette + ženský rod", alts:["cette robe","cette jupe","cette chemise","cette veste","cette montre","cette cravate","cette ceinture"] },
+      { lab:"ces + množné číslo", alts:["ces "] },
+      { lab:"barva ve správném tvaru", alts:["bleu","noir","blanc","rouge","vert","gris","jaune","rose","marron"] },
+      { lab:"hodnocení (il me plaît / je trouve ça joli / à la mode)", alts:["me plait","je trouve ca joli","a la mode","quelle horreur","il te va bien"] },
+    ],
+    model: [
+      "Ce pull noir est très joli, il me plaît.",
+      "Cet imperméable bleu n'est pas à la mode.",
+      "Cette robe blanche coûte quarante euros.",
+      "Ces baskets bleues sont en cuir.",
+      "Ces chaussures grises ne me plaisent pas : quelle horreur !",
+    ],
+  },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1329,6 +1474,59 @@ const QUIZ = [
     correct:[0],
     explanation:"Je voudrais je zdvořilá podmiňovací forma slovesa vouloir. „Je veux“ zní v restauraci hrubě.",
     tip:"Voudrais = prosím hezky.",
+  },
+  {
+    question: "Doplň: « ___ homme travaille à la mairie. »",
+    type:"single",
+    options:["Cet","Ce","Cette","Ces"],
+    correct:[0],
+    explanation:"Homme je mužského rodu a začíná samohláskou (h je němé) → CET. Tvar „ce homme“ neexistuje, protože by se špatně vyslovoval.",
+    tip:"Před samohláskou a němým h: cet.",
+  },
+  {
+    question: "Přelož: „Tohle auto je hodně staré.“",
+    type:"single",
+    options:["Cette voiture est très vieille.","Ce voiture est très vieux.","Cet voiture est très vieille.","Ces voiture sont très vieilles."],
+    correct:[0],
+    explanation:"Pozor — čeština říká „tohle“, ale rozhoduje francouzský rod: la voiture je ženského rodu → CETTE, a přídavné jméno se shoduje: vieille.",
+    tip:"Neřiď se češtinou, řiď se francouzským členem.",
+  },
+  {
+    question: "Vyber VŠECHNA správná spojení s ukazovacím zájmenem.",
+    type:"multi",
+    options:["ce chat","cet oiseau","cette voiture","ces oranges","ce homme","cette pull"],
+    correct:[0,1,2,3],
+    explanation:"Chybné je „ce homme“ (před samohláskou musí být cet) a „cette pull“ (le pull je mužského rodu → ce pull).",
+  },
+  {
+    question: "Jak se řekne « Tyhle pomeranče jsou shnilé »?",
+    type:"single",
+    options:["Ces oranges sont pourries.","Cette oranges sont pourries.","Ce oranges sont pourries.","Cets oranges sont pourries."],
+    correct:[0],
+    explanation:"V množném čísle je vždy CES, pro mužský i ženský rod. Tvar „cets“ neexistuje.",
+  },
+  {
+    question: "Ke kterým slovům patří « cet »?",
+    type:"multi",
+    options:["endroit","oiseau","ordinateur","arrêt","jupe","baskets"],
+    correct:[0,1,2,3],
+    explanation:"cet endroit, cet oiseau, cet ordinateur, cet arrêt — všechna jsou mužského rodu a začínají samohláskou. La jupe je ženská (cette jupe), les baskets množné (ces baskets).",
+  },
+  {
+    question: "Doplň sloveso: « Nous ___ au restaurant tous les vendredis. » (manger)",
+    type:"single",
+    options:["mangeons","mangons","mangeont","manjons"],
+    correct:[0],
+    explanation:"U sloves na -ger se před koncovkou -ons drží -e-, aby zůstala výslovnost [ž]: nous mangeons, nous voyageons.",
+    tip:"mangeons, nageons, voyageons — e nevypadne.",
+  },
+  {
+    question: "Doplň sloveso: « Nous nous ___ à vélo. » (se déplacer)",
+    type:"single",
+    options:["déplaçons","déplacons","déplaceons","déplassons"],
+    correct:[0],
+    explanation:"U sloves na -cer se před -ons píše ç, aby se c vyslovovalo [s]: nous déplaçons, nous commençons.",
+    tip:"c + ons → ç.",
   },
 ];
 
@@ -1614,7 +1812,7 @@ function GrammarTab() {
   return (
     <div>
       <SectionHead no="Partie II" title="Gramatika — co se v testu objeví"
-        lede="Deset jevů z banque semaines 1–12. Každý blok má pravidlo, příklady z banque a nejčastější chybu. Rozklikni jen to, co ti nesedí." />
+        lede="Dvanáct jevů, které se v testu objevují. Každý blok má pravidlo, příklady z banque a nejčastější chybu. Rozklikni jen to, co ti nesedí." />
 
       <Acc title="1 · Množství a dělivý člen" badge="un peu de · beaucoup de · pas de" defaultOpen>
         <div className="rule">
@@ -1780,6 +1978,60 @@ function GrammarTab() {
           Měsíce: <b>en</b> janvier, <b>en</b> avril. Části měsíce: début / mi- / fin septembre.
         </div>
       </Acc>
+
+      <Acc title="11 · Ukazovací zájmena (ce / cet / cette / ces)" badge="tenhle · tahle · tohle · tyhle">
+        <table className="tbl">
+          <thead><tr><th>Tvar</th><th>Kdy</th><th>Příklad</th><th>Česky</th></tr></thead>
+          <tbody>
+            <tr><td className="mono">ce</td><td>mužský rod před souhláskou</td><td><b>Ce</b> chat est à moi.</td><td>Tahle kočka je moje.</td></tr>
+            <tr><td className="mono">cet</td><td>mužský rod před samohláskou nebo němým h</td><td><b>Cet</b> homme · <b>cet</b> endroit · <b>cet</b> oiseau</td><td>Tenhle muž · tohle místo · tenhle pták</td></tr>
+            <tr><td className="mono">cette</td><td>ženský rod</td><td><b>Cette</b> voiture est très vieille.</td><td>Tohle auto je hodně staré.</td></tr>
+            <tr><td className="mono">ces</td><td>množné číslo — oba rody</td><td><b>Ces</b> oranges sont pourries.</td><td>Tyhle pomeranče jsou shnilé.</td></tr>
+          </tbody>
+        </table>
+        <div className="rule">
+          <b>Zásadní past:</b> neřiď se českým „tenhle / tahle / tohle“, ale francouzským rodem. <i>Auto</i> je česky střední rod,
+          ale <b>la voiture</b> je ve francouzštině ženský → <b>cette</b> voiture.
+        </div>
+        <div className="rule">
+          <b>ce × cet se vyslovují jinak, cet × cette stejně.</b> Tvary <b>cet</b> [sɛt] a <b>cette</b> [sɛt] zní úplně stejně —
+          v poslechu je nerozlišíš, v psaní na tom ale záleží: cet jde k mužskému rodu, cette k ženskému.
+        </div>
+        <div className="ex">
+          <div><b>ce</b> pull · <b>ce</b> manteau · <b>ce</b> quartier · <b>ce</b> pont</div>
+          <div><b>cet</b> imperméable · <b>cet</b> ordinateur · <b>cet</b> arrêt · <b>cet</b> événement</div>
+          <div><b>cette</b> robe · <b>cette</b> jupe · <b>cette</b> gare · <b>cette</b> chemise</div>
+          <div><b>ces</b> baskets · <b>ces</b> chaussures · <b>ces</b> bottes · <b>ces</b> touristes</div>
+        </div>
+        <div className="rule">
+          Tvar <b>„cets“ neexistuje</b> a po ukazovacím zájmenu už nikdy nedáváš člen:{" "}
+          <span style={{ textDecoration:"line-through" }}>ce le pull</span> → <b>ce pull</b>.
+        </div>
+      </Acc>
+
+      <Acc title="12 · Doplňování sloves do vět — na co si dát pozor" badge="nejčastější chytáky">
+        <div className="rule">
+          V testu dostaneš větu s mezerou a infinitiv v závorce. Postupuj vždy stejně:
+          <b> 1)</b> najdi podmět (osobu), <b>2)</b> urči skupinu slovesa, <b>3)</b> zkontroluj pravopisné změny.
+        </div>
+        <table className="tbl">
+          <thead><tr><th>Chyták</th><th>Špatně</th><th>Správně</th></tr></thead>
+          <tbody>
+            <tr><td>-ger před -ons</td><td className="mono">nous mangons</td><td className="mono">nous mangeons</td></tr>
+            <tr><td>-cer před -ons</td><td className="mono">nous déplacons</td><td className="mono">nous déplaçons</td></tr>
+            <tr><td>2. skupina bez -iss-</td><td className="mono">nous finons</td><td className="mono">nous finissons</td></tr>
+            <tr><td>prendre ve 3. os. mn. č.</td><td className="mono">ils prendent</td><td className="mono">ils prennent</td></tr>
+            <tr><td>faire ve 2. os. mn. č.</td><td className="mono">vous faisez</td><td className="mono">vous faites</td></tr>
+            <tr><td>boire v 1. a 2. os. mn. č.</td><td className="mono">nous boivons</td><td className="mono">nous buvons</td></tr>
+            <tr><td>acheter s přízvukem</td><td className="mono">j'achete</td><td className="mono">j'achète</td></tr>
+            <tr><td>zvratné zájmeno</td><td className="mono">nous levons</td><td className="mono">nous nous levons</td></tr>
+          </tbody>
+        </table>
+        <div className="rule">
+          Když je v zadání <b>(vous)</b> nebo vykřičník, jde o <b>rozkaz</b> — napiš tvar bez zájmena:
+          Tournez ! Prenez ! Traversez ! Continuez !
+        </div>
+      </Acc>
     </div>
   );
 }
@@ -1822,7 +2074,7 @@ function ProblemsTab() {
   return (
     <div>
       <SectionHead no="Partie III" title="Řešené úlohy"
-        lede="Šestnáct typových úloh přesně toho druhu, jaký bývá v testu. Nejdřív si je zkus vyřešit na papír, teprve potom odkryj řešení — každé má pravidlo, postup krok za krokem a výsledek." />
+        lede="Dvacet typových úloh přesně toho druhu, jaký bývá v testu. Nejdřív si je zkus vyřešit na papír, teprve potom odkryj řešení — každé má pravidlo, postup krok za krokem a výsledek." />
       <div className="modes">
         {[["all","Všechny"],["e","Lehké ✨"],["m","Střední ⚡"],["h","Těžké 🔥"]].map(([k, t]) => (
           <button key={k} className={"mode" + (filter === k ? " on" : "")} onClick={() => setFilter(k)}>{t}</button>
@@ -2131,6 +2383,54 @@ function ModeConj({ record }) {
   );
 }
 
+/* ── 4f) Doplňování sloves do vět ── */
+function ModeGap({ record }) {
+  const [order, setOrder] = useState(() => shuffleArray(GAPFILL.map((_, i) => i)));
+  const [i, setI] = useState(0);
+  const [val, setVal] = useState("");
+  const [res, setRes] = useState(null);
+
+  const g = GAPFILL[order[i % order.length]];
+  const parts = g.s.split("___");
+
+  const check = () => {
+    if (res) return;
+    const ok = g.a.some(f => conjOk(val, f));
+    setRes(ok ? "ok" : "bad");
+    record("Doplňování sloves", ok);
+  };
+  const next = () => {
+    setVal(""); setRes(null); setI(v => v + 1);
+    if ((i + 1) % order.length === 0) setOrder(shuffleArray(GAPFILL.map((_, k) => k)));
+  };
+
+  return (
+    <div className="card">
+      <div className="prompt-sub">Doplň sloveso ve správném tvaru — {i + 1} / {GAPFILL.length}</div>
+      <div className="prompt-big" style={{ fontSize:"clamp(19px,3.2vw,26px)" }}>
+        {parts[0]}<span style={{ color:"#c8102e", borderBottom:"2px solid #c8102e" }}>&nbsp;&nbsp;?&nbsp;&nbsp;</span>{parts[1]}
+      </div>
+      <div style={{ textAlign:"center", color:"#1b3a8f", fontWeight:700 }}>({g.inf})</div>
+      <input className="drill-input" value={val} autoComplete="off" spellCheck="false"
+        onChange={e => setVal(e.target.value)}
+        onKeyDown={e => { if (e.key === "Enter") { res ? next() : check(); } }}
+        placeholder="tvar slovesa…" />
+      <div style={{ display:"flex", gap:"10px", flexWrap:"wrap" }}>
+        {!res && <button className="btn" onClick={check}>Zkontrolovat</button>}
+        {res && <button className="btn red" onClick={next}>Další věta →</button>}
+      </div>
+      {res && (
+        <div className={"verdict " + (res === "ok" ? "ok" : "bad")}>
+          {res === "ok" ? "Správně!" : "Ještě ne."}
+          <div className="sol2">{parts[0]}<b>{g.a[0]}</b>{parts[1]}</div>
+          <div className="sol2" style={{ color:"#5b5750", fontSize:"14px" }}>{g.cz}</div>
+          {g.note && <div className="sol2" style={{ color:"#a86a00", fontSize:"14px", fontStyle:"italic" }}>{g.note}</div>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Zastřešující záložka cvičení se skóre ── */
 function DrillTab() {
   const [mode, setMode] = useState("mc");
@@ -2155,10 +2455,10 @@ function DrillTab() {
   return (
     <div>
       <SectionHead no="Partie IV" title="Cvičení"
-        lede="Pět režimů: výběr z možností, psaní slovíček, párování, překlad vět a časování sloves. Skóre se počítá napříč všemi režimy podle kategorií." />
+        lede="Šest režimů: výběr z možností, psaní slovíček, párování, doplňování sloves do vět, překlad vět a časování sloves. Skóre se počítá napříč všemi režimy podle kategorií." />
 
       <div className="modes">
-        {[["mc","Výběr z možností"],["write","Psaní slovíček"],["pairs","Párování"],["sent","Překlad vět"],["conj","Časování sloves"]].map(([k, t]) => (
+        {[["mc","Výběr z možností"],["write","Psaní slovíček"],["pairs","Párování"],["gap","Doplň sloveso do věty"],["sent","Překlad vět"],["conj","Časování sloves"]].map(([k, t]) => (
           <button key={k} className={"mode" + (mode === k ? " on" : "")} onClick={() => setMode(k)}>{t}</button>
         ))}
       </div>
@@ -2175,6 +2475,7 @@ function DrillTab() {
       {mode === "mc" && <ModeChoice items={items} record={record} />}
       {mode === "write" && <ModeWrite items={items} record={record} />}
       {mode === "pairs" && <ModePairs items={items} record={record} />}
+      {mode === "gap" && <ModeGap record={record} />}
       {mode === "sent" && <ModeSentences record={record} />}
       {mode === "conj" && <ModeConj record={record} />}
 
@@ -2277,13 +2578,82 @@ function FlashTab() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   7) PSANÍ VĚT — produkce podle zadání
+   ═══════════════════════════════════════════════════════════════════ */
+
+function WritingTask({ t }) {
+  const [text, setText] = useState("");
+  const [checked, setChecked] = useState(false);
+  const [model, setModel] = useState(false);
+
+  const n = norm(text);
+  const hits = t.need.map(r => ({ ...r, ok: r.alts.some(a => n.includes(norm(a))) }));
+  const done = hits.filter(h => h.ok).length;
+  const lines = text.split(/[.!?\n]+/).filter(x => x.trim().length > 3).length;
+
+  return (
+    <div className="card">
+      <h3>{t.title}</h3>
+      <p className="lede">{t.brief}</p>
+
+      <textarea className="drill-input" rows={7} value={text} onChange={e => setText(e.target.value)}
+        placeholder="piš sem svoje věty, každou na nový řádek…" />
+
+      <div style={{ display:"flex", gap:"10px", flexWrap:"wrap" }}>
+        <button className="btn" onClick={() => setChecked(true)}>Zkontrolovat obraty</button>
+        <button className="btn red" onClick={() => setModel(m => !m)}>{model ? "Skrýt vzor" : "Vzorové řešení"}</button>
+      </div>
+
+      {checked && (
+        <div style={{ marginTop:"16px" }}>
+          <div className="scorebar">
+            <span className="chip">Napsané věty: <b>{lines}</b></span>
+            <span className="chip">Použité obraty: <b>{done} / {t.need.length}</b></span>
+          </div>
+          <div className="prog"><i style={{ width: (done / t.need.length) * 100 + "%" }} /></div>
+          <div className="cat">Kontrolní seznam</div>
+          <ul style={{ listStyle:"none", paddingLeft:0 }}>
+            {hits.map((h, i) => (
+              <li key={i} style={{ color: h.ok ? "#1f7a45" : "#5b5750", padding:"3px 0" }}>
+                <b style={{ marginRight:"8px" }}>{h.ok ? "✓" : "○"}</b>{h.lab}
+              </li>
+            ))}
+          </ul>
+          <p style={{ fontSize:"14px", color:"#5b5750" }}>
+            Kontrola hledá jen to, jestli jsi daný obrat použil — gramatickou správnost si porovnej se vzorem níže.
+          </p>
+        </div>
+      )}
+
+      {model && (
+        <div className="sol" style={{ marginTop:"16px" }}>
+          <div className="step"><div className="lab">Vzorové řešení</div>
+            <ol>{t.model.map((m, i) => <li key={i}>{m}</li>)}</ol>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function WritingTab() {
+  return (
+    <div>
+      <SectionHead no="Partie VII" title="Psaní vět"
+        lede="Tři zadání toho typu, co bývá na konci testu: poradit cestu, popsat počasí a popsat věci s ukazovacími zájmeny. Napiš věty do pole, nech si zkontrolovat, které povinné obraty jsi použil, a teprve pak odkryj vzor." />
+      {WRITING.map(t => <WritingTask key={t.id} t={t} />)}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    6) TAHÁK
    ═══════════════════════════════════════════════════════════════════ */
 
 function CheatTab() {
   return (
     <div>
-      <SectionHead no="Partie VII" title="Tahák — co se musíš naučit nazpaměť"
+      <SectionHead no="Partie VIII" title="Tahák — co se musíš naučit nazpaměť"
         lede="Všechna pravidla a tvary na jednom místě. Tohle si projdi ráno před testem." />
 
       <div className="card">
@@ -2372,6 +2742,24 @@ function CheatTab() {
             </div>
           </div>
           <div>
+            <div className="cat">Ukazovací zájmena</div>
+            <div className="ex">
+              <div><b>ce</b> pull (m. + souhláska)</div>
+              <div><b>cet</b> imperméable (m. + samohláska / němé h)</div>
+              <div><b>cette</b> robe (ž. rod)</div>
+              <div><b>ces</b> baskets (mn. č., oba rody)</div>
+              <div>„cets“ <b>neexistuje</b> · řídí se FR rodem, ne češtinou</div>
+            </div>
+          </div>
+          <div>
+            <div className="cat">Pravopis při časování</div>
+            <div className="ex">
+              <div>nous mange<b>o</b>ns · nous déplaç<b>ons</b></div>
+              <div>nous fini<b>ss</b>ons · ils pre<b>nn</b>ent</div>
+              <div>vous fai<b>tes</b> · nous <b>buv</b>ons · j'ach<b>è</b>te</div>
+            </div>
+          </div>
+          <div>
             <div className="cat">Zrádná dvojice</div>
             <div className="ex">
               <div><b>emprunter</b> = půjčit si OD někoho</div>
@@ -2432,13 +2820,14 @@ function CheatTab() {
    ═══════════════════════════════════════════════════════════════════ */
 
 const TABS = [
-  { id:"vocab", n:"I",   label:"Slovník",      comp: VocabTab },
-  { id:"gram",  n:"II",  label:"Gramatika",    comp: GrammarTab },
-  { id:"prob",  n:"III", label:"Řešené úlohy", comp: ProblemsTab },
-  { id:"drill", n:"IV",  label:"Cvičení",      comp: DrillTab },
-  { id:"quiz",  n:"V",   label:"Kvíz",         comp: null },
-  { id:"flash", n:"VI",  label:"Kartičky",     comp: FlashTab },
-  { id:"cheat", n:"VII", label:"Tahák",        comp: CheatTab },
+  { id:"vocab", n:"I",    label:"Slovník",      comp: VocabTab },
+  { id:"gram",  n:"II",   label:"Gramatika",    comp: GrammarTab },
+  { id:"prob",  n:"III",  label:"Řešené úlohy", comp: ProblemsTab },
+  { id:"drill", n:"IV",   label:"Cvičení",      comp: DrillTab },
+  { id:"quiz",  n:"V",    label:"Kvíz",         comp: null },
+  { id:"flash", n:"VI",   label:"Kartičky",     comp: FlashTab },
+  { id:"write", n:"VII",  label:"Psaní vět",    comp: WritingTab },
+  { id:"cheat", n:"VIII", label:"Tahák",        comp: CheatTab },
 ];
 
 export default function App() {

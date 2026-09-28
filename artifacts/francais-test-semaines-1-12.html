@@ -1042,6 +1042,42 @@ var PROBLEMS = [
   },
   {
     d: "m",
+    topic: "Ukazovací zájmena",
+    task: "Doplň ce / cet / cette / ces: ___ pull, ___ imperméable, ___ jupe, ___ bottes, ___ ordinateur.",
+    given: "Rozhoduje rod a číslo francouzského podstatného jména a první hláska slova.",
+    rule: "ce = m. rod před souhláskou · cet = m. rod před samohláskou nebo němým h · cette = ž. rod · ces = množné číslo obou rodů.",
+    steps: ["le pull — m. rod, začíná na p → ce pull.", "l'imperméable — m. rod, začíná na samohlásku → cet imperméable.", "la jupe — ž. rod → cette jupe.", "les bottes — množné číslo → ces bottes.", "l'ordinateur — m. rod, samohláska → cet ordinateur."],
+    res: "ce pull · cet imperméable · cette jupe · ces bottes · cet ordinateur"
+  },
+  {
+    d: "h",
+    topic: "Ukazovací zájmena",
+    task: "Přelož: „Tenhle muž je můj soused, tahle kočka je moje a tyhle pomeranče jsou shnilé.“",
+    given: "Čeština rozlišuje tenhle / tahle / tohle jinak než francouzština — řídíš se francouzským rodem.",
+    rule: "Ukazovací zájmeno se shoduje s podstatným jménem, ne s českým překladem. V množném čísle je vždy ces.",
+    steps: ["l'homme — m. rod před samohláskou → Cet homme.", "le chat — m. rod → Ce chat. Ale tady je podmět kočka: le chat je ve francouzštině mužský → Ce chat est à moi.", "les oranges — množné číslo → Ces oranges, přídavné jméno v ž. mn. č. → pourries."],
+    res: "Cet homme est mon voisin, ce chat est à moi et ces oranges sont pourries."
+  },
+  {
+    d: "m",
+    topic: "Doplňování sloves",
+    task: "Doplň správný tvar: « Vous ___ (faire) quelle taille ? » · « Nous ___ (finir) à six heures. » · « Ils ___ (prendre) le métro. »",
+    given: "U každé věty nejdřív urči osobu a teprve potom skupinu slovesa.",
+    rule: "faire je nepravidelné (vous faites), finir je 2. skupina se vsuvkou -iss- (nous finissons), prendre zdvojuje -nn- ve 3. os. mn. č. (ils prennent).",
+    steps: ["Vous + faire → faites (jedna ze tří výjimek vedle vous êtes a vous dites).", "Nous + finir → finissons, ne „finons“.", "Ils + prendre → prennent, ne „prendent“."],
+    res: "Vous faites quelle taille ? · Nous finissons à six heures. · Ils prennent le métro."
+  },
+  {
+    d: "h",
+    topic: "Psaní vět — cesta",
+    task: "Napiš 4 věty, jak se dostat z nádraží ke knihovně. Použij rozkaz pro vous, řadovou číslovku a spojku puis.",
+    given: "Radíš cizímu člověku → vykání, tedy rozkaz ve tvaru vous bez zájmena.",
+    rule: "Struktura: Prenez / Tournez / Continuez / Traversez + určení místa. Věty spojuj pomocí puis, et nebo ensuite. Účel vyjádři přes pour + infinitiv.",
+    steps: ["Začni od nádraží a veď ho krok za krokem — každá věta jeden pokyn.", "Střídej slovesa, neopakuj třikrát Tournez.", "Na konci řekni, kde se budova nachází (en face de, à côté de + stažený člen)."],
+    res: "Prenez la première rue à droite. Continuez tout droit jusqu'à la place. Traversez la place, puis tournez à gauche. La bibliothèque est en face de l'église."
+  },
+  {
+    d: "m",
     topic: "Počasí",
     task: "Popiš čtyřmi větami: prší, je 30 °C, fouká vítr, sněží.",
     given: "Popis počasí je neosobní – podmět je vždy il nebo il y a.",
@@ -1079,6 +1115,109 @@ var SENTENCES = [
   { fr: "On place le tableau entre les deux fenêtres.", cz: "Obraz dáme mezi dvě okna.", topic: "Bydlení" },
   { fr: "On va au théâtre ? – Avec plaisir !", cz: "Půjdeme do divadla? – S radostí!", topic: "Program" },
   { fr: "Je ne peux pas, je suis désolé.", cz: "Nemůžu, je mi líto.", topic: "Program" }
+];
+var GAPFILL = [
+  { s: "Je ___ le plat du jour, s'il vous plaît.", inf: "vouloir", a: ["veux", "voudrais"], cz: "Chtěl bych pokrm dne, prosím.", note: "Zdvořile se v restauraci říká je voudrais." },
+  { s: "Vous ___ comment ? — Par carte.", inf: "payer", a: ["payez"], cz: "Jak budete platit? — Kartou." },
+  { s: "Nous ___ au restaurant tous les vendredis.", inf: "manger", a: ["mangeons"], cz: "Jíme v restauraci každý pátek.", note: "Pozor na -e- před -ons kvůli výslovnosti." },
+  { s: "Elles ___ beaucoup d'amis à Paris.", inf: "avoir", a: ["ont"], cz: "Mají v Paříži hodně kamarádů." },
+  { s: "Tu ___ prêt ? On part !", inf: "être", a: ["es"], cz: "Jsi připravený? Jdeme!" },
+  { s: "Je ___ à la boulangerie pour acheter du pain.", inf: "aller", a: ["vais"], cz: "Jdu do pekařství koupit chleba." },
+  { s: "Ils ___ le métro pour aller au musée.", inf: "prendre", a: ["prennent"], cz: "Jezdí do muzea metrem.", note: "Zdvojené -nn- ve 3. os. mn. č." },
+  { s: "Vous ___ quelle taille ?", inf: "faire", a: ["faites"], cz: "Jakou máte velikost?", note: "vous faites — bez -ez." },
+  { s: "Elle ___ une entrée et un dessert.", inf: "choisir", a: ["choisit"], cz: "Vybírá si předkrm a dezert." },
+  { s: "Nous ___ les devoirs à six heures.", inf: "finir", a: ["finissons"], cz: "Končíme úkoly v šest.", note: "2. skupina — vsuvka -iss-." },
+  { s: "Est-ce que tu ___ me prêter un stylo ?", inf: "pouvoir", a: ["peux"], cz: "Můžeš mi půjčit pero?" },
+  { s: "Je ___ bien ce quartier, j'habite ici.", inf: "connaître", a: ["connais"], cz: "Tuhle čtvrť dobře znám, bydlím tady." },
+  { s: "Ils ___ où est la gare.", inf: "savoir", a: ["savent"], cz: "Vědí, kde je nádraží." },
+  { s: "Nous ___ un peu d'eau.", inf: "boire", a: ["buvons"], cz: "Pijeme trochu vody.", note: "Kmen buv- v 1. a 2. os. mn. č." },
+  { s: "Il ___ un pull noir et un pantalon bleu.", inf: "mettre", a: ["met"], cz: "Obléká si černý svetr a modré kalhoty." },
+  { s: "Vous ___ avec nous au théâtre ?", inf: "venir", a: ["venez"], cz: "Půjdete s námi do divadla?" },
+  { s: "On ___ des croissants dans cette boulangerie.", inf: "vendre", a: ["vend"], cz: "V téhle pekárně prodávají croissanty.", note: "3. skupina na -re: ve 3. os. j. č. bez koncovky." },
+  { s: "J'___ de la viande à la boucherie.", inf: "acheter", a: ["achète"], cz: "Kupuji maso v řeznictví.", note: "è ve všech tvarech kromě nous / vous." },
+  { s: "Nous ___ dans la banlieue de Lyon.", inf: "habiter", a: ["habitons"], cz: "Bydlíme na předměstí Lyonu." },
+  { s: "Tu ___ les desserts ?", inf: "aimer", a: ["aimes"], cz: "Máš rád dezerty?" },
+  { s: "Vous ___ français ?", inf: "parler", a: ["parlez"], cz: "Mluvíte francouzsky?" },
+  { s: "Elle ___ au premier étage.", inf: "monter", a: ["monte"], cz: "Jde do prvního patra." },
+  { s: "Je me ___ à sept heures du matin.", inf: "lever", a: ["lève"], cz: "Vstávám v sedm ráno.", note: "Zvratné sloveso: je me lève." },
+  { s: "Il se ___ tous les matins.", inf: "raser", a: ["rase"], cz: "Holí se každé ráno." },
+  { s: "Nous nous ___ à vélo.", inf: "déplacer", a: ["déplaçons"], cz: "Přepravujeme se na kole.", note: "ç před -ons kvůli výslovnosti [s]." },
+  { s: "Elles se ___ tard le soir.", inf: "coucher", a: ["couchent"], cz: "Chodí spát pozdě večer." },
+  { s: "Je m'___ vite quand je suis fatigué.", inf: "endormir", a: ["endors"], cz: "Usnu rychle, když jsem unavený." },
+  { s: "Comment tu te ___ ? — À pied.", inf: "déplacer", a: ["déplaces"], cz: "Jak se přepravuješ? — Pěšky." },
+  { s: "___ à gauche, puis continuez tout droit. (vous)", inf: "tourner", a: ["tournez"], cz: "Zahněte vlevo a pak pokračujte rovně.", note: "Rozkaz pro vous = tvar vous bez zájmena." },
+  { s: "___ la première rue à droite. (vous)", inf: "prendre", a: ["prenez"], cz: "Dejte se první ulicí vpravo." },
+  { s: "___ le Pont Neuf, puis tournez à gauche. (vous)", inf: "traverser", a: ["traversez"], cz: "Přejděte Pont Neuf a potom zahněte vlevo." },
+  { s: "Il ne ___ jamais d'argent sur lui.", inf: "avoir", a: ["a"], cz: "Nikdy u sebe nemá peníze.", note: "Zápor ne… jamais obklopuje sloveso." }
+];
+var WRITING = [
+  {
+    id: "dir",
+    title: "Cesta — napiš 7 vět",
+    brief: "Turista stojí před nádražím (la gare) a hledá knihovnu (la bibliothèque). Napiš mu 7 vět, jak se tam dostane. Použij rozkazovací způsob pro vous.",
+    need: [
+      { lab: "tázací úvod (Excusez-moi / Où est…)", alts: ["excusez-moi", "ou est", "pardon"] },
+      { lab: "tournez à gauche / à droite", alts: ["tournez"] },
+      { lab: "tout droit (continuez)", alts: ["tout droit"] },
+      { lab: "prenez la … rue", alts: ["prenez"] },
+      { lab: "traversez (le pont / la place)", alts: ["traversez"] },
+      { lab: "řadová číslovka (première / deuxième)", alts: ["premiere", "deuxieme", "troisieme"] },
+      { lab: "puis / et pro spojení vět", alts: ["puis", "ensuite", "et apres"] },
+      { lab: "pour + infinitiv (účel)", alts: ["pour prendre", "pour acheter", "pour aller", "pour arriver", "pour trouver"] },
+      { lab: "název místa z banque (rue, pont, place, arrêt…)", alts: ["la rue", "le pont", "la place", "l arret", "l avenue", "le boulevard", "la bibliotheque"] }
+    ],
+    model: [
+      "Excusez-moi, je cherche la bibliothèque, s'il vous plaît.",
+      "Prenez la première rue à droite après la gare.",
+      "Continuez tout droit jusqu'à la place.",
+      "Traversez la place, puis tournez à gauche.",
+      "Prenez l'avenue Victor Hugo et continuez tout droit.",
+      "La bibliothèque est en face de l'église, à côté de la poste.",
+      "Vous pouvez aussi prendre le bus numéro 12 pour arriver plus vite."
+    ]
+  },
+  {
+    id: "meteo",
+    title: "Počasí — napiš 5 vět",
+    brief: "Popiš počasí ve čtyřech ročních obdobích a nakonec dnešní počasí. Vystřídej všechny tři konstrukce: il pleut / il neige, il fait…, il y a du…",
+    need: [
+      { lab: "il fait + přídavné jméno nebo teplota", alts: ["il fait"] },
+      { lab: "il y a du / de l' + podstatné jméno", alts: ["il y a du", "il y a de l"] },
+      { lab: "il pleut nebo il neige", alts: ["il pleut", "il neige"] },
+      { lab: "en hiver", alts: ["en hiver"] },
+      { lab: "au printemps", alts: ["au printemps"] },
+      { lab: "en été", alts: ["en ete"] },
+      { lab: "en automne", alts: ["en automne"] },
+      { lab: "stupně (degrés)", alts: ["degre", "°c", "c."] }
+    ],
+    model: [
+      "En hiver, il fait froid et il neige souvent.",
+      "Au printemps, il y a du soleil, mais il pleut aussi.",
+      "En été, il fait chaud : il fait trente degrés.",
+      "En automne, il y a du vent et beaucoup de nuages.",
+      "Aujourd'hui, il fait beau et il fait vingt degrés."
+    ]
+  },
+  {
+    id: "desc",
+    title: "Popis s ukazovacími zájmeny — napiš 5 vět",
+    brief: "Popiš oblečení a věci ve výloze. V každé větě použij ukazovací zájmeno (ce / cet / cette / ces) a barvu se správnou shodou.",
+    need: [
+      { lab: "ce + mužský rod", alts: ["ce pull", "ce manteau", "ce pantalon", "ce chapeau", "ce gilet", "ce sac", "ce jean", "ce short"] },
+      { lab: "cet + samohláska", alts: ["cet imper", "cet ordinateur", "cet homme", "cet arret", "cet endroit", "cet oiseau", "cet objet"] },
+      { lab: "cette + ženský rod", alts: ["cette robe", "cette jupe", "cette chemise", "cette veste", "cette montre", "cette cravate", "cette ceinture"] },
+      { lab: "ces + množné číslo", alts: ["ces "] },
+      { lab: "barva ve správném tvaru", alts: ["bleu", "noir", "blanc", "rouge", "vert", "gris", "jaune", "rose", "marron"] },
+      { lab: "hodnocení (il me plaît / je trouve ça joli / à la mode)", alts: ["me plait", "je trouve ca joli", "a la mode", "quelle horreur", "il te va bien"] }
+    ],
+    model: [
+      "Ce pull noir est très joli, il me plaît.",
+      "Cet imperméable bleu n'est pas à la mode.",
+      "Cette robe blanche coûte quarante euros.",
+      "Ces baskets bleues sont en cuir.",
+      "Ces chaussures grises ne me plaisent pas : quelle horreur !"
+    ]
+  }
 ];
 var QUIZ = [
   {
@@ -1349,6 +1488,59 @@ var QUIZ = [
     correct: [0],
     explanation: "Je voudrais je zdvořilá podmiňovací forma slovesa vouloir. „Je veux“ zní v restauraci hrubě.",
     tip: "Voudrais = prosím hezky."
+  },
+  {
+    question: "Doplň: « ___ homme travaille à la mairie. »",
+    type: "single",
+    options: ["Cet", "Ce", "Cette", "Ces"],
+    correct: [0],
+    explanation: "Homme je mužského rodu a začíná samohláskou (h je němé) → CET. Tvar „ce homme“ neexistuje, protože by se špatně vyslovoval.",
+    tip: "Před samohláskou a němým h: cet."
+  },
+  {
+    question: "Přelož: „Tohle auto je hodně staré.“",
+    type: "single",
+    options: ["Cette voiture est très vieille.", "Ce voiture est très vieux.", "Cet voiture est très vieille.", "Ces voiture sont très vieilles."],
+    correct: [0],
+    explanation: "Pozor — čeština říká „tohle“, ale rozhoduje francouzský rod: la voiture je ženského rodu → CETTE, a přídavné jméno se shoduje: vieille.",
+    tip: "Neřiď se češtinou, řiď se francouzským členem."
+  },
+  {
+    question: "Vyber VŠECHNA správná spojení s ukazovacím zájmenem.",
+    type: "multi",
+    options: ["ce chat", "cet oiseau", "cette voiture", "ces oranges", "ce homme", "cette pull"],
+    correct: [0, 1, 2, 3],
+    explanation: "Chybné je „ce homme“ (před samohláskou musí být cet) a „cette pull“ (le pull je mužského rodu → ce pull)."
+  },
+  {
+    question: "Jak se řekne « Tyhle pomeranče jsou shnilé »?",
+    type: "single",
+    options: ["Ces oranges sont pourries.", "Cette oranges sont pourries.", "Ce oranges sont pourries.", "Cets oranges sont pourries."],
+    correct: [0],
+    explanation: "V množném čísle je vždy CES, pro mužský i ženský rod. Tvar „cets“ neexistuje."
+  },
+  {
+    question: "Ke kterým slovům patří « cet »?",
+    type: "multi",
+    options: ["endroit", "oiseau", "ordinateur", "arrêt", "jupe", "baskets"],
+    correct: [0, 1, 2, 3],
+    explanation: "cet endroit, cet oiseau, cet ordinateur, cet arrêt — všechna jsou mužského rodu a začínají samohláskou. La jupe je ženská (cette jupe), les baskets množné (ces baskets)."
+  },
+  {
+    question: "Doplň sloveso: « Nous ___ au restaurant tous les vendredis. » (manger)",
+    type: "single",
+    options: ["mangeons", "mangons", "mangeont", "manjons"],
+    correct: [0],
+    explanation: "U sloves na -ger se před koncovkou -ons drží -e-, aby zůstala výslovnost [ž]: nous mangeons, nous voyageons.",
+    tip: "mangeons, nageons, voyageons — e nevypadne."
+  },
+  {
+    question: "Doplň sloveso: « Nous nous ___ à vélo. » (se déplacer)",
+    type: "single",
+    options: ["déplaçons", "déplacons", "déplaceons", "déplassons"],
+    correct: [0],
+    explanation: "U sloves na -cer se před -ons píše ç, aby se c vyslovovalo [s]: nous déplaçons, nous commençons.",
+    tip: "c + ons → ç."
   }
 ];
 var ALL_ITEMS = WEEKS.flatMap((w) => w.groups.flatMap((g) => g.items.map((it) => ({ ...it, week: w.id, weekLabel: w.label, cat: g.cat }))));
@@ -1855,7 +2047,7 @@ function GrammarTab() {
       /* @__PURE__ */ jsxDEV(SectionHead, {
         no: "Partie II",
         title: "Gramatika — co se v testu objeví",
-        lede: "Deset jevů z banque semaines 1–12. Každý blok má pravidlo, příklady z banque a nejčastější chybu. Rozklikni jen to, co ti nesedí."
+        lede: "Dvanáct jevů, které se v testu objevují. Každý blok má pravidlo, příklady z banque a nejčastější chybu. Rozklikni jen to, co ti nesedí."
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsxDEV(Acc, {
         title: "1 · Množství a dělivý člen",
@@ -3144,6 +3336,460 @@ function GrammarTab() {
             ]
           }, undefined, true, undefined, this)
         ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Acc, {
+        title: "11 · Ukazovací zájmena (ce / cet / cette / ces)",
+        badge: "tenhle · tahle · tohle · tyhle",
+        children: [
+          /* @__PURE__ */ jsxDEV("table", {
+            className: "tbl",
+            children: [
+              /* @__PURE__ */ jsxDEV("thead", {
+                children: /* @__PURE__ */ jsxDEV("tr", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("th", {
+                      children: "Tvar"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("th", {
+                      children: "Kdy"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("th", {
+                      children: "Příklad"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("th", {
+                      children: "Česky"
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("tbody", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "ce"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "mužský rod před souhláskou"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "Ce"
+                          }, undefined, false, undefined, this),
+                          " chat est à moi."
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "Tahle kočka je moje."
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "cet"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "mužský rod před samohláskou nebo němým h"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "Cet"
+                          }, undefined, false, undefined, this),
+                          " homme · ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "cet"
+                          }, undefined, false, undefined, this),
+                          " endroit · ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "cet"
+                          }, undefined, false, undefined, this),
+                          " oiseau"
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "Tenhle muž · tohle místo · tenhle pták"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "cette"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "ženský rod"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "Cette"
+                          }, undefined, false, undefined, this),
+                          " voiture est très vieille."
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "Tohle auto je hodně staré."
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "ces"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "množné číslo — oba rody"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "Ces"
+                          }, undefined, false, undefined, this),
+                          " oranges sont pourries."
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "Tyhle pomeranče jsou shnilé."
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "Zásadní past:"
+              }, undefined, false, undefined, this),
+              " neřiď se českým „tenhle / tahle / tohle“, ale francouzským rodem. ",
+              /* @__PURE__ */ jsxDEV("i", {
+                children: "Auto"
+              }, undefined, false, undefined, this),
+              " je česky střední rod, ale ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "la voiture"
+              }, undefined, false, undefined, this),
+              " je ve francouzštině ženský → ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "cette"
+              }, undefined, false, undefined, this),
+              " voiture."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "ce × cet se vyslovují jinak, cet × cette stejně."
+              }, undefined, false, undefined, this),
+              " Tvary ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "cet"
+              }, undefined, false, undefined, this),
+              " [sɛt] a ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "cette"
+              }, undefined, false, undefined, this),
+              " [sɛt] zní úplně stejně — v poslechu je nerozlišíš, v psaní na tom ale záleží: cet jde k mužskému rodu, cette k ženskému."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "ex",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "ce"
+                  }, undefined, false, undefined, this),
+                  " pull · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "ce"
+                  }, undefined, false, undefined, this),
+                  " manteau · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "ce"
+                  }, undefined, false, undefined, this),
+                  " quartier · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "ce"
+                  }, undefined, false, undefined, this),
+                  " pont"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "cet"
+                  }, undefined, false, undefined, this),
+                  " imperméable · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "cet"
+                  }, undefined, false, undefined, this),
+                  " ordinateur · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "cet"
+                  }, undefined, false, undefined, this),
+                  " arrêt · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "cet"
+                  }, undefined, false, undefined, this),
+                  " événement"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "cette"
+                  }, undefined, false, undefined, this),
+                  " robe · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "cette"
+                  }, undefined, false, undefined, this),
+                  " jupe · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "cette"
+                  }, undefined, false, undefined, this),
+                  " gare · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "cette"
+                  }, undefined, false, undefined, this),
+                  " chemise"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "ces"
+                  }, undefined, false, undefined, this),
+                  " baskets · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "ces"
+                  }, undefined, false, undefined, this),
+                  " chaussures · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "ces"
+                  }, undefined, false, undefined, this),
+                  " bottes · ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "ces"
+                  }, undefined, false, undefined, this),
+                  " touristes"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              "Tvar ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "„cets“ neexistuje"
+              }, undefined, false, undefined, this),
+              " a po ukazovacím zájmenu už nikdy nedáváš člen:",
+              " ",
+              /* @__PURE__ */ jsxDEV("span", {
+                style: { textDecoration: "line-through" },
+                children: "ce le pull"
+              }, undefined, false, undefined, this),
+              " → ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "ce pull"
+              }, undefined, false, undefined, this),
+              "."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Acc, {
+        title: "12 · Doplňování sloves do vět — na co si dát pozor",
+        badge: "nejčastější chytáky",
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              "V testu dostaneš větu s mezerou a infinitiv v závorce. Postupuj vždy stejně:",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: " 1)"
+              }, undefined, false, undefined, this),
+              " najdi podmět (osobu), ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "2)"
+              }, undefined, false, undefined, this),
+              " urči skupinu slovesa, ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "3)"
+              }, undefined, false, undefined, this),
+              " zkontroluj pravopisné změny."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("table", {
+            className: "tbl",
+            children: [
+              /* @__PURE__ */ jsxDEV("thead", {
+                children: /* @__PURE__ */ jsxDEV("tr", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("th", {
+                      children: "Chyták"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("th", {
+                      children: "Špatně"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("th", {
+                      children: "Správně"
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("tbody", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "-ger před -ons"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous mangons"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous mangeons"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "-cer před -ons"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous déplacons"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous déplaçons"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "2. skupina bez -iss-"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous finons"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous finissons"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "prendre ve 3. os. mn. č."
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "ils prendent"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "ils prennent"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "faire ve 2. os. mn. č."
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "vous faisez"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "vous faites"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "boire v 1. a 2. os. mn. č."
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous boivons"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous buvons"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "acheter s přízvukem"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "j'achete"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "j'achète"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("td", {
+                        children: "zvratné zájmeno"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous levons"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("td", {
+                        className: "mono",
+                        children: "nous nous levons"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              "Když je v zadání ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "(vous)"
+              }, undefined, false, undefined, this),
+              " nebo vykřičník, jde o ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "rozkaz"
+              }, undefined, false, undefined, this),
+              " — napiš tvar bez zájmena: Tournez ! Prenez ! Traversez ! Continuez !"
+            ]
+          }, undefined, true, undefined, this)
+        ]
       }, undefined, true, undefined, this)
     ]
   }, undefined, true, undefined, this);
@@ -3245,7 +3891,7 @@ function ProblemsTab() {
       /* @__PURE__ */ jsxDEV(SectionHead, {
         no: "Partie III",
         title: "Řešené úlohy",
-        lede: "Šestnáct typových úloh přesně toho druhu, jaký bývá v testu. Nejdřív si je zkus vyřešit na papír, teprve potom odkryj řešení — každé má pravidlo, postup krok za krokem a výsledek."
+        lede: "Dvacet typových úloh přesně toho druhu, jaký bývá v testu. Nejdřív si je zkus vyřešit na papír, teprve potom odkryj řešení — každé má pravidlo, postup krok za krokem a výsledek."
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
         className: "modes",
@@ -3847,6 +4493,116 @@ function ModeConj({ record }) {
     ]
   }, undefined, true, undefined, this);
 }
+function ModeGap({ record }) {
+  const [order, setOrder] = useState(() => shuffleArray(GAPFILL.map((_, i2) => i2)));
+  const [i, setI] = useState(0);
+  const [val, setVal] = useState("");
+  const [res, setRes] = useState(null);
+  const g = GAPFILL[order[i % order.length]];
+  const parts = g.s.split("___");
+  const check = () => {
+    if (res)
+      return;
+    const ok = g.a.some((f) => conjOk(val, f));
+    setRes(ok ? "ok" : "bad");
+    record("Doplňování sloves", ok);
+  };
+  const next = () => {
+    setVal("");
+    setRes(null);
+    setI((v) => v + 1);
+    if ((i + 1) % order.length === 0)
+      setOrder(shuffleArray(GAPFILL.map((_, k) => k)));
+  };
+  return /* @__PURE__ */ jsxDEV("div", {
+    className: "card",
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "prompt-sub",
+        children: [
+          "Doplň sloveso ve správném tvaru — ",
+          i + 1,
+          " / ",
+          GAPFILL.length
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "prompt-big",
+        style: { fontSize: "clamp(19px,3.2vw,26px)" },
+        children: [
+          parts[0],
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: "#c8102e", borderBottom: "2px solid #c8102e" },
+            children: "  ?  "
+          }, undefined, false, undefined, this),
+          parts[1]
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { textAlign: "center", color: "#1b3a8f", fontWeight: 700 },
+        children: [
+          "(",
+          g.inf,
+          ")"
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("input", {
+        className: "drill-input",
+        value: val,
+        autoComplete: "off",
+        spellCheck: "false",
+        onChange: (e) => setVal(e.target.value),
+        onKeyDown: (e) => {
+          if (e.key === "Enter") {
+            res ? next() : check();
+          }
+        },
+        placeholder: "tvar slovesa…"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "10px", flexWrap: "wrap" },
+        children: [
+          !res && /* @__PURE__ */ jsxDEV("button", {
+            className: "btn",
+            onClick: check,
+            children: "Zkontrolovat"
+          }, undefined, false, undefined, this),
+          res && /* @__PURE__ */ jsxDEV("button", {
+            className: "btn red",
+            onClick: next,
+            children: "Další věta →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      res && /* @__PURE__ */ jsxDEV("div", {
+        className: "verdict " + (res === "ok" ? "ok" : "bad"),
+        children: [
+          res === "ok" ? "Správně!" : "Ještě ne.",
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "sol2",
+            children: [
+              parts[0],
+              /* @__PURE__ */ jsxDEV("b", {
+                children: g.a[0]
+              }, undefined, false, undefined, this),
+              parts[1]
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "sol2",
+            style: { color: "#5b5750", fontSize: "14px" },
+            children: g.cz
+          }, undefined, false, undefined, this),
+          g.note && /* @__PURE__ */ jsxDEV("div", {
+            className: "sol2",
+            style: { color: "#a86a00", fontSize: "14px", fontStyle: "italic" },
+            children: g.note
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
 function DrillTab() {
   const [mode, setMode] = useState("mc");
   const [week, setWeek] = useState("all");
@@ -3864,11 +4620,11 @@ function DrillTab() {
       /* @__PURE__ */ jsxDEV(SectionHead, {
         no: "Partie IV",
         title: "Cvičení",
-        lede: "Pět režimů: výběr z možností, psaní slovíček, párování, překlad vět a časování sloves. Skóre se počítá napříč všemi režimy podle kategorií."
+        lede: "Šest režimů: výběr z možností, psaní slovíček, párování, doplňování sloves do vět, překlad vět a časování sloves. Skóre se počítá napříč všemi režimy podle kategorií."
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
         className: "modes",
-        children: [["mc", "Výběr z možností"], ["write", "Psaní slovíček"], ["pairs", "Párování"], ["sent", "Překlad vět"], ["conj", "Časování sloves"]].map(([k, t]) => /* @__PURE__ */ jsxDEV("button", {
+        children: [["mc", "Výběr z možností"], ["write", "Psaní slovíček"], ["pairs", "Párování"], ["gap", "Doplň sloveso do věty"], ["sent", "Překlad vět"], ["conj", "Časování sloves"]].map(([k, t]) => /* @__PURE__ */ jsxDEV("button", {
           className: "mode" + (mode === k ? " on" : ""),
           onClick: () => setMode(k),
           children: t
@@ -3899,6 +4655,9 @@ function DrillTab() {
       }, undefined, false, undefined, this),
       mode === "pairs" && /* @__PURE__ */ jsxDEV(ModePairs, {
         items,
+        record
+      }, undefined, false, undefined, this),
+      mode === "gap" && /* @__PURE__ */ jsxDEV(ModeGap, {
         record
       }, undefined, false, undefined, this),
       mode === "sent" && /* @__PURE__ */ jsxDEV(ModeSentences, {
@@ -4148,11 +4907,145 @@ function FlashTab() {
     ]
   }, undefined, true, undefined, this);
 }
-function CheatTab() {
+function WritingTask({ t }) {
+  const [text, setText] = useState("");
+  const [checked, setChecked] = useState(false);
+  const [model, setModel] = useState(false);
+  const n = norm(text);
+  const hits = t.need.map((r) => ({ ...r, ok: r.alts.some((a) => n.includes(norm(a))) }));
+  const done = hits.filter((h) => h.ok).length;
+  const lines = text.split(/[.!?\n]+/).filter((x) => x.trim().length > 3).length;
+  return /* @__PURE__ */ jsxDEV("div", {
+    className: "card",
+    children: [
+      /* @__PURE__ */ jsxDEV("h3", {
+        children: t.title
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("p", {
+        className: "lede",
+        children: t.brief
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("textarea", {
+        className: "drill-input",
+        rows: 7,
+        value: text,
+        onChange: (e) => setText(e.target.value),
+        placeholder: "piš sem svoje věty, každou na nový řádek…"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", gap: "10px", flexWrap: "wrap" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            className: "btn",
+            onClick: () => setChecked(true),
+            children: "Zkontrolovat obraty"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            className: "btn red",
+            onClick: () => setModel((m) => !m),
+            children: model ? "Skrýt vzor" : "Vzorové řešení"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      checked && /* @__PURE__ */ jsxDEV("div", {
+        style: { marginTop: "16px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "scorebar",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                className: "chip",
+                children: [
+                  "Napsané věty: ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: lines
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("span", {
+                className: "chip",
+                children: [
+                  "Použité obraty: ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: [
+                      done,
+                      " / ",
+                      t.need.length
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "prog",
+            children: /* @__PURE__ */ jsxDEV("i", {
+              style: { width: done / t.need.length * 100 + "%" }
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "cat",
+            children: "Kontrolní seznam"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("ul", {
+            style: { listStyle: "none", paddingLeft: 0 },
+            children: hits.map((h, i) => /* @__PURE__ */ jsxDEV("li", {
+              style: { color: h.ok ? "#1f7a45" : "#5b5750", padding: "3px 0" },
+              children: [
+                /* @__PURE__ */ jsxDEV("b", {
+                  style: { marginRight: "8px" },
+                  children: h.ok ? "✓" : "○"
+                }, undefined, false, undefined, this),
+                h.lab
+              ]
+            }, i, true, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            style: { fontSize: "14px", color: "#5b5750" },
+            children: "Kontrola hledá jen to, jestli jsi daný obrat použil — gramatickou správnost si porovnej se vzorem níže."
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      model && /* @__PURE__ */ jsxDEV("div", {
+        className: "sol",
+        style: { marginTop: "16px" },
+        children: /* @__PURE__ */ jsxDEV("div", {
+          className: "step",
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "lab",
+              children: "Vzorové řešení"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("ol", {
+              children: t.model.map((m, i) => /* @__PURE__ */ jsxDEV("li", {
+                children: m
+              }, i, false, undefined, this))
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function WritingTab() {
   return /* @__PURE__ */ jsxDEV("div", {
     children: [
       /* @__PURE__ */ jsxDEV(SectionHead, {
         no: "Partie VII",
+        title: "Psaní vět",
+        lede: "Tři zadání toho typu, co bývá na konci testu: poradit cestu, popsat počasí a popsat věci s ukazovacími zájmeny. Napiš věty do pole, nech si zkontrolovat, které povinné obraty jsi použil, a teprve pak odkryj vzor."
+      }, undefined, false, undefined, this),
+      WRITING.map((t) => /* @__PURE__ */ jsxDEV(WritingTask, {
+        t
+      }, t.id, false, undefined, this))
+    ]
+  }, undefined, true, undefined, this);
+}
+function CheatTab() {
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(SectionHead, {
+        no: "Partie VIII",
         title: "Tahák — co se musíš naučit nazpaměť",
         lede: "Všechna pravidla a tvary na jednom místě. Tohle si projdi ráno před testem."
       }, undefined, false, undefined, this),
@@ -4535,6 +5428,115 @@ function CheatTab() {
               children: [
                 /* @__PURE__ */ jsxDEV("div", {
                   className: "cat",
+                  children: "Ukazovací zájmena"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "ex",
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "ce"
+                        }, undefined, false, undefined, this),
+                        " pull (m. + souhláska)"
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "cet"
+                        }, undefined, false, undefined, this),
+                        " imperméable (m. + samohláska / němé h)"
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "cette"
+                        }, undefined, false, undefined, this),
+                        " robe (ž. rod)"
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "ces"
+                        }, undefined, false, undefined, this),
+                        " baskets (mn. č., oba rody)"
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      children: [
+                        "„cets“ ",
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "neexistuje"
+                        }, undefined, false, undefined, this),
+                        " · řídí se FR rodem, ne češtinou"
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "cat",
+                  children: "Pravopis při časování"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "ex",
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      children: [
+                        "nous mange",
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "o"
+                        }, undefined, false, undefined, this),
+                        "ns · nous déplaç",
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "ons"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      children: [
+                        "nous fini",
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "ss"
+                        }, undefined, false, undefined, this),
+                        "ons · ils pre",
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "nn"
+                        }, undefined, false, undefined, this),
+                        "ent"
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      children: [
+                        "vous fai",
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "tes"
+                        }, undefined, false, undefined, this),
+                        " · nous ",
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "buv"
+                        }, undefined, false, undefined, this),
+                        "ons · j'ach",
+                        /* @__PURE__ */ jsxDEV("b", {
+                          children: "è"
+                        }, undefined, false, undefined, this),
+                        "te"
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              children: [
+                /* @__PURE__ */ jsxDEV("div", {
+                  className: "cat",
                   children: "Zrádná dvojice"
                 }, undefined, false, undefined, this),
                 /* @__PURE__ */ jsxDEV("div", {
@@ -4728,7 +5730,8 @@ var TABS = [
   { id: "drill", n: "IV", label: "Cvičení", comp: DrillTab },
   { id: "quiz", n: "V", label: "Kvíz", comp: null },
   { id: "flash", n: "VI", label: "Kartičky", comp: FlashTab },
-  { id: "cheat", n: "VII", label: "Tahák", comp: CheatTab }
+  { id: "write", n: "VII", label: "Psaní vět", comp: WritingTab },
+  { id: "cheat", n: "VIII", label: "Tahák", comp: CheatTab }
 ];
 function App() {
   const [tab, setTab] = useState("vocab");
