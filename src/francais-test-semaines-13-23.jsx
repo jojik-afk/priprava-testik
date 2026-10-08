@@ -1,0 +1,1663 @@
+// @title Français – Test semaines 13–23 (immeuble, santé, y, COD, pays)
+// @subject Languages
+// @topic Francouzština – opakování banque semaines 13–23
+// @template mixed
+
+import { useState, useCallback, useMemo } from "react";
+
+/* ═══════════════════════════════════════════════════════════════════
+   TÉMA "AFFICHE" — ivory, trikolóra, dvojitý rámeček
+   Rody barevně: le/un = bleu, la/une = rouge, les/des = noir
+   Varianta oproti testu 1–12: modrý pás v hlavičce s razítkem,
+   vodorovná lišta záložek místo levého obsahu, úvodní záložka = list od profesora.
+   ═══════════════════════════════════════════════════════════════════ */
+
+const CSS = `
+.root {
+  --ivory:#fbf7f0; --paper:#ffffff; --ink:#1a1a1a; --muted:#5b5750;
+  --bleu:#1b3a8f; --rouge:#c8102e; --line:#d8d0c2;
+  --ok:#1f7a45; --bad:#b32020; --warn:#a86a00;
+  background: var(--ivory);
+  color: var(--ink);
+  font-family:'Montserrat',system-ui,sans-serif;
+  font-size:16px; line-height:1.65;
+  min-height:100vh;
+  position:relative;
+}
+.root *{box-sizing:border-box;}
+.root ul{list-style:disc; padding-left:22px; margin:10px 0;}
+.root ol{list-style:decimal; padding-left:24px; margin:10px 0;}
+.root li{margin:4px 0;}
+.root p{margin:10px 0;}
+.root button{font-family:inherit;}
+.root h1,.root h2,.root h3,.root h4{font-family:'Playfair Display',Georgia,serif; font-weight:700; margin:0; line-height:1.25;}
+
+.tricolore{
+  position:fixed; left:0; top:0; bottom:0; width:6px; z-index:50;
+  background:linear-gradient(to bottom,var(--bleu) 0 33.33%,#fff 33.33% 66.66%,var(--rouge) 66.66% 100%);
+}
+.shell{ padding-left:6px; }
+
+/* ── hlavička: modrý pás + razítko ── */
+.bandeau{ background:var(--bleu); color:#fff; border-bottom:6px double #fff; }
+.bandeau-in{
+  max-width:1100px; margin:0 auto; padding:30px 22px 26px;
+  display:flex; gap:24px; align-items:center; justify-content:space-between;
+}
+.bandeau .kicker{ font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:#ffd7dd; font-weight:700; margin-bottom:8px; }
+.bandeau h1{ font-size:clamp(28px,5vw,48px); color:#fff; }
+.bandeau .sub{ font-size:14px; letter-spacing:.08em; margin-top:8px; color:#dfe5f5; }
+.stamp{
+  flex-shrink:0; border:3px double #fff; padding:12px 18px; text-align:center;
+  transform:rotate(-4deg); background:var(--rouge);
+}
+.stamp .d{ font-family:'Playfair Display',serif; font-size:24px; font-weight:900; letter-spacing:.06em; }
+.stamp .s{ font-size:11px; letter-spacing:.2em; text-transform:uppercase; }
+
+/* ── vodorovné záložky ── */
+.onglets{ position:sticky; top:0; z-index:40; background:var(--ivory); border-bottom:3px double var(--bleu); }
+.onglets-in{ max-width:1100px; margin:0 auto; display:flex; gap:2px; overflow-x:auto; padding:0 16px; }
+.onglet{
+  background:transparent; border:none; border-bottom:4px solid transparent;
+  padding:14px 14px 11px; font-size:15px; color:var(--ink); cursor:pointer;
+  white-space:nowrap; min-height:48px; transition:all .45s ease;
+}
+.onglet:hover{ border-bottom-color:var(--line); }
+.onglet.on{ border-bottom-color:var(--rouge); color:var(--bleu); font-weight:700; }
+
+main{ max-width:1100px; margin:0 auto; padding:26px 22px 80px; }
+main > *{ min-width:0; }
+.fade{ animation:fadeIn .45s ease; }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+
+/* ── nadpisy sekcí ── */
+.sect-title{ display:flex; align-items:baseline; gap:12px; margin:0 0 6px; flex-wrap:wrap; }
+.sect-title h2{ font-size:clamp(22px,3.4vw,30px); }
+.sect-title .no{ font-family:'Playfair Display',serif; font-size:15px; color:var(--rouge); letter-spacing:.14em; text-transform:uppercase; }
+.sect-lede{ color:var(--muted); margin:0 0 20px; border-bottom:1px solid var(--line); padding-bottom:14px; }
+
+/* ── karty ── */
+.card{ background:var(--paper); border:3px double var(--bleu); padding:20px 22px; margin-bottom:18px; }
+.card.red{ border-color:var(--rouge); }
+.card h3{ font-size:20px; margin:0 0 8px; }
+.lede{ color:var(--muted); font-size:15px; margin:0 0 14px; }
+.grid2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.grid2 > *{ min-width:0; }
+
+/* ── rozbalovací blok ── */
+.acc{ border:1px solid var(--line); background:#fff; margin-bottom:12px; }
+.acc-head{
+  width:100%; display:flex; gap:12px; align-items:center; justify-content:space-between;
+  background:#fff; border:none; padding:14px 16px; cursor:pointer; text-align:left;
+  transition:background .45s ease; min-height:48px;
+}
+.acc-head:hover{ background:#faf7f1; }
+.acc-head .t{ font-family:'Playfair Display',serif; font-weight:700; font-size:18px; }
+.acc-head .badge{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.acc-head .chev{ color:var(--rouge); font-size:15px; transition:transform .45s ease; }
+.acc-head.open .chev{ transform:rotate(90deg); }
+.acc-body{ padding:4px 16px 18px; border-top:1px solid var(--line); }
+
+/* ── slovíčka ── */
+.vgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:0 22px; }
+.vrow{ display:flex; gap:10px; align-items:baseline; padding:7px 0; border-bottom:1px dotted var(--line); }
+.vrow .fr{ font-weight:600; }
+.vrow .cz{ color:var(--muted); margin-left:auto; text-align:right; font-size:14px; }
+.g-m{ color:var(--bleu); }
+.g-f{ color:var(--rouge); }
+.g-p{ color:#1a1a1a; }
+.cat{ font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--rouge); margin:18px 0 6px; font-weight:700; }
+.cat:first-child{ margin-top:4px; }
+.note{ background:#fff6e0; border-left:4px solid var(--warn); padding:10px 14px; margin:12px 0; font-size:14px; }
+.phrase{ border-left:3px solid var(--bleu); padding:6px 0 6px 14px; margin:10px 0; }
+.phrase .f{ font-weight:600; }
+.phrase .c{ color:var(--muted); font-size:14px; }
+.search{
+  width:100%; padding:12px 14px; border:1px solid var(--bleu); background:#fff;
+  font-size:16px; font-family:inherit; margin-bottom:16px; border-radius:0;
+}
+.search:focus{ outline:2px solid var(--rouge); outline-offset:-2px; }
+
+/* ── gramatika ── */
+.rule{ background:#f7f3ea; border-left:4px solid var(--rouge); padding:12px 16px; margin:12px 0; }
+.rule b{ color:var(--bleu); }
+.ex{ font-family:'Courier New',monospace; font-size:15px; background:#fff; border:1px solid var(--line); padding:10px 14px; margin:10px 0; }
+.ex div{ padding:2px 0; }
+.ex .cz{ color:var(--muted); font-family:'Montserrat',sans-serif; font-size:13px; }
+.tbl{ width:100%; border-collapse:collapse; margin:12px 0; font-size:15px; }
+.tbl th,.tbl td{ border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+.tbl th{ background:#f2ece1; font-family:'Playfair Display',serif; font-size:14px; letter-spacing:.06em; }
+.tbl td.mono{ font-family:'Courier New',monospace; }
+.tbl tr:nth-child(even) td{ background:#fcfaf6; }
+.tblwrap{ overflow-x:auto; }
+.trio{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:12px 0; }
+.trio > div{ border:1px solid var(--line); background:#fff; padding:12px 14px; min-width:0; }
+.trio .h{ font-family:'Playfair Display',serif; font-weight:700; font-size:17px; margin-bottom:6px; }
+.trio .ic{ font-size:22px; }
+
+/* ── doplňovačky ── */
+.gap{ border:1px solid var(--line); background:#fff; padding:14px 16px; margin-bottom:12px; }
+.gap-head{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:6px; }
+.gap .n{ font-family:'Playfair Display',serif; color:var(--rouge); font-weight:700; }
+.gap .hint{ font-size:13px; color:var(--muted); }
+.gap-line{ font-size:17px; line-height:2.3; }
+.blank{
+  display:inline-block; min-width:96px; width:auto; padding:4px 8px; margin:0 3px;
+  border:none; border-bottom:2px solid var(--bleu); background:#f5f7fc;
+  font-size:16px; font-family:inherit; border-radius:0;
+}
+.blank.wide{ display:block; width:100%; margin:6px 0; border:2px solid var(--bleu); padding:10px 12px; }
+.blank:focus{ outline:2px solid var(--rouge); outline-offset:1px; }
+.blank.ok{ border-color:var(--ok); background:#eef7f1; }
+.blank.bad{ border-color:var(--bad); background:#fbeeee; }
+.gap-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.mini{
+  background:#fff; border:1px solid var(--bleu); color:var(--bleu); padding:8px 14px;
+  font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  cursor:pointer; transition:all .45s ease; min-height:44px;
+}
+.mini:hover{ background:var(--bleu); color:#fff; }
+.mini.red{ border-color:var(--rouge); color:var(--rouge); }
+.mini.red:hover{ background:var(--rouge); color:#fff; }
+.verdict-line{ font-size:14px; margin-top:6px; font-weight:600; }
+.diff{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; padding:3px 9px; border:1px solid; font-weight:700; }
+.diff.e{ color:var(--ok); border-color:var(--ok); }
+.diff.m{ color:var(--warn); border-color:var(--warn); }
+.diff.h{ color:var(--rouge); border-color:var(--rouge); }
+.sol{ margin-top:12px; border-top:1px solid var(--line); padding-top:10px; }
+.sol .step{ margin:8px 0; }
+.sol .lab{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--rouge); font-weight:700; }
+.sol .res{ border:2px solid var(--rouge); padding:8px 12px; margin-top:10px; font-weight:700; }
+
+/* ── tlačítka / módy ── */
+.modes{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+.mode{
+  background:#fff; border:1px solid var(--line); padding:10px 16px; font-size:14px;
+  cursor:pointer; transition:all .45s ease; min-height:44px;
+}
+.mode:hover{ border-color:var(--bleu); }
+.mode.on{ background:var(--bleu); border-color:var(--bleu); color:#fff; font-weight:700; }
+.btn{
+  background:#fff; border:2px solid var(--bleu); color:var(--bleu); padding:10px 20px;
+  font-size:15px; cursor:pointer; transition:all .45s ease; min-height:44px; font-weight:600;
+}
+.btn:hover:not(:disabled){ background:var(--bleu); color:#fff; }
+.btn:disabled{ opacity:.35; cursor:default; }
+.btn.red{ border-color:var(--rouge); color:var(--rouge); }
+.btn.red:hover:not(:disabled){ background:var(--rouge); color:#fff; }
+.scorebar{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:14px; font-size:14px; }
+.scorebar .chip{ border:1px solid var(--line); padding:6px 12px; background:#fff; }
+.scorebar .chip b{ color:var(--bleu); }
+.prog{ height:8px; background:#eae3d6; margin:6px 0 14px; }
+.prog i{ display:block; height:100%; background:var(--rouge); transition:width .8s ease; }
+
+/* ── kvíz ── */
+.dotbar{ display:flex; gap:7px; justify-content:center; flex-wrap:wrap; margin-bottom:18px; }
+.dot{ width:20px; height:20px; border:1px solid rgba(0,0,0,.25); cursor:pointer; transition:background .45s ease; }
+.qnum{ font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+.qtext{ font-size:19px; font-weight:600; margin:8px 0 18px; line-height:1.45; }
+.opt{
+  display:flex; gap:10px; align-items:center; padding:12px 15px; border:1px solid var(--line);
+  background:#fff; margin-bottom:9px; cursor:pointer; transition:all .45s ease; min-height:44px;
+}
+.opt:hover{ border-color:var(--bleu); }
+.fb{ margin-top:18px; border:2px solid; padding:14px 16px; }
+.fb .h{ font-family:'Playfair Display',serif; font-weight:700; font-size:17px; margin-bottom:6px; }
+.fb .corr{ color:var(--ok); font-size:14px; margin-bottom:6px; font-weight:600; }
+.fb .exp{ font-size:15px; color:#33302b; }
+.fb .tip{ margin-top:8px; font-size:14px; font-style:italic; color:var(--warn); }
+.navrow{ display:flex; justify-content:space-between; gap:10px; margin-top:18px; }
+.results{ text-align:center; padding:40px 20px; }
+.results .score{ font-family:'Playfair Display',serif; font-size:56px; font-weight:700; color:var(--bleu); }
+.results .pct{ font-size:22px; color:var(--rouge); margin-bottom:12px; }
+.results .msg{ font-size:17px; max-width:420px; margin:0 auto 22px; }
+
+/* ── psaní ── */
+.textarea{
+  width:100%; padding:13px 15px; border:2px solid var(--bleu); background:#fff;
+  font-size:16px; font-family:inherit; margin:10px 0; line-height:1.6; border-radius:0;
+}
+.textarea:focus{ outline:2px solid var(--rouge); outline-offset:-2px; }
+.checklist{ list-style:none !important; padding-left:0 !important; }
+.checklist li{ padding:4px 0; display:flex; gap:10px; align-items:flex-start; }
+.checklist label{ display:flex; gap:10px; align-items:flex-start; cursor:pointer; }
+.checklist input{ width:20px; height:20px; margin-top:3px; accent-color:var(--bleu); }
+.model{ background:#f7f3ea; border-left:4px solid var(--bleu); padding:12px 16px; font-style:italic; }
+
+/* ── kartičky ── */
+.fcwrap{ perspective:1400px; margin:0 auto 16px; max-width:540px; }
+.fc{ position:relative; width:100%; height:240px; transform-style:preserve-3d; transition:transform .45s ease; cursor:pointer; }
+.fc.flip{ transform:rotateY(180deg); }
+.fc-face{
+  position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; background:#fff;
+  border:3px double var(--bleu); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:24px; text-align:center;
+}
+.fc-face.back{ transform:rotateY(180deg); border-color:var(--rouge); }
+.fc-face .big{ font-family:'Playfair Display',serif; font-size:clamp(20px,4vw,30px); }
+.fc-face .small{ font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-top:14px; }
+.fcdots{ display:flex; gap:5px; justify-content:center; flex-wrap:wrap; margin:10px 0; }
+.fcdots i{ width:9px; height:9px; background:#e2dacb; display:block; cursor:pointer; }
+.fcdots i.on{ background:var(--rouge); }
+
+/* ── tahák ── */
+.cheat{ column-count:2; column-gap:22px; }
+.cheat > div{ break-inside:avoid; margin-bottom:16px; border:1px solid var(--line); background:#fff; padding:12px 14px; }
+.cheat h4{ font-size:17px; color:var(--bleu); margin-bottom:6px; }
+.mono{ font-family:'Courier New',monospace; }
+
+@media (max-width:760px){
+  .bandeau-in{ flex-direction:column; align-items:flex-start; gap:12px; padding:20px 16px 18px; }
+  .stamp{ transform:rotate(-2deg); padding:5px 12px; display:flex; gap:8px; align-items:baseline; }
+  .stamp .d{ font-size:17px; }
+  .stamp .s{ font-size:10px; }
+  main{ padding:18px 14px 60px; }
+  .onglets-in{ padding:0 8px; }
+  .grid2, .trio{ grid-template-columns:1fr; }
+  .vgrid{ grid-template-columns:1fr; }
+  .cheat{ column-count:1; }
+  .card{ padding:16px 14px; }
+  .tbl{ font-size:14px; }
+  .tbl th,.tbl td{ padding:6px 7px; }
+  .blank{ min-width:80px; }
+}
+`;
+
+/* ═══════════════════════════════════════════════════════════════════
+   POMOCNÉ FUNKCE
+   ═══════════════════════════════════════════════════════════════════ */
+
+function shuffleArray(a){ const s=[...a]; for(let i=s.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [s[i],s[j]]=[s[j],s[i]]; } return s; }
+
+function shuffleQuestions(qs){
+  return qs.map(q=>{
+    const sh=shuffleArray(q.options.map((_,i)=>i));
+    return { ...q, options: sh.map(i=>q.options[i]), correct: q.correct.map(o=>sh.indexOf(o)) };
+  });
+}
+
+function arrEqual(a,b){
+  if(!a||!b) return false;
+  const sa=[...a].sort((x,y)=>x-y), sb=[...b].sort((x,y)=>x-y);
+  return sa.length===sb.length && sa.every((v,i)=>v===sb[i]);
+}
+
+/** Sjednotí apostrofy, mezery, velikost písmen a koncovou interpunkci. */
+function clean(s){
+  return (s||"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s*'\s*/g,"'")
+    .replace(/[.!?;:,«»"“”]+/g," ").replace(/\s+/g," ").trim();
+}
+function strip(s){ return clean(s).normalize("NFD").replace(/[̀-ͯ]/g,""); }
+
+/** Kontrola jedné mezery: vrací "ok" | "accent" (správně, ale chybí diakritika) | "bad". */
+function checkBlank(user, spec){
+  if(!clean(user)) return "bad";
+  if(spec.re){
+    if(spec.re.test(strip(user))) return "ok";
+    return "bad";
+  }
+  const alts = spec.alts || spec;
+  if(alts.some(a => clean(a) === clean(user))) return "ok";
+  if(alts.some(a => strip(a) === strip(user))) return "accent";
+  return "bad";
+}
+function shownAnswer(spec){ return spec.show || (spec.alts || spec).join(" / "); }
+
+/** Normalizace pro hledání obratů v psaném textu. */
+function normText(s){
+  return " " + (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")
+    .replace(/[’'`]/g," ").replace(/[^a-z0-9\s-]/g," ").replace(/\s+/g," ") + " ";
+}
+
+/** Obarví člen podle rodu (le/un = modrá, la/une = červená, les/des = černá). */
+function Fr({ t, g }){
+  const m = /^(les|des|le|la|l['’]|un|une)\s?/i.exec(t || "");
+  if(!m) return <span className={g==="f"?"g-f":g==="m"?"g-m":""}>{t}</span>;
+  const art = m[0], rest = (t||"").slice(art.length);
+  const a = art.trim().toLowerCase();
+  let cls = "g-p";
+  if(a==="le"||a==="un") cls="g-m";
+  else if(a==="la"||a==="une") cls="g-f";
+  else if(a==="l'"||a==="l’") cls = g==="f" ? "g-f" : g==="m" ? "g-m" : "g-p";
+  return <span><span className={cls} style={{fontWeight:700}}>{art}</span>{rest}</span>;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLOVNÍ ZÁSOBA — banque, semaines 13–23
+   ═══════════════════════════════════════════════════════════════════ */
+
+const WEEKS = [
+  {
+    id:"s13", label:"Semaines 13–14", title:"L'immeuble, les pannes, les professionnels",
+    src:"Banque: výřezy z učebnice (L'immeuble, Les problèmes, Les professionnels, L'obligation et l'interdiction, Les pronoms COD).",
+    groups:[
+      { cat:"L'immeuble", items:[
+        { fr:"l'appartement", g:"m", cz:"byt" },
+        { fr:"l'ascenseur", g:"m", cz:"výtah" },
+        { fr:"le balcon", cz:"balkon" },
+        { fr:"le couloir", cz:"chodba" },
+        { fr:"l'escalier", g:"m", cz:"schodiště" },
+        { fr:"le hall", cz:"vstupní hala" },
+        { fr:"le local à poubelles", cz:"místnost na popelnice" },
+        { fr:"le local à vélos", cz:"kolárna" },
+        { fr:"la pelouse", cz:"trávník" },
+        { fr:"la porte (d'entrée)", cz:"(vchodové) dveře" },
+        { fr:"la résidence", cz:"obytný komplex" },
+        { fr:"le voisin / la voisine", cz:"soused / sousedka" },
+      ]},
+      { cat:"Les problèmes, les pannes et les solutions", items:[
+        { fr:"la fuite d'eau", cz:"únik vody, prosakování" },
+        { fr:"fonctionner", cz:"fungovat" },
+        { fr:"marcher", cz:"fungovat (o přístroji); chodit" },
+        { fr:"réparer", cz:"opravit" },
+        { fr:"la panne", cz:"porucha" },
+      ]},
+      { cat:"Les professionnels", items:[
+        { fr:"l'électricien", g:"m", cz:"elektrikář" },
+        { fr:"l'informaticien", g:"m", cz:"informatik, ajťák" },
+        { fr:"le peintre", cz:"malíř (pokojů)" },
+        { fr:"le plombier", cz:"instalatér" },
+        { fr:"le serrurier", cz:"zámečník" },
+      ]},
+      { cat:"Le règlement — slovesa ze cvičení", items:[
+        { fr:"les parties communes", cz:"společné prostory" },
+        { fr:"fumer", cz:"kouřit" },
+        { fr:"vapoter", cz:"kouřit e-cigaretu" },
+        { fr:"trier les déchets", cz:"třídit odpad" },
+        { fr:"tenir les chiens en laisse", cz:"držet psy na vodítku" },
+        { fr:"frapper avant d'entrer", cz:"zaklepat před vstupem" },
+        { fr:"fermer à clé", cz:"zamknout" },
+        { fr:"faire du bruit", cz:"dělat hluk" },
+        { fr:"respecter ses voisins", cz:"respektovat sousedy" },
+        { fr:"faire un barbecue", cz:"grilovat" },
+        { fr:"le règlement", cz:"řád, pravidla" },
+      ]},
+    ],
+  },
+  {
+    id:"s15", label:"Semaines 15–17", title:"La santé (str. 119 + oranžové boxy str. 116–117)",
+    src:"Banque odkazuje na učebnici. Slovíčka převzata z tvého dřívějšího artefaktu „Le corps et la santé“, který z těchto stran vycházel.",
+    groups:[
+      { cat:"Les parties du corps", items:[
+        { fr:"le bras", cz:"paže" }, { fr:"le dos", cz:"záda" }, { fr:"le genou", cz:"koleno" },
+        { fr:"la gorge", cz:"hrdlo, krk" }, { fr:"la jambe", cz:"noha (celá)" }, { fr:"la main", cz:"ruka (dlaň)" },
+        { fr:"le pied", cz:"chodidlo" }, { fr:"la tête", cz:"hlava" }, { fr:"le ventre", cz:"břicho" },
+      ]},
+      { cat:"Le visage", items:[
+        { fr:"la bouche", cz:"ústa" }, { fr:"la dent", cz:"zub" }, { fr:"le nez", cz:"nos" },
+        { fr:"l'œil / les yeux", g:"m", cz:"oko / oči" }, { fr:"l'oreille", g:"f", cz:"ucho" },
+      ]},
+      { cat:"Les symptômes, les maladies", items:[
+        { fr:"la fièvre", cz:"horečka" }, { fr:"la grippe", cz:"chřipka" }, { fr:"malade", cz:"nemocný/á" },
+        { fr:"le rhume", cz:"rýma, nachlazení" }, { fr:"tousser", cz:"kašlat" }, { fr:"la toux", cz:"kašel" },
+      ]},
+      { cat:"Les lieux, les médicaments, les examens", items:[
+        { fr:"l'hôpital", g:"m", cz:"nemocnice" }, { fr:"la pharmacie", cz:"lékárna" },
+        { fr:"le paracétamol", cz:"paracetamol" }, { fr:"la radio", cz:"rentgen" }, { fr:"le sirop", cz:"sirup" },
+        { fr:"la visite à domicile", cz:"návštěva lékaře doma" }, { fr:"la vitamine C", cz:"vitamín C" },
+      ]},
+      { cat:"Les professions médicales", items:[
+        { fr:"le dentiste", cz:"zubař" }, { fr:"le médecin / le docteur", cz:"lékař, doktor" },
+        { fr:"l'infirmier / l'infirmière", cz:"zdravotní bratr / sestra" },
+        { fr:"le pharmacien / la pharmacienne", cz:"lékárník / lékárnice" },
+      ]},
+      { cat:"La taille et le poids", items:[
+        { fr:"mesurer", cz:"měřit (výšku)" }, { fr:"peser", cz:"vážit" },
+        { fr:"le mètre", cz:"metr" }, { fr:"le kilo", cz:"kilogram" },
+      ]},
+      { cat:"Les émotions", items:[
+        { fr:"content(e)", cz:"spokojený/á" }, { fr:"fatigué(e)", cz:"unavený/á" },
+        { fr:"heureux / heureuse", cz:"šťastný/á" }, { fr:"inquiet / inquiète", cz:"znepokojený/á" },
+        { fr:"stressé(e)", cz:"ve stresu" }, { fr:"triste", cz:"smutný/á" },
+      ]},
+    ],
+    phrases:[
+      { f:"Qu'est-ce qui vous arrive ?", c:"Co se vám stalo? (lékař)" },
+      { f:"Vous vous sentez comment ?", c:"Jak se cítíte?" },
+      { f:"Vous avez (encore) de la fièvre ?", c:"Máte (ještě) horečku?" },
+      { f:"Je suis malade. / J'ai un rhume. / J'ai 39°.", c:"Jsem nemocný. / Mám rýmu. / Mám 39°." },
+      { f:"J'ai mal à la tête / au ventre / à l'oreille / aux pieds.", c:"Bolí mě hlava / břicho / ucho / nohy." },
+      { f:"Quel est votre poids ? – Je pèse 60 kilos.", c:"Kolik vážíte? – Vážím 60 kilo." },
+      { f:"Vous mesurez combien ? – Je mesure 1,68 m.", c:"Kolik měříte? – Měřím 1,68 m." },
+    ],
+  },
+  {
+    id:"s18", label:"Semaines 18–20", title:"Le sport et l'alimentation (str. 125) + souhlas / nesouhlas",
+    src:"Slovíčka str. 125 převzata z artefaktu „Le corps et la santé“ (oddíly sport + alimentace + pronom y přibyly ve stejném týdnu). Oranžový box „accord / désaccord“ v podkladech nemám — jsou tu běžné obraty z učebnic této úrovně, porovnej je se str. 123.",
+    groups:[
+      { cat:"La salle de sport", items:[
+        { fr:"l'activité physique", g:"f", cz:"pohybová aktivita" }, { fr:"l'appareil de sport", g:"m", cz:"posilovací stroj" },
+        { fr:"le certificat médical", cz:"lékařské potvrzení" }, { fr:"le coach", cz:"trenér" },
+        { fr:"la douche", cz:"sprcha" }, { fr:"le maillot de bain", cz:"plavky" }, { fr:"le sauna", cz:"sauna" },
+        { fr:"la serviette de bain", cz:"osuška" }, { fr:"le vestiaire", cz:"šatna" },
+      ]},
+      { cat:"Les sports", items:[
+        { fr:"la corde à sauter", cz:"švihadlo" }, { fr:"la course à pied", cz:"běh" }, { fr:"la gymnastique", cz:"gymnastika" },
+        { fr:"la marche", cz:"chůze" }, { fr:"la musculation", cz:"posilování" }, { fr:"la natation", cz:"plavání" },
+        { fr:"le judo", cz:"judo" }, { fr:"le tennis", cz:"tenis" }, { fr:"le yoga", cz:"jóga" },
+      ]},
+      { cat:"L'alimentation", items:[
+        { fr:"l'alimentation", g:"f", cz:"strava, výživa" }, { fr:"la calorie", cz:"kalorie" }, { fr:"le produit", cz:"výrobek" },
+        { fr:"sain(e)", cz:"zdravý/á" }, { fr:"gras(se)", cz:"tučný/á" }, { fr:"salé(e)", cz:"slaný/á" }, { fr:"sucré(e)", cz:"sladký/á" },
+      ]},
+    ],
+    phrases:[
+      { f:"Je suis d'accord (avec toi / avec vous).", c:"Souhlasím (s tebou / s vámi)." },
+      { f:"Tout à fait ! / Absolument ! / Exactement !", c:"Naprosto! / Přesně tak!" },
+      { f:"Tu as raison. / Vous avez raison.", c:"Máš / máte pravdu." },
+      { f:"C'est vrai.", c:"To je pravda." },
+      { f:"Je ne suis pas d'accord.", c:"Nesouhlasím." },
+      { f:"Pas du tout ! / Absolument pas !", c:"Vůbec ne! / Rozhodně ne!" },
+      { f:"Tu as tort. / C'est faux.", c:"Nemáš pravdu. / To není pravda." },
+      { f:"Je pense que oui. / Je pense que non.", c:"Myslím, že ano. / Myslím, že ne." },
+    ],
+  },
+  {
+    id:"s21", label:"Semaines 21–22", title:"Les vacances (str. 132–133)",
+    src:"Banque odkazuje na str. 132–133. Slovíčka převzata z artefaktu „Dovolená, srovnání“ — zkontroluj, jestli na těch stranách nebylo ještě něco navíc.",
+    groups:[
+      { cat:"Les lieux", items:[
+        { fr:"la mer", cz:"moře" }, { fr:"la plage", cz:"pláž" }, { fr:"la montagne", cz:"hory" },
+        { fr:"la campagne", cz:"venkov" }, { fr:"la forêt", cz:"les" }, { fr:"le lac", cz:"jezero" },
+        { fr:"la rivière", cz:"řeka" }, { fr:"le champ", cz:"pole" }, { fr:"le chemin", cz:"cesta, stezka" },
+        { fr:"le village", cz:"vesnice" }, { fr:"la ville", cz:"město" },
+      ]},
+      { cat:"Les activités", items:[
+        { fr:"se baigner", cz:"koupat se" }, { fr:"bronzer", cz:"opalovat se" }, { fr:"nager", cz:"plavat" },
+        { fr:"faire de la randonnée", cz:"chodit na túry" }, { fr:"faire du bateau", cz:"jezdit lodí" },
+        { fr:"faire de la plongée", cz:"potápět se" }, { fr:"faire du cheval", cz:"jezdit na koni" },
+        { fr:"pique-niquer", cz:"dělat piknik" }, { fr:"se promener", cz:"procházet se" },
+        { fr:"visiter un musée", cz:"navštívit muzeum" },
+      ]},
+    ],
+  },
+  {
+    id:"s23", label:"Semaine 23", title:"Pays et nationalités",
+    src:"Banque, týden 23 — kompletní seznam.",
+    countries:true,
+  },
+];
+
+/* země z banque, týden 23 + předložky */
+const PAYS = [
+  { p:"l'Espagne", g:"f", cz:"Španělsko", en:"en Espagne", de:"d'Espagne", nat:"espagnol / espagnole" },
+  { p:"la France", cz:"Francie", en:"en France", de:"de France", nat:"français / française" },
+  { p:"la Pologne", cz:"Polsko", en:"en Pologne", de:"de Pologne", nat:"polonais / polonaise" },
+  { p:"la Russie", cz:"Rusko", en:"en Russie", de:"de Russie", nat:"russe" },
+  { p:"l'Italie", g:"f", cz:"Itálie", en:"en Italie", de:"d'Italie", nat:"italien / italienne" },
+  { p:"la Suisse", cz:"Švýcarsko", en:"en Suisse", de:"de Suisse", nat:"suisse" },
+  { p:"la République tchèque", cz:"Česko", en:"en République tchèque", de:"de République tchèque", nat:"tchèque" },
+  { p:"les États-Unis", cz:"USA", en:"aux États-Unis", de:"des États-Unis", nat:"américain / américaine" },
+  { p:"la Côte d'Ivoire", cz:"Pobřeží slonoviny", en:"en Côte d'Ivoire", de:"de Côte d'Ivoire", nat:"ivoirien / ivoirienne" },
+  { p:"l'Allemagne", g:"f", cz:"Německo", en:"en Allemagne", de:"d'Allemagne", nat:"allemand / allemande" },
+  { p:"le Liechtenstein", cz:"Lichtenštejnsko", en:"au Liechtenstein", de:"du Liechtenstein", nat:"liechtensteinois(e)" },
+  { p:"la Chine", cz:"Čína", en:"en Chine", de:"de Chine", nat:"chinois / chinoise" },
+  { p:"le Maroc", cz:"Maroko", en:"au Maroc", de:"du Maroc", nat:"marocain / marocaine" },
+  { p:"l'Égypte", g:"f", cz:"Egypt", en:"en Égypte", de:"d'Égypte", nat:"égyptien / égyptienne" },
+  { p:"la Belgique", cz:"Belgie", en:"en Belgique", de:"de Belgique", nat:"belge" },
+  { p:"l'Angleterre / le Royaume-Uni", g:"f", cz:"Anglie / Spojené království", en:"en Angleterre / au Royaume-Uni", de:"d'Angleterre / du Royaume-Uni", nat:"anglais(e), écossais(e), irlandais(e)" },
+  { p:"les Pays-Bas", cz:"Nizozemsko", en:"aux Pays-Bas", de:"des Pays-Bas", nat:"néerlandais / néerlandaise" },
+  { p:"le Japon", cz:"Japonsko", en:"au Japon", de:"du Japon", nat:"japonais / japonaise" },
+  { p:"la Corée", cz:"Korea", en:"en Corée", de:"de Corée", nat:"coréen / coréenne" },
+  { p:"l'Algérie", g:"f", cz:"Alžírsko", en:"en Algérie", de:"d'Algérie", nat:"algérien / algérienne" },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   DOPLŇOVAČKY
+   každá položka: { id, topic, diff, task (s ___), blanks:[spec], hint, rule, why }
+   spec = pole přijatelných odpovědí | { re, show }
+   ═══════════════════════════════════════════════════════════════════ */
+
+const INTERDIT = ["Interdiction de","Il est interdit de","Défense de","Ne pas"];
+const DEMANDE  = ["Merci de","Prière de","Il faut"];
+
+const TOPICS = {
+  oblig:{ label:"Zákaz / povinnost / žádost", short:"Zákazy" },
+  cod:{ label:"Zájmena COD (le, la, l', les)", short:"COD" },
+  dem:{ label:"Ce / cet / cette / ces", short:"Ukazovací" },
+  pays:{ label:"Země a národnosti", short:"Země" },
+  poss:{ label:"Přivlastňovací (mon, ma, mes…)", short:"Přivlastňovací" },
+  y:{ label:"Zájmeno y", short:"Zájmeno y" },
+  comp:{ label:"Srovnání (plus / moins / aussi)", short:"Srovnání" },
+  mal:{ label:"Avoir mal à…", short:"Avoir mal" },
+};
+
+const GAPS = [
+  /* ── list od profesora: 1. obligation / interdiction ── */
+  { id:"o1", fiche:1, topic:"oblig", diff:"e", task:"___ fumer ou de vapoter dans les parties communes.",
+    blanks:[INTERDIT], hint:"kouření ve společných prostorách → zákaz",
+    rule:"Zákaz: Interdiction de / Il est interdit de / Défense de + infinitiv, nebo Ne pas + infinitiv.",
+    why:"Kouření je zakázané → potřebujeme strukturu zákazu. „ou de vapoter“ nejlépe sedí za „Interdiction de / Il est interdit de“." },
+  { id:"o2", fiche:1, topic:"oblig", diff:"e", task:"___ fermer la porte d'entrée après votre passage.",
+    blanks:[DEMANDE], hint:"zavřít dveře → zdvořilá žádost / povinnost",
+    rule:"Žádost: Merci de / Prière de + infinitiv. Povinnost: infinitiv nebo rozkazovací způsob (učitel uznal i „Il faut“).",
+    why:"Zavírat dveře je něco, co se po obyvatelích chce, ne zákaz → Merci de / Prière de." },
+  { id:"o3", fiche:1, topic:"oblig", diff:"e", task:"___ laisser votre vélo dans le couloir.",
+    blanks:[INTERDIT], hint:"kolo na chodbě → zákaz",
+    rule:"Zákaz: Interdiction de / Il est interdit de / Défense de / Ne pas + infinitiv.",
+    why:"Kolo na chodbě nechávat nesmíš → zákaz. V učebnici: „Ne pas laisser votre vélo dans les couloirs.“" },
+  { id:"o4", fiche:1, topic:"oblig", diff:"e", task:"___ marcher sur la pelouse du jardin.",
+    blanks:[INTERDIT], hint:"chodit po trávníku → zákaz",
+    rule:"Défense de + infinitiv je typický nápis na cedulích.",
+    why:"Učebnicový příklad: „Défense de marcher sur la pelouse.“ Projde i Interdiction de / Il est interdit de / Ne pas." },
+  { id:"o5", fiche:1, topic:"oblig", diff:"e", task:"___ trier vos déchets dans le local à poubelles.",
+    blanks:[DEMANDE], hint:"třídit odpad → zdvořilá žádost",
+    rule:"Žádost: Merci de / Prière de + infinitiv.",
+    why:"Třídění odpadu se po lidech chce → žádost. V učebnici: „Prière de trier vos déchets.“" },
+  { id:"o6", topic:"oblig", diff:"m", task:"⛔ Vapoter dans le hall de l'immeuble. → napiš zákaz celou větou:",
+    blanks:[{ re:/^(interdiction de|il est interdit de|defense de|ne pas) vapoter/, show:"Interdiction de vapoter dans le hall de l'immeuble. / Il est interdit de… / Défense de… / Ne pas vapoter…" }],
+    wide:true, hint:"cvičení 3a z učebnice",
+    rule:"Zákaz = struktura zákazu + infinitiv.",
+    why:"Sloveso zůstává v infinitivu, jen před něj dáš Interdiction de / Il est interdit de / Défense de / Ne pas." },
+  { id:"o7", topic:"oblig", diff:"m", task:"⬆ Frapper avant d'entrer. → napiš zdvořilou žádost celou větou:",
+    blanks:[{ re:/^(merci de|priere de) frapper/, show:"Merci de frapper avant d'entrer. / Prière de frapper avant d'entrer." }],
+    wide:true, hint:"cvičení 3b z učebnice",
+    rule:"Žádost = Merci de / Prière de + infinitiv.",
+    why:"Merci de frapper avant d'entrer. (Samotné „Frapper avant d'entrer.“ je povinnost, ne zdvořilá žádost.)" },
+  { id:"o8", topic:"oblig", diff:"h", task:"⬆ Ne pas faire de bruit. → přepiš jako zdvořilou žádost:",
+    blanks:[{ re:/^(merci de|priere de) ne pas faire de bruit/, show:"Merci de ne pas faire de bruit. / Prière de ne pas faire de bruit." }],
+    wide:true, hint:"zápor u infinitivu: ne pas stojí obě slova PŘED infinitivem",
+    rule:"Záporný infinitiv: ne pas + infinitiv (ne „ne faire pas“).",
+    why:"Merci de + ne pas faire de bruit → Merci de ne pas faire de bruit." },
+
+  /* ── list od profesora: 2. COD ── */
+  { id:"c1", fiche:2, topic:"cod", diff:"e", task:"Tu as vu mon appartement ? Oui, je ___ trouve très beau !",
+    blanks:[["le"]], hint:"l'appartement = mužský rod",
+    rule:"COD: le (m.), la (f.), l' (před samohláskou / h), les (mn. č.). Stojí PŘED slovesem.",
+    why:"appartement je mužského rodu, „trouve“ začíná souhláskou → le." },
+  { id:"c2", fiche:2, topic:"cod", diff:"e", task:"Ma voisine est très sympa, je ___ aide souvent.",
+    blanks:[["l'"]], hint:"aide začíná samohláskou",
+    rule:"Před samohláskou nebo němým h se le/la zkracuje na l'.",
+    why:"voisine = la, ale „aide“ začíná na a- → l'aide." },
+  { id:"c3", fiche:2, topic:"cod", diff:"e", task:"Tes clés ? Tu ___ oublies toujours sur la table !",
+    blanks:[["les"]], hint:"les clés = množné číslo",
+    rule:"Množné číslo (m. i f.) → les, i před samohláskou.",
+    why:"clés je množné číslo → les (les oublies, s se vyslovuje jako z)." },
+  { id:"c4", fiche:2, topic:"cod", diff:"m", task:"J'ai une fuite d'eau, je cherche un plombier pour ___ réparer.",
+    blanks:[["la"]], hint:"la fuite; zájmeno jde před infinitiv",
+    rule:"Se slovesem v infinitivu stojí COD před infinitivem: pour la réparer.",
+    why:"fuite je ženského rodu → la; patří k „réparer“, ne k „cherche“." },
+  { id:"c5", fiche:2, topic:"cod", diff:"e", task:"Ce petit jardin, tu ___ vois depuis le balcon ?",
+    blanks:[["le"]], hint:"le jardin",
+    rule:"le jardin → le.",
+    why:"jardin je mužského rodu, „vois“ začíná souhláskou → le vois." },
+  { id:"c6", topic:"cod", diff:"e", task:"Regarde cette photo ! C'est ma maison. Je ___ adore.",
+    blanks:[["l'"]], hint:"adore začíná samohláskou",
+    rule:"la + samohláska → l'.",
+    why:"la maison, ale „adore“ → l'adore." },
+  { id:"c7", topic:"cod", diff:"e", task:"Ma maison ? Je ___ trouve jolie.",
+    blanks:[["la"]], hint:"la maison",
+    rule:"la (ž. r.) před souhláskou.",
+    why:"maison je ženského rodu a „trouve“ začíná souhláskou → la." },
+  { id:"c8", topic:"cod", diff:"e", task:"J'ai des voisins agréables. Je ___ aime bien.",
+    blanks:[["les"]], hint:"les voisins",
+    rule:"Množné číslo → les.",
+    why:"voisins = množné číslo → les aime." },
+  { id:"c9", topic:"cod", diff:"m", task:"Ma voisine ? Non, je ne ___ connais pas.",
+    blanks:[["la"]], hint:"zápor obaluje zájmeno + sloveso",
+    rule:"Zápor: ne + COD + sloveso + pas (Je ne la connais pas).",
+    why:"voisine = la; ne a pas obklopí celé „la connais“." },
+  { id:"c10", topic:"cod", diff:"m", task:"L'ascenseur ne marche pas ? L'électricien ___ répare demain.",
+    blanks:[["le"]], hint:"l'ascenseur je mužský rod, répare začíná souhláskou",
+    rule:"Člen l' nic neříká o rodu — musíš znát rod podstatného jména.",
+    why:"ascenseur (m.) → le; „répare“ začíná na r → le répare." },
+
+  /* ── list od profesora: 3. démonstratifs ── */
+  { id:"d1", fiche:3, topic:"dem", diff:"e", task:"___ chat est à moi.", blanks:[["Ce"]], hint:"le chat",
+    rule:"ce (m.) · cet (m. před samohláskou / h) · cette (f.) · ces (mn. č.)", why:"chat = m., souhláska → Ce chat." },
+  { id:"d2", fiche:3, topic:"dem", diff:"e", task:"___ voiture est très vieille.", blanks:[["Cette"]], hint:"la voiture",
+    rule:"Ženský rod → cette.", why:"voiture = f. → Cette voiture." },
+  { id:"d3", fiche:3, topic:"dem", diff:"e", task:"___ oranges sont pourries.", blanks:[["Ces"]], hint:"les oranges",
+    rule:"Množné číslo → ces.", why:"oranges = mn. č. → Ces oranges." },
+  { id:"d4", fiche:3, topic:"dem", diff:"m", task:"___ homme habite dans mon immeuble.", blanks:[["Cet"]], hint:"h je němé",
+    rule:"Mužský rod před samohláskou nebo němým h → cet.", why:"homme = m. + němé h → Cet homme." },
+  { id:"d5", fiche:3, topic:"dem", diff:"m", task:"___ endroit est magnifique pour passer des vacances.", blanks:[["Cet"]], hint:"l'endroit (m.)",
+    rule:"m. + samohláska → cet.", why:"endroit = m., začíná na e → Cet endroit." },
+  { id:"d6", topic:"dem", diff:"h", task:"___ école est très grande.", blanks:[["Cette"]], hint:"l'école je ženský rod!",
+    rule:"Cet je jen pro MUŽSKÝ rod. Ženský rod zůstává cette i před samohláskou.",
+    why:"école = f. → Cette école (ne „cet école“). Stejně: Cette orange." },
+  { id:"d7", topic:"dem", diff:"m", task:"___ ascenseur ne fonctionne pas.", blanks:[["Cet"]], hint:"l'ascenseur (m.)",
+    rule:"m. + samohláska → cet.", why:"ascenseur = m. → Cet ascenseur." },
+  { id:"d8", topic:"dem", diff:"e", task:"___ pelouse est magnifique.", blanks:[["Cette"]], hint:"la pelouse",
+    rule:"f. → cette.", why:"pelouse = f. → Cette pelouse." },
+  { id:"d9", topic:"dem", diff:"m", task:"___ hôpital est moderne.", blanks:[["Cet"]], hint:"l'hôpital (m.), h němé",
+    rule:"m. + němé h → cet.", why:"hôpital = m. → Cet hôpital." },
+  { id:"d10", topic:"dem", diff:"e", task:"___ femmes et ___ hommes sont mes voisins.", blanks:[["Ces"],["ces"]], hint:"obojí množné číslo",
+    rule:"V množném čísle je vždy ces — bez ohledu na rod a samohlásku.", why:"femmes i hommes = mn. č. → ces, ces." },
+
+  /* ── list od profesora: 4. pays et nationalités ── */
+  { id:"p1", fiche:4, topic:"pays", diff:"e", task:"Pierre habite ___ (France), il est ___.",
+    blanks:[["en France"],["français"]], hint:"la France = ženský rod",
+    rule:"Ženský rod nebo samohláska → en. Mužský → au. Množné → aux.",
+    why:"la France → en France; muž → français." },
+  { id:"p2", fiche:4, topic:"pays", diff:"m", task:"Marco vient ___ (Italie), il est ___.",
+    blanks:[["d'Italie"],["italien"]], hint:"venir de + země; Italie začíná samohláskou",
+    rule:"Odkud: de / d' (f. a samohláska), du (m.), des (mn.).",
+    why:"venir de + Italie → d'Italie; muž → italien." },
+  { id:"p3", fiche:4, topic:"pays", diff:"e", task:"Anna vit ___ (Tchéquie), elle est ___.",
+    blanks:[["en Tchéquie","en République tchèque"],["tchèque"]], hint:"tchèque má stejný tvar pro m. i f.",
+    rule:"Národnosti na -e se v ženském rodě nemění (tchèque, belge, suisse, russe).",
+    why:"la Tchéquie → en Tchéquie; tchèque je pro muže i ženu stejně." },
+  { id:"p4", fiche:4, topic:"pays", diff:"m", task:"Yuki habite ___ (Japon), elle est ___.",
+    blanks:[["au Japon"],["japonaise"]], hint:"le Japon = mužský rod; Yuki je žena",
+    rule:"Mužský rod → au. Ženský tvar národnosti: + e.",
+    why:"le Japon → au Japon; žena → japonaise." },
+  { id:"p5", fiche:4, topic:"pays", diff:"e", task:"Sarah vit ___ (Belgique), elle est ___.",
+    blanks:[["en Belgique"],["belge"]], hint:"belge se nemění",
+    rule:"f. → en; belge je pro oba rody.",
+    why:"la Belgique → en Belgique; belge." },
+  { id:"p6", topic:"pays", diff:"m", task:"John habite ___ (États-Unis), il est ___.",
+    blanks:[["aux États-Unis"],["américain"]], hint:"les États-Unis = množné číslo",
+    rule:"Množné číslo → aux / des.", why:"les États-Unis → aux États-Unis; américain." },
+  { id:"p7", topic:"pays", diff:"m", task:"Fatima vient ___ (Maroc), elle est ___.",
+    blanks:[["du Maroc"],["marocaine"]], hint:"le Maroc; venir de + le = du",
+    rule:"de + le = du.", why:"le Maroc → du Maroc; žena → marocaine." },
+  { id:"p8", topic:"pays", diff:"h", task:"Daan vient ___ (Pays-Bas), il est ___.",
+    blanks:[["des Pays-Bas"],["néerlandais"]], hint:"les Pays-Bas; de + les = des",
+    rule:"de + les = des.", why:"les Pays-Bas → des Pays-Bas; néerlandais (ne „hollandais“ — v seznamu je néerlandais)." },
+  { id:"p9", topic:"pays", diff:"m", task:"Amira vient ___ (Égypte), elle est ___.",
+    blanks:[["d'Égypte"],["égyptienne"]], hint:"-ien → -ienne",
+    rule:"-ien → -ienne (italien → italienne, égyptien → égyptienne).", why:"l'Égypte → d'Égypte; žena → égyptienne." },
+  { id:"p10", topic:"pays", diff:"e", task:"Hans habite ___ (Allemagne), il est ___.",
+    blanks:[["en Allemagne"],["allemand"]], hint:"l'Allemagne (f.)",
+    rule:"samohláska / f. → en.", why:"en Allemagne; allemand." },
+  { id:"p11", topic:"pays", diff:"m", task:"Kofi habite ___ (Côte d'Ivoire), il est ___.",
+    blanks:[["en Côte d'Ivoire"],["ivoirien"]], hint:"la Côte d'Ivoire",
+    rule:"f. → en.", why:"en Côte d'Ivoire; ivoirien (žena: ivoirienne)." },
+  { id:"p12", topic:"pays", diff:"m", task:"Li vient ___ (Chine), elle est ___.",
+    blanks:[["de Chine"],["chinoise"]], hint:"ženský rod: venir de (bez členu)",
+    rule:"U ženských zemí: venir de + země (bez členu).", why:"de Chine; chinoise." },
+  { id:"p13", topic:"pays", diff:"e", task:"Ana habite ___ (Espagne), elle est ___.",
+    blanks:[["en Espagne"],["espagnole"]], hint:"espagnol + e",
+    rule:"f. tvar = m. + e.", why:"en Espagne; espagnole." },
+
+  /* ── přivlastňovací (týdny 15–17) ── */
+  { id:"s1", topic:"poss", diff:"m", task:"Pierre aime beaucoup ___ voiture. (jeho)",
+    blanks:[["sa"]], hint:"la voiture — řídí se věcí, ne Pierrem!",
+    rule:"Přivlastňovací se řídí rodem VĚCI, ne majitele: son (m.), sa (f.), ses (mn.).",
+    why:"voiture = f. → sa voiture, i když majitel je muž." },
+  { id:"s2", topic:"poss", diff:"m", task:"Marie adore ___ vélo. (její)",
+    blanks:[["son"]], hint:"le vélo",
+    rule:"son / sa / ses podle věci.", why:"vélo = m. → son vélo, i když majitelka je žena." },
+  { id:"s3", topic:"poss", diff:"e", task:"Où sont ___ clés ? (moje)",
+    blanks:[["mes"]], hint:"les clés",
+    rule:"mon / ma / mes.", why:"clés = mn. č. → mes clés." },
+  { id:"s4", topic:"poss", diff:"h", task:"C'est ___ amie Julie. (moje)",
+    blanks:[["mon"]], hint:"amie je f., ale začíná samohláskou",
+    rule:"Před samohláskou se ma/ta/sa mění na mon/ton/son (kvůli výslovnosti).",
+    why:"amie = f., ale „ma amie“ nejde vyslovit → mon amie. Stejně mon école." },
+  { id:"s5", topic:"poss", diff:"e", task:"Nous adorons ___ appartement. (náš)",
+    blanks:[["notre"]], hint:"jedna věc, majitelů víc",
+    rule:"notre / votre / leur (1 věc) · nos / vos / leurs (víc věcí).", why:"jeden byt → notre appartement." },
+  { id:"s6", topic:"poss", diff:"m", task:"Ils habitent avec ___ parents. (jejich)",
+    blanks:[["leurs"]], hint:"víc majitelů i víc věcí",
+    rule:"leur (1 věc) / leurs (víc věcí).", why:"parents = mn. č. → leurs parents." },
+  { id:"s7", topic:"poss", diff:"e", task:"Vous avez ___ ticket ? (váš)",
+    blanks:[["votre"]], hint:"jedna věc",
+    rule:"votre (1 věc) / vos (víc).", why:"un ticket → votre ticket." },
+  { id:"s8", topic:"poss", diff:"m", task:"Elle a mal à ___ tête. Elle prend ___ sirop. (její, její)",
+    blanks:[["sa"],["son"]], hint:"la tête, le sirop",
+    rule:"Podle věci: la tête → sa, le sirop → son.", why:"sa tête, son sirop." },
+
+  /* ── pronom y (týdny 18–20) ── */
+  { id:"y1", topic:"y", diff:"e", task:"Tu vas à la pharmacie ? – Oui, j'___ vais.",
+    blanks:[["y"]], hint:"nahraď místo",
+    rule:"y nahrazuje místo (à, en, dans, chez, sur… + místo). Stojí před slovesem.", why:"à la pharmacie → y: j'y vais." },
+  { id:"y2", topic:"y", diff:"m", task:"Tu vas à l'hôpital ? – Non, ___.",
+    blanks:[["je n'y vais pas"]], wide:true, hint:"zápor s y",
+    rule:"Zápor: ne + y + sloveso + pas → je n'y vais pas.", why:"ne + y → n'y; pas za slovesem." },
+  { id:"y3", topic:"y", diff:"e", task:"Vous habitez à Prague ? – Oui, ___.",
+    blanks:[["j'y habite"]], wide:true, hint:"à Prague → y",
+    rule:"je + y → j'y.", why:"à Prague → y; je → j' před y: j'y habite." },
+  { id:"y4", topic:"y", diff:"m", task:"Elle est dans sa chambre ? – Oui, ___.",
+    blanks:[["elle y est"]], wide:true, hint:"dans sa chambre → y",
+    rule:"y nahradí i místo s dans.", why:"elle y est." },
+  { id:"y5", topic:"y", diff:"h", task:"Tu vas aller à la montagne cet hiver ? – Oui, je vais ___ aller.",
+    blanks:[["y"]], hint:"y jde před infinitiv",
+    rule:"S infinitivem stojí y před infinitivem: je vais y aller.", why:"y patří k „aller“ (infinitiv) → je vais y aller." },
+  { id:"y6", topic:"y", diff:"h", task:"Tu es allé en Italie ? – Oui, ___ allé l'année dernière.",
+    blanks:[["j'y suis"]], hint:"passé composé: y před pomocným slovesem",
+    rule:"V passé composé stojí y před pomocným slovesem: j'y suis allé.", why:"en Italie → y; před „suis“ → j'y suis allé." },
+
+  /* ── comparaison (týdny 21–22) ── */
+  { id:"k1", topic:"comp", diff:"e", task:"La mer est ___ chaude ___ la montagne. (+)",
+    blanks:[["plus"],["que"]], hint:"více než",
+    rule:"plus / moins / aussi + přídavné jméno + que.", why:"+ → plus chaude que." },
+  { id:"k2", topic:"comp", diff:"e", task:"Le train est ___ rapide ___ l'avion. (−)",
+    blanks:[["moins"],["que"]], hint:"méně než",
+    rule:"moins + adj. + que.", why:"− → moins rapide que." },
+  { id:"k3", topic:"comp", diff:"e", task:"Les vacances à la mer sont ___ agréables ___ les vacances à la montagne. (=)",
+    blanks:[["aussi"],["que"]], hint:"stejně jako",
+    rule:"aussi + adj. + que.", why:"= → aussi agréables que." },
+  { id:"k4", topic:"comp", diff:"m", task:"La cuisine italienne est ___ que la cuisine anglaise. (+ bon)",
+    blanks:[["meilleure"]], hint:"výjimka! a pozor na rod",
+    rule:"bon → meilleur (NIKDY „plus bon“). Shoduje se v rodě: meilleure.", why:"cuisine = f. → meilleure." },
+  { id:"k5", topic:"comp", diff:"m", task:"Cet hôtel est ___ que l'autre. (+ mauvais)",
+    blanks:[["pire","plus mauvais"]], hint:"výjimka",
+    rule:"mauvais → pire (nebo plus mauvais).", why:"pire que = horší než." },
+  { id:"k6", topic:"comp", diff:"h", task:"La plage est ___ que la piscine. (+ bien; adverbium)",
+    blanks:[["mieux"]], hint:"bien → ?",
+    rule:"bien (dobře) → mieux (lépe). C'est mieux = Je to lepší.", why:"Po „être“ ve významu „je to lepší“ se používá mieux." },
+
+  /* ── avoir mal à (týdny 15–17) ── */
+  { id:"m1", topic:"mal", diff:"e", task:"J'ai mal ___ tête.", blanks:[["à la"]], hint:"la tête",
+    rule:"à + la = à la · à + le = au · à + l' = à l' · à + les = aux", why:"la tête → à la tête." },
+  { id:"m2", topic:"mal", diff:"e", task:"J'ai mal ___ ventre.", blanks:[["au"]], hint:"le ventre",
+    rule:"à + le = au.", why:"le ventre → au ventre." },
+  { id:"m3", topic:"mal", diff:"m", task:"J'ai mal ___ dents.", blanks:[["aux"]], hint:"les dents",
+    rule:"à + les = aux.", why:"les dents → aux dents." },
+  { id:"m4", topic:"mal", diff:"m", task:"J'ai mal ___ oreille.", blanks:[["à l'"]], hint:"l'oreille",
+    rule:"à + l' = à l'.", why:"l'oreille → à l'oreille." },
+  { id:"m5", topic:"mal", diff:"e", task:"Il a mal ___ dos et ___ gorge.", blanks:[["au"],["à la"]], hint:"le dos, la gorge",
+    rule:"au (m.) / à la (f.).", why:"le dos → au dos; la gorge → à la gorge." },
+];
+
+const FICHE_SECTIONS = [
+  { n:1, title:"L'obligation, l'interdiction et les demandes", lede:"Doplň strukturu zákazu nebo žádosti. Často je správně víc variant — tak to uznával i profesor." },
+  { n:2, title:"Les pronoms COD", lede:"Nahraď předmět zájmenem le / la / l' / les (pozor na rod, číslo a samohlásky)." },
+  { n:3, title:"Les démonstratifs — ce / cet / cette / ces", lede:"Profesor tomu říká „pronoms démonstratifs“; přesně jde o ukazovací přídavná jména (stojí před podstatným jménem)." },
+  { n:4, title:"Pays et nationalités", lede:"Doplň předložku se zemí a správný tvar národnosti (pozor na rod osoby)." },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   PSANÍ — Partie 2 z listu od profesora
+   need: { lab, re (na normalizovaný text), min } | { lab, manual:true }
+   ═══════════════════════════════════════════════════════════════════ */
+
+const NAT_RE = "francais|francaise|italien|italienne|espagnol|espagnole|allemand|allemande|anglais|anglaise|americain|americaine|tcheque|belge|suisse|russe|polonais|polonaise|chinois|chinoise|japonais|japonaise|marocain|marocaine|egyptien|egyptienne|neerlandais|neerlandaise|coreen|coreenne|algerien|algerienne|ivoirien|ivoirienne|ecossais|ecossaise|irlandais|irlandaise|autrichien|autrichienne|croate|portugais|portugaise|grec|grecque";
+const PAYS_RE = "france|italie|espagne|allemagne|angleterre|royaume-uni|etats-unis|tchequie|republique tcheque|belgique|suisse|russie|pologne|chine|japon|maroc|egypte|pays-bas|coree|algerie|cote d ivoire|liechtenstein|autriche|croatie|portugal|grece";
+
+const WRITING = [
+  {
+    id:"w1", title:"1 · Le règlement de l'immeuble parfait",
+    brief:"Napiš pravidla svého ideálního domu: 2 zákazy (Interdiction de… / Ne pas…), 2 povinnosti (infinitiv nebo rozkazovací způsob) a 2 zdvořilé žádosti (Merci de… / Prière de…). Každé pravidlo na nový řádek.",
+    need:[
+      { lab:"2× zákaz (Interdiction de / Il est interdit de / Défense de / Ne pas)", re:"interdiction d|il est interdit d|defense d|(^|\\s)ne pas ", min:2 },
+      { lab:"2× zdvořilá žádost (Merci de / Prière de)", re:"merci d|priere d", min:2 },
+      { lab:"2× povinnost (infinitiv nebo rozkazovací způsob na začátku řádku)", manual:true },
+      { lab:"aspoň 3 slovíčka z domu (hall, couloir, ascenseur, escalier, balcon, pelouse, local…)", re:"hall|couloir|ascenseur|escalier|balcon|pelouse|local a|porte d entree|parties communes|appartement|residence|voisin", min:3 },
+    ],
+    model:[
+      "Interdiction de fumer dans le hall et dans l'ascenseur.",
+      "Ne pas laisser les vélos dans le couloir.",
+      "Fermer la porte d'entrée à clé après 22 heures.",
+      "Respectez vos voisins !",
+      "Merci de trier vos déchets dans le local à poubelles.",
+      "Prière de ne pas faire de bruit dans l'escalier le soir.",
+    ],
+  },
+  {
+    id:"w2", title:"2 · Description de vacances & comparaison",
+    brief:"5–8 vět: porovnej dvě destinace (hory × moře, dvě země…). Použij zájmeno y aspoň 2×, srovnání (plus / moins / aussi … que, meilleur, pire) a zmiň národnosti.",
+    need:[
+      { lab:"zájmeno y aspoň 2× (j'y vais, on y mange… — „il y a“ se nepočítá)", re:"y", min:2, yCount:true },
+      { lab:"aspoň 2 srovnání (plus / moins / aussi … que, meilleur, pire, mieux)", re:"(plus|moins|aussi) [a-z-]+( [a-z-]+)? qu|meilleur|pire|mieux", min:2 },
+      { lab:"aspoň 1 národnost", re:NAT_RE, min:1 },
+      { lab:"5–8 vět", sentences:[5,8] },
+    ],
+    model:[
+      "L'été dernier, je suis allé en Croatie, à la mer. J'y suis resté deux semaines avec ma famille.",
+      "En hiver, je vais souvent à la montagne en Autriche : j'y fais du ski avec mes amis.",
+      "La mer est plus chaude que la montagne, mais la montagne est moins chère en août.",
+      "À la plage, il y a beaucoup de touristes allemands et italiens.",
+      "Pour moi, la cuisine autrichienne est meilleure que la cuisine de l'hôtel en Croatie !",
+      "Finalement, la montagne est aussi belle que la mer.",
+    ],
+  },
+  {
+    id:"w3", title:"3 · Mon appartement et mes voisins (min. 80 slov)",
+    brief:"Představ kamarádovi svůj byt a sousedy. Musí tam být: 1 zákaz, 1 zdvořilá žádost, 2 národnosti nebo 2 země, 1 ukazovací přídavné jméno (ce, cet, cette, ces), 2 zájmena COD (le, la, l', les) a 1× zájmeno y.",
+    need:[
+      { lab:"aspoň 80 slov", words:80 },
+      { lab:"1× zákaz", re:"interdiction d|il est interdit d|defense d|(^|\\s)ne pas ", min:1 },
+      { lab:"1× zdvořilá žádost (Merci de / Prière de)", re:"merci d|priere d", min:1 },
+      { lab:"2 národnosti nebo země", re:NAT_RE + "|" + PAYS_RE, min:2 },
+      { lab:"1× ce / cet / cette / ces", re:"ce|cet|cette|ces", min:1, word:true },
+      { lab:"1× zájmeno y (j'y habite…)", re:"y", min:1, yCount:true },
+      { lab:"2× zájmeno COD před slovesem (je la trouve, je l'aime…) — zkontroluj sám", manual:true },
+    ],
+    model:[
+      "Salut Tom ! J'habite maintenant dans un nouvel appartement à Prague. J'y habite depuis un mois.",
+      "Cet appartement est petit, mais il a un joli balcon.",
+      "Ma voisine s'appelle Giulia. Elle habite en République tchèque, mais elle est italienne.",
+      "Je la trouve très sympa et je l'aide souvent à porter ses courses.",
+      "Mon autre voisin, Pablo, est un étudiant espagnol. Je le vois tous les matins dans l'ascenseur.",
+      "Dans notre immeuble, il y a des règles : interdiction de fumer dans le hall et merci de fermer la porte d'entrée.",
+      "Viens me voir bientôt ! — Thomas",
+    ],
+  },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   KVÍZ
+   ═══════════════════════════════════════════════════════════════════ */
+
+const QUIZ = [
+  { question:"Která struktura vyjadřuje ZÁKAZ?", type:"multi",
+    options:["Défense de marcher sur la pelouse.","Merci de fermer la porte.","Il est interdit de fumer.","Ne pas laisser votre vélo ici.","Prière de trier vos déchets."],
+    correct:[0,2,3], explanation:"Zákaz: Défense de / Interdiction de / Il est interdit de / Ne pas + infinitiv. Merci de a Prière de jsou zdvořilé žádosti." },
+  { question:"„Tenir les chiens en laisse.“ — co tahle věta vyjadřuje?", type:"single",
+    options:["povinnost (infinitiv)","zákaz","zdvořilou žádost","otázku"],
+    correct:[0], explanation:"Samotný infinitiv (nebo rozkazovací způsob jako „Respectez vos voisins !“) vyjadřuje povinnost." },
+  { question:"Jak správně: „Prosíme, nedělejte hluk.“", type:"single",
+    options:["Merci de ne pas faire de bruit.","Merci de ne faire pas de bruit.","Merci ne pas de faire du bruit.","Merci de faire pas de bruit."],
+    correct:[0], explanation:"U infinitivu stojí ne pas pohromadě PŘED slovesem: ne pas faire.", tip:"ne pas + infinitiv = cedulkový zápor." },
+  { question:"Tu as vu mon appartement ? Oui, je ___ trouve très beau.", type:"single",
+    options:["le","la","l'","les"], correct:[0], explanation:"l'appartement je mužského rodu a „trouve“ začíná souhláskou → le." },
+  { question:"Ma voisine est sympa, je ___ aide souvent.", type:"single",
+    options:["l'","la","le","les"], correct:[0], explanation:"Před samohláskou se la zkracuje: l'aide." },
+  { question:"Kam patří zájmeno COD ve větě „Je cherche un plombier pour réparer la fuite.“?", type:"single",
+    options:["Je cherche un plombier pour la réparer.","Je la cherche un plombier pour réparer.","Je cherche un plombier pour réparer la.","Je cherche la un plombier pour réparer."],
+    correct:[0], explanation:"S infinitivem stojí zájmeno před infinitivem: pour la réparer." },
+  { question:"Zápor s COD: „Neznám ji.“", type:"single",
+    options:["Je ne la connais pas.","Je la ne connais pas.","Je ne connais la pas.","Je ne connais pas la."],
+    correct:[0], explanation:"ne + zájmeno + sloveso + pas." },
+  { question:"___ homme habite dans mon immeuble.", type:"single",
+    options:["Cet","Ce","Cette","Ces"], correct:[0], explanation:"homme je m. a začíná němým h → cet." },
+  { question:"___ école est très grande.", type:"single",
+    options:["Cette","Cet","Ce","Ces"], correct:[0], explanation:"école je ženského rodu → cette (cet je jen pro mužský rod).", tip:"cet = jen mužský rod před samohláskou." },
+  { question:"Které spojení jsou SPRÁVNĚ?", type:"multi",
+    options:["cet endroit","cet orange","ces oranges","ce oiseau","cette voiture"],
+    correct:[0,2,4], explanation:"cet endroit (m.), ces oranges (mn.), cette voiture (f.). Správně je „cette orange“ (f.) a „cet oiseau“ (m. + samohláska)." },
+  { question:"Pierre aime ___ voiture.", type:"single",
+    options:["sa","son","ses","leur"], correct:[0], explanation:"Přivlastňovací se řídí věcí: la voiture → sa, i když majitel je muž.", tip:"Rod VĚCI, ne majitele!" },
+  { question:"Marie cherche ___ portable. (le portable)", type:"single",
+    options:["son","sa","ses","mon"], correct:[0], explanation:"portable = m. → son." },
+  { question:"C'est ___ amie Julie. (moje)", type:"single",
+    options:["mon","ma","mes","m'"], correct:[0], explanation:"Před samohláskou se ma mění na mon: mon amie, mon école." },
+  { question:"Ils habitent avec ___ parents.", type:"single",
+    options:["leurs","leur","ses","son"], correct:[0], explanation:"víc majitelů + víc věcí → leurs." },
+  { question:"Tu vas à la pharmacie ? – Non, ...", type:"single",
+    options:["je n'y vais pas.","je ne vais y pas.","je n'vais y pas.","je ne y vais pas."],
+    correct:[0], explanation:"ne + y → n'y; pas za slovesem: je n'y vais pas." },
+  { question:"Co může zájmeno y nahradit?", type:"multi",
+    options:["à la pharmacie","en Italie","dans sa chambre","la voiture","mes clés"],
+    correct:[0,1,2], explanation:"y nahrazuje místo (à / en / dans / chez + místo). la voiture a mes clés jsou předměty → COD (la, les)." },
+  { question:"Tu vas aller à Paris ? – Oui, ...", type:"single",
+    options:["je vais y aller.","j'y vais aller.","je y vais aller.","je vais aller y."],
+    correct:[0], explanation:"S infinitivem stojí y před infinitivem: je vais y aller." },
+  { question:"Yuki habite ___ Japon, elle est ___.", type:"single",
+    options:["au / japonaise","en / japonaise","au / japonais","à / japonaise"],
+    correct:[0], explanation:"le Japon (m.) → au Japon; žena → japonaise." },
+  { question:"Marco vient ___ Italie.", type:"single",
+    options:["d'","de l'","en","du"], correct:[0], explanation:"Ženská země / samohláska: venir de → d'Italie." },
+  { question:"John habite ___ États-Unis.", type:"single",
+    options:["aux","au","en","des"], correct:[0], explanation:"les États-Unis (mn. č.) → aux. Odkud: des États-Unis." },
+  { question:"Které národnosti mají STEJNÝ tvar pro muže i ženu?", type:"multi",
+    options:["tchèque","belge","suisse","russe","italien","français"],
+    correct:[0,1,2,3], explanation:"Národnosti končící na -e se nemění. italien → italienne, français → française." },
+  { question:"Jak se řekne „Nizozemec“?", type:"single",
+    options:["néerlandais","pays-basien","hollandien","néerlandien"], correct:[0], explanation:"les Pays-Bas → néerlandais / néerlandaise." },
+  { question:"La cuisine italienne est ___ que la cuisine anglaise. (+ bon)", type:"single",
+    options:["meilleure","plus bonne","plus meilleure","mieux"], correct:[0],
+    explanation:"bon → meilleur, v ženském rodě meilleure. „plus bon“ neexistuje.", tip:"bon → meilleur, mauvais → pire." },
+  { question:"Le train est ___ rapide ___ l'avion. (méně)", type:"single",
+    options:["moins / que","plus / que","aussi / que","moins / de"], correct:[0], explanation:"moins + adj. + que." },
+  { question:"J'ai mal ___ ventre.", type:"single",
+    options:["au","à la","à le","aux"], correct:[0], explanation:"à + le = au (le ventre)." },
+  { question:"J'ai mal ___ oreille.", type:"single",
+    options:["à l'","au","à la","aux"], correct:[0], explanation:"l'oreille → à l'oreille." },
+  { question:"Kdo opraví únik vody (une fuite d'eau)?", type:"single",
+    options:["le plombier","le serrurier","l'électricien","le peintre"], correct:[0],
+    explanation:"plombier = instalatér. serrurier = zámečník, électricien = elektrikář, peintre = malíř." },
+  { question:"Co je „le local à vélos“?", type:"single",
+    options:["kolárna","cyklostezka","obchod s koly","servis kol"], correct:[0], explanation:"le local à vélos = místnost na kola. le local à poubelles = místnost na popelnice." },
+  { question:"Která slova patří k domu (l'immeuble)?", type:"multi",
+    options:["l'ascenseur","le couloir","la pelouse","la toux","l'escalier"], correct:[0,1,2,4],
+    explanation:"la toux = kašel (zdraví). Ostatní jsou z boxu L'immeuble." },
+  { question:"„L'ascenseur ne marche pas.“ znamená:", type:"single",
+    options:["Výtah nefunguje.","Výtah nejde pěšky.","Výtah nechodí do sklepa.","Do výtahu se nesmí."], correct:[0],
+    explanation:"marcher u přístrojů = fungovat (= fonctionner)." },
+  { question:"Jak souhlasíš?", type:"multi",
+    options:["Je suis d'accord.","Tout à fait !","Pas du tout !","Tu as raison.","Tu as tort."], correct:[0,1,3],
+    explanation:"Pas du tout ! = Vůbec ne! a Tu as tort = Nemáš pravdu vyjadřují nesouhlas." },
+  { question:"„Je pèse 60 kilos.“ znamená:", type:"single",
+    options:["Vážím 60 kilo.","Měřím 60 cm.","Nesu 60 kilo.","Platím 60 eur."], correct:[0], explanation:"peser = vážit; mesurer = měřit (výšku)." },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   SPOLEČNÉ KOMPONENTY
+   ═══════════════════════════════════════════════════════════════════ */
+
+function Acc({ title, badge, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="acc">
+      <button className={"acc-head" + (open ? " open" : "")} onClick={() => setOpen(o => !o)}>
+        <span className="t">{title}</span>
+        <span style={{ display:"flex", gap:"12px", alignItems:"center" }}>
+          {badge && <span className="badge">{badge}</span>}
+          <span className="chev">▶</span>
+        </span>
+      </button>
+      {open && <div className="acc-body">{children}</div>}
+    </div>
+  );
+}
+
+function SectionHead({ no, title, lede }) {
+  return (
+    <>
+      <div className="sect-title"><span className="no">{no}</span><h2>{title}</h2></div>
+      <p className="sect-lede">{lede}</p>
+    </>
+  );
+}
+
+const DIFF = { e:["e","Snadné ✨"], m:["m","Střední ⚡"], h:["h","Těžké 🔥"] };
+
+/** Jedna doplňovačka s kontrolou a skrytým řešením. */
+function GapItem({ it, n, onResult, showDiff = true }) {
+  const [vals, setVals] = useState(it.blanks.map(() => ""));
+  const [res, setRes] = useState(null);
+  const [open, setOpen] = useState(false);
+  const parts = it.task.split("___");
+
+  const check = () => {
+    const r = it.blanks.map((b, i) => checkBlank(vals[i], b));
+    setRes(r);
+    if (onResult) onResult(r.every(x => x !== "bad"));
+  };
+  const set = (i, v) => { const nv = [...vals]; nv[i] = v; setVals(nv); setRes(null); };
+  const cls = i => "blank" + (it.wide ? " wide" : "") + (res ? (res[i] === "bad" ? " bad" : " ok") : "");
+  const allOk = res && res.every(x => x !== "bad");
+  const accent = res && res.some(x => x === "accent");
+
+  const input = i => (
+    <input key={"b" + i} className={cls(i)} value={vals[i]} placeholder={it.wide ? "napiš odpověď…" : "…"}
+      onChange={e => set(i, e.target.value)} onKeyDown={e => e.key === "Enter" && check()}
+      autoCapitalize="off" autoCorrect="off" spellCheck={false} aria-label={"Mezera " + (i + 1)} />
+  );
+
+  return (
+    <div className="gap">
+      <div className="gap-head">
+        {n != null && <span className="n">{n}.</span>}
+        {showDiff && <span className={"diff " + DIFF[it.diff][0]}>{DIFF[it.diff][1]}</span>}
+        <span className="hint">{it.hint}</span>
+      </div>
+      {it.wide ? (
+        <div className="gap-line"><div>{it.task}</div>{input(0)}</div>
+      ) : (
+        <div className="gap-line">
+          {parts.map((p, i) => <span key={i}>{p}{i < parts.length - 1 && input(i)}</span>)}
+        </div>
+      )}
+      <div className="gap-actions">
+        <button className="mini" onClick={check}>Zkontrolovat</button>
+        <button className="mini red" onClick={() => setOpen(o => !o)}>{open ? "Skrýt řešení" : "Ukázat řešení"}</button>
+      </div>
+      {res && (
+        <div className="verdict-line" style={{ color: allOk ? "var(--ok)" : "var(--bad)" }}>
+          {allOk ? (accent ? "✓ Správně — ale pozor na diakritiku (é, è, ç…)." : "✓ Správně!") : "✗ Ještě ne — zkus to znovu, nebo si odkryj řešení."}
+        </div>
+      )}
+      {open && (
+        <div className="sol">
+          <div className="step"><div className="lab">Pravidlo</div>{it.rule}</div>
+          <div className="step"><div className="lab">Postup</div>{it.why}</div>
+          <div className="res">{it.blanks.map(shownAnswer).join("  ·  ")}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   1) LIST OD PROFESORA
+   ═══════════════════════════════════════════════════════════════════ */
+
+function WritingTask({ t }) {
+  const [text, setText] = useState("");
+  const [checked, setChecked] = useState(false);
+  const [manual, setManual] = useState({});
+  const [model, setModel] = useState(false);
+
+  const n = normText(text);
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const sentences = text.split(/[.!?\n]+/).filter(x => x.trim().length > 3).length;
+
+  const hits = t.need.map((r, i) => {
+    if (r.manual) return { ...r, ok: !!manual[i] };
+    if (r.words) return { ...r, ok: words >= r.words, extra: words + " slov" };
+    if (r.sentences) return { ...r, ok: sentences >= r.sentences[0] && sentences <= r.sentences[1], extra: sentences + " vět" };
+    let count;
+    if (r.yCount) {
+      count = (n.match(/\sy\s/g) || []).length - (n.match(/\sil y a\s/g) || []).length - (n.match(/\sy a-t-il\s/g) || []).length;
+    } else {
+      const re = new RegExp(r.word ? "\\s(" + r.re + ")\\s" : "(" + r.re + ")", "g");
+      count = (n.match(re) || []).length;
+    }
+    return { ...r, ok: count >= r.min, extra: count + "×" };
+  });
+  const done = hits.filter(h => h.ok).length;
+
+  return (
+    <div className="card">
+      <h3>{t.title}</h3>
+      <p className="lede">{t.brief}</p>
+      <textarea className="textarea" rows={7} value={text} onChange={e => { setText(e.target.value); }}
+        placeholder="piš sem francouzsky…" />
+      <div className="scorebar">
+        <span className="chip">Slov: <b>{words}</b></span>
+        <span className="chip">Vět: <b>{sentences}</b></span>
+      </div>
+      <div style={{ display:"flex", gap:"10px", flexWrap:"wrap" }}>
+        <button className="btn" onClick={() => setChecked(true)}>Zkontrolovat zadání</button>
+        <button className="btn red" onClick={() => setModel(m => !m)}>{model ? "Skrýt vzor" : "Vzorové řešení"}</button>
+      </div>
+      {checked && (
+        <div style={{ marginTop:"16px" }}>
+          <div className="prog"><i style={{ width: (done / t.need.length) * 100 + "%" }} /></div>
+          <ul className="checklist">
+            {hits.map((h, i) => (
+              <li key={i} style={{ color: h.ok ? "var(--ok)" : "var(--muted)" }}>
+                {h.manual ? (
+                  <label><input type="checkbox" checked={!!manual[i]} onChange={e => setManual(m => ({ ...m, [i]: e.target.checked }))} />{h.lab}</label>
+                ) : (
+                  <><b>{h.ok ? "✓" : "○"}</b><span>{h.lab}{h.extra ? " — " + h.extra : ""}</span></>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p style={{ fontSize:"14px", color:"var(--muted)" }}>Kontrola hledá jen to, jestli jsi obrat použil. Gramatiku si porovnej se vzorem.</p>
+        </div>
+      )}
+      {model && <div className="model" style={{ marginTop:"14px" }}>{t.model.map((m, i) => <div key={i}>{m}</div>)}</div>}
+    </div>
+  );
+}
+
+function FicheTab() {
+  return (
+    <div>
+      <SectionHead no="Partie I" title="Révision semaines 13–23 — list od profesora"
+        lede="Přesně cvičení ze str. 3–5 dokumentu, který profesor poslal. Doplň, zkontroluj, a teprve když nevíš, odkryj řešení s vysvětlením. Pod tím jsou tři slohová zadání z Partie 2." />
+      {FICHE_SECTIONS.map(s => (
+        <div className="card" key={s.n}>
+          <h3>{s.n}. {s.title}</h3>
+          <p className="lede">{s.lede}</p>
+          {GAPS.filter(g => g.fiche === s.n).map((g, i) => <GapItem key={g.id} it={g} n={i + 1} showDiff={false} />)}
+          {s.n === 3 && (
+            <div className="rule">Profesor připsal i: <b>Cette</b> orange · <b>Cette</b> école · <b>Ces</b> femmes, <b>ces</b> hommes, <b>ces</b> voitures — ženský rod zůstává <b>cette</b> i před samohláskou.</div>
+          )}
+        </div>
+      ))}
+      <div className="sect-title" style={{ marginTop:"28px" }}><span className="no">Partie 2</span><h2>Exercices créatifs</h2></div>
+      <p className="sect-lede">Tohle bude v testu nejspíš jako sloh. Napiš text, nech si odškrtat povinné prvky, pak porovnej se vzorem.</p>
+      {WRITING.map(t => <WritingTask key={t.id} t={t} />)}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2) SLOVNÍK
+   ═══════════════════════════════════════════════════════════════════ */
+
+function VocabRow({ it }) {
+  return (
+    <div className="vrow">
+      <span className="fr"><Fr t={it.fr} g={it.g} /></span>
+      <span className="cz">{it.cz}</span>
+    </div>
+  );
+}
+
+function PaysTable({ filter = "" }) {
+  const f = strip(filter);
+  const rows = PAYS.filter(p => !f || strip(p.p + " " + p.cz + " " + p.nat).includes(f));
+  if (!rows.length) return null;
+  return (
+    <div className="tblwrap">
+      <table className="tbl">
+        <thead><tr><th>Země</th><th>Kde / kam</th><th>Odkud</th><th>Národnost (m. / f.)</th></tr></thead>
+        <tbody>
+          {rows.map(p => (
+            <tr key={p.p}>
+              <td><Fr t={p.p} g={p.g} /><div style={{ fontSize:"13px", color:"var(--muted)" }}>{p.cz}</div></td>
+              <td className="mono">{p.en}</td>
+              <td className="mono">{p.de}</td>
+              <td>{p.nat}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function VocabTab() {
+  const [q, setQ] = useState("");
+  const f = strip(q);
+  const match = it => !f || strip(it.fr + " " + it.cz).includes(f);
+
+  return (
+    <div>
+      <SectionHead no="Partie II" title="Slovník — semaines 13 à 23"
+        lede="Seřazeno podle týdnů z banque. Barva členu ukazuje rod: modrá = mužský, červená = ženský, černá = množné číslo. U l' rod poznáš podle barvy celého členu." />
+      <input className="search" placeholder="Hledat francouzsky nebo česky…" value={q} onChange={e => setQ(e.target.value)} />
+      {WEEKS.map((w, wi) => {
+        const groups = (w.groups || []).map(g => ({ ...g, items: g.items.filter(match) })).filter(g => g.items.length);
+        const phrases = (w.phrases || []).filter(p => !f || strip(p.f + " " + p.c).includes(f));
+        const hasPays = w.countries && PAYS.some(p => !f || strip(p.p + " " + p.cz + " " + p.nat).includes(f));
+        if (f && !groups.length && !phrases.length && !hasPays) return null;
+        return (
+          <Acc key={w.id + (f ? "-f" : "")} title={w.title} badge={w.label} defaultOpen={!!f || wi === 0}>
+            <div className="note">{w.src}</div>
+            {groups.map(g => (
+              <div key={g.cat}>
+                <div className="cat">{g.cat}</div>
+                <div className="vgrid">{g.items.map(it => <VocabRow key={it.fr} it={it} />)}</div>
+              </div>
+            ))}
+            {phrases.length > 0 && (
+              <>
+                <div className="cat">{w.id === "s18" ? "Accord / désaccord — souhlas a nesouhlas" : "Věty z oranžových boxů"}</div>
+                {phrases.map(p => <div className="phrase" key={p.f}><div className="f">{p.f}</div><div className="c">{p.c}</div></div>)}
+              </>
+            )}
+            {w.countries && <PaysTable filter={q} />}
+          </Acc>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3) GRAMATIKA
+   ═══════════════════════════════════════════════════════════════════ */
+
+function GrammarTab() {
+  return (
+    <div>
+      <SectionHead no="Partie III" title="Gramatika"
+        lede="Osm gramatických témat z týdnů 13–23. Každé má pravidlo, tabulku a příklady z učebnice nebo z listu od profesora." />
+
+      <Acc title="1 · L'obligation, l'interdiction, la demande" badge="sem. 13–14 · str. 123" defaultOpen>
+        <div className="trio">
+          <div><div className="ic">⛔</div><div className="h">Interdiction</div>
+            <div className="mono">Défense de + inf.<br />Interdiction de + inf.<br />Il est interdit de + inf.<br />Ne pas + inf.</div></div>
+          <div><div className="ic">⬆️</div><div className="h">Obligation</div>
+            <div className="mono">Verbe à l'infinitif<br />Verbe à l'impératif</div>
+            <div style={{ fontSize:"13px", color:"var(--muted)", marginTop:"6px" }}>Tenir les chiens en laisse. · Respectez vos voisins !</div></div>
+          <div><div className="ic">🙏</div><div className="h">Demande</div>
+            <div className="mono">Merci de + inf.<br />Prière de + inf.</div></div>
+        </div>
+        <div className="ex">
+          <div>Défense de marcher sur la pelouse. <span className="cz">— Zákaz vstupu na trávník.</span></div>
+          <div>Interdiction de fumer ou de vapoter dans les parties communes.</div>
+          <div>Il est interdit de faire des barbecues sur les balcons.</div>
+          <div>Ne pas laisser votre vélo dans les couloirs.</div>
+          <div>Merci de fermer la porte d'entrée. · Prière de trier vos déchets.</div>
+        </div>
+        <div className="rule"><b>Zápor u infinitivu:</b> ne pas stojí obě slova <b>před</b> infinitivem → Merci de <b>ne pas</b> faire de bruit.</div>
+      </Acc>
+
+      <Acc title="2 · Les pronoms COD — le, la, l', les" badge="sem. 13–14">
+        <p>Zájmeno COD nahrazuje <b>přímý předmět</b> (osobu nebo věc) — v češtině „ho, ji, je“.</p>
+        <div className="tblwrap">
+          <table className="tbl">
+            <thead><tr><th></th><th>Singulier</th><th>Pluriel</th></tr></thead>
+            <tbody>
+              <tr><td>Masculin</td><td className="mono g-m">le</td><td className="mono" rowSpan={3} style={{ verticalAlign:"middle" }}>les</td></tr>
+              <tr><td>Féminin</td><td className="mono g-f">la</td></tr>
+              <tr><td>Devant une voyelle ou un h muet</td><td className="mono">l'</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="rule"><b>Pozice:</b> zájmeno stojí <b>před slovesem</b>. U infinitivu před infinitivem: pour <b>la</b> réparer. V záporu: Je ne <b>la</b> connais pas.</div>
+        <div className="ex">
+          <div>J'ai une fuite d'eau. Je cherche un plombier pour <b>la</b> réparer. <span className="cz">(la fuite)</span></div>
+          <div>Tu <b>les</b> oublies souvent, tes clés !</div>
+          <div>Paul Bertrand ? Je <b>le</b> contacte ?</div>
+          <div>Ma voisine ? Je <b>la</b> connais bien. Je <b>l'</b>aide souvent.</div>
+        </div>
+      </Acc>
+
+      <Acc title="3 · Les possessifs — mon, ma, mes…" badge="sem. 15–17">
+        <div className="tblwrap">
+          <table className="tbl">
+            <thead><tr><th>Majitel</th><th>m. sg.</th><th>f. sg.</th><th>pluriel</th></tr></thead>
+            <tbody>
+              <tr><td>je</td><td className="mono g-m">mon</td><td className="mono g-f">ma</td><td className="mono">mes</td></tr>
+              <tr><td>tu</td><td className="mono g-m">ton</td><td className="mono g-f">ta</td><td className="mono">tes</td></tr>
+              <tr><td>il / elle</td><td className="mono g-m">son</td><td className="mono g-f">sa</td><td className="mono">ses</td></tr>
+              <tr><td>nous</td><td className="mono" colSpan={2}>notre</td><td className="mono">nos</td></tr>
+              <tr><td>vous</td><td className="mono" colSpan={2}>votre</td><td className="mono">vos</td></tr>
+              <tr><td>ils / elles</td><td className="mono" colSpan={2}>leur</td><td className="mono">leurs</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="rule"><b>Pozor (z banque):</b> rod se řídí <b>předmětem, ne osobou</b>. Pierre → <b>sa</b> voiture (la voiture). Marie → <b>son</b> vélo (le vélo).</div>
+        <div className="rule"><b>Před samohláskou</b> se ma / ta / sa mění na mon / ton / son: <b>mon</b> amie, <b>ton</b> école, <b>son</b> oreille.</div>
+      </Acc>
+
+      <Acc title="4 · Le pronom y" badge="sem. 18–20 · str. 118">
+        <p><b>y</b> nahrazuje <b>místo</b> (à / en / dans / chez / sur + místo) — česky „tam“.</p>
+        <div className="ex">
+          <div>Tu vas à l'hôpital ? – Oui, j'<b>y</b> vais. / Non, je n'<b>y</b> vais pas.</div>
+          <div>Vous travaillez dans cet hôpital ? – Oui, j'<b>y</b> travaille.</div>
+          <div>Elle est dans sa chambre ? – Oui, elle <b>y</b> est.</div>
+          <div>On <b>y</b> vend des médicaments. – À la pharmacie.</div>
+        </div>
+        <div className="tblwrap">
+          <table className="tbl">
+            <thead><tr><th>Situace</th><th>Pozice y</th><th>Příklad</th></tr></thead>
+            <tbody>
+              <tr><td>přítomný čas</td><td>před slovesem</td><td className="mono">J'y habite.</td></tr>
+              <tr><td>zápor</td><td>ne + y + sloveso + pas</td><td className="mono">Je n'y vais pas.</td></tr>
+              <tr><td>s infinitivem</td><td>před infinitivem</td><td className="mono">Je vais y aller.</td></tr>
+              <tr><td>passé composé</td><td>před pomocným slovesem</td><td className="mono">J'y suis allé.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="rule"><b>y × COD:</b> y = místo (à la pharmacie → y). COD = předmět (la pharmacie → la): Je <b>la</b> vois. × J'<b>y</b> vais.</div>
+      </Acc>
+
+      <Acc title="5 · La comparaison" badge="sem. 21–22 · str. 131">
+        <div className="trio">
+          <div><div className="h" style={{ color:"var(--ok)" }}>+ plus … que</div>La mer est plus chaude que la montagne.</div>
+          <div><div className="h" style={{ color:"var(--bleu)" }}>= aussi … que</div>Ces logements sont aussi confortables que des locations.</div>
+          <div><div className="h" style={{ color:"var(--rouge)" }}>− moins … que</div>Le train est moins rapide que l'avion.</div>
+        </div>
+        <div className="rule"><b>Výjimky:</b> bon → <b>meilleur(e)</b> (nikdy „plus bon“) · mauvais → <b>pire</b> (i plus mauvais) · bien → <b>mieux</b>.</div>
+        <div className="rule">Přídavné jméno se shoduje: La cuisine est <b>meilleure</b>. Les chambres sont moins <b>chères</b>.</div>
+      </Acc>
+
+      <Acc title="6 · Ce, cet, cette, ces" badge="sem. 23">
+        <div className="tblwrap">
+          <table className="tbl">
+            <thead><tr><th>Tvar</th><th>Kdy</th><th>Příklad (banque)</th></tr></thead>
+            <tbody>
+              <tr><td className="mono g-m">ce</td><td>m. sg. před souhláskou</td><td>Ce chat est à moi. — Tahle kočka je moje.</td></tr>
+              <tr><td className="mono g-m">cet</td><td>m. sg. před samohláskou / němým h</td><td>Cet homme, cet endroit, cet oiseau</td></tr>
+              <tr><td className="mono g-f">cette</td><td>f. sg. (i před samohláskou!)</td><td>Cette voiture est très vieille. · Cette école</td></tr>
+              <tr><td className="mono">ces</td><td>pluriel (m. i f.)</td><td>Ces oranges sont pourries.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </Acc>
+
+      <Acc title="7 · Pays : en, au, aux — de, du, des" badge="sem. 23">
+        <div className="tblwrap">
+          <table className="tbl">
+            <thead><tr><th>Rod země</th><th>Kde / kam</th><th>Odkud</th><th>Příklad</th></tr></thead>
+            <tbody>
+              <tr><td className="g-f">ženský (většina na -e)</td><td className="mono">en</td><td className="mono">de / d'</td><td>en France, de France</td></tr>
+              <tr><td>začíná samohláskou</td><td className="mono">en</td><td className="mono">d'</td><td>en Italie, d'Italie</td></tr>
+              <tr><td className="g-m">mužský</td><td className="mono">au</td><td className="mono">du</td><td>au Japon, du Maroc</td></tr>
+              <tr><td>množné číslo</td><td className="mono">aux</td><td className="mono">des</td><td>aux États-Unis, des Pays-Bas</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="rule"><b>Národnost ženského rodu:</b> + e (français → française) · -ien → -ienne (italien → italienne) · -en → -enne (coréen → coréenne) · končí-li na -e, nemění se (tchèque, belge, suisse, russe).</div>
+        <div className="rule">Národnost jako přídavné jméno píšeš <b>malým</b> písmenem: il est français. Jako podstatné jméno velkým: un Français.</div>
+      </Acc>
+
+      <Acc title="8 · Avoir mal à…" badge="sem. 15–17">
+        <div className="ex">
+          <div>à + la → <b>à la</b> : J'ai mal à la tête.</div>
+          <div>à + le → <b>au</b> : J'ai mal au ventre.</div>
+          <div>à + l' → <b>à l'</b> : J'ai mal à l'oreille.</div>
+          <div>à + les → <b>aux</b> : J'ai mal aux pieds.</div>
+        </div>
+      </Acc>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4) TRÉNINK — po jedné, zamíchané, se skóre
+   ═══════════════════════════════════════════════════════════════════ */
+
+function TrainTab() {
+  const [topic, setTopic] = useState("all");
+  const [seed, setSeed] = useState(0);
+  const [i, setI] = useState(0);
+  const [score, setScore] = useState({ ok:0, tried:0 });
+  const [answered, setAnswered] = useState({});
+
+  const items = useMemo(() => shuffleArray(GAPS.filter(g => topic === "all" || g.topic === topic)), [topic, seed]);
+  const it = items[i];
+
+  const pick = t => { setTopic(t); setI(0); setScore({ ok:0, tried:0 }); setAnswered({}); setSeed(s => s + 1); };
+  const onResult = ok => {
+    if (answered[it.id] !== undefined) return;
+    setAnswered(a => ({ ...a, [it.id]: ok }));
+    setScore(s => ({ ok: s.ok + (ok ? 1 : 0), tried: s.tried + 1 }));
+  };
+
+  return (
+    <div>
+      <SectionHead no="Partie IV" title="Trénink — řešené úlohy"
+        lede={GAPS.length + " doplňovaček ze všech témat, po jedné a zamíchaně. Každá má obtížnost a skryté řešení s pravidlem a postupem. Do skóre se počítá jen první pokus."} />
+      <div className="modes">
+        <button className={"mode" + (topic === "all" ? " on" : "")} onClick={() => pick("all")}>Vše</button>
+        {Object.entries(TOPICS).map(([k, v]) => (
+          <button key={k} className={"mode" + (topic === k ? " on" : "")} onClick={() => pick(k)}>{v.short}</button>
+        ))}
+      </div>
+      <div className="scorebar">
+        <span className="chip">Úloha <b>{i + 1}</b> / {items.length}</span>
+        <span className="chip">Správně napoprvé: <b>{score.ok}</b> / {score.tried}</span>
+        <span className="chip">{TOPICS[it.topic].label}</span>
+      </div>
+      <div className="prog"><i style={{ width: ((i + 1) / items.length) * 100 + "%" }} /></div>
+      <GapItem key={it.id + "-" + seed} it={it} onResult={onResult} />
+      <div className="navrow">
+        <button className="btn" onClick={() => setI(x => x - 1)} disabled={i === 0}>← Předchozí</button>
+        {i < items.length - 1
+          ? <button className="btn" onClick={() => setI(x => x + 1)}>Další →</button>
+          : <button className="btn red" onClick={() => pick(topic)}>Zamíchat znovu</button>}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5) KARTIČKY
+   ═══════════════════════════════════════════════════════════════════ */
+
+const CARDS = [
+  ...WEEKS.flatMap(w => (w.groups || []).flatMap(g => g.items.map(it => ({ w:w.id, fr:it.fr, g:it.g, cz:it.cz })))),
+  ...WEEKS.flatMap(w => (w.phrases || []).map(p => ({ w:w.id, fr:p.f, cz:p.c }))),
+  ...PAYS.map(p => ({ w:"s23", fr:p.en + " — " + p.nat, cz:p.cz + " (kde) — národnost" })),
+];
+
+function FlashTab() {
+  const [week, setWeek] = useState("all");
+  const [dir, setDir] = useState("fr");
+  const [seed, setSeed] = useState(0);
+  const [i, setI] = useState(0);
+  const [flip, setFlip] = useState(false);
+
+  const deck = useMemo(() => {
+    const d = CARDS.filter(c => week === "all" || c.w === week);
+    return seed ? shuffleArray(d) : d;
+  }, [week, seed]);
+  const c = deck[i];
+  const go = n => { setFlip(false); setTimeout(() => setI(n), flip ? 220 : 0); };
+  const pickWeek = w => { setWeek(w); setI(0); setFlip(false); };
+
+  const front = dir === "fr" ? <Fr t={c.fr} g={c.g} /> : c.cz;
+  const back = dir === "fr" ? c.cz : <Fr t={c.fr} g={c.g} />;
+
+  // tečky: max. 30 kolem aktuální pozice
+  const start = Math.max(0, Math.min(i - 15, deck.length - 30));
+  const dots = deck.slice(start, start + 30);
+
+  return (
+    <div>
+      <SectionHead no="Partie V" title="Kartičky"
+        lede={CARDS.length + " karet ze všech týdnů. Klikni na kartu a otočí se. Můžeš filtrovat podle týdne, zamíchat a otočit směr (FR → CZ / CZ → FR)."} />
+      <div className="modes">
+        <button className={"mode" + (week === "all" ? " on" : "")} onClick={() => pickWeek("all")}>Vše</button>
+        {WEEKS.map(w => <button key={w.id} className={"mode" + (week === w.id ? " on" : "")} onClick={() => pickWeek(w.id)}>{w.label.replace("Semaines ", "Týdny ").replace("Semaine ", "Týden ")}</button>)}
+      </div>
+      <div className="modes">
+        <button className={"mode" + (dir === "fr" ? " on" : "")} onClick={() => { setDir("fr"); setFlip(false); }}>FR → CZ</button>
+        <button className={"mode" + (dir === "cz" ? " on" : "")} onClick={() => { setDir("cz"); setFlip(false); }}>CZ → FR</button>
+        <button className="mode" onClick={() => { setSeed(s => s + 1); setI(0); setFlip(false); }}>🔀 Zamíchat</button>
+      </div>
+      <div className="fcwrap">
+        <div className={"fc" + (flip ? " flip" : "")} onClick={() => setFlip(f => !f)}>
+          <div className="fc-face"><div className="big">{front}</div><div className="small">{dir === "fr" ? "français" : "česky"} · klikni pro otočení</div></div>
+          <div className="fc-face back"><div className="big">{back}</div><div className="small">{dir === "fr" ? "česky" : "français"}</div></div>
+        </div>
+      </div>
+      <div className="fcdots">{dots.map((_, k) => <i key={start + k} className={start + k === i ? "on" : ""} onClick={() => go(start + k)} />)}</div>
+      <div className="navrow" style={{ maxWidth:"540px", margin:"10px auto 0" }}>
+        <button className="btn" onClick={() => go(i - 1)} disabled={i === 0}>← Předchozí</button>
+        <span style={{ alignSelf:"center", color:"var(--muted)" }}>{i + 1} / {deck.length}</span>
+        <button className="btn" onClick={() => go(i + 1)} disabled={i === deck.length - 1}>Další →</button>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6) KVÍZ (engine z assets/quiz-engine.jsx, restylovaný do Affiche)
+   ═══════════════════════════════════════════════════════════════════ */
+
+function QuizEngine({ questions, accentColor = "#1b3a8f" }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+
+  const qs = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = qs[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = qs.filter((qq, i) => revealed[i] && arrEqual(answers[i] || [], qq.correct)).length;
+  const pct = Math.round((score / qs.length) * 100);
+
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(qs[i].type === "multi" ? (answers[i] || []) : []);
+  }, [answers, qs]);
+
+  const single = useCallback((o) => {
+    if (isRevealed) return;
+    setAnswers(p => ({ ...p, [idx]: [o] }));
+    setRevealed(p => ({ ...p, [idx]: true }));
+  }, [idx, isRevealed]);
+
+  const toggleMulti = useCallback((o) => {
+    if (isRevealed) return;
+    setPendingMulti(p => p.includes(o) ? p.filter(i => i !== o) : [...p, o]);
+  }, [isRevealed]);
+
+  const submitMulti = useCallback(() => {
+    if (!pendingMulti.length) return;
+    setAnswers(p => ({ ...p, [idx]: [...pendingMulti] }));
+    setRevealed(p => ({ ...p, [idx]: true }));
+  }, [idx, pendingMulti]);
+
+  const restart = useCallback(() => {
+    setIdx(0); setAnswers({}); setRevealed({}); setPendingMulti([]);
+    setShowResults(false); setShuffleKey(k => k + 1);
+  }, []);
+
+  if (showResults) {
+    const msg = pct >= 90 ? "Výborně! Na pátek jsi připravený."
+      : pct >= 70 ? "Dobře! Skoro všechno ti sedí."
+      : pct >= 50 ? "Mohlo by to být lepší, ale jdeš správným směrem."
+      : "Ještě opakuj — projdi gramatiku a trénink a zkus to znovu.";
+    return (
+      <div className="card">
+        <div className="results">
+          <div className="score">{score} / {qs.length}</div>
+          <div className="pct">{pct} %</div>
+          <div className="msg">{msg}</div>
+          <button className="btn red" onClick={restart}>Začít znovu</button>
+        </div>
+      </div>
+    );
+  }
+
+  const activeSet = isMulti ? (isRevealed ? myAnswer : pendingMulti) : myAnswer;
+
+  return (
+    <div>
+      <div className="dotbar">
+        {qs.map((_, i) => {
+          let bg = "#eae3d6";
+          if (i === idx) bg = accentColor;
+          else if (revealed[i]) bg = arrEqual(answers[i] || [], qs[i].correct) ? "#1f7a45" : "#b32020";
+          return <div key={i} className="dot" style={{ background:bg }} onClick={() => goTo(i)} title={"Otázka " + (i + 1)} />;
+        })}
+      </div>
+      <div className="card">
+        <div className="qnum">Otázka {idx + 1} / {qs.length}{isMulti ? " · více správných odpovědí" : ""}</div>
+        <div className="qtext">{q.question}</div>
+        <div>
+          {q.options.map((opt, i) => {
+            let style = {};
+            if (isRevealed) {
+              if (q.correct.includes(i)) style = { borderColor:"#1f7a45", borderWidth:"2px", background:"#eef7f1" };
+              else if (activeSet.includes(i)) style = { borderColor:"#b32020", borderWidth:"2px", background:"#fbeeee" };
+            } else if (activeSet.includes(i)) {
+              style = { borderColor:accentColor, borderWidth:"2px", background:"#eef1f9" };
+            }
+            return (
+              <div key={i} className="opt" style={style} onClick={() => isMulti ? toggleMulti(i) : single(i)}>
+                {isMulti && <span style={{ fontSize:"18px" }}>{activeSet.includes(i) ? "☑" : "☐"}</span>}
+                <span>{opt}</span>
+              </div>
+            );
+          })}
+        </div>
+        {isMulti && !isRevealed && (
+          <button className="btn" style={{ marginTop:"12px" }} onClick={submitMulti} disabled={!pendingMulti.length}>Potvrdit</button>
+        )}
+        {isRevealed && (
+          <div className="fb" style={{ borderColor: isCorrect ? "#1f7a45" : "#b32020" }}>
+            <div className="h" style={{ color: isCorrect ? "#1f7a45" : "#b32020" }}>{isCorrect ? "Správně!" : "Špatně"}</div>
+            {!isCorrect && <div className="corr">Správná odpověď: {q.correct.map(i => q.options[i]).join(" · ")}</div>}
+            <div className="exp">{q.explanation}</div>
+            {q.tip && <div className="tip">Tip: {q.tip}</div>}
+          </div>
+        )}
+        <div className="navrow">
+          <button className="btn" onClick={() => goTo(idx - 1)} disabled={idx === 0}>← Předchozí</button>
+          {idx < qs.length - 1
+            ? <button className="btn" onClick={() => goTo(idx + 1)}>Další →</button>
+            : <button className="btn red" onClick={() => setShowResults(true)}>Výsledky →</button>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function QuizTab() {
+  return (
+    <div>
+      <SectionHead no="Partie VI" title="Kvíz"
+        lede={QUIZ.length + " otázek přes všechna témata, pořadí odpovědí se pokaždé zamíchá. U otázek s ☐ je víc správných možností — vyber všechny a potvrď."} />
+      <QuizEngine questions={QUIZ} accentColor="#1b3a8f" />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   7) TAHÁK
+   ═══════════════════════════════════════════════════════════════════ */
+
+function CheatTab() {
+  return (
+    <div>
+      <SectionHead no="Partie VII" title="Tahák — naučit nazpaměť"
+        lede="Všechna pravidla z týdnů 13–23 na jedné stránce. Projdi si to ve čtvrtek večer a v pátek ráno." />
+      <div className="cheat">
+        <div>
+          <h4>⛔ Zákaz · ⬆️ Povinnost · 🙏 Žádost</h4>
+          <div className="mono">Défense de / Interdiction de / Il est interdit de / Ne pas + INF</div>
+          <div className="mono">Infinitif / Impératif (Respectez…)</div>
+          <div className="mono">Merci de / Prière de + INF</div>
+          <div style={{ fontSize:"14px", marginTop:"4px" }}>zápor: Merci de <b>ne pas</b> faire de bruit</div>
+        </div>
+        <div>
+          <h4>COD</h4>
+          <div className="mono"><span className="g-m">le</span> · <span className="g-f">la</span> · l' (samohláska/h) · les</div>
+          <div className="mono">Je la connais. · Je ne la connais pas.</div>
+          <div className="mono">pour la réparer (před infinitivem)</div>
+        </div>
+        <div>
+          <h4>Přivlastňovací</h4>
+          <div className="mono">mon ma mes · ton ta tes · son sa ses</div>
+          <div className="mono">notre nos · votre vos · leur leurs</div>
+          <div style={{ fontSize:"14px", marginTop:"4px" }}>rod podle <b>věci</b>: Pierre → sa voiture · mon amie (samohláska)</div>
+        </div>
+        <div>
+          <h4>Zájmeno y = tam (místo)</h4>
+          <div className="mono">J'y vais. · Je n'y vais pas.</div>
+          <div className="mono">Je vais y aller. · J'y suis allé.</div>
+        </div>
+        <div>
+          <h4>Srovnání</h4>
+          <div className="mono">plus / aussi / moins + ADJ + que</div>
+          <div className="mono">bon → meilleur(e) · mauvais → pire · bien → mieux</div>
+        </div>
+        <div>
+          <h4>Ukazovací</h4>
+          <div className="mono"><span className="g-m">ce</span> chat · <span className="g-m">cet</span> homme / endroit</div>
+          <div className="mono"><span className="g-f">cette</span> voiture / école · ces oranges</div>
+        </div>
+        <div>
+          <h4>Země</h4>
+          <div className="mono">f. / samohl.: en France, d'Italie</div>
+          <div className="mono">m.: au Japon, du Maroc</div>
+          <div className="mono">pl.: aux États-Unis, des Pays-Bas</div>
+          <div style={{ fontSize:"14px", marginTop:"4px" }}>-ien → -ienne · +e · -e se nemění (tchèque, belge, suisse, russe)</div>
+        </div>
+        <div>
+          <h4>Avoir mal à</h4>
+          <div className="mono">à la tête · au ventre · à l'oreille · aux pieds</div>
+        </div>
+        <div>
+          <h4>Dům & opraváři</h4>
+          <div style={{ fontSize:"14px" }}>hall, couloir, escalier, ascenseur, balcon, pelouse, local à poubelles / à vélos, porte d'entrée · plombier (voda), électricien, serrurier (zámek), peintre, informaticien · la fuite d'eau, marcher = fonctionner, réparer</div>
+        </div>
+        <div>
+          <h4>Souhlas / nesouhlas</h4>
+          <div style={{ fontSize:"14px" }}>Je suis d'accord · Tout à fait · Tu as raison ✓ — Je ne suis pas d'accord · Pas du tout · Tu as tort ✗</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   APP
+   ═══════════════════════════════════════════════════════════════════ */
+
+const TABS = [
+  { id:"fiche", label:"📄 List od profesora", comp:FicheTab },
+  { id:"vocab", label:"📚 Slovník", comp:VocabTab },
+  { id:"gram", label:"📐 Gramatika", comp:GrammarTab },
+  { id:"train", label:"✍️ Trénink", comp:TrainTab },
+  { id:"flash", label:"🃏 Kartičky", comp:FlashTab },
+  { id:"quiz", label:"🎯 Kvíz", comp:QuizTab },
+  { id:"cheat", label:"📋 Tahák", comp:CheatTab },
+];
+
+export default function App() {
+  const [tab, setTab] = useState("fiche");
+  const Active = TABS.find(t => t.id === tab).comp;
+
+  return (
+    <div className="root">
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+      <style>{CSS}</style>
+      <div className="tricolore" />
+      <div className="shell">
+        <header className="bandeau">
+          <div className="bandeau-in">
+            <div>
+              <div className="kicker">Banque 2ABC/R6A · semaines 13–23</div>
+              <h1>Français — test du vendredi</h1>
+              <div className="sub">L'immeuble · la santé · COD · possessifs · y · comparaison · démonstratifs · pays</div>
+            </div>
+            <div className="stamp"><div className="s">Test</div><div className="d">VENDREDI</div><div className="s">sem. 13 → 23</div></div>
+          </div>
+        </header>
+        <nav className="onglets">
+          <div className="onglets-in">
+            {TABS.map(t => (
+              <button key={t.id} className={"onglet" + (tab === t.id ? " on" : "")} onClick={() => { setTab(t.id); window.scrollTo({ top:0, behavior:"smooth" }); }}>{t.label}</button>
+            ))}
+          </div>
+        </nav>
+        <main key={tab} className="fade"><Active /></main>
+      </div>
+    </div>
+  );
+}
