@@ -404,7 +404,7 @@ var WEEKS = [
     id: "s15",
     label: "Semaines 15–17",
     title: "La santé (str. 119 + oranžové boxy str. 116–117)",
-    src: "Banque odkazuje na učebnici. Slovíčka převzata z tvého dřívějšího artefaktu „Le corps et la santé“, který z těchto stran vycházel.",
+    src: "Podle fotek učebnice: slovníček „Le corps et la santé“ (str. 119) a oranžové boxy „Pour…“ ze str. 116 a 117.",
     groups: [
       { cat: "Les parties du corps", items: [
         { fr: "le bras", cz: "paže" },
@@ -424,6 +424,12 @@ var WEEKS = [
         { fr: "l'œil / les yeux", g: "m", cz: "oko / oči" },
         { fr: "l'oreille", g: "f", cz: "ucho" }
       ] },
+      { cat: "La taille et le poids", items: [
+        { fr: "mesurer", cz: "měřit (výšku)" },
+        { fr: "peser", cz: "vážit" },
+        { fr: "le mètre (= m)", cz: "metr" },
+        { fr: "le kilo (= kg)", cz: "kilogram" }
+      ] },
       { cat: "Les symptômes, les maladies", items: [
         { fr: "la fièvre", cz: "horečka" },
         { fr: "la grippe", cz: "chřipka" },
@@ -435,48 +441,60 @@ var WEEKS = [
       { cat: "Les lieux, les médicaments, les examens", items: [
         { fr: "l'hôpital", g: "m", cz: "nemocnice" },
         { fr: "la pharmacie", cz: "lékárna" },
-        { fr: "le paracétamol", cz: "paracetamol" },
+        { fr: "le paracétamol", cz: "paracetamol (lék)" },
         { fr: "la radio", cz: "rentgen" },
         { fr: "le sirop", cz: "sirup" },
-        { fr: "la visite à domicile", cz: "návštěva lékaře doma" },
+        { fr: "la visite à domicile", cz: "návštěva lékaře u pacienta doma" },
         { fr: "la vitamine C", cz: "vitamín C" }
       ] },
       { cat: "Les professions médicales", items: [
         { fr: "le dentiste", cz: "zubař" },
-        { fr: "le médecin / le docteur", cz: "lékař, doktor" },
+        { fr: "le / la docteur(e), le médecin", cz: "doktor/ka, lékař" },
         { fr: "l'infirmier / l'infirmière", cz: "zdravotní bratr / sestra" },
         { fr: "le pharmacien / la pharmacienne", cz: "lékárník / lékárnice" }
       ] },
-      { cat: "La taille et le poids", items: [
-        { fr: "mesurer", cz: "měřit (výšku)" },
-        { fr: "peser", cz: "vážit" },
-        { fr: "le mètre", cz: "metr" },
-        { fr: "le kilo", cz: "kilogram" }
-      ] },
-      { cat: "Les émotions", items: [
+      { cat: "Les émotions positives et négatives", items: [
         { fr: "content(e)", cz: "spokojený/á" },
         { fr: "fatigué(e)", cz: "unavený/á" },
-        { fr: "heureux / heureuse", cz: "šťastný/á" },
-        { fr: "inquiet / inquiète", cz: "znepokojený/á" },
-        { fr: "stressé(e)", cz: "ve stresu" },
+        { fr: "heureux, heureuse ≠ malheureux, malheureuse", cz: "šťastný ≠ nešťastný" },
+        { fr: "inquiet, inquiète", cz: "ustaraný/á, znepokojený/á" },
+        { fr: "stressé(e)", cz: "vystresovaný/á" },
         { fr: "triste", cz: "smutný/á" }
       ] }
     ],
-    phrases: [
-      { f: "Qu'est-ce qui vous arrive ?", c: "Co se vám stalo? (lékař)" },
-      { f: "Vous vous sentez comment ?", c: "Jak se cítíte?" },
-      { f: "Vous avez (encore) de la fièvre ?", c: "Máte (ještě) horečku?" },
-      { f: "Je suis malade. / J'ai un rhume. / J'ai 39°.", c: "Jsem nemocný. / Mám rýmu. / Mám 39°." },
-      { f: "J'ai mal à la tête / au ventre / à l'oreille / aux pieds.", c: "Bolí mě hlava / břicho / ucho / nohy." },
-      { f: "Quel est votre poids ? – Je pèse 60 kilos.", c: "Kolik vážíte? – Vážím 60 kilo." },
-      { f: "Vous mesurez combien ? – Je mesure 1,68 m.", c: "Kolik měříte? – Měřím 1,68 m." }
+    phraseGroups: [
+      { cat: "Pour exprimer une émotion positive (str. 116)", items: [
+        { f: "Je me sens bien.", c: "Cítím se dobře." },
+        { f: "C'est agréable. / Ça fait du bien.", c: "Je to příjemné. / To dělá dobře." },
+        { f: "Je suis en (pleine) forme.", c: "Jsem v (plné) formě." },
+        { f: "Je suis content(e) (pour toi). / Je suis heureux, heureuse (pour toi).", c: "Mám (z tebe) radost. / Jsem šťastný/á (kvůli tobě)." }
+      ] },
+      { cat: "Pour exprimer une émotion négative (str. 116)", items: [
+        { f: "Je suis inquiet, inquiète.", c: "Mám starost." },
+        { f: "Je suis fatigué(e). / Je suis stressé(e).", c: "Jsem unavený/á. / Jsem ve stresu." },
+        { f: "Je suis malheureux, malheureuse, triste.", c: "Jsem nešťastný/á, smutný/á." }
+      ] },
+      { cat: "Pour demander / dire le poids et la taille (str. 117)", items: [
+        { f: "Quel est votre poids ? / Vous pesez combien ?", c: "Jaká je vaše váha? / Kolik vážíte?" },
+        { f: "Je pèse 60 kg (soixante kilos).", c: "Vážím 60 kg." },
+        { f: "Quelle est votre taille ? / Vous mesurez combien ?", c: "Jaká je vaše výška? / Kolik měříte?" },
+        { f: "Je mesure 1,68 m (1 mètre 68).", c: "Měřím 1,68 m." }
+      ] },
+      { cat: "Pour parler de sa santé (str. 117)", items: [
+        { f: "Qu'est-ce qui vous arrive ?", c: "Co se vám stalo? (lékař)" },
+        { f: "Vous vous sentez comment ?", c: "Jak se cítíte? (lékař)" },
+        { f: "Vous avez (encore) de la fièvre ?", c: "Máte (ještě) horečku? (lékař)" },
+        { f: "Je suis malade. / J'ai un rhume.", c: "Jsem nemocný/á. / Mám rýmu. (pacient)" },
+        { f: "J'ai mal à la… / à l'… / au… / aux…", c: "Bolí mě… (pacient)" },
+        { f: "J'ai 39 °C.", c: "Mám 39 °C. (pacient)" }
+      ] }
     ]
   },
   {
     id: "s18",
     label: "Semaines 18–20",
-    title: "Le sport et l'alimentation (str. 125) + souhlas / nesouhlas",
-    src: "Slovíčka str. 125 převzata z artefaktu „Le corps et la santé“ (oddíly sport + alimentace + pronom y přibyly ve stejném týdnu). Oranžový box „accord / désaccord“ v podkladech nemám — jsou tu běžné obraty z učebnic této úrovně, porovnej je se str. 123.",
+    title: "Le sport, l'alimentation (str. 125) + accord / désaccord (str. 123)",
+    src: "Podle fotek učebnice: slovníček str. 125 a oranžový box „Pour exprimer son accord ou son désaccord“ ze str. 123.",
     groups: [
       { cat: "La salle de sport", items: [
         { fr: "l'activité physique", g: "f", cz: "pohybová aktivita" },
@@ -486,71 +504,105 @@ var WEEKS = [
         { fr: "la douche", cz: "sprcha" },
         { fr: "le maillot de bain", cz: "plavky" },
         { fr: "le sauna", cz: "sauna" },
-        { fr: "la serviette de bain", cz: "osuška" },
+        { fr: "la serviette de bain", cz: "osuška, ručník" },
         { fr: "le vestiaire", cz: "šatna" }
+      ] },
+      { cat: "L'alimentation", items: [
+        { fr: "l'alimentation", g: "f", cz: "strava" },
+        { fr: "sain(e)", cz: "zdravý/á" },
+        { fr: "la calorie", cz: "kalorie" },
+        { fr: "le produit", cz: "výrobek, produkt" },
+        { fr: "gras(se)", cz: "tučný/á" },
+        { fr: "salé(e)", cz: "slaný/á" },
+        { fr: "sucré(e)", cz: "sladký/á" }
       ] },
       { cat: "Les sports", items: [
         { fr: "la corde à sauter", cz: "švihadlo" },
         { fr: "la course à pied", cz: "běh" },
         { fr: "la gymnastique", cz: "gymnastika" },
-        { fr: "la marche", cz: "chůze" },
+        { fr: "le judo", cz: "judo" },
+        { fr: "la marche (rapide)", cz: "(rychlá) chůze" },
         { fr: "la musculation", cz: "posilování" },
         { fr: "la natation", cz: "plavání" },
-        { fr: "le judo", cz: "judo" },
+        { fr: "le rugby", cz: "ragby" },
         { fr: "le tennis", cz: "tenis" },
+        { fr: "le volley (le volley-ball)", cz: "volejbal" },
         { fr: "le yoga", cz: "jóga" }
-      ] },
-      { cat: "L'alimentation", items: [
-        { fr: "l'alimentation", g: "f", cz: "strava, výživa" },
-        { fr: "la calorie", cz: "kalorie" },
-        { fr: "le produit", cz: "výrobek" },
-        { fr: "sain(e)", cz: "zdravý/á" },
-        { fr: "gras(se)", cz: "tučný/á" },
-        { fr: "salé(e)", cz: "slaný/á" },
-        { fr: "sucré(e)", cz: "sladký/á" }
       ] }
     ],
-    phrases: [
-      { f: "Je suis d'accord (avec toi / avec vous).", c: "Souhlasím (s tebou / s vámi)." },
-      { f: "Tout à fait ! / Absolument ! / Exactement !", c: "Naprosto! / Přesně tak!" },
-      { f: "Tu as raison. / Vous avez raison.", c: "Máš / máte pravdu." },
-      { f: "C'est vrai.", c: "To je pravda." },
-      { f: "Je ne suis pas d'accord.", c: "Nesouhlasím." },
-      { f: "Pas du tout ! / Absolument pas !", c: "Vůbec ne! / Rozhodně ne!" },
-      { f: "Tu as tort. / C'est faux.", c: "Nemáš pravdu. / To není pravda." },
-      { f: "Je pense que oui. / Je pense que non.", c: "Myslím, že ano. / Myslím, že ne." }
+    phraseGroups: [
+      { cat: "Pour exprimer son accord ou son désaccord (str. 123)", items: [
+        { f: "Tu as raison. ≠ Tu as tort.", c: "Máš pravdu. ≠ Nemáš pravdu." },
+        { f: "C'est vrai. ≠ C'est faux.", c: "To je pravda. ≠ To není pravda." },
+        { f: "Je suis d'accord (avec toi).", c: "Souhlasím (s tebou)." },
+        { f: "Je ne suis pas d'accord (avec toi).", c: "Nesouhlasím (s tebou)." }
+      ] },
+      { cat: "Le pronom y — příklady ze str. 118", items: [
+        { f: "Je vais chez le médecin une fois par an. – Tu y vas aujourd'hui ?", c: "Chodím k lékaři jednou ročně. – Jdeš tam dnes?" },
+        { f: "Quand je vais à la pharmacie, j'y vais en bus.", c: "Když jdu do lékárny, jezdím tam autobusem." },
+        { f: "Et toi, à l'hôpital, ça se passe bien ? – Oui, j'y travaille cinq jours par semaine.", c: "A v nemocnici je to dobré? – Ano, pracuji tam pět dní v týdnu." },
+        { f: "On y vend des médicaments. – À la pharmacie.", c: "Prodávají se tam léky. – V lékárně." }
+      ] }
     ]
   },
   {
     id: "s21",
     label: "Semaines 21–22",
-    title: "Les vacances (str. 132–133)",
-    src: "Banque odkazuje na str. 132–133. Slovíčka převzata z artefaktu „Dovolená, srovnání“ — zkontroluj, jestli na těch stranách nebylo ještě něco navíc.",
+    title: "Les vacances (str. 131–133)",
+    src: "Podle fotek učebnice: slovníček „Les vacances“ (str. 133) a oranžové boxy ze str. 131 (rezervace hotelu) a 132 (popis země).",
     groups: [
-      { cat: "Les lieux", items: [
-        { fr: "la mer", cz: "moře" },
-        { fr: "la plage", cz: "pláž" },
-        { fr: "la montagne", cz: "hory" },
+      { cat: "Les lieux, les destinations", items: [
         { fr: "la campagne", cz: "venkov" },
-        { fr: "la forêt", cz: "les" },
-        { fr: "le lac", cz: "jezero" },
-        { fr: "la rivière", cz: "řeka" },
-        { fr: "le champ", cz: "pole" },
-        { fr: "le chemin", cz: "cesta, stezka" },
-        { fr: "le village", cz: "vesnice" },
-        { fr: "la ville", cz: "město" }
+        { fr: "l'île", g: "f", cz: "ostrov" },
+        { fr: "la mer", cz: "moře" },
+        { fr: "la montagne", cz: "hory" },
+        { fr: "le village", cz: "vesnice" }
+      ] },
+      { cat: "L'hébergement", items: [
+        { fr: "le camping", cz: "kemp" },
+        { fr: "la chambre d'hôtes", cz: "penzion (pokoj u lidí doma)" },
+        { fr: "l'échange d'appartements / de maisons", g: "m", cz: "výměna bytů / domů" },
+        { fr: "la ferme", cz: "farma, statek" },
+        { fr: "l'hôtel", g: "m", cz: "hotel" },
+        { fr: "la location", cz: "pronájem" },
+        { fr: "la tente", cz: "stan" }
+      ] },
+      { cat: "La réservation", items: [
+        { fr: "l'arrivée ≠ le départ", g: "f", cz: "příjezd ≠ odjezd" },
+        { fr: "la chambre (simple / double / familiale)", cz: "jednolůžkový / dvoulůžkový / rodinný pokoj" },
+        { fr: "le lit simple / double / le lit bébé", cz: "jednolůžko / manželská postel / dětská postýlka" },
+        { fr: "le parking", cz: "parkoviště" },
+        { fr: "le petit déjeuner compris", cz: "snídaně v ceně" },
+        { fr: "les animaux acceptés", cz: "zvířata povolena" },
+        { fr: "réserver une chambre", cz: "zarezervovat pokoj" }
+      ] },
+      { cat: "Les moyens de transport", items: [
+        { fr: "l'avion → à l'aéroport", g: "m", cz: "letadlo → na letišti" },
+        { fr: "le van", cz: "dodávka, obytňák" },
+        { fr: "la voiture", cz: "auto" }
       ] },
       { cat: "Les activités", items: [
         { fr: "se baigner", cz: "koupat se" },
         { fr: "bronzer", cz: "opalovat se" },
-        { fr: "nager", cz: "plavat" },
         { fr: "faire de la randonnée", cz: "chodit na túry" },
-        { fr: "faire du bateau", cz: "jezdit lodí" },
-        { fr: "faire de la plongée", cz: "potápět se" },
-        { fr: "faire du cheval", cz: "jezdit na koni" },
-        { fr: "pique-niquer", cz: "dělat piknik" },
-        { fr: "se promener", cz: "procházet se" },
-        { fr: "visiter un musée", cz: "navštívit muzeum" }
+        { fr: "faire du surf", cz: "surfovat" },
+        { fr: "goûter la cuisine locale", cz: "ochutnat místní kuchyni" },
+        { fr: "prendre des photos", cz: "fotit" },
+        { fr: "visiter un musée / un village (traditionnel)", cz: "navštívit muzeum / (tradiční) vesnici" }
+      ] }
+    ],
+    phraseGroups: [
+      { cat: "Pour réserver une chambre d'hôtel (str. 131)", items: [
+        { f: "Je voudrais réserver une chambre (familiale / simple / double).", c: "Chtěl/a bych zarezervovat (rodinný / jednolůžkový / dvoulůžkový) pokoj." },
+        { f: "Le petit déjeuner est compris ?", c: "Je snídaně v ceně?" },
+        { f: "Les animaux sont acceptés ?", c: "Jsou povolena zvířata?" },
+        { f: "Il y a un parking ?", c: "Je tam parkoviště?" }
+      ] },
+      { cat: "Pour décrire une ville, un pays (str. 132)", items: [
+        { f: "C'est un pays génial !", c: "Je to skvělá země!" },
+        { f: "C'est magnifique !", c: "Je to nádherné!" },
+        { f: "Les gens sont gentils.", c: "Lidi jsou milí." },
+        { f: "C'est sympa et animé.", c: "Je to příjemné a živé." }
       ] }
     ]
   },
@@ -588,6 +640,8 @@ var INTERDIT = ["Interdiction de", "Il est interdit de", "Défense de", "Ne pas"
 var DEMANDE = ["Merci de", "Prière de", "Il faut"];
 var TOPICS = {
   oblig: { label: "Zákaz / povinnost / žádost", short: "Zákazy" },
+  devoir: { label: "Il faut → devoir", short: "Il faut / devoir" },
+  origine: { label: "Odkud: de, d', du, des", short: "Odkud" },
   cod: { label: "Zájmena COD (le, la, l', les)", short: "COD" },
   dem: { label: "Ce / cet / cette / ces", short: "Ukazovací" },
   pays: { label: "Země a národnosti", short: "Země" },
@@ -1111,6 +1165,167 @@ var GAPS = [
     why: "sa tête, son sirop."
   },
   {
+    id: "f1",
+    topic: "devoir",
+    diff: "e",
+    task: "Il faut boire 2 litres d'eau par jour. → Vous ___ boire 2 litres d'eau par jour.",
+    blanks: [["devez"]],
+    hint: "cvičení 2a, str. 123",
+    rule: "Il faut + inf. = devoir + inf. (povinnost).",
+    why: "vous → devez: Vous devez boire 2 litres d'eau par jour."
+  },
+  {
+    id: "f2",
+    topic: "devoir",
+    diff: "e",
+    task: "Il faut manger sain. → Tu ___ manger sain.",
+    blanks: [["dois"]],
+    hint: "cvičení 2b, str. 123",
+    rule: "devoir: je dois, tu dois, il doit, nous devons, vous devez, ils doivent.",
+    why: "tu → dois: Tu dois manger sain."
+  },
+  {
+    id: "f3",
+    topic: "devoir",
+    diff: "m",
+    task: "Il ne faut pas manger beaucoup de biscuits. → Vous ___ manger beaucoup de biscuits.",
+    blanks: [["ne devez pas"]],
+    hint: "zápor = zákaz",
+    rule: "Il ne faut pas + inf. = ne + devoir + pas + inf. (zákaz).",
+    why: "Vous ne devez pas manger beaucoup de biscuits."
+  },
+  {
+    id: "f4",
+    topic: "devoir",
+    diff: "m",
+    task: "Il ne faut pas manger des produits sucrés après le sport. → Tu ___ manger des produits sucrés après le sport.",
+    blanks: [["ne dois pas"]],
+    hint: "cvičení 2d, str. 123",
+    rule: "ne + dois + pas obklopí sloveso devoir, infinitiv zůstává za tím.",
+    why: "Tu ne dois pas manger des produits sucrés après le sport."
+  },
+  {
+    id: "f5",
+    topic: "devoir",
+    diff: "m",
+    task: "Il faut faire du sport. → Nous ___ faire du sport.",
+    blanks: [["devons"]],
+    hint: "nous",
+    rule: "nous devons.",
+    why: "Nous devons faire du sport."
+  },
+  {
+    id: "f6",
+    topic: "devoir",
+    diff: "h",
+    task: "Il faut apporter sa serviette. → Les clients ___ apporter leur serviette.",
+    blanks: [["doivent"]],
+    hint: "ils / elles",
+    rule: "ils / elles doivent (nepravidelné!).",
+    why: "Les clients = ils → doivent."
+  },
+  {
+    id: "f7",
+    topic: "devoir",
+    diff: "h",
+    task: "„Il ne faut pas laisser d'objets de valeur dans le vestiaire.“ — vyjadřuje povinnost, nebo zákaz? Napiš: obligation / interdiction",
+    blanks: [["interdiction"]],
+    wide: true,
+    hint: "zápor!",
+    rule: "Il faut / devoir v záporu = zákaz.",
+    why: "il ne faut pas → interdiction."
+  },
+  {
+    id: "r1",
+    topic: "origine",
+    diff: "e",
+    task: "Je reviens ___ Copenhague.",
+    blanks: [["de"]],
+    hint: "město",
+    rule: "Města: de / d'.",
+    why: "Copenhague začíná souhláskou → de."
+  },
+  {
+    id: "r2",
+    topic: "origine",
+    diff: "e",
+    task: "J'arrive ___ Amsterdam.",
+    blanks: [["d'"]],
+    hint: "město na samohlásku",
+    rule: "de → d' před samohláskou.",
+    why: "Amsterdam → d'Amsterdam."
+  },
+  {
+    id: "r3",
+    topic: "origine",
+    diff: "m",
+    task: "Il vient ___ Irak.",
+    blanks: [["d'"]],
+    hint: "l'Irak je mužský rod, ale začíná samohláskou",
+    rule: "du → d' před samohláskou (str. 132, Remarque).",
+    why: "Irak = m., ale samohláska → d'Irak (ne „du Irak“)."
+  },
+  {
+    id: "r4",
+    topic: "origine",
+    diff: "e",
+    task: "Chen vient ___ Chine.",
+    blanks: [["de"]],
+    hint: "cvičení 3a, str. 132",
+    rule: "Ženská země: de / d'.",
+    why: "la Chine → de Chine."
+  },
+  {
+    id: "r5",
+    topic: "origine",
+    diff: "e",
+    task: "Julia et Martin arrivent ___ Berlin.",
+    blanks: [["de"]],
+    hint: "cvičení 3b — město",
+    rule: "Města: de / d'.",
+    why: "Berlin je město → de Berlin."
+  },
+  {
+    id: "r6",
+    topic: "origine",
+    diff: "m",
+    task: "Saïda et Franck reviennent ___ Maroc.",
+    blanks: [["du"]],
+    hint: "cvičení 3c — le Maroc",
+    rule: "Mužská země: du.",
+    why: "le Maroc → du Maroc."
+  },
+  {
+    id: "r7",
+    topic: "origine",
+    diff: "m",
+    task: "Michel vient ___ Pays-Bas.",
+    blanks: [["des"]],
+    hint: "cvičení 3d — les Pays-Bas",
+    rule: "Množné číslo: des.",
+    why: "les Pays-Bas → des Pays-Bas."
+  },
+  {
+    id: "r8",
+    topic: "origine",
+    diff: "m",
+    task: "Yvonne vient ___ Irlande.",
+    blanks: [["d'"]],
+    hint: "l'Irlande (f.)",
+    rule: "de → d' před samohláskou.",
+    why: "Irlande → d'Irlande."
+  },
+  {
+    id: "r9",
+    topic: "origine",
+    diff: "e",
+    task: "Je reviens ___ Danemark.",
+    blanks: [["du"]],
+    hint: "le Danemark",
+    rule: "Mužská země: du.",
+    why: "le Danemark → du Danemark."
+  },
+  {
     id: "y1",
     topic: "y",
     diff: "e",
@@ -1162,6 +1377,39 @@ var GAPS = [
     hint: "y jde před infinitiv",
     rule: "S infinitivem stojí y před infinitivem: je vais y aller.",
     why: "y patří k „aller“ (infinitiv) → je vais y aller."
+  },
+  {
+    id: "y7",
+    topic: "y",
+    diff: "e",
+    task: "Ils vont à la pharmacie ? – Oui, ___.",
+    blanks: [["ils y vont"]],
+    wide: true,
+    hint: "cvičení 3a, str. 118",
+    rule: "y před slovesem.",
+    why: "à la pharmacie → y: ils y vont."
+  },
+  {
+    id: "y8",
+    topic: "y",
+    diff: "m",
+    task: "Vous travaillez dans cet hôpital ? – Non, ___.",
+    blanks: [["je n'y travaille pas", "nous n'y travaillons pas"]],
+    wide: true,
+    hint: "cvičení 3b — zápor",
+    rule: "Remarque ze str. 118: Je n'y travaille pas.",
+    why: "ne + y → n'y; pas za slovesem."
+  },
+  {
+    id: "y9",
+    topic: "y",
+    diff: "e",
+    task: "Ton médecin habite à Nice ? – Oui, ___.",
+    blanks: [["il y habite", "elle y habite"]],
+    wide: true,
+    hint: "cvičení 3d",
+    rule: "y = à Nice.",
+    why: "Oui, il y habite."
   },
   {
     id: "y6",
@@ -1298,15 +1546,15 @@ var WRITING = [
     title: "1 · Le règlement de l'immeuble parfait",
     brief: "Napiš pravidla svého ideálního domu: 2 zákazy (Interdiction de… / Ne pas…), 2 povinnosti (infinitiv nebo rozkazovací způsob) a 2 zdvořilé žádosti (Merci de… / Prière de…). Každé pravidlo na nový řádek.",
     need: [
-      { lab: "2× zákaz (Interdiction de / Il est interdit de / Défense de / Ne pas)", re: "interdiction d|il est interdit d|defense d|(^|\\s)ne pas ", min: 2 },
+      { lab: "2× zákaz (Interdiction de / Il est interdit de / Défense de / Ne pas / Il ne faut pas / Vous ne devez pas)", re: "interdiction d|il est interdit d|defense d|(^|\\s)ne pas |ne faut pas|ne devez pas|ne doit pas|ne dois pas", min: 2 },
       { lab: "2× zdvořilá žádost (Merci de / Prière de)", re: "merci d|priere d", min: 2 },
-      { lab: "2× povinnost (infinitiv nebo rozkazovací způsob na začátku řádku)", manual: true },
+      { lab: "2× povinnost (Il faut / Vous devez / infinitiv / rozkazovací způsob) — zkontroluj sám", manual: true },
       { lab: "aspoň 3 slovíčka z domu (hall, couloir, ascenseur, escalier, balcon, pelouse, local…)", re: "hall|couloir|ascenseur|escalier|balcon|pelouse|local a|porte d entree|parties communes|appartement|residence|voisin", min: 3 }
     ],
     model: [
       "Interdiction de fumer dans le hall et dans l'ascenseur.",
       "Ne pas laisser les vélos dans le couloir.",
-      "Fermer la porte d'entrée à clé après 22 heures.",
+      "Vous devez fermer la porte d'entrée à clé après 22 heures.",
       "Respectez vos voisins !",
       "Merci de trier vos déchets dans le local à poubelles.",
       "Prière de ne pas faire de bruit dans l'escalier le soir."
@@ -1337,7 +1585,7 @@ var WRITING = [
     brief: "Představ kamarádovi svůj byt a sousedy. Musí tam být: 1 zákaz, 1 zdvořilá žádost, 2 národnosti nebo 2 země, 1 ukazovací přídavné jméno (ce, cet, cette, ces), 2 zájmena COD (le, la, l', les) a 1× zájmeno y.",
     need: [
       { lab: "aspoň 80 slov", words: 80 },
-      { lab: "1× zákaz", re: "interdiction d|il est interdit d|defense d|(^|\\s)ne pas ", min: 1 },
+      { lab: "1× zákaz", re: "interdiction d|il est interdit d|defense d|(^|\\s)ne pas |ne faut pas|ne devez pas|ne doit pas|ne dois pas", min: 1 },
       { lab: "1× zdvořilá žádost (Merci de / Prière de)", re: "merci d|priere d", min: 1 },
       { lab: "2 národnosti nebo země", re: NAT_RE + "|" + PAYS_RE, min: 2 },
       { lab: "1× ce / cet / cette / ces", re: "ce|cet|cette|ces", min: 1, word: true },
@@ -1571,11 +1819,61 @@ var QUIZ = [
     explanation: "marcher u přístrojů = fungovat (= fonctionner)."
   },
   {
-    question: "Jak souhlasíš?",
+    question: "Které věty vyjadřují SOUHLAS? (box str. 123)",
     type: "multi",
-    options: ["Je suis d'accord.", "Tout à fait !", "Pas du tout !", "Tu as raison.", "Tu as tort."],
+    options: ["Je suis d'accord avec toi.", "C'est vrai.", "C'est faux.", "Tu as raison.", "Tu as tort."],
     correct: [0, 1, 3],
-    explanation: "Pas du tout ! = Vůbec ne! a Tu as tort = Nemáš pravdu vyjadřují nesouhlas."
+    explanation: "Souhlas: Tu as raison, C'est vrai, Je suis d'accord. Nesouhlas: Tu as tort, C'est faux, Je ne suis pas d'accord."
+  },
+  {
+    question: "„Je ne dois pas manger de produits gras.“ vyjadřuje:",
+    type: "single",
+    options: ["zákaz", "povinnost", "žádost", "přání"],
+    correct: [0],
+    explanation: "Devoir / il faut v záporu = zákaz (str. 123).",
+    tip: "il faut / devoir + ne… pas = interdiction"
+  },
+  {
+    question: "Il faut boire 2 litres d'eau par jour. → (vous)",
+    type: "single",
+    options: ["Vous devez boire 2 litres d'eau par jour.", "Vous doivez boire…", "Vous faut boire…", "Vous devons boire…"],
+    correct: [0],
+    explanation: "devoir: je dois, tu dois, il doit, nous devons, vous devez, ils doivent."
+  },
+  {
+    question: "Jak správně: „Pochází z Iráku.“",
+    type: "single",
+    options: ["Il vient d'Irak.", "Il vient du Irak.", "Il vient de l'Irak.", "Il vient en Irak."],
+    correct: [0],
+    explanation: "du → d' před samohláskou (str. 132): d'Irak."
+  },
+  {
+    question: "Michel vient ___ Pays-Bas.",
+    type: "single",
+    options: ["des", "du", "de", "aux"],
+    correct: [0],
+    explanation: "Množné číslo → des (odkud). aux = kde/kam."
+  },
+  {
+    question: "Co je „la chambre d'hôtes“?",
+    type: "single",
+    options: ["pokoj u lidí doma (penzion)", "hotelový pokoj pro hosty", "pokoj pro děti", "společenská místnost"],
+    correct: [0],
+    explanation: "chambre d'hôtes = ubytování v soukromí, u majitelů doma."
+  },
+  {
+    question: "Jak se zeptáš, jestli je snídaně v ceně?",
+    type: "single",
+    options: ["Le petit déjeuner est compris ?", "Le petit déjeuner est accepté ?", "Le petit déjeuner est réservé ?", "Il y a un petit déjeuner parking ?"],
+    correct: [0],
+    explanation: "Box str. 131: Le petit déjeuner est compris ? · Les animaux sont acceptés ? · Il y a un parking ?"
+  },
+  {
+    question: "Které věty vyjadřují POZITIVNÍ emoci? (box str. 116)",
+    type: "multi",
+    options: ["Je me sens bien.", "Ça fait du bien.", "Je suis en pleine forme.", "Je suis inquiet.", "Je suis stressée."],
+    correct: [0, 1, 2],
+    explanation: "inquiet a stressé(e) jsou v boxu „une émotion négative“."
   },
   {
     question: "„Je pèse 60 kilos.“ znamená:",
@@ -2081,9 +2379,9 @@ function VocabTab() {
       }, undefined, false, undefined, this),
       WEEKS.map((w, wi) => {
         const groups = (w.groups || []).map((g) => ({ ...g, items: g.items.filter(match) })).filter((g) => g.items.length);
-        const phrases = (w.phrases || []).filter((p) => !f || strip(p.f + " " + p.c).includes(f));
+        const pgroups = (w.phraseGroups || []).map((g) => ({ ...g, items: g.items.filter((p) => !f || strip(p.f + " " + p.c).includes(f)) })).filter((g) => g.items.length);
         const hasPays = w.countries && PAYS.some((p) => !f || strip(p.p + " " + p.cz + " " + p.nat).includes(f));
-        if (f && !groups.length && !phrases.length && !hasPays)
+        if (f && !groups.length && !pgroups.length && !hasPays)
           return null;
         return /* @__PURE__ */ jsxDEV(Acc, {
           title: w.title,
@@ -2108,13 +2406,13 @@ function VocabTab() {
                 }, undefined, false, undefined, this)
               ]
             }, g.cat, true, undefined, this)),
-            phrases.length > 0 && /* @__PURE__ */ jsxDEV(Fragment, {
+            pgroups.map((g) => /* @__PURE__ */ jsxDEV("div", {
               children: [
                 /* @__PURE__ */ jsxDEV("div", {
                   className: "cat",
-                  children: w.id === "s18" ? "Accord / désaccord — souhlas a nesouhlas" : "Věty z oranžových boxů"
+                  children: g.cat
                 }, undefined, false, undefined, this),
-                phrases.map((p) => /* @__PURE__ */ jsxDEV("div", {
+                g.items.map((p) => /* @__PURE__ */ jsxDEV("div", {
                   className: "phrase",
                   children: [
                     /* @__PURE__ */ jsxDEV("div", {
@@ -2128,7 +2426,7 @@ function VocabTab() {
                   ]
                 }, p.f, true, undefined, this))
               ]
-            }, undefined, true, undefined, this),
+            }, g.cat, true, undefined, this)),
             w.countries && /* @__PURE__ */ jsxDEV(PaysTable, {
               filter: q
             }, undefined, false, undefined, this)
@@ -2144,11 +2442,11 @@ function GrammarTab() {
       /* @__PURE__ */ jsxDEV(SectionHead, {
         no: "Partie III",
         title: "Gramatika",
-        lede: "Osm gramatických témat z týdnů 13–23. Každé má pravidlo, tabulku a příklady z učebnice nebo z listu od profesora."
+        lede: "Gramatická témata z týdnů 13–23. Každé má pravidlo, tabulku a příklady z učebnice nebo z listu od profesora."
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsxDEV(Acc, {
-        title: "1 · L'obligation, l'interdiction, la demande",
-        badge: "sem. 13–14 · str. 123",
+        title: "1 · L'obligation et l'interdiction (1) — cedule a pravidla",
+        badge: "sem. 13–14",
         defaultOpen: true,
         children: [
           /* @__PURE__ */ jsxDEV("div", {
@@ -2265,6 +2563,187 @@ function GrammarTab() {
                 children: "ne pas"
               }, undefined, false, undefined, this),
               " faire de bruit."
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Acc, {
+        title: "1b · L'obligation et l'interdiction (2) — il faut, devoir",
+        badge: "sem. 18–20 · str. 123",
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "Il faut"
+              }, undefined, false, undefined, this),
+              " a ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "devoir"
+              }, undefined, false, undefined, this),
+              " (v přítomném čase) + infinitiv = ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "povinnost"
+              }, undefined, false, undefined, this),
+              ".",
+              /* @__PURE__ */ jsxDEV("br", {}, undefined, false, undefined, this),
+              "V ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "záporu"
+              }, undefined, false, undefined, this),
+              " tytéž výrazy znamenají ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "zákaz"
+              }, undefined, false, undefined, this),
+              ": il ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "ne"
+              }, undefined, false, undefined, this),
+              " faut ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "pas"
+              }, undefined, false, undefined, this),
+              " / je ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "ne"
+              }, undefined, false, undefined, this),
+              " dois ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "pas"
+              }, undefined, false, undefined, this),
+              " + infinitiv."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "grid2",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "ex",
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: /* @__PURE__ */ jsxDEV("b", {
+                      children: "Obligation"
+                    }, undefined, false, undefined, this)
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "Il faut apporter sa serviette de bain."
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "On doit manger sain."
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "Il faut éteindre les appareils."
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "Je dois faire attention."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "ex",
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: /* @__PURE__ */ jsxDEV("b", {
+                      children: "Interdiction"
+                    }, undefined, false, undefined, this)
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "Il ne faut pas écouter de la musique fort."
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "Je ne dois pas manger de produits gras."
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    children: "Il ne faut pas laisser d'objets de valeur dans le vestiaire."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "tblwrap",
+            children: /* @__PURE__ */ jsxDEV("table", {
+              className: "tbl",
+              children: [
+                /* @__PURE__ */ jsxDEV("thead", {
+                  children: /* @__PURE__ */ jsxDEV("tr", {
+                    children: /* @__PURE__ */ jsxDEV("th", {
+                      colSpan: 2,
+                      children: "Devoir — présent"
+                    }, undefined, false, undefined, this)
+                  }, undefined, false, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("tbody", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "je dois"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "nous devons"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "tu dois"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "vous devez"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "il / elle / on doit"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "ils / elles doivent"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "Přepis il faut → devoir"
+              }, undefined, false, undefined, this),
+              " (cvičení 2 ze str. 123): Il faut faire du sport. → Vous ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "devez"
+              }, undefined, false, undefined, this),
+              " faire du sport. · Il ne faut pas manger de produits sucrés. → Vous ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "ne devez pas"
+              }, undefined, false, undefined, this),
+              " manger de produits sucrés."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "Il faut"
+              }, undefined, false, undefined, this),
+              " je neosobní, nemění se (žádné „je faut“). Osobu vyjádříš jen přes ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "devoir"
+              }, undefined, false, undefined, this),
+              "."
             ]
           }, undefined, true, undefined, this)
         ]
@@ -2804,6 +3283,35 @@ function GrammarTab() {
             ]
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV("div", {
+            className: "ex",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  "Le vélo est plus écologique que l'avion ou la voiture. ",
+                  /* @__PURE__ */ jsxDEV("span", {
+                    className: "cz",
+                    children: "(+)"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  "Les chambres avec vue sur rue sont moins chères que les chambres avec vue sur la mer. ",
+                  /* @__PURE__ */ jsxDEV("span", {
+                    className: "cz",
+                    children: "(−)"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: "Le camping est moins cher que l'hôtel. · Mon van est aussi pratique que le van de Léo."
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: "La voiture est plus confortable que le train. · La cuisine est meilleure au « Bistrot de la mer » que « Chez Albert »."
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
             className: "rule",
             children: [
               /* @__PURE__ */ jsxDEV("b", {
@@ -2929,7 +3437,7 @@ function GrammarTab() {
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsxDEV(Acc, {
         title: "7 · Pays : en, au, aux — de, du, des",
-        badge: "sem. 23",
+        badge: "sem. 23 · str. 132",
         children: [
           /* @__PURE__ */ jsxDEV("div", {
             className: "tblwrap",
@@ -3035,6 +3543,102 @@ function GrammarTab() {
               ]
             }, undefined, true, undefined, this)
           }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "Odkud — str. 132"
+              }, undefined, false, undefined, this),
+              " (slovesa ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "venir de, revenir de, arriver de"
+              }, undefined, false, undefined, this),
+              "):"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "tblwrap",
+            children: /* @__PURE__ */ jsxDEV("table", {
+              className: "tbl",
+              children: [
+                /* @__PURE__ */ jsxDEV("thead", {
+                  children: /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("th", {
+                        children: "Villes"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        children: "Pays au féminin"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        children: "Pays au masculin"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        children: "Pays au pluriel"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("tbody", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "de / d'"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "de / d'"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "du / d'"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          className: "mono",
+                          children: "des"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "Je reviens de Copenhague. J'arrive d'Amsterdam."
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "J'arrive de Nouvelle-Zélande. Yvonne vient d'Irlande."
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "Je reviens du Danemark. Il vient d'Irak."
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "Nathan vient des États-Unis."
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "Remarque:"
+              }, undefined, false, undefined, this),
+              " de / du → ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "d'"
+              }, undefined, false, undefined, this),
+              " před a, e, i, o, u — i u mužských zemí: ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "d'"
+              }, undefined, false, undefined, this),
+              "Irak (ne „du Irak“)."
+            ]
+          }, undefined, true, undefined, this),
           /* @__PURE__ */ jsxDEV("div", {
             className: "rule",
             children: [
@@ -3213,7 +3817,7 @@ function TrainTab() {
 }
 var CARDS = [
   ...WEEKS.flatMap((w) => (w.groups || []).flatMap((g) => g.items.map((it) => ({ w: w.id, fr: it.fr, g: it.g, cz: it.cz })))),
-  ...WEEKS.flatMap((w) => (w.phrases || []).map((p) => ({ w: w.id, fr: p.f, cz: p.c }))),
+  ...WEEKS.flatMap((w) => (w.phraseGroups || []).flatMap((g) => g.items.map((p) => ({ w: w.id, fr: p.f, cz: p.c })))),
   ...PAYS.map((p) => ({ w: "s23", fr: p.en + " — " + p.nat, cz: p.cz + " (kde) — národnost" }))
 ];
 function FlashTab() {
@@ -3633,6 +4237,25 @@ function CheatTab() {
           /* @__PURE__ */ jsxDEV("div", {
             children: [
               /* @__PURE__ */ jsxDEV("h4", {
+                children: "Il faut / devoir (str. 123)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "Il faut / devoir + INF = povinnost"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "Il ne faut pas / ne… pas devoir + INF = zákaz"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "dois dois doit · devons devez doivent"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
                 children: "COD"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
@@ -3765,6 +4388,10 @@ function CheatTab() {
                 children: "pl.: aux États-Unis, des Pays-Bas"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "města: de Berlin, d'Amsterdam · d'Irak (du → d')"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
                 style: { fontSize: "14px", marginTop: "4px" },
                 children: "-ien → -ienne · +e · -e se nemění (tchèque, belge, suisse, russe)"
               }, undefined, false, undefined, this)
@@ -3799,7 +4426,18 @@ function CheatTab() {
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
                 style: { fontSize: "14px" },
-                children: "Je suis d'accord · Tout à fait · Tu as raison ✓ — Je ne suis pas d'accord · Pas du tout · Tu as tort ✗"
+                children: "Tu as raison ≠ Tu as tort · C'est vrai ≠ C'est faux · Je suis d'accord (avec toi) ≠ Je ne suis pas d'accord"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
+                children: "Hotel & dovolená (str. 131–133)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { fontSize: "14px" },
+                children: "Je voudrais réserver une chambre (simple / double / familiale). Le petit déjeuner est compris ? Les animaux sont acceptés ? Il y a un parking ? · camping, chambre d'hôtes, location, tente, ferme · l'arrivée ≠ le départ"
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
