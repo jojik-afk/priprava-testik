@@ -2204,6 +2204,7 @@ var DIFF = { e: ["Lehký ✨", "#4ade80"], m: ["Střední ⚡", YL], h: ["Těžk
 var PROBLEMS = [
   {
     g: "PL — Hmotnostní úbytek a vazebná energie",
+    tt: 1,
     t: "Tabulka: helium ⁴₂He (lehký prvek)",
     d: "e",
     task: /* @__PURE__ */ jsxDEV(Fragment, {
@@ -2244,6 +2245,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Hmotnostní úbytek a vazebná energie",
+    tt: 1,
     t: "Tabulka: železo ⁵⁶₂₆Fe (stabilní prvek)",
     d: "m",
     task: /* @__PURE__ */ jsxDEV(Fragment, {
@@ -2285,6 +2287,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Hmotnostní úbytek a vazebná energie",
+    tt: 1,
     t: "Tabulka: uran ²³⁸₉₂U (těžký prvek)",
     d: "m",
     task: /* @__PURE__ */ jsxDEV(Fragment, {
@@ -2325,6 +2328,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Hmotnostní úbytek a vazebná energie",
+    tt: 1,
     t: "Úkol A: Které jádro je nejstabilnější?",
     d: "e",
     task: "Na základě tabulky a grafu urči, které ze tří jader (⁴He, ⁵⁶Fe, ²³⁸U) je nejstabilnější, a vysvětli proč.",
@@ -2339,6 +2343,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Hmotnostní úbytek a vazebná energie",
+    tt: 1,
     t: "Úkol B: Paradox celkové vs. měrné energie",
     d: "e",
     task: "Jádro ²³⁸U má mnohem vyšší celkovou vazebnou energii než ⁵⁶Fe. Přesto je železo stabilnější. Vysvětli 1–2 větami.",
@@ -2352,6 +2357,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Hmotnostní úbytek a vazebná energie",
+    tt: 1,
     t: "Úkol C: Syntéza vs. štěpení — odkud se bere energie",
     d: "m",
     task: "Vysvětli pomocí grafu ε(A), proč se energie uvolňuje při syntéze lehkých jader i při štěpení těžkých jader.",
@@ -2367,6 +2373,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Jaderné reakce a fyzika jádra",
+    tt: 1,
     t: "1: Ostřelování hliníku částicí α",
     d: "e",
     task: /* @__PURE__ */ jsxDEV(Fragment, {
@@ -2418,6 +2425,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Jaderné reakce a fyzika jádra",
+    tt: 1,
     t: "2: Přeměna β⁺ fluoru-18 (PET)",
     d: "e",
     task: /* @__PURE__ */ jsxDEV(Fragment, {
@@ -2472,6 +2480,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Jaderné reakce a fyzika jádra",
+    tt: 1,
     t: "3: Řetězová reakce dusíku (X a Y)",
     d: "m",
     task: /* @__PURE__ */ jsxDEV(Fragment, {
@@ -2549,6 +2558,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Jaderné reakce a fyzika jádra",
+    tt: 0,
     t: "4A: Tepelný výkon reaktoru",
     d: "e",
     task: "Elektrický výkon bloku Pe = 1 000 MW, účinnost η = 33 %. Jaký tepelný výkon Pt musí reaktor vyrábět?",
@@ -2560,6 +2570,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Jaderné reakce a fyzika jádra",
+    tt: 0,
     t: "4B: Energie z jednoho štěpení v joulech",
     d: "e",
     task: "Při štěpení jednoho jádra ²³⁵U se uvolní E₁ = 200 MeV. Kolik je to joulů? (1 eV = 1,602 · 10⁻¹⁹ J)",
@@ -2571,6 +2582,7 @@ var PROBLEMS = [
   },
   {
     g: "PL — Jaderné reakce a fyzika jádra",
+    tt: 0,
     t: "4C: Spotřeba ²³⁵U za 1 den",
     d: "h",
     task: "Kolik kg ²³⁵U se v reaktoru spotřebuje (rozštěpí) za 24 h nepřetržitého provozu? M = 235 g/mol, Nₐ = 6,022 · 10²³ mol⁻¹.",
@@ -2915,6 +2927,14 @@ function Problem({ p, i }) {
             className: "probT",
             children: p.t
           }, undefined, false, undefined, this),
+          p.tt === 1 && /* @__PURE__ */ jsxDEV("span", {
+            className: "badge testB",
+            children: "⭐ V TESTU"
+          }, undefined, false, undefined, this),
+          p.tt === 0 && /* @__PURE__ */ jsxDEV("span", {
+            className: "badge dim",
+            children: "asi mimo test"
+          }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV("span", {
             className: "badge",
             style: { color: dc, borderColor: dc },
@@ -3078,6 +3098,23 @@ var NUCLIDES = [
   ["U", 92, 235, 235.04393],
   ["U", 92, 238, 238.050788]
 ].map(([s, Z, A, ma]) => ({ s, Z, A, mj: +(ma - Z * ME).toFixed(6) }));
+var NUCLIDES_PT = [
+  ["He", 2, 4, 4.0026],
+  ["C", 6, 12, 12.011],
+  ["N", 7, 14, 14.007],
+  ["O", 8, 16, 15.999],
+  ["F", 9, 19, 18.998],
+  ["Na", 11, 23, 22.99],
+  ["Al", 13, 27, 26.982],
+  ["P", 15, 31, 30.974],
+  ["Mn", 25, 55, 54.938],
+  ["Fe", 26, 56, 55.845],
+  ["Co", 27, 59, 58.933],
+  ["I", 53, 127, 126.9],
+  ["Au", 79, 197, 196.97],
+  ["Bi", 83, 209, 208.98],
+  ["U", 92, 238, 238.03]
+].map(([s, Z, A, mj]) => ({ s, Z, A, mj }));
 function calc(Z, A, mj) {
   const N = A - Z, sum = Z * MP + N * MN, dm = sum - mj, Ev = dm * K_U;
   return { N, sum, dm, Ev, eps: Ev / A };
@@ -3088,7 +3125,9 @@ function Trainer() {
   const [shown, setShown] = useState(false);
   const [checked, setChecked] = useState(false);
   const [score, setScore] = useState({ ok: 0, all: 0 });
-  const nu = NUCLIDES[k];
+  const [pt, setPt] = useState(false);
+  const LIST = pt ? NUCLIDES_PT : NUCLIDES;
+  const nu = LIST[k % LIST.length];
   const r = calc(nu.Z, nu.A, nu.mj);
   const fields = [
     { id: "N", l: "N", u: "", v: r.N, tol: 0 },
@@ -3110,8 +3149,8 @@ function Trainer() {
   const next = () => {
     let n;
     do {
-      n = Math.floor(Math.random() * NUCLIDES.length);
-    } while (n === k);
+      n = Math.floor(Math.random() * LIST.length);
+    } while (n === k % LIST.length);
     setK(n);
     setInp({ N: "", dm: "", Ev: "", eps: "" });
     setShown(false);
@@ -3122,8 +3161,53 @@ function Trainer() {
     children: [
       /* @__PURE__ */ jsxDEV("div", {
         className: "mono label",
-        children: "TRENAŽÉR — náhodné jádro, počítej jako v písemce (kalkulačka v ruce!)"
+        children: "TRENAŽÉR Δm · Ev · ε — náhodné jádro, počítej jako v písemce (kalkulačka v ruce!)"
       }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "seg segSm",
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            className: "segB" + (!pt ? " on" : ""),
+            onClick: () => {
+              if (pt) {
+                setPt(false);
+                setK(Math.floor(Math.random() * NUCLIDES.length));
+                setInp({ N: "", dm: "", Ev: "", eps: "" });
+                setShown(false);
+                setChecked(false);
+              }
+            },
+            children: "přesná hmotnost jádra"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            className: "segB" + (pt ? " on" : ""),
+            onClick: () => {
+              if (!pt) {
+                setPt(true);
+                setK(Math.floor(Math.random() * NUCLIDES_PT.length));
+                setInp({ N: "", dm: "", Ev: "", eps: "" });
+                setShown(false);
+                setChecked(false);
+              }
+            },
+            children: "hmotnost z periodické tabulky"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      pt && /* @__PURE__ */ jsxDEV("div", {
+        className: "note",
+        children: [
+          "Režim „jako v PL u železa“: za m",
+          /* @__PURE__ */ jsxDEV("sub", {
+            children: "j"
+          }, undefined, false, undefined, this),
+          " dosazuješ relativní atomovou hmotnost A",
+          /* @__PURE__ */ jsxDEV("sub", {
+            children: "r"
+          }, undefined, false, undefined, this),
+          " z periodické tabulky. Postup je úplně stejný, jen ε vyjde trochu jinak než ve skutečnosti (Ar obsahuje i elektrony a směs izotopů)."
+        ]
+      }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
         className: "trainHead",
         children: [
@@ -3140,8 +3224,8 @@ function Trainer() {
             children: [
               /* @__PURE__ */ jsxDEV("div", {
                 children: /* @__PURE__ */ jsxDEV(Q, {
-                  s: "mⱼ",
-                  v: fmt(nu.mj, 6),
+                  s: pt ? "mⱼ ≈ Ar" : "mⱼ",
+                  v: pt ? String(nu.mj).replace(".", ",") : fmt(nu.mj, 6),
                   u: "u"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
@@ -3250,7 +3334,7 @@ function Trainer() {
               "Δm = ",
               fmt(r.sum, 6),
               " − ",
-              fmt(nu.mj, 6),
+              pt ? String(nu.mj).replace(".", ",") : fmt(nu.mj, 6),
               " = ",
               fmt(r.dm, 6),
               " u"
@@ -3278,6 +3362,367 @@ function Trainer() {
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var PT = ("H vodík|He helium|Li lithium|Be beryllium|B bor|C uhlík|N dusík|O kyslík|F fluor|Ne neon|" + "Na sodík|Mg hořčík|Al hliník|Si křemík|P fosfor|S síra|Cl chlor|Ar argon|K draslík|Ca vápník|" + "Sc skandium|Ti titan|V vanad|Cr chrom|Mn mangan|Fe železo|Co kobalt|Ni nikl|Cu měď|Zn zinek|" + "Ga gallium|Ge germanium|As arsen|Se selen|Br brom|Kr krypton|Rb rubidium|Sr stroncium|Y yttrium|Zr zirkonium|" + "Nb niob|Mo molybden|Tc technecium|Ru ruthenium|Rh rhodium|Pd palladium|Ag stříbro|Cd kadmium|In indium|Sn cín|" + "Sb antimon|Te tellur|I jod|Xe xenon|Cs cesium|Ba baryum|La lanthan|Ce cer|Pr praseodym|Nd neodym|" + "Pm promethium|Sm samarium|Eu europium|Gd gadolinium|Tb terbium|Dy dysprosium|Ho holmium|Er erbium|Tm thulium|Yb ytterbium|" + "Lu lutecium|Hf hafnium|Ta tantal|W wolfram|Re rhenium|Os osmium|Ir iridium|Pt platina|Au zlato|Hg rtuť|" + "Tl thallium|Pb olovo|Bi bismut|Po polonium|At astat|Rn radon|Fr francium|Ra radium|Ac aktinium|Th thorium|" + "Pa protaktinium|U uran|Np neptunium|Pu plutonium").split("|").map((x) => x.split(" "));
+var sym = (Z) => PT[Z - 1][0];
+function ptPos(Z) {
+  if (Z === 1)
+    return [1, 1];
+  if (Z === 2)
+    return [1, 18];
+  if (Z <= 4)
+    return [2, Z - 2];
+  if (Z <= 10)
+    return [2, Z + 8];
+  if (Z <= 12)
+    return [3, Z - 10];
+  if (Z <= 18)
+    return [3, Z];
+  if (Z <= 36)
+    return [4, Z - 18];
+  if (Z <= 54)
+    return [5, Z - 36];
+  if (Z <= 56)
+    return [6, Z - 54];
+  if (Z <= 71)
+    return [9, Z - 54];
+  if (Z <= 86)
+    return [6, Z - 68];
+  if (Z <= 88)
+    return [7, Z - 86];
+  return [10, Z - 86];
+}
+function PeriodicTable({ hl }) {
+  const [sel, setSel] = useState(null);
+  const z = sel || hl;
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "ptScroll",
+        children: /* @__PURE__ */ jsxDEV("div", {
+          className: "ptGrid",
+          children: [
+            PT.map(([s], i) => {
+              const Z = i + 1, [r, c] = ptPos(Z);
+              return /* @__PURE__ */ jsxDEV("button", {
+                className: "ptCell" + (Z === z ? " on" : ""),
+                style: { gridRow: r, gridColumn: c },
+                onClick: () => setSel(Z),
+                title: PT[i][1],
+                children: [
+                  /* @__PURE__ */ jsxDEV("span", {
+                    className: "ptZ",
+                    children: Z
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    className: "ptS",
+                    children: s
+                  }, undefined, false, undefined, this)
+                ]
+              }, Z, true, undefined, this);
+            }),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "ptStar",
+              style: { gridRow: 6, gridColumn: 3 },
+              children: "*"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "ptStar",
+              style: { gridRow: 7, gridColumn: 3 },
+              children: "**"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "ptStar",
+              style: { gridRow: 9, gridColumn: 2 },
+              children: "*"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "ptStar",
+              style: { gridRow: 10, gridColumn: 2 },
+              children: "**"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "mono small ptInfo",
+        children: z ? /* @__PURE__ */ jsxDEV(Fragment, {
+          children: [
+            "Z = ",
+            /* @__PURE__ */ jsxDEV("span", {
+              className: "yl",
+              children: z
+            }, undefined, false, undefined, this),
+            " · ",
+            /* @__PURE__ */ jsxDEV("span", {
+              className: "yl",
+              children: sym(z)
+            }, undefined, false, undefined, this),
+            " · ",
+            PT[z - 1][1]
+          ]
+        }, undefined, true, undefined, this) : /* @__PURE__ */ jsxDEV("span", {
+          className: "dim",
+          children: "Klikni na prvek. Číslo v rohu = protonové číslo Z."
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var PART = {
+  n: { A: 1, Z: 0, s: "n", name: "neutron" },
+  p: { A: 1, Z: 1, s: "p", name: "proton" },
+  a: { A: 4, Z: 2, s: "He", name: "částice α" },
+  d: { A: 2, Z: 1, s: "H", name: "deuteron" },
+  g: { A: 0, Z: 0, s: "γ", name: "foton γ" },
+  ep: { A: 0, Z: "+1", z: 1, s: "e", name: "pozitron" },
+  em: { A: 0, Z: "−1", z: -1, s: "e", name: "elektron" },
+  nu: { A: 0, Z: 0, s: "ν", name: "neutrino" },
+  anu: { A: 0, Z: 0, s: "ν̄", name: "antineutrino" }
+};
+var zOf = (q) => q.z != null ? q.z : q.Z;
+var LIGHT = [[3, 7], [4, 9], [5, 10], [5, 11], [6, 12], [6, 13], [7, 14], [8, 16], [9, 19], [11, 23], [12, 24], [13, 27], [14, 28], [15, 31], [16, 32], [17, 35], [19, 39], [20, 40], [26, 56], [27, 59], [29, 63]];
+var CAPT = [["a", "n"], ["a", "p"], ["n", "p"], ["n", "a"], ["p", "n"], ["p", "a"], ["n", "g"], ["d", "n"], ["d", "p"]];
+var BETA_M = [[1, 3], [6, 14], [15, 32], [27, 60], [38, 90], [53, 131], [55, 137], [19, 40]];
+var BETA_P = [[9, 18], [6, 11], [7, 13], [8, 15], [11, 22], [29, 64], [15, 30]];
+var ALPHA = [[88, 226], [92, 238], [92, 235], [84, 210], [90, 232], [94, 239], [86, 222]];
+var pick = (a) => a[Math.floor(Math.random() * a.length)];
+function makeReaction() {
+  const r = Math.random();
+  if (r < 0.55) {
+    const [Z2, A2] = pick(LIGHT), [pi, ei] = pick(CAPT), P = PART[pi], E = PART[ei];
+    const pZ = Z2 + zOf(P) - zOf(E), pA = A2 + P.A - E.A;
+    if (pZ < 1)
+      return makeReaction();
+    return { kind: `ostřelování: ${P.name} dovnitř, ${E.name} ven`, L: [{ A: A2, Z: Z2, s: sym(Z2) }, P], R: [E], pA, pZ };
+  }
+  if (r < 0.75) {
+    const [Z2, A2] = pick(BETA_P);
+    return { kind: "přeměna β⁺ (Z − 1)", L: [{ A: A2, Z: Z2, s: sym(Z2) }], R: [PART.ep, PART.nu], pA: A2, pZ: Z2 - 1 };
+  }
+  if (r < 0.9) {
+    const [Z2, A2] = pick(BETA_M);
+    return { kind: "přeměna β⁻ (Z + 1)", L: [{ A: A2, Z: Z2, s: sym(Z2) }], R: [PART.em, PART.anu], pA: A2, pZ: Z2 + 1 };
+  }
+  const [Z, A] = pick(ALPHA);
+  return { kind: "přeměna α (Z − 2, A − 4)", L: [{ A, Z, s: sym(Z) }], R: [PART.a], pA: A - 4, pZ: Z - 2 };
+}
+function ReactionEq({ rx, solved }) {
+  const prod = solved ? /* @__PURE__ */ jsxDEV(Nuc, {
+    A: rx.pA,
+    Z: rx.pZ,
+    s: sym(rx.pZ)
+  }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("span", {
+    className: "unk",
+    children: /* @__PURE__ */ jsxDEV(Nuc, {
+      A: "?",
+      Z: "?",
+      s: "X"
+    }, undefined, false, undefined, this)
+  }, undefined, false, undefined, this);
+  const items = (arr) => arr.map((q, i) => /* @__PURE__ */ jsxDEV("span", {
+    style: { display: "inline-flex", alignItems: "center" },
+    children: [
+      i > 0 && /* @__PURE__ */ jsxDEV(Plus, {}, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV(Nuc, {
+        A: q.A,
+        Z: q.Z,
+        s: q.s
+      }, undefined, false, undefined, this)
+    ]
+  }, i, true, undefined, this));
+  return /* @__PURE__ */ jsxDEV(Eq, {
+    children: [
+      items(rx.L),
+      /* @__PURE__ */ jsxDEV(Arr, {}, undefined, false, undefined, this),
+      prod,
+      rx.R.map((q, i) => /* @__PURE__ */ jsxDEV("span", {
+        style: { display: "inline-flex", alignItems: "center" },
+        children: [
+          /* @__PURE__ */ jsxDEV(Plus, {}, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(Nuc, {
+            A: q.A,
+            Z: q.Z,
+            s: q.s
+          }, undefined, false, undefined, this)
+        ]
+      }, i, true, undefined, this))
+    ]
+  }, undefined, true, undefined, this);
+}
+function ReactionTrainer() {
+  const [rx, setRx] = useState(makeReaction);
+  const [inp, setInp] = useState({ A: "", Z: "", s: "" });
+  const [checked, setChecked] = useState(false);
+  const [showPT, setShowPT] = useState(false);
+  const [score, setScore] = useState({ ok: 0, all: 0 });
+  const okA = parseInt(inp.A, 10) === rx.pA, okZ = parseInt(inp.Z, 10) === rx.pZ;
+  const okS = inp.s.trim().toLowerCase() === sym(rx.pZ).toLowerCase();
+  const sumA = (arr) => arr.reduce((t, q) => t + q.A, 0), sumZ = (arr) => arr.reduce((t, q) => t + zOf(q), 0);
+  const check = () => {
+    if (checked)
+      return;
+    setChecked(true);
+    setScore((s) => ({ ok: s.ok + (okA && okZ && okS ? 1 : 0), all: s.all + 1 }));
+  };
+  const next = () => {
+    setRx(makeReaction());
+    setInp({ A: "", Z: "", s: "" });
+    setChecked(false);
+  };
+  const col = (ok) => checked ? ok ? OK : BAD : "var(--line)";
+  return /* @__PURE__ */ jsxDEV("div", {
+    className: "box tk pad",
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "mono label",
+        children: "TRENAŽÉR REAKCÍ — doplň vzniklý nuklid (jako PL úkoly 1–3)"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "trainHead",
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "mono dim small",
+            children: rx.kind
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "mono yl scoreBox",
+            children: [
+              score.ok,
+              " / ",
+              score.all
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(ReactionEq, {
+        rx,
+        solved: checked
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "trainGrid",
+        children: [
+          /* @__PURE__ */ jsxDEV("label", {
+            className: "tfield",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                className: "mono",
+                children: "A (nahoře)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("input", {
+                className: "inp",
+                inputMode: "numeric",
+                value: inp.A,
+                style: { borderColor: col(okA) },
+                onChange: (e) => setInp((p) => ({ ...p, A: e.target.value }))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("label", {
+            className: "tfield",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                className: "mono",
+                children: "Z (dole)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("input", {
+                className: "inp",
+                inputMode: "numeric",
+                value: inp.Z,
+                style: { borderColor: col(okZ) },
+                onChange: (e) => setInp((p) => ({ ...p, Z: e.target.value }))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("label", {
+            className: "tfield",
+            children: [
+              /* @__PURE__ */ jsxDEV("span", {
+                className: "mono",
+                children: "značka prvku"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("input", {
+                className: "inp",
+                value: inp.s,
+                style: { borderColor: col(okS) },
+                onChange: (e) => setInp((p) => ({ ...p, s: e.target.value })),
+                onKeyDown: (e) => e.key === "Enter" && check()
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "btnRow",
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            className: "btn btnA",
+            onClick: check,
+            disabled: checked,
+            style: { opacity: checked ? 0.4 : 1 },
+            children: "Zkontrolovat"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            className: "btn",
+            onClick: next,
+            children: "Další reakce →"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            className: "btn",
+            onClick: () => setShowPT((s) => !s),
+            children: showPT ? "Skrýt periodickou tabulku" : "\uD83D\uDCD6 Periodická tabulka"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      checked && /* @__PURE__ */ jsxDEV("ol", {
+        className: "steps sol",
+        children: [
+          /* @__PURE__ */ jsxDEV("li", {
+            children: [
+              "A: ",
+              sumA(rx.L),
+              " = A + ",
+              sumA(rx.R),
+              " → A = ",
+              rx.pA
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("li", {
+            children: [
+              "Z: ",
+              sumZ(rx.L),
+              " = Z + (",
+              String(sumZ(rx.R)).replace("-", "−"),
+              ") → Z = ",
+              rx.pZ
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("li", {
+            children: [
+              "Z = ",
+              rx.pZ,
+              " → v periodické tabulce ",
+              sym(rx.pZ),
+              " (",
+              PT[rx.pZ - 1][1],
+              "); N = ",
+              rx.pA,
+              " − ",
+              rx.pZ,
+              " = ",
+              rx.pA - rx.pZ
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      showPT && /* @__PURE__ */ jsxDEV("div", {
+        style: { marginTop: 14 },
+        children: /* @__PURE__ */ jsxDEV(PeriodicTable, {
+          hl: checked ? rx.pZ : null
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 }
@@ -3613,7 +4058,56 @@ function App() {
                 children: [
                   /* @__PURE__ */ jsxDEV("div", {
                     className: "mono label",
-                    children: "CO PŘIJDE V PÍSEMCE"
+                    children: "CO PŘIJDE V TESTU (podle zápisu spolužačky)"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("ol", {
+                    className: "testList",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "Část úkolů z pracovního listu „Hmotnostní úbytek“"
+                          }, undefined, false, undefined, this),
+                          " — tabulka Z, N, Δm, Ev, ε a úkoly A–C (stabilita, paradox U vs. Fe, syntéza vs. štěpení)."
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "Úkoly 1, 2 a 3"
+                          }, undefined, false, undefined, this),
+                          " z listu „Jaderné reakce“ — zapsat rovnici reakce a určit vzniklý nuklid (ostřelování α, přeměna β⁺, dvoukroková reakce)."
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "Periodická tabulka"
+                          }, undefined, false, undefined, this),
+                          " — z protonového čísla Z určit prvek (a naopak)."
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "btnRow",
+                    style: { marginBottom: 14 },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("button", {
+                        className: "btn btnA",
+                        onClick: () => setTab("priklady"),
+                        children: "⭐ Úlohy z testu vyřešené →"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("button", {
+                        className: "btn",
+                        onClick: () => setTab("trenazer"),
+                        children: "\uD83C\uDFAF Trénovat výpočty a reakce →"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "mono label",
+                    children: "TÉMATA"
                   }, undefined, false, undefined, this),
                   /* @__PURE__ */ jsxDEV("div", {
                     className: "chips",
@@ -3631,7 +4125,7 @@ function App() {
                   }, undefined, false, undefined, this),
                   /* @__PURE__ */ jsxDEV("p", {
                     className: "small dim",
-                    children: "Typicky: výpočet Δm → Ev → ε z tabulky (jako v pracovním listu), doplnění jaderné reakce, vysvětlení grafu ε(A) a výpočet spotřeby paliva. Všechny úlohy z obou pracovních listů jsou vyřešené v záložce Příklady."
+                    children: "Úkol 4 (spotřeba uranu v elektrárně) podle zápisu v testu nejspíš nebude, řešení je v Příkladech pro jistotu taky. Čísla v testu se můžou lišit od pracovního listu — postup je stejný, proto trénuj v Trenažéru na náhodných jádrech."
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
@@ -3668,6 +4162,7 @@ function App() {
           tab === "trenazer" && /* @__PURE__ */ jsxDEV(Fragment, {
             children: [
               /* @__PURE__ */ jsxDEV(Trainer, {}, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV(ReactionTrainer, {}, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV(Calculator, {}, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
@@ -3678,29 +4173,41 @@ function App() {
           tab === "karticky" && /* @__PURE__ */ jsxDEV(Flashcards, {}, undefined, false, undefined, this),
           tab === "vzorce" && /* @__PURE__ */ jsxDEV("div", {
             className: "sheet",
-            children: SHEET.map((g) => /* @__PURE__ */ jsxDEV("div", {
-              className: "box tk pad",
-              children: [
-                /* @__PURE__ */ jsxDEV("div", {
-                  className: "mono label",
-                  children: g.h.toUpperCase()
-                }, undefined, false, undefined, this),
-                g.rows.map(([f, n], k) => /* @__PURE__ */ jsxDEV("div", {
-                  className: "srow",
-                  children: [
-                    /* @__PURE__ */ jsxDEV("span", {
-                      className: "mono sf",
-                      children: f
-                    }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsxDEV("span", {
-                      className: "sn",
-                      children: n
-                    }, undefined, false, undefined, this)
-                  ]
-                }, k, true, undefined, this))
-              ]
-            }, g.h, true, undefined, this))
-          }, undefined, false, undefined, this)
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "box tk pad ptBox",
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "mono label",
+                    children: "PERIODICKÁ TABULKA — protonové číslo Z → prvek"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV(PeriodicTable, {}, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              SHEET.map((g) => /* @__PURE__ */ jsxDEV("div", {
+                className: "box tk pad",
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "mono label",
+                    children: g.h.toUpperCase()
+                  }, undefined, false, undefined, this),
+                  g.rows.map(([f, n], k) => /* @__PURE__ */ jsxDEV("div", {
+                    className: "srow",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "mono sf",
+                        children: f
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        className: "sn",
+                        children: n
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, k, true, undefined, this))
+                ]
+              }, g.h, true, undefined, this))
+            ]
+          }, undefined, true, undefined, this)
         ]
       }, tab, true, undefined, this),
       /* @__PURE__ */ jsxDEV("footer", {
@@ -3871,6 +4378,22 @@ html,body{background:var(--bg)}
 /* vzorce */
 .sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
 .sheet>.box{margin:0;min-width:0}
+.ptBox{grid-column:1/-1}
+.ptScroll{overflow-x:auto;padding-bottom:6px}
+.ptGrid{display:grid;grid-template-columns:repeat(18,minmax(38px,1fr));grid-template-rows:repeat(7,auto) 10px auto auto;gap:3px;min-width:720px}
+.ptCell{border:1px solid rgba(47,111,159,.8)!important;padding:3px 2px;min-height:44px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;transition:background .4s linear}
+.ptCell:hover{border-color:var(--cy)!important}
+.ptCell.on{background:rgba(255,209,102,.18)!important;border-color:var(--yl)!important}
+.ptZ{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--mut);align-self:flex-start;padding-left:2px}
+.ptS{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#fff}
+.ptCell.on .ptS{color:var(--yl)}
+.ptStar{display:flex;align-items:center;justify-content:center;color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:13px}
+.ptInfo{margin-top:8px;min-height:22px}
+.testB{color:var(--yl);border-color:var(--yl);background:rgba(255,209,102,.1)}
+.testList{margin:0 0 14px}
+.unk{color:var(--yl);border:1px dashed var(--yl);padding:0 6px}
+.segSm{margin-bottom:12px}
+.segSm .segB{flex:1 1 180px;min-height:42px;font-size:14px}
 .srow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed rgba(47,111,159,.5);flex-wrap:wrap}
 .sf{color:var(--yl);font-size:15px}
 .sn{color:var(--mut);font-size:14px}

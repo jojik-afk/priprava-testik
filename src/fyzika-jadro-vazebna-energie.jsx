@@ -505,7 +505,7 @@ const DIFF = { e: ['Lehký ✨', '#4ade80'], m: ['Střední ⚡', YL], h: ['Tě�
 const PROBLEMS = [
   /* ── PL Hmotnostní úbytek ── */
   {
-    g: 'PL — Hmotnostní úbytek a vazebná energie', t: 'Tabulka: helium ⁴₂He (lehký prvek)', d: 'e',
+    g: 'PL — Hmotnostní úbytek a vazebná energie', tt: 1, t: 'Tabulka: helium ⁴₂He (lehký prvek)', d: 'e',
     task: <>Doplň Z, N, vypočítej Δm, E<sub>v</sub> a ε pro <span className="big"><Nuc A={4} Z={2} s="He" /></span>, m<sub>j</sub> = 4,001 500 u.</>,
     given: [['Z', '2'], ['A', '4'], ['m_j', '4,001 500 u'], ['m_p', '1,007 276 u'], ['m_n', '1,008 665 u']],
     formula: 'N = A − Z ;  Δm = Z·mp + N·mn − mj ;  Ev = Δm · 931,5 ;  ε = Ev / A',
@@ -522,7 +522,7 @@ const PROBLEMS = [
     checks: [{ l: 'Δm', u: 'u', v: 0.030382, tol: 0.01 }, { l: 'Ev', u: 'MeV', v: 28.30, tol: 0.01 }, { l: 'ε', u: 'MeV', v: 7.075, tol: 0.01 }],
   },
   {
-    g: 'PL — Hmotnostní úbytek a vazebná energie', t: 'Tabulka: železo ⁵⁶₂₆Fe (stabilní prvek)', d: 'm',
+    g: 'PL — Hmotnostní úbytek a vazebná energie', tt: 1, t: 'Tabulka: železo ⁵⁶₂₆Fe (stabilní prvek)', d: 'm',
     task: <>Doplň Z, N, vypočítej Δm, E<sub>v</sub> a ε pro <span className="big"><Nuc A={56} Z={26} s="Fe" /></span>, m<sub>j</sub> = 55,849 000 u (hodnota z pracovního listu).</>,
     given: [['Z', '26'], ['A', '56'], ['m_j', '55,849 000 u']],
     formula: 'Δm = Z·mp + N·mn − mj ;  Ev = Δm · 931,5 ;  ε = Ev / A',
@@ -540,7 +540,7 @@ const PROBLEMS = [
     checks: [{ l: 'Δm', u: 'u', v: 0.600126, tol: 0.01 }, { l: 'Ev', u: 'MeV', v: 559.0, tol: 0.01 }, { l: 'ε', u: 'MeV', v: 9.982, tol: 0.01 }],
   },
   {
-    g: 'PL — Hmotnostní úbytek a vazebná energie', t: 'Tabulka: uran ²³⁸₉₂U (těžký prvek)', d: 'm',
+    g: 'PL — Hmotnostní úbytek a vazebná energie', tt: 1, t: 'Tabulka: uran ²³⁸₉₂U (těžký prvek)', d: 'm',
     task: <>Doplň Z, N, vypočítej Δm, E<sub>v</sub> a ε pro <span className="big"><Nuc A={238} Z={92} s="U" /></span>, m<sub>j</sub> = 238,000 300 u.</>,
     given: [['Z', '92'], ['A', '238'], ['m_j', '238,000 300 u']],
     formula: 'Δm = Z·mp + N·mn − mj ;  Ev = Δm · 931,5 ;  ε = Ev / A',
@@ -557,7 +557,7 @@ const PROBLEMS = [
     checks: [{ l: 'Δm', u: 'u', v: 1.934182, tol: 0.005 }, { l: 'Ev', u: 'MeV', v: 1801.7, tol: 0.005 }, { l: 'ε', u: 'MeV', v: 7.570, tol: 0.01 }],
   },
   {
-    g: 'PL — Hmotnostní úbytek a vazebná energie', t: 'Úkol A: Které jádro je nejstabilnější?', d: 'e',
+    g: 'PL — Hmotnostní úbytek a vazebná energie', tt: 1, t: 'Úkol A: Které jádro je nejstabilnější?', d: 'e',
     task: 'Na základě tabulky a grafu urči, které ze tří jader (⁴He, ⁵⁶Fe, ²³⁸U) je nejstabilnější, a vysvětli proč.',
     given: [['ε(He)', '7,08 MeV'], ['ε(Fe)', '9,98 (reálně 8,79) MeV'], ['ε(U)', '7,57 MeV']],
     formula: 'stabilita ↔ vazebná energie na nukleon ε',
@@ -569,7 +569,7 @@ const PROBLEMS = [
     result: 'Nejstabilnější je ⁵⁶Fe, protože má největší vazebnou energii na jeden nukleon (leží na maximu grafu).',
   },
   {
-    g: 'PL — Hmotnostní úbytek a vazebná energie', t: 'Úkol B: Paradox celkové vs. měrné energie', d: 'e',
+    g: 'PL — Hmotnostní úbytek a vazebná energie', tt: 1, t: 'Úkol B: Paradox celkové vs. měrné energie', d: 'e',
     task: 'Jádro ²³⁸U má mnohem vyšší celkovou vazebnou energii než ⁵⁶Fe. Přesto je železo stabilnější. Vysvětli 1–2 větami.',
     given: [['Ev(U)', '≈ 1 802 MeV'], ['Ev(Fe)', '≈ 559 MeV']],
     formula: 'ε = Ev / A',
@@ -580,7 +580,7 @@ const PROBLEMS = [
     result: 'Uran má větší Ev jen proto, že má víc nukleonů; na jeden nukleon připadá menší vazebná energie než u železa, takže jeho nukleony jsou vázány slaběji a jádro je méně stabilní.',
   },
   {
-    g: 'PL — Hmotnostní úbytek a vazebná energie', t: 'Úkol C: Syntéza vs. štěpení — odkud se bere energie', d: 'm',
+    g: 'PL — Hmotnostní úbytek a vazebná energie', tt: 1, t: 'Úkol C: Syntéza vs. štěpení — odkud se bere energie', d: 'm',
     task: 'Vysvětli pomocí grafu ε(A), proč se energie uvolňuje při syntéze lehkých jader i při štěpení těžkých jader.',
     given: [['maximum ε', 'A ≈ 56 (Fe)']],
     formula: 'E = ΣEv(produkty) − ΣEv(výchozí)',
@@ -594,7 +594,7 @@ const PROBLEMS = [
   },
   /* ── PL Jaderné reakce ── */
   {
-    g: 'PL — Jaderné reakce a fyzika jádra', t: '1: Ostřelování hliníku částicí α', d: 'e',
+    g: 'PL — Jaderné reakce a fyzika jádra', tt: 1, t: '1: Ostřelování hliníku částicí α', d: 'e',
     task: <>Jádro <Nuc A={27} Z={13} s="Al" /> pohltí částici α a uvolní jeden neutron. 1A) Zapiš rovnici. 1B) Urči vzniklý nuklid (Z, N, značka).</>,
     given: [['vlevo', '²⁷₁₃Al + ⁴₂He'], ['vpravo', 'X + ¹₀n']],
     formula: 'zachování A (horní čísla) a Z (dolní čísla)',
@@ -607,7 +607,7 @@ const PROBLEMS = [
     result: 'Vznikl ³⁰₁₅P (fosfor-30): Z = 15, N = 15. Je radioaktivní — první uměle vyrobený radionuklid (Joliot-Curie 1934).',
   },
   {
-    g: 'PL — Jaderné reakce a fyzika jádra', t: '2: Přeměna β⁺ fluoru-18 (PET)', d: 'e',
+    g: 'PL — Jaderné reakce a fyzika jádra', tt: 1, t: '2: Přeměna β⁺ fluoru-18 (PET)', d: 'e',
     task: <>Izotop <Nuc A={18} Z={9} s="F" /> se přeměňuje β⁺ — vyletí pozitron e⁺ a neutrino ν<sub>e</sub>. 2A) Zapiš rovnici. 2B) Jaký nuklid vznikne?</>,
     given: [['pozitron', '⁰₊₁e'], ['neutrino', '⁰₀ν']],
     formula: 'β⁺: p → n + e⁺ + ν  ⇒  Z − 1, A beze změny',
@@ -619,7 +619,7 @@ const PROBLEMS = [
     result: 'Vznikne ¹⁸₈O (kyslík-18, stabilní). Pozitron anihiluje s elektronem → 2 fotony γ, které detekuje PET.',
   },
   {
-    g: 'PL — Jaderné reakce a fyzika jádra', t: '3: Řetězová reakce dusíku (X a Y)', d: 'm',
+    g: 'PL — Jaderné reakce a fyzika jádra', tt: 1, t: '3: Řetězová reakce dusíku (X a Y)', d: 'm',
     task: <><Nuc A={14} Z={7} s="N" /> ostřelován neutronem uvolní proton a vznikne X. X se přemění β⁺ na Y. 3A) Rovnice + X. 3B) Rovnice + Y.</>,
     given: [['1. krok', '¹⁴₇N + ¹₀n → X + ¹₁p'], ['2. krok', 'X → Y + ⁰₊₁e + ν']],
     formula: 'zachování A a Z v každém kroku',
@@ -633,7 +633,7 @@ const PROBLEMS = [
     note: 'Fyzikální poznámka: první reakce je skutečná — takhle vzniká ¹⁴C v atmosféře. Ve skutečnosti se ale ¹⁴C přeměňuje β⁻ (ne β⁺): ¹⁴₆C → ¹⁴₇N + e⁻ + ν̄ (radiouhlíková metoda), a ¹⁴B stabilní není. V písemce ale piš to, co chce zadání (β⁺ → Z − 1 → bor); případně můžeš poznámku připsat.',
   },
   {
-    g: 'PL — Jaderné reakce a fyzika jádra', t: '4A: Tepelný výkon reaktoru', d: 'e',
+    g: 'PL — Jaderné reakce a fyzika jádra', tt: 0, t: '4A: Tepelný výkon reaktoru', d: 'e',
     task: 'Elektrický výkon bloku Pe = 1 000 MW, účinnost η = 33 %. Jaký tepelný výkon Pt musí reaktor vyrábět?',
     given: [['Pe', '1 000 MW'], ['η', '0,33']],
     formula: 'η = Pe / Pt  ⇒  Pt = Pe / η',
@@ -642,7 +642,7 @@ const PROBLEMS = [
     checks: [{ l: 'Pt', u: 'MW', v: 3030.3, tol: 0.01 }],
   },
   {
-    g: 'PL — Jaderné reakce a fyzika jádra', t: '4B: Energie z jednoho štěpení v joulech', d: 'e',
+    g: 'PL — Jaderné reakce a fyzika jádra', tt: 0, t: '4B: Energie z jednoho štěpení v joulech', d: 'e',
     task: 'Při štěpení jednoho jádra ²³⁵U se uvolní E₁ = 200 MeV. Kolik je to joulů? (1 eV = 1,602 · 10⁻¹⁹ J)',
     given: [['E₁', '200 MeV = 200 · 10⁶ eV']],
     formula: 'E [J] = E [eV] · 1,602 · 10⁻¹⁹',
@@ -651,7 +651,7 @@ const PROBLEMS = [
     checks: [{ l: 'E₁', u: 'J', v: 3.204e-11, tol: 0.01 }],
   },
   {
-    g: 'PL — Jaderné reakce a fyzika jádra', t: '4C: Spotřeba ²³⁵U za 1 den', d: 'h',
+    g: 'PL — Jaderné reakce a fyzika jádra', tt: 0, t: '4C: Spotřeba ²³⁵U za 1 den', d: 'h',
     task: 'Kolik kg ²³⁵U se v reaktoru spotřebuje (rozštěpí) za 24 h nepřetržitého provozu? M = 235 g/mol, Nₐ = 6,022 · 10²³ mol⁻¹.',
     given: [['Pt', '3,03 · 10⁹ W'], ['t', '24 h = 86 400 s'], ['E₁', '3,204 · 10⁻¹¹ J'], ['M', '0,235 kg/mol'], ['Nₐ', '6,022 · 10²³ mol⁻¹']],
     formula: 'Q = Pt · t ;  N = Q / E₁ ;  n = N / Nₐ ;  m = n · M',
@@ -818,6 +818,8 @@ function Problem({ p, i }) {
       <div className="probHead">
         <span className="mono pnum">Př. {String(i + 1).padStart(2, '0')}</span>
         <span className="probT">{p.t}</span>
+        {p.tt === 1 && <span className="badge testB">⭐ V TESTU</span>}
+        {p.tt === 0 && <span className="badge dim">asi mimo test</span>}
         <span className="badge" style={{ color: dc, borderColor: dc }}>{dl}</span>
       </div>
       <div className="probTask">{p.task}</div>
@@ -871,6 +873,14 @@ const NUCLIDES = [
   ['U', 92, 235, 235.043930], ['U', 92, 238, 238.050788],
 ].map(([s, Z, A, ma]) => ({ s, Z, A, mj: +(ma - Z * ME).toFixed(6) }));
 
+/* Hmotnosti „z periodické tabulky“ — relativní atomová hmotnost Ar dosazená jako mj (jako u Fe v PL).
+   Jen prvky s jedním převažujícím izotopem, jinak by Δm nedávalo smysl. */
+const NUCLIDES_PT = [
+  ['He', 2, 4, 4.0026], ['C', 6, 12, 12.011], ['N', 7, 14, 14.007], ['O', 8, 16, 15.999], ['F', 9, 19, 18.998],
+  ['Na', 11, 23, 22.990], ['Al', 13, 27, 26.982], ['P', 15, 31, 30.974], ['Mn', 25, 55, 54.938], ['Fe', 26, 56, 55.845],
+  ['Co', 27, 59, 58.933], ['I', 53, 127, 126.90], ['Au', 79, 197, 196.97], ['Bi', 83, 209, 208.98], ['U', 92, 238, 238.03],
+].map(([s, Z, A, mj]) => ({ s, Z, A, mj }));
+
 function calc(Z, A, mj) {
   const N = A - Z, sum = Z * MP + N * MN, dm = sum - mj, Ev = dm * K_U;
   return { N, sum, dm, Ev, eps: Ev / A };
@@ -882,7 +892,9 @@ function Trainer() {
   const [shown, setShown] = useState(false);
   const [checked, setChecked] = useState(false);
   const [score, setScore] = useState({ ok: 0, all: 0 });
-  const nu = NUCLIDES[k];
+  const [pt, setPt] = useState(false);
+  const LIST = pt ? NUCLIDES_PT : NUCLIDES;
+  const nu = LIST[k % LIST.length];
   const r = calc(nu.Z, nu.A, nu.mj);
   const fields = [
     { id: 'N', l: 'N', u: '', v: r.N, tol: 0 },
@@ -898,16 +910,21 @@ function Trainer() {
     setScore(s => ({ ok: s.ok + (all ? 1 : 0), all: s.all + 1 }));
   };
   const next = () => {
-    let n; do { n = Math.floor(Math.random() * NUCLIDES.length); } while (n === k);
+    let n; do { n = Math.floor(Math.random() * LIST.length); } while (n === k % LIST.length);
     setK(n); setInp({ N: '', dm: '', Ev: '', eps: '' }); setShown(false); setChecked(false);
   };
   return (
     <div className="box tk pad">
-      <div className="mono label">TRENAŽÉR — náhodné jádro, počítej jako v písemce (kalkulačka v ruce!)</div>
+      <div className="mono label">TRENAŽÉR Δm · Ev · ε — náhodné jádro, počítej jako v písemce (kalkulačka v ruce!)</div>
+      <div className="seg segSm">
+        <button className={'segB' + (!pt ? ' on' : '')} onClick={() => { if (pt) { setPt(false); setK(Math.floor(Math.random() * NUCLIDES.length)); setInp({ N: '', dm: '', Ev: '', eps: '' }); setShown(false); setChecked(false); } }}>přesná hmotnost jádra</button>
+        <button className={'segB' + (pt ? ' on' : '')} onClick={() => { if (!pt) { setPt(true); setK(Math.floor(Math.random() * NUCLIDES_PT.length)); setInp({ N: '', dm: '', Ev: '', eps: '' }); setShown(false); setChecked(false); } }}>hmotnost z periodické tabulky</button>
+      </div>
+      {pt && <div className="note">Režim „jako v PL u železa“: za m<sub>j</sub> dosazuješ relativní atomovou hmotnost A<sub>r</sub> z periodické tabulky. Postup je úplně stejný, jen ε vyjde trochu jinak než ve skutečnosti (Ar obsahuje i elektrony a směs izotopů).</div>}
       <div className="trainHead">
         <span className="huge"><Nuc A={nu.A} Z={nu.Z} s={nu.s} /></span>
         <div className="mono">
-          <div><Q s="mⱼ" v={fmt(nu.mj, 6)} u="u" /></div>
+          <div><Q s={pt ? 'mⱼ ≈ Ar' : 'mⱼ'} v={pt ? String(nu.mj).replace('.', ',') : fmt(nu.mj, 6)} u="u" /></div>
           <div className="dim small">mp = 1,007 276 u · mn = 1,008 665 u · 1 u ≙ 931,5 MeV</div>
         </div>
         <div className="mono yl scoreBox">{score.ok} / {score.all}</div>
@@ -932,11 +949,150 @@ function Trainer() {
         <ol className="steps sol">
           <li>N = {nu.A} − {nu.Z} = {r.N}</li>
           <li>Z·mp + N·mn = {nu.Z} · 1,007 276 + {r.N} · 1,008 665 = {fmt(r.sum, 6)} u</li>
-          <li>Δm = {fmt(r.sum, 6)} − {fmt(nu.mj, 6)} = {fmt(r.dm, 6)} u</li>
+          <li>Δm = {fmt(r.sum, 6)} − {pt ? String(nu.mj).replace('.', ',') : fmt(nu.mj, 6)} = {fmt(r.dm, 6)} u</li>
           <li>Ev = {fmt(r.dm, 6)} · 931,5 = {fmt(r.Ev, 2)} MeV</li>
           <li>ε = {fmt(r.Ev, 2)} / {nu.A} = {fmt(r.eps, 3)} MeV/nukleon</li>
         </ol>
       )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PERIODICKÁ TABULKA (Z 1–94)
+   ═══════════════════════════════════════════════════════════════════ */
+const PT = ('H vodík|He helium|Li lithium|Be beryllium|B bor|C uhlík|N dusík|O kyslík|F fluor|Ne neon|' +
+  'Na sodík|Mg hořčík|Al hliník|Si křemík|P fosfor|S síra|Cl chlor|Ar argon|K draslík|Ca vápník|' +
+  'Sc skandium|Ti titan|V vanad|Cr chrom|Mn mangan|Fe železo|Co kobalt|Ni nikl|Cu měď|Zn zinek|' +
+  'Ga gallium|Ge germanium|As arsen|Se selen|Br brom|Kr krypton|Rb rubidium|Sr stroncium|Y yttrium|Zr zirkonium|' +
+  'Nb niob|Mo molybden|Tc technecium|Ru ruthenium|Rh rhodium|Pd palladium|Ag stříbro|Cd kadmium|In indium|Sn cín|' +
+  'Sb antimon|Te tellur|I jod|Xe xenon|Cs cesium|Ba baryum|La lanthan|Ce cer|Pr praseodym|Nd neodym|' +
+  'Pm promethium|Sm samarium|Eu europium|Gd gadolinium|Tb terbium|Dy dysprosium|Ho holmium|Er erbium|Tm thulium|Yb ytterbium|' +
+  'Lu lutecium|Hf hafnium|Ta tantal|W wolfram|Re rhenium|Os osmium|Ir iridium|Pt platina|Au zlato|Hg rtuť|' +
+  'Tl thallium|Pb olovo|Bi bismut|Po polonium|At astat|Rn radon|Fr francium|Ra radium|Ac aktinium|Th thorium|' +
+  'Pa protaktinium|U uran|Np neptunium|Pu plutonium').split('|').map(x => x.split(' '));
+const sym = Z => PT[Z - 1][0];
+
+function ptPos(Z) {
+  if (Z === 1) return [1, 1];
+  if (Z === 2) return [1, 18];
+  if (Z <= 4) return [2, Z - 2];
+  if (Z <= 10) return [2, Z + 8];
+  if (Z <= 12) return [3, Z - 10];
+  if (Z <= 18) return [3, Z];
+  if (Z <= 36) return [4, Z - 18];
+  if (Z <= 54) return [5, Z - 36];
+  if (Z <= 56) return [6, Z - 54];
+  if (Z <= 71) return [9, Z - 54];
+  if (Z <= 86) return [6, Z - 68];
+  if (Z <= 88) return [7, Z - 86];
+  return [10, Z - 86];
+}
+
+function PeriodicTable({ hl }) {
+  const [sel, setSel] = useState(null);
+  const z = sel || hl;
+  return (
+    <div>
+      <div className="ptScroll">
+        <div className="ptGrid">
+          {PT.map(([s], i) => {
+            const Z = i + 1, [r, c] = ptPos(Z);
+            return (
+              <button key={Z} className={'ptCell' + (Z === z ? ' on' : '')} style={{ gridRow: r, gridColumn: c }} onClick={() => setSel(Z)} title={PT[i][1]}>
+                <span className="ptZ">{Z}</span><span className="ptS">{s}</span>
+              </button>
+            );
+          })}
+          <div className="ptStar" style={{ gridRow: 6, gridColumn: 3 }}>*</div>
+          <div className="ptStar" style={{ gridRow: 7, gridColumn: 3 }}>**</div>
+          <div className="ptStar" style={{ gridRow: 9, gridColumn: 2 }}>*</div>
+          <div className="ptStar" style={{ gridRow: 10, gridColumn: 2 }}>**</div>
+        </div>
+      </div>
+      <div className="mono small ptInfo">
+        {z ? <>Z = <span className="yl">{z}</span> · <span className="yl">{sym(z)}</span> · {PT[z - 1][1]}</> : <span className="dim">Klikni na prvek. Číslo v rohu = protonové číslo Z.</span>}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TRENAŽÉR JADERNÝCH REAKCÍ (typ PL úkoly 1–3)
+   ═══════════════════════════════════════════════════════════════════ */
+const PART = {
+  n: { A: 1, Z: 0, s: 'n', name: 'neutron' }, p: { A: 1, Z: 1, s: 'p', name: 'proton' },
+  a: { A: 4, Z: 2, s: 'He', name: 'částice α' }, d: { A: 2, Z: 1, s: 'H', name: 'deuteron' },
+  g: { A: 0, Z: 0, s: 'γ', name: 'foton γ' },
+  ep: { A: 0, Z: '+1', z: 1, s: 'e', name: 'pozitron' }, em: { A: 0, Z: '−1', z: -1, s: 'e', name: 'elektron' },
+  nu: { A: 0, Z: 0, s: 'ν', name: 'neutrino' }, anu: { A: 0, Z: 0, s: 'ν̄', name: 'antineutrino' },
+};
+const zOf = q => q.z != null ? q.z : q.Z;
+const LIGHT = [[3, 7], [4, 9], [5, 10], [5, 11], [6, 12], [6, 13], [7, 14], [8, 16], [9, 19], [11, 23], [12, 24], [13, 27], [14, 28], [15, 31], [16, 32], [17, 35], [19, 39], [20, 40], [26, 56], [27, 59], [29, 63]];
+const CAPT = [['a', 'n'], ['a', 'p'], ['n', 'p'], ['n', 'a'], ['p', 'n'], ['p', 'a'], ['n', 'g'], ['d', 'n'], ['d', 'p']];
+const BETA_M = [[1, 3], [6, 14], [15, 32], [27, 60], [38, 90], [53, 131], [55, 137], [19, 40]];
+const BETA_P = [[9, 18], [6, 11], [7, 13], [8, 15], [11, 22], [29, 64], [15, 30]];
+const ALPHA = [[88, 226], [92, 238], [92, 235], [84, 210], [90, 232], [94, 239], [86, 222]];
+const pick = a => a[Math.floor(Math.random() * a.length)];
+
+function makeReaction() {
+  const r = Math.random();
+  if (r < 0.55) {
+    const [Z, A] = pick(LIGHT), [pi, ei] = pick(CAPT), P = PART[pi], E = PART[ei];
+    const pZ = Z + zOf(P) - zOf(E), pA = A + P.A - E.A;
+    if (pZ < 1) return makeReaction();
+    return { kind: `ostřelování: ${P.name} dovnitř, ${E.name} ven`, L: [{ A, Z, s: sym(Z) }, P], R: [E], pA, pZ };
+  }
+  if (r < 0.75) { const [Z, A] = pick(BETA_P); return { kind: 'přeměna β⁺ (Z − 1)', L: [{ A, Z, s: sym(Z) }], R: [PART.ep, PART.nu], pA: A, pZ: Z - 1 }; }
+  if (r < 0.9) { const [Z, A] = pick(BETA_M); return { kind: 'přeměna β⁻ (Z + 1)', L: [{ A, Z, s: sym(Z) }], R: [PART.em, PART.anu], pA: A, pZ: Z + 1 }; }
+  const [Z, A] = pick(ALPHA);
+  return { kind: 'přeměna α (Z − 2, A − 4)', L: [{ A, Z, s: sym(Z) }], R: [PART.a], pA: A - 4, pZ: Z - 2 };
+}
+
+function ReactionEq({ rx, solved }) {
+  const prod = solved ? <Nuc A={rx.pA} Z={rx.pZ} s={sym(rx.pZ)} /> : <span className="unk"><Nuc A="?" Z="?" s="X" /></span>;
+  const items = (arr) => arr.map((q, i) => <span key={i} style={{ display: 'inline-flex', alignItems: 'center' }}>{i > 0 && <Plus />}<Nuc A={q.A} Z={q.Z} s={q.s} /></span>);
+  return <Eq>{items(rx.L)}<Arr />{prod}{rx.R.map((q, i) => <span key={i} style={{ display: 'inline-flex', alignItems: 'center' }}><Plus /><Nuc A={q.A} Z={q.Z} s={q.s} /></span>)}</Eq>;
+}
+
+function ReactionTrainer() {
+  const [rx, setRx] = useState(makeReaction);
+  const [inp, setInp] = useState({ A: '', Z: '', s: '' });
+  const [checked, setChecked] = useState(false);
+  const [showPT, setShowPT] = useState(false);
+  const [score, setScore] = useState({ ok: 0, all: 0 });
+  const okA = parseInt(inp.A, 10) === rx.pA, okZ = parseInt(inp.Z, 10) === rx.pZ;
+  const okS = inp.s.trim().toLowerCase() === sym(rx.pZ).toLowerCase();
+  const sumA = arr => arr.reduce((t, q) => t + q.A, 0), sumZ = arr => arr.reduce((t, q) => t + zOf(q), 0);
+  const check = () => { if (checked) return; setChecked(true); setScore(s => ({ ok: s.ok + (okA && okZ && okS ? 1 : 0), all: s.all + 1 })); };
+  const next = () => { setRx(makeReaction()); setInp({ A: '', Z: '', s: '' }); setChecked(false); };
+  const col = ok => checked ? (ok ? OK : BAD) : 'var(--line)';
+  return (
+    <div className="box tk pad">
+      <div className="mono label">TRENAŽÉR REAKCÍ — doplň vzniklý nuklid (jako PL úkoly 1–3)</div>
+      <div className="trainHead">
+        <div className="mono dim small">{rx.kind}</div>
+        <div className="mono yl scoreBox">{score.ok} / {score.all}</div>
+      </div>
+      <ReactionEq rx={rx} solved={checked} />
+      <div className="trainGrid">
+        <label className="tfield"><span className="mono">A (nahoře)</span><input className="inp" inputMode="numeric" value={inp.A} style={{ borderColor: col(okA) }} onChange={e => setInp(p => ({ ...p, A: e.target.value }))} /></label>
+        <label className="tfield"><span className="mono">Z (dole)</span><input className="inp" inputMode="numeric" value={inp.Z} style={{ borderColor: col(okZ) }} onChange={e => setInp(p => ({ ...p, Z: e.target.value }))} /></label>
+        <label className="tfield"><span className="mono">značka prvku</span><input className="inp" value={inp.s} style={{ borderColor: col(okS) }} onChange={e => setInp(p => ({ ...p, s: e.target.value }))} onKeyDown={e => e.key === 'Enter' && check()} /></label>
+      </div>
+      <div className="btnRow">
+        <button className="btn btnA" onClick={check} disabled={checked} style={{ opacity: checked ? 0.4 : 1 }}>Zkontrolovat</button>
+        <button className="btn" onClick={next}>Další reakce →</button>
+        <button className="btn" onClick={() => setShowPT(s => !s)}>{showPT ? 'Skrýt periodickou tabulku' : '📖 Periodická tabulka'}</button>
+      </div>
+      {checked && (
+        <ol className="steps sol">
+          <li>A: {sumA(rx.L)} = A + {sumA(rx.R)} → A = {rx.pA}</li>
+          <li>Z: {sumZ(rx.L)} = Z + ({String(sumZ(rx.R)).replace('-', '−')}) → Z = {rx.pZ}</li>
+          <li>Z = {rx.pZ} → v periodické tabulce {sym(rx.pZ)} ({PT[rx.pZ - 1][1]}); N = {rx.pA} − {rx.pZ} = {rx.pA - rx.pZ}</li>
+        </ol>
+      )}
+      {showPT && <div style={{ marginTop: 14 }}><PeriodicTable hl={checked ? rx.pZ : null} /></div>}
     </div>
   );
 }
@@ -1095,12 +1251,22 @@ export default function App() {
         {tab === 'teorie' && (
           <>
             <div className="box tk pad intro">
-              <div className="mono label">CO PŘIJDE V PÍSEMCE</div>
+              <div className="mono label">CO PŘIJDE V TESTU (podle zápisu spolužačky)</div>
+              <ol className="testList">
+                <li><b>Část úkolů z pracovního listu „Hmotnostní úbytek“</b> — tabulka Z, N, Δm, Ev, ε a úkoly A–C (stabilita, paradox U vs. Fe, syntéza vs. štěpení).</li>
+                <li><b>Úkoly 1, 2 a 3</b> z listu „Jaderné reakce“ — zapsat rovnici reakce a určit vzniklý nuklid (ostřelování α, přeměna β⁺, dvoukroková reakce).</li>
+                <li><b>Periodická tabulka</b> — z protonového čísla Z určit prvek (a naopak).</li>
+              </ol>
+              <div className="btnRow" style={{ marginBottom: 14 }}>
+                <button className="btn btnA" onClick={() => setTab('priklady')}>⭐ Úlohy z testu vyřešené →</button>
+                <button className="btn" onClick={() => setTab('trenazer')}>🎯 Trénovat výpočty a reakce →</button>
+              </div>
+              <div className="mono label">TÉMATA</div>
               <div className="chips">
                 {['Parametry atomu', 'Hmotnostní schodek', 'Vazebná energie', 'Vazebná energie / nukleon', 'Štěpení a slučování jader'].map((t, i) =>
                   <span key={i} className="chip"><span className="mono yl">{String(i + 1).padStart(2, '0')}</span> {t}</span>)}
               </div>
-              <p className="small dim">Typicky: výpočet Δm → Ev → ε z tabulky (jako v pracovním listu), doplnění jaderné reakce, vysvětlení grafu ε(A) a výpočet spotřeby paliva. Všechny úlohy z obou pracovních listů jsou vyřešené v záložce Příklady.</p>
+              <p className="small dim">Úkol 4 (spotřeba uranu v elektrárně) podle zápisu v testu nejspíš nebude, řešení je v Příkladech pro jistotu taky. Čísla v testu se můžou lišit od pracovního listu — postup je stejný, proto trénuj v Trenažéru na náhodných jádrech.</p>
             </div>
             {THEORY.map((s, i) => (
               <section key={s.id} className="box tk sect">
@@ -1115,11 +1281,15 @@ export default function App() {
           </>
         )}
         {tab === 'priklady' && <ProblemsTab />}
-        {tab === 'trenazer' && (<><Trainer /><Calculator /></>)}
+        {tab === 'trenazer' && (<><Trainer /><ReactionTrainer /><Calculator /></>)}
         {tab === 'kviz' && <QuizEngine questions={QUESTIONS} accentColor={CY} />}
         {tab === 'karticky' && <Flashcards />}
         {tab === 'vzorce' && (
           <div className="sheet">
+            <div className="box tk pad ptBox">
+              <div className="mono label">PERIODICKÁ TABULKA — protonové číslo Z → prvek</div>
+              <PeriodicTable />
+            </div>
             {SHEET.map(g => (
               <div key={g.h} className="box tk pad">
                 <div className="mono label">{g.h.toUpperCase()}</div>
@@ -1300,6 +1470,22 @@ html,body{background:var(--bg)}
 /* vzorce */
 .sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
 .sheet>.box{margin:0;min-width:0}
+.ptBox{grid-column:1/-1}
+.ptScroll{overflow-x:auto;padding-bottom:6px}
+.ptGrid{display:grid;grid-template-columns:repeat(18,minmax(38px,1fr));grid-template-rows:repeat(7,auto) 10px auto auto;gap:3px;min-width:720px}
+.ptCell{border:1px solid rgba(47,111,159,.8)!important;padding:3px 2px;min-height:44px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;transition:background .4s linear}
+.ptCell:hover{border-color:var(--cy)!important}
+.ptCell.on{background:rgba(255,209,102,.18)!important;border-color:var(--yl)!important}
+.ptZ{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--mut);align-self:flex-start;padding-left:2px}
+.ptS{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#fff}
+.ptCell.on .ptS{color:var(--yl)}
+.ptStar{display:flex;align-items:center;justify-content:center;color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:13px}
+.ptInfo{margin-top:8px;min-height:22px}
+.testB{color:var(--yl);border-color:var(--yl);background:rgba(255,209,102,.1)}
+.testList{margin:0 0 14px}
+.unk{color:var(--yl);border:1px dashed var(--yl);padding:0 6px}
+.segSm{margin-bottom:12px}
+.segSm .segB{flex:1 1 180px;min-height:42px;font-size:14px}
 .srow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed rgba(47,111,159,.5);flex-wrap:wrap}
 .sf{color:var(--yl);font-size:15px}
 .sn{color:var(--mut);font-size:14px}
