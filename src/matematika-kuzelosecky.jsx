@@ -1,4 +1,4 @@
-// @title Kuželosečky — kuželosečka a přímka, typ, vnitřek a vnějšek
+// @title Kuželosečky — poměr vzdáleností, rovnice, graf a přímka
 // @subject Math
 // @topic Analytická geometrie: kuželosečky
 // @template mixed
@@ -459,6 +459,13 @@ function pmStr(m, s2) {
   return [fmtQ(m) + " − " + r, fmtQ(m) + " + " + r];
 }
 
+// řídicí přímky elipsy/hyperboly: v = střed ± a²/e ; číselná výstřednost ε = e/a
+function dirStr(v, mq, a2, e2) {
+  const k = sqrtStr(qdiv(qmul(a2, a2), e2));
+  return mq.n === 0 ? `${v} = ±${k}` : `${v} = ${fmtQ(mq)} ± ${k}`;
+}
+const epsStr = (a2, e2) => sqrtStr(qdiv(e2, a2));
+
 const TYPE_NAMES = {
   kruznice: "Kružnice", elipsa: "Elipsa", hyperbola: "Hyperbola", parabola: "Parabola",
   ruznobezky: "Dvojice různoběžek", rovnobezky: "Dvojice rovnoběžek", primka: "Jedna (dvojnásobná) přímka",
@@ -469,7 +476,7 @@ const TYPE_NAMES = {
 function analyze(A, C, D, E, F) {
   const steps = [], params = [];
   const f = (x, y) => A * x * x + C * y * y + D * x + E * y + F;
-  let type = "none", std = "", center = null, ref = null, view = [-8, 8, -8, 8], extra = {};
+  let type = "none", std = "", center = null, ref = null, view = [-8, 8, -8, 8], extra = {}, geo = null;
   const eq = genEq(A, C, D, E, F);
   steps.push(`Rovnice: \`${eq}\``);
   const mkView = (cx, cy, half) => { half = Math.min(Math.max(half, 3), 40); return [cx - half, cx + half, cy - half, cy + half]; };
@@ -529,6 +536,7 @@ function analyze(A, C, D, E, F) {
         steps.push(`Stejné koeficienty u x² a y² → kružnice: \`${std}\`.`);
         params.push(["Střed", "S" + S], ["Poloměr", "r = " + sqrtStr(al2)]);
         ref = center;
+        geo = { kind: "kruznice", cx: center[0], cy: center[1], r: Math.sqrt(qv(al2)) };
         view = mkView(center[0], center[1], Math.sqrt(qv(al2)) * 1.5 + 1);
       } else {
         type = "elipsa";
@@ -544,10 +552,12 @@ function analyze(A, C, D, E, F) {
         } else {
           params.push(["Hlavní vrcholy", `A[${fmtQ(m)}; ${ma}], B[${fmtQ(m)}; ${pa}]`], ["Vedlejší vrcholy", `C[${mb}; ${fmtQ(n)}], D[${pb}; ${fmtQ(n)}]`], ["Ohniska", `F₁[${fmtQ(m)}; ${me}], F₂[${fmtQ(m)}; ${pe}]`]);
         }
+        params.push(["Hlavní osa", horiz ? `y = ${fmtQ(n)}` : `x = ${fmtQ(m)}`], ["Číselná výstřednost", `ε = e/a = ${epsStr(a2, e2)}  (< 1)`], ["Řídicí přímky", horiz ? dirStr("x", m, a2, e2) : dirStr("y", n, a2, e2)]);
         ref = center;
+        geo = { kind: "elipsa", cx: center[0], cy: center[1], a: Math.sqrt(qv(a2)), b: Math.sqrt(qv(b2)), e: Math.sqrt(qv(e2)), horiz };
         view = mkView(center[0], center[1], Math.sqrt(qv(a2)) * 1.4 + 1);
       }
-      return { type, name: TYPE_NAMES[type], steps, params, std, f, view, center, ref, eq };
+      return { type, name: TYPE_NAMES[type], steps, params, std, f, view, center, ref, eq, geo };
     }
 
     // hyperbola
@@ -562,12 +572,13 @@ function analyze(A, C, D, E, F) {
     params.push(["Střed", "S" + S], ["Poloosy", `a = ${sqrtStr(a2)}, b = ${sqrtStr(b2)}, e = ${sqrtStr(e2)}`]);
     if (horiz) params.push(["Vrcholy", `A[${ma}; ${fmtQ(n)}], B[${pa}; ${fmtQ(n)}]`], ["Ohniska", `F₁[${me}; ${fmtQ(n)}], F₂[${pe}; ${fmtQ(n)}]`]);
     else params.push(["Vrcholy", `A[${fmtQ(m)}; ${ma}], B[${fmtQ(m)}; ${pa}]`], ["Ohniska", `F₁[${fmtQ(m)}; ${me}], F₂[${fmtQ(m)}; ${pe}]`]);
-    params.push(["Asymptoty", `${bareTerm("y", n)} = ±${sqrtStr(slope2)}·${linTerm("x", m)}`]);
+    params.push(["Asymptoty", `${bareTerm("y", n)} = ±${sqrtStr(slope2)}·${linTerm("x", m)}`], ["Hlavní osa", horiz ? `y = ${fmtQ(n)}` : `x = ${fmtQ(m)}`], ["Číselná výstřednost", `ε = e/a = ${epsStr(a2, e2)}  (> 1)`], ["Řídicí přímky", horiz ? dirStr("x", m, a2, e2) : dirStr("y", n, a2, e2)]);
+    geo = { kind: "hyperbola", cx: center[0], cy: center[1], a: Math.sqrt(qv(a2)), b: Math.sqrt(qv(b2)), e: Math.sqrt(qv(e2)), horiz };
     const ev = Math.sqrt(qv(e2));
     ref = horiz ? [center[0] + ev, center[1]] : [center[0], center[1] + ev];
     extra.asym = Math.sqrt(qv(slope2));
     view = mkView(center[0], center[1], (Math.sqrt(qv(a2)) + Math.sqrt(qv(b2))) * 1.6 + 1);
-    return { type, name: TYPE_NAMES[type], steps, params, std, f, view, center, ref, eq, extra };
+    return { type, name: TYPE_NAMES[type], steps, params, std, f, view, center, ref, eq, extra, geo };
   }
 
   // jeden kvadratický člen → parabola (nebo rovnoběžky)
@@ -589,13 +600,14 @@ function analyze(A, C, D, E, F) {
     const V = xSq ? coordStr(m, n) : coordStr(n, m);
     const Fp = xSq ? coordStr(m, qadd(n, half)) : coordStr(qadd(n, half), m);
     const dir = `${w} = ${fmtQ(qsub(n, half))}`;
-    params.push(["Vrchol", "V" + V], ["Parametr", "p = " + fmtQ(p) + "  (vzdálenost ohniska od řídicí přímky)"], ["Ohnisko", "F" + Fp], ["Řídicí přímka", "d: " + dir], ["Osa", `o: ${v} = ${fmtQ(m)}`]);
+    params.push(["Vrchol", "V" + V], ["Parametr", "p = " + fmtQ(p) + "  (vzdálenost ohniska od řídicí přímky)"], ["Ohnisko", "F" + Fp], ["Řídicí přímka", "d: " + dir], ["Osa", `o: ${v} = ${fmtQ(m)}`], ["Číselná výstřednost", "ε = 1"]);
     const vx = xSq ? qv(m) : qv(n), vy = xSq ? qv(n) : qv(m), hq = qv(half);
+    geo = { kind: "parabola", vx, vy, h: hq, xSq };
     center = [vx, vy];
     ref = xSq ? [vx, vy + hq] : [vx + hq, vy];
-    const span = Math.max(Math.abs(qv(q)) * 2.2, 4);
+    const span = Math.max(Math.abs(qv(q)) * 1.1, 4);
     view = xSq ? mkView(vx, vy + Math.sign(qv(q)) * span * .6, span) : mkView(vx + Math.sign(qv(q)) * span * .6, vy, span);
-    return { type, name: TYPE_NAMES[type], steps, params, std, f, view, center, ref, eq };
+    return { type, name: TYPE_NAMES[type], steps, params, std, f, view, center, ref, eq, geo };
   }
   const Lr = Q(-K.n, K.d * K2);
   steps.push(`Chybí lineární člen s ${w} → \`${sqTerm(v, m)} = ${fmtQ(Lr)}\`.`);
@@ -771,17 +783,102 @@ function genLineTask() {
   return genLineTask();
 }
 
-function genPointTask() {
-  const kind = pick(["elipsa", "kruznice", "hyperbola", "parabola"]);
-  const onCurve = Math.random() < .3;
-  if (onCurve) { const g = genConicThrough(kind); return { K: g.K, P: g.T }; }
-  let K;
-  const m = ri(-3, 3), n = ri(-3, 3);
-  if (kind === "kruznice") { const r = ri(2, 4); K = fromCentered(1, 1, m, n, r * r); }
-  else if (kind === "elipsa") { let A = ri(1, 4), C = ri(1, 4); while (C === A) C = ri(1, 4); K = fromCentered(A, C, m, n, A * C * ri(1, 3)); }
-  else if (kind === "hyperbola") { const A = ri(1, 3), C = -ri(1, 3); K = fromCentered(A, C, m, n, A * -C * pick([1, -1])); }
-  else { const q = rnz(-6, 6); K = Math.random() < .5 ? { A: 1, C: 0, D: -2 * m, E: -q, F: m * m + q * n } : { A: 0, C: 1, D: -q, E: -2 * n, F: n * n + q * m }; }
-  return { K, P: [m + ri(-4, 4), n + ri(-4, 4)] };
+// normalizace obecné rovnice: vykrátit, kladný první kvadratický koeficient
+function normK(K) {
+  const g = [K.A, K.C, K.D, K.E, K.F].reduce((a, b) => gcd(a, b), 0) || 1;
+  const sg = (K.A < 0 || (K.A === 0 && K.C < 0)) ? -1 : 1;
+  return { A: K.A / g * sg, C: K.C / g * sg, D: K.D / g * sg, E: K.E / g * sg, F: K.F / g * sg };
+}
+const sameK = (a, b) => a.A === b.A && a.C === b.C && a.D === b.D && a.E === b.E && a.F === b.F;
+
+// ── Poměr vzdáleností |PF| : |Pd| = num : den, d ∥ s osou y (x = c) nebo s osou x (y = c)
+function ratioK(f1, f2, c, vert, en, ed) {
+  if (vert) return { A: ed - en, C: ed, D: -2 * ed * f1 + 2 * en * c, E: -2 * ed * f2, F: ed * (f1 * f1 + f2 * f2) - en * c * c };
+  return { A: ed, C: ed - en, D: -2 * ed * f1, E: -2 * ed * f2 + 2 * en * c, F: ed * (f1 * f1 + f2 * f2) - en * c * c };
+}
+const RATIOS = [[1, 2], [1, 2], [1, 1], [1, 1], [2, 1], [2, 1], [1, 3], [3, 1], [2, 3], [3, 2]];
+function genRatioTask() {
+  for (;;) {
+    const [num, den] = pick(RATIOS), vert = Math.random() < .5;
+    const f1 = ri(-4, 4), f2 = ri(-4, 4), c = ri(-6, 6);
+    if ((vert ? f1 : f2) === c) continue;
+    const K = normK(ratioK(f1, f2, c, vert, num * num, den * den));
+    const wrong = [
+      ratioK(f1, f2, c, vert, num, den),                 // zapomenuté umocnění poměru
+      ratioK(f1, f2, c, vert, den * den, num * num),     // obrácený poměr
+      ratioK(f1, f2, -c, vert, num * num, den * den),    // špatná rovnice přímky
+      ratioK(-f1, -f2, c, vert, num * num, den * den),   // špatné znaménko u ohniska
+    ].map(normK).filter(k => (k.A || k.C) && !sameK(k, K));
+    const opts = [K];
+    for (const k of shuffleArray(wrong)) if (!opts.some(o => sameK(o, k)) && opts.length < 4) opts.push(k);
+    if (opts.length < 4) continue;
+    const phr = num === den ? "stejnou vzdálenost od bodu F a od přímky d"
+      : num < den && num === 1 ? `vzdálenost od přímky d ${den === 2 ? "dvojnásobnou" : "trojnásobnou"} než od bodu F`
+      : den === 1 ? `vzdálenost od bodu F ${num === 2 ? "dvojnásobnou" : "trojnásobnou"} než od přímky d`
+      : `poměr vzdáleností |PF| : |Pd| = ${num} : ${den}`;
+    return { f1, f2, c, vert, num, den, K, opts: shuffleArray(opts), phr };
+  }
+}
+function ratioSteps(t) {
+  const { f1, f2, c, vert, num, den, K } = t;
+  const v = vert ? "x" : "y", eps = Q(num, den), e2 = qmul(eps, eps);
+  const raw = ratioK(f1, f2, c, vert, num * num, den * den);
+  const kind = num < den ? "ε < 1 → elipsa" : num === den ? "ε = 1 → parabola" : "ε > 1 → hyperbola";
+  const st = [
+    `Obecný bod \`P[x; y]\`. \`|PF| = √(${sqTerm("x", Q(f1))} + ${sqTerm("y", Q(f2))})\`, \`|Pd| = |${bareTerm(v, Q(c))}|\``,
+    `Podmínka \`|PF| = ${fmtQ(eps)}·|Pd|\`, obě strany umocním na druhou: \`${sqTerm("x", Q(f1))} + ${sqTerm("y", Q(f2))} = ${num === den ? "" : fmtQ(e2) + "·"}${sqTerm(v, Q(c))}\``,
+  ];
+  if (den !== 1) st.push(`Zbavím se zlomku (·${den * den}): \`${den * den}[${sqTerm("x", Q(f1))} + ${sqTerm("y", Q(f2))}] = ${num * num === 1 ? "" : num * num}${sqTerm(v, Q(c))}\``);
+  st.push(`Roznásobím a převedu vše doleva: \`${genEq(raw.A, raw.C, raw.D, raw.E, raw.F)}\`${sameK(raw, K) ? "" : ` → po vykrácení \`${genEq(K.A, K.C, K.D, K.E, K.F)}\``}`);
+  st.push(`Poměr \`ε = |PF| : |Pd| = ${fmtQ(eps)}\` je číselná výstřednost: ${kind}.`);
+  return st;
+}
+
+// ── Převody obecný ↔ středový/vrcholový tvar
+const DEN = [2, 3, 4, 5, 8, 9, 12, 16, 25];
+function convStd(t) {
+  const { kind, m, n } = t, X = sqTerm("x", Q(m)), Y = sqTerm("y", Q(n));
+  if (kind === "kruznice") return `${X} + ${Y} = ${t.r2}`;
+  if (kind === "elipsa") return `${X}/${t.X} + ${Y}/${t.Y} = 1`;
+  if (kind === "hyperbola") return t.horiz ? `${X}/${t.X} − ${Y}/${t.Y} = 1` : `${Y}/${t.Y} − ${X}/${t.X} = 1`;
+  return t.vert ? `${X} = ${fmtQ(Q(t.q))}${linTerm("y", Q(n))}` : `${Y} = ${fmtQ(Q(t.q))}${linTerm("x", Q(m))}`;
+}
+function convRaw(t) {
+  const { kind, m, n } = t;
+  if (kind === "kruznice") return fromCentered(1, 1, m, n, t.r2);
+  if (kind === "elipsa") return fromCentered(t.Y, t.X, m, n, t.X * t.Y);
+  if (kind === "hyperbola") return t.horiz ? fromCentered(t.Y, -t.X, m, n, t.X * t.Y) : fromCentered(-t.Y, t.X, m, n, t.X * t.Y);
+  return t.vert ? { A: 1, C: 0, D: -2 * m, E: -t.q, F: m * m + t.q * n } : { A: 0, C: 1, D: -t.q, E: -2 * n, F: n * n + t.q * m };
+}
+function genConvTask() {
+  const kind = pick(["kruznice", "elipsa", "elipsa", "hyperbola", "hyperbola", "parabola", "parabola"]);
+  const m = rnz(-5, 5), n = rnz(-5, 5);
+  let t = { kind, m, n };
+  if (kind === "kruznice") t.r2 = pick([1, 4, 9, 16, 25, 2, 5, 8, 10, 13]);
+  else if (kind === "elipsa" || kind === "hyperbola") { t.X = pick(DEN); do t.Y = pick(DEN); while (t.Y === t.X); t.horiz = Math.random() < .5; }
+  else { t.q = pick([2, 3, 4, 6, 8, 10, 12]) * pick([1, -1]); t.vert = Math.random() < .5; }
+  const variants = [{ ...t, m: -m }, { ...t, n: -n }, { ...t, m: -m, n: -n }];
+  if (t.X) variants.push({ ...t, X: t.Y, Y: t.X });
+  if (kind === "hyperbola") variants.push({ ...t, horiz: !t.horiz });
+  if (kind === "parabola") variants.push({ ...t, q: -t.q }, { ...t, vert: !t.vert });
+  if (kind === "kruznice") variants.push({ ...t, r2: t.r2 + m * m + n * n });
+  const toGen = !!(Math.random() < .5);   // true: středový → obecný
+  const K = normK(convRaw(t));
+  const label = v => toGen ? (k => genEq(k.A, k.C, k.D, k.E, k.F))(normK(convRaw(v))) : convStd(v);
+  const right = toGen ? genEq(K.A, K.C, K.D, K.E, K.F) : analyze(K.A, K.C, K.D, K.E, K.F).std;
+  const opts = [right];
+  for (const v of shuffleArray(variants)) { const l = label(v); if (!opts.includes(l) && opts.length < 4) opts.push(l); }
+  return { t, K, toGen, right, opts: shuffleArray(opts) };
+}
+function convSteps(task) {
+  const { t, K } = task;
+  const raw = convRaw(t);
+  const st = [];
+  if (t.kind === "elipsa" || t.kind === "hyperbola") st.push(`Vynásobím společným jmenovatelem \`${t.X * t.Y}\`: \`${fmtPoly([[raw.A, sqTerm("x", Q(t.m))], [raw.C, sqTerm("y", Q(t.n))]])} = ${t.X * t.Y}\``);
+  st.push("Roznásobím závorky podle `(a ± b)² = a² ± 2ab + b²` a vše převedu na levou stranu.");
+  st.push(`\`${genEq(raw.A, raw.C, raw.D, raw.E, raw.F)}\`${sameK(raw, K) ? "" : ` → vykrátím / vynásobím −1: \`${genEq(K.A, K.C, K.D, K.E, K.F)}\``}`);
+  st.push("Kontrola: dosaď do výsledku libovolný bod kuželosečky (třeba vrchol) → musí vyjít 0.");
+  return st;
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -792,30 +889,32 @@ const fHy = (m, n, a2, b2) => (x, y) => (x - m) ** 2 / a2 - (y - n) ** 2 / b2 - 
 
 function Prehled({ go }) {
   const mini = [
-    { t: "Kružnice", eq: "(x − m)² + (y − n)² = r²", g: { curves: [{ f: (x, y) => x * x + y * y - 9 }], pts: [{ x: 0, y: 0, label: "S" }], view: [-5, 5, -5, 5] } },
-    { t: "Elipsa", eq: "(x − m)²/a² + (y − n)²/b² = 1", g: { curves: [{ f: fEl(0, 0, 16, 9) }], pts: [{ x: -Math.sqrt(7), y: 0, label: "F₁", color: RED }, { x: Math.sqrt(7), y: 0, label: "F₂", color: RED }], view: [-5, 5, -5, 5] } },
-    { t: "Hyperbola", eq: "(x − m)²/a² − (y − n)²/b² = 1", g: { curves: [{ f: fHy(0, 0, 4, 4) }], lines: [{ a: 1, b: -1, c: 0, dash: true, color: MUTED }, { a: 1, b: 1, c: 0, dash: true, color: MUTED }], pts: [{ x: -Math.sqrt(8), y: 0, label: "F₁", color: RED }, { x: Math.sqrt(8), y: 0, label: "F₂", color: RED }], view: [-5, 5, -5, 5] } },
-    { t: "Parabola", eq: "(y − n)² = 2p(x − m)", g: { curves: [{ f: (x, y) => y * y - 4 * (x + 2) }], lines: [{ a: 1, b: 0, c: 3, dash: true, color: MUTED }], pts: [{ x: -1, y: 0, label: "F", color: RED }, { x: -2, y: 0, label: "V" }], view: [-5, 5, -5, 5] } },
+    { t: "Kružnice", eq: "(x − m)² + (y − n)² = r²", K: [1, 1, 0, 0, -9] },
+    { t: "Elipsa", eq: "(x − m)²/a² + (y − n)²/b² = 1", K: [9, 16, 0, 0, -144] },
+    { t: "Hyperbola", eq: "(x − m)²/a² − (y − n)²/b² = 1", K: [1, -1, 0, 0, -4] },
+    { t: "Parabola", eq: "(y − n)² = 2p(x − m)", K: [0, 1, -4, 0, -8] },
   ];
   return (
     <div>
       <div className="entry red">
-        <h3>Co bude v testu</h3>
+        <h3>Co bude v testu (zadání od učitelky)</h3>
         <ol>
-          <li><b>Rozpoznání typu kuželosečky</b> z obecné rovnice — doplnění na čtverec, včetně „chytáků“ (prázdná množina, bod, dvojice přímek). <span className="src">PL Kuželosečka a přímka, úl. 1–2</span></li>
-          <li><b>Vnitřek a vnějšek kuželosečky</b> — leží bod uvnitř, na, nebo vně? <span className="src">PL úl. 3</span></li>
-          <li><b>Kuželosečka a přímka</b> — sečna / tečna / vnější přímka, společné body, rovnice tečny v bodě. <span className="src">PL úl. 4, PL Elipsa 15–18, Hyperbola 10–11, Parabola 14–18</span></li>
-          <li>K tomu potřebuješ umět <b>rovnice elipsy, hyperboly a paraboly</b> a jejich parametry (vrcholy, ohniska, asymptoty, řídicí přímka). <span className="src">PL Elipsa, Hyperbola, Parabola</span></li>
+          <li><b>Rovnice kuželosečky z poměru vzdáleností</b> od bodu (ohniska) a přímky (řídicí přímky). <span className="src">Teorie 3 · Úlohy „Poměr vzdáleností“</span></li>
+          <li><b>Vyčíst informace z rovnice</b> (střed/vrchol, poloosy, vrcholy, ohniska, asymptoty, řídicí přímka, parametr) <b>a naopak</b> ze zadaných informací sestavit rovnici. <span className="src">Teorie 2, 6 · Úlohy „Z rovnice → prvky“, „Z prvků → rovnice“</span></li>
+          <li><b>Převody oběma směry</b> mezi obecným a středovým/vrcholovým tvarem. <span className="src">Teorie 4, 5 · Úlohy „Převody tvarů“</span></li>
+          <li><b>Zakreslit kuželosečku do KSS</b> a vyznačit její význačné prvky. <span className="src">Teorie 7 · Úlohy „Zakreslení do KSS“</span></li>
+          <li><b>Vzájemná poloha přímky a kuželosečky</b> + výpočet společných bodů. <span className="src">Teorie 8 · Úlohy „Přímka a kuželosečka“</span></li>
         </ol>
+        <div className="note">Rovnice tečen v testu <b>nebudou</b>, proto tu nejsou. Slovo „tečna“ potkáš jen jako jeden z výsledků vzájemné polohy (D = 0 → 1 společný bod).</div>
       </div>
 
       <div className="entry">
         <h3>Jak se učit (doporučené pořadí)</h3>
         <ol>
-          <li>📖 <b>Teorie</b>: projdi sekce 1–8, hlavně 3, 5, 6 a 7.</li>
-          <li>✍️ <b>Úlohy</b>: všechny příklady z tvých pracovních listů s řešením krok za krokem. Nejdřív počítej sám, pak si rozbal řešení.</li>
-          <li>🧪 <b>Rozpoznávač</b>: zadej libovolnou rovnici a uvidíš celý rozbor i graf. Hodí se na kontrolu domácích úloh.</li>
-          <li>🎯 <b>Trenažér</b>: neomezený počet náhodných příkladů na všechny tři typy úloh z testu.</li>
+          <li>📖 <b>Teorie</b>: projdi sekce 1–9, hlavně 3 (poměr vzdáleností) a 7 (kreslení), ty jsou nové.</li>
+          <li>✍️ <b>Úlohy</b>: příklady z tvých pracovních listů + nové úlohy na poměr, převody a kreslení. Nejdřív počítej sám, pak si rozbal řešení.</li>
+          <li>🧪 <b>Rozpoznávač</b>: zadej libovolnou rovnici a uvidíš celý rozbor, všechny prvky a graf. Hodí se na kontrolu.</li>
+          <li>🎯 <b>Trenažér</b>: neomezený počet náhodných příkladů na všech pět bodů zadání.</li>
           <li>❓ <b>Kvíz</b> a 🃏 <b>kartičky</b> na pojmy, nakonec 📐 <b>vzorce</b> těsně před testem.</li>
         </ol>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 10 }}>
@@ -825,16 +924,17 @@ function Prehled({ go }) {
       </div>
 
       <div className="entry">
-        <h3>Čtyři regulární kuželosečky na jeden pohled</h3>
+        <h3>Čtyři regulární kuželosečky s význačnými prvky</h3>
         <div className="grid2" style={{ marginTop: 10 }}>
           {mini.map(c => (
             <div key={c.t}>
               <div style={{ fontFamily: "'Libre Baskerville',serif", fontWeight: 700, color: PEN }}>{c.t}</div>
               <div className="mono" style={{ fontSize: 14, margin: "2px 0 6px" }}>{c.eq}</div>
-              <Graph {...c.g} w={260} />
+              <Graph {...conicGraphProps(analyze(...c.K))} w={260} />
             </div>
           ))}
         </div>
+        <p className="graphCap" style={{ textAlign: "left" }}>{LEGEND}</p>
       </div>
     </div>
   );
@@ -910,7 +1010,61 @@ function Teorie() {
         <div className="note">Pozor: v rovnici je <b>2p</b>, ne p. <M>y² = 8x</M> → <M>2p = 8</M>, <M>p = 4</M>, <M>F[2; 0]</M>, <M>d: x = −2</M> (PL Parabola 3a).</div>
       </Coll>
 
-      <Coll icon="🧮" title="3. Z obecné rovnice do středového tvaru (doplnění na čtverec)">
+      <Coll icon="⚖️" title="3. Kuželosečka z poměru vzdáleností od bodu a přímky">
+        <p>Elipsu, parabolu i hyperbolu jde popsat <b>jednou společnou definicí</b>. Dán je bod <M>F</M> (ohnisko), přímka <M>d</M> (řídicí přímka, <M>F ∉ d</M>) a kladné číslo <M>ε</M>. Kuželosečka je množina všech bodů <M>P</M>, pro které</p>
+        <Eq big>|PF| : |Pd| = ε   tj.   |PF| = ε·|Pd|</Eq>
+        <div className="tblWrap"><table className="tbl">
+          <thead><tr><th>Poměr ε = |PF| : |Pd|</th><th>Kuželosečka</th><th>Slovně</th></tr></thead>
+          <tbody>
+            <tr><td className="mono">0 &lt; ε &lt; 1</td><td><b>elipsa</b></td><td>bod je blíž k ohnisku než k přímce</td></tr>
+            <tr><td className="mono">ε = 1</td><td><b>parabola</b></td><td>stejně daleko od ohniska i od přímky</td></tr>
+            <tr><td className="mono">ε &gt; 1</td><td><b>hyperbola</b></td><td>bod je blíž k přímce než k ohnisku</td></tr>
+          </tbody>
+        </table></div>
+        <p>Číslo <M>ε</M> se jmenuje <b>číselná výstřednost</b>. Pro elipsu a hyperbolu platí <M>ε = [[e||a]]</M> (e = vzdálenost ohniska od středu). Kružnice má <M>ε = 0</M> a řídicí přímku nemá.</p>
+
+        <h4 style={{ margin: "14px 0 4px" }}>Postup výpočtu (pořád stejný)</h4>
+        <ol>
+          <li>Vezmi obecný bod <M>P[x; y]</M>.</li>
+          <li>Vzdálenost od bodu: <M>|PF| = √((x − f₁)² + (y − f₂)²)</M>.</li>
+          <li>Vzdálenost od přímky: <M>|Pd| = [[|ax + by + c| ||√(a² + b²)]]</M>; pro <M>d: x = c</M> je to jen <M>|x − c|</M>, pro <M>d: y = c</M> jen <M>|y − c|</M>.</li>
+          <li>Napiš podmínku <M>|PF| = ε·|Pd|</M> a <b>obě strany umocni</b> (obě jsou nezáporné, takže se nic neztratí). Absolutní hodnota i odmocnina zmizí, <b>ε se umocní na ε²</b>!</li>
+          <li>Roznásob, převeď vše doleva → <b>obecná rovnice</b>. Pak doplň na čtverec → středový/vrcholový tvar a prvky.</li>
+        </ol>
+        <div className="entry" style={{ margin: "12px 0" }}>
+          <div className="src">Vzor — F[3; 0], d: x = 12, |PF| : |Pd| = 1 : 2</div>
+          <div className="grid2" style={{ alignItems: "start" }}>
+            <div>
+              <Steps steps={[
+                "`|PF| = [[1||2]]·|Pd|` → `√((x − 3)² + y²) = [[1||2]]·|x − 12|`",
+                "Umocním: `(x − 3)² + y² = [[1||4]](x − 12)²` | ·4",
+                "`4x² − 24x + 36 + 4y² = x² − 24x + 144`",
+                "`3x² + 4y² − 108 = 0` (obecný tvar)",
+                "Vydělím 108: `[[x²||36]] + [[y²||27]] = 1`, `a = 6`, `b = 3√3`, `e = √(36 − 27) = 3`",
+                "Kontrola: `ε = e/a = 3/6 = 1/2` ✓, ohnisko `[3; 0]` ✓, řídicí přímka `x = a²/e = 12` ✓",
+              ]} />
+              <div className="result">elipsa x²/36 + y²/27 = 1</div>
+            </div>
+            <Graph {...conicGraphProps(analyze(3, 4, 0, 0, -108), { view: [-13, 13, -10, 10] })} w={280} caption="zadané ohnisko F₂[3; 0] a řídicí přímka x = 12 (oranžově vpravo)" />
+          </div>
+        </div>
+        <div className="note"><b>Pozor na formulaci!</b> „Vzdálenost od přímky je dvakrát větší než od bodu“ znamená <M>|Pd| = 2·|PF|</M>, tedy <M>ε = |PF| : |Pd| = 1 : 2</M> → elipsa. „Vzdálenost od bodu je dvakrát větší než od přímky“ je <M>ε = 2</M> → hyperbola. Vždy si napiš <M>|PF| = …</M> a teprve pak počítej.</div>
+
+        <h4 style={{ margin: "14px 0 4px" }}>Opačný směr: z rovnice ohnisko, řídicí přímka a ε</h4>
+        <div className="tblWrap"><table className="tbl">
+          <thead><tr><th>Kuželosečka (osa ∥ x)</th><th>ε</th><th>Řídicí přímky</th></tr></thead>
+          <tbody>
+            <tr><td>elipsa <M>[[(x − m)²||a²]] + [[(y − n)²||b²]] = 1</M></td><td className="mono">e/a &lt; 1</td><td className="mono">x = m ± a²/e</td></tr>
+            <tr><td>hyperbola <M>[[(x − m)²||a²]] − [[(y − n)²||b²]] = 1</M></td><td className="mono">e/a &gt; 1</td><td className="mono">x = m ± a²/e</td></tr>
+            <tr><td>parabola <M>(y − n)² = 2p(x − m)</M></td><td className="mono">1</td><td className="mono">x = m − p/2</td></tr>
+          </tbody>
+        </table></div>
+        <p style={{ fontSize: 15 }}>Elipsa i hyperbola mají <b>dvě</b> řídicí přímky (každá patří k „svému“ ohnisku, leží na stejné straně od středu). U osy ∥ y zaměň x ↔ y: <M>y = n ± a²/e</M>. U elipsy leží řídicí přímky <b>vně</b> elipsy (<M>a²/e &gt; a</M>), u hyperboly <b>mezi</b> vrcholy (<M>a²/e &lt; a</M>).</p>
+        <div className="tip">Když řídicí přímka není rovnoběžná s osou souřadnic (např. <M>x + y = 0</M>), vyjde v rovnici člen <M>xy</M> → pootočená kuželosečka. Postup je stejný, jen u <M>|Pd|</M> nezapomeň dělit <M>√(a² + b²)</M>.</div>
+      </Coll>
+
+      <Coll icon="🧮" title="4. Převody: obecný ↔ středový / vrcholový tvar">
+        <h4 style={{ margin: "8px 0 4px" }}>Z obecného tvaru do středového / vrcholového (doplnění na čtverec)</h4>
         <p>Postup, který budeš dělat v testu pořád dokola:</p>
         <ol>
           <li>Seskup členy s <M>x</M> a s <M>y</M>; konstantu nech stranou.</li>
@@ -930,9 +1084,26 @@ function Teorie() {
           <div className="result">hyperbola, S[2; 4], hlavní osa ∥ y, a = 2, b = 2√3, e = 4</div>
         </div>
         <div className="note">Nejčastější chyba: při vytýkání záporného čísla zapomeneš otočit znaménko. <M>−3y² + 24y = −3(y² − 8y)</M>, ne <M>−3(y² + 8y)</M>. A doplněnou konstantu musíš vynásobit vytknutým číslem: <M>−3·(−16) = +48</M>.</div>
+        <h4 style={{ margin: "16px 0 4px" }}>Opačně: ze středového tvaru do obecného</h4>
+        <ol>
+          <li>Vynásob rovnici <b>společným jmenovatelem</b> (u elipsy/hyperboly <M>a²·b²</M>, stačí i nejmenší společný násobek).</li>
+          <li>Roznásob závorky: <M>(x − m)² = x² − 2mx + m²</M>.</li>
+          <li>Vše převeď na levou stranu, sečti konstanty a uspořádej <M>Ax² + Cy² + Dx + Ey + F = 0</M>.</li>
+        </ol>
+        <div className="entry" style={{ margin: "12px 0" }}>
+          <div className="src">Vzor — elipsa a parabola</div>
+          <Steps steps={[
+            "`[[(x − 2)²||9]] + [[(y + 1)²||4]] = 1` | ·36 → `4(x − 2)² + 9(y + 1)² = 36`",
+            "`4x² − 16x + 16 + 9y² + 18y + 9 − 36 = 0`",
+            "`4x² + 9y² − 16x + 18y − 11 = 0`",
+            "Parabola: `(x + 3)² = −6(y − 2)` → `x² + 6x + 9 = −6y + 12` → `x² + 6x + 6y − 3 = 0`",
+          ]} />
+          <div className="result">4x² + 9y² − 16x + 18y − 11 = 0 · x² + 6x + 6y − 3 = 0</div>
+        </div>
+        <div className="tip">Rychlá kontrola obou směrů: v obecném tvaru musí být u <M>x²</M> a <M>y²</M> stejná znaménka jako ve středovém tvaru (elipsa stejná, hyperbola opačná, parabola jen jeden kvadratický člen).</div>
       </Coll>
 
-      <Coll icon="🔍" title="4. Rozpoznání typu kuželosečky">
+      <Coll icon="🔍" title="5. Rozpoznání typu kuželosečky">
         <p>Podívej se na koeficienty <b>A</b> (u <M>x²</M>) a <b>C</b> (u <M>y²</M>). Ty určují „kandidáta“, ale konečné slovo má až pravá strana po doplnění na čtverec.</p>
         <div className="tblWrap"><table className="tbl">
           <thead><tr><th>Koeficienty</th><th>Kandidát</th><th>Po úpravě na <M>A(x−m)² + C(y−n)² = R</M></th></tr></thead>
@@ -957,41 +1128,81 @@ function Teorie() {
         <div className="tip">Rychlá kontrola znamének: když vyjde <M>[[(x−m)²||kladné]] + [[(y−n)²||kladné]] = 1</M> → elipsa; jeden jmenovatel záporný → hyperbola; oba záporné → ∅.</div>
       </Coll>
 
-      <Coll icon="🎯" title="5. Vnitřek a vnějšek kuželosečky">
-        <p>Každá regulární kuželosečka dělí rovinu na dvě oblasti: <b>vnitřní</b> a <b>vnější</b>.</p>
-        <ul>
-          <li><b>Elipsa / kružnice:</b> vnitřek je „uvnitř“ (obsahuje střed a ohniska).</li>
-          <li><b>Parabola:</b> vnitřek je oblast, ve které leží <b>ohnisko</b> (tam, kam se parabola „otevírá“).</li>
-          <li><b>Hyperbola:</b> vnitřek tvoří dvě oblasti mezi větvemi a ohnisky, tedy ty, které <b>obsahují ohniska</b>. Střed a asymptoty leží ve <b>vnější</b> oblasti!</li>
-        </ul>
-        <div className="grid2">
-          <Graph curves={[{ f: fEl(0, 0, 16, 9) }]} fill={(x, y) => fEl(0, 0, 16, 9)(x, y) < 0} view={[-5, 5, -4, 4]} caption="elipsa: vnitřek < 1" w={240} />
-          <Graph curves={[{ f: fHy(0, 0, 4, 4) }]} fill={(x, y) => fHy(0, 0, 4, 4)(x, y) > 0} lines={[{ a: 1, b: -1, c: 0, dash: true, color: MUTED }, { a: 1, b: 1, c: 0, dash: true, color: MUTED }]} pts={[{ x: -2.83, y: 0, color: RED, r: 3 }, { x: 2.83, y: 0, color: RED, r: 3 }]} view={[-5, 5, -4, 4]} caption="hyperbola: vnitřek obsahuje ohniska (> 1)" w={240} />
-          <Graph curves={[{ f: (x, y) => y * y - 4 * x }]} fill={(x, y) => y * y - 4 * x < 0} pts={[{ x: 1, y: 0, color: RED, r: 3, label: "F" }]} view={[-3, 5, -4, 4]} caption="parabola: vnitřek obsahuje ohnisko" w={240} />
-        </div>
-        <h4 style={{ margin: "14px 0 4px" }}>Jak to rozhodnout výpočtem</h4>
-        <p>Převeď rovnici na tvar <M>G(x, y) = 0</M> (vše vlevo) a dosaď bod <M>P</M>:</p>
+      <Coll icon="🧾" title="6. Z rovnice vyčíst informace ↔ z informací sestavit rovnici">
+        <p><b>Z rovnice → prvky.</b> Nejdřív vždy středový/vrcholový tvar, pak čti:</p>
         <div className="tblWrap"><table className="tbl">
-          <thead><tr><th>Kuželosečka (středový tvar)</th><th>P uvnitř</th><th>P na křivce</th><th>P vně</th></tr></thead>
+          <thead><tr><th>Kuželosečka</th><th>Co vyčteš</th></tr></thead>
           <tbody>
-            <tr><td><M>[[(x−m)²||a²]] + [[(y−n)²||b²]]</M></td><td className="mono">&lt; 1</td><td className="mono">= 1</td><td className="mono">&gt; 1</td></tr>
-            <tr><td><M>[[(x−m)²||a²]] − [[(y−n)²||b²]]</M></td><td className="mono">&gt; 1</td><td className="mono">= 1</td><td className="mono">&lt; 1</td></tr>
-            <tr><td className="mono">(y−n)² vs. 2p(x−m)</td><td className="mono">(y−n)² &lt; 2p(x−m)</td><td className="mono">=</td><td className="mono">(y−n)² &gt; 2p(x−m)</td></tr>
+            <tr><td>kružnice</td><td>střed <M>S[m; n]</M>, poloměr <M>r</M></td></tr>
+            <tr><td>elipsa</td><td><M>S</M>; <M>a</M> = odmocnina z <b>většího</b> jmenovatele (určí směr hlavní osy), <M>b</M>; <M>e = √(a² − b²)</M>; hlavní vrcholy <M>A, B</M> (±a), vedlejší <M>C, D</M> (±b), ohniska <M>F₁, F₂</M> (±e); <M>ε = e/a</M>; řídicí přímky</td></tr>
+            <tr><td>hyperbola</td><td><M>S</M>; <M>a</M> = odmocnina z jmenovatele u <b>kladného</b> členu; <M>b</M>; <M>e = √(a² + b²)</M>; vrcholy <M>A, B</M>, ohniska <M>F₁, F₂</M>; asymptoty; <M>ε = e/a</M>; řídicí přímky</td></tr>
+            <tr><td>parabola</td><td>vrchol <M>V[m; n]</M>; <M>2p</M> = číslo před závorkou → <M>p</M>; směr otevření (znaménko + proměnná v 1. mocnině); ohnisko <M>F</M> (p/2 od V); řídicí přímka <M>d</M> (p/2 za V); osa <M>o</M></td></tr>
           </tbody>
         </table></div>
-        <div className="tip"><b>Univerzální trik (nemusíš si pamatovat tabulku):</b> dosaď do <M>G(x, y)</M> bod, o kterém <i>víš</i>, že je uvnitř. U elipsy/kružnice je to <b>střed</b>, u paraboly a hyperboly <b>ohnisko</b> (u hyperboly stačí i bod „za vrcholem“ na hlavní ose). Jeho znaménko = znaménko vnitřku. Pak dosaď zkoumaný bod: stejné znaménko → uvnitř, 0 → na křivce, opačné → vně.</div>
+
+        <p style={{ marginTop: 14 }}><b>Z prvků → rovnice.</b> Pořád stejná kostra:</p>
+        <ol>
+          <li><b>Střed / vrchol:</b> střed úsečky <M>AB</M>, <M>F₁F₂</M> nebo <M>CD</M>; u paraboly vrchol leží v polovině mezi <M>F</M> a <M>d</M>.</li>
+          <li><b>Směr hlavní osy:</b> v jakém směru leží vrcholy / ohniska vůči středu (stejné <M>y</M> → osa ∥ x).</li>
+          <li><b>Délky:</b> <M>a, b, e</M> nebo <M>p</M> ze vzdáleností bodů; chybějící dopočítej z <M>e² = a² − b²</M> (elipsa) / <M>e² = a² + b²</M> (hyperbola). Asymptota dává poměr <M>b/a</M>.</li>
+          <li><b>Dosaď</b> do středového tvaru, případně převeď na obecný.</li>
+        </ol>
         <div className="entry" style={{ margin: "12px 0" }}>
-          <div className="src">Vzor — PL 3d: <M>x² − 4y² + 4y = 0</M>, bod <M>B[0; 3]</M></div>
+          <div className="src">Vzor — elipsa s ohnisky F₁[−1; 2], F₂[5; 2] a vrcholem A[−2; 2]</div>
           <Steps steps={[
-            "Doplním: `x² − 4(y − ½)² + 1 = 0` → `4(y − ½)² − x² = 1` → hyperbola s hlavní osou ∥ y, S[0; ½], a = ½.",
-            "Vnitřní bod: ohnisko leží na hlavní ose za vrcholem [0; 1]. Stačí vzít třeba `[0; 5]`: `G = 0 − 100 + 20 = −80 < 0` → vnitřek má `G < 0`.",
-            "`G(B) = 0 − 36 + 12 = −24 < 0` → stejné znaménko jako vnitřek.",
+            "Střed = střed `F₁F₂` = `[2; 2]`; ohniska mají stejné y → hlavní osa ∥ x",
+            "`e = |SF₂| = 3`, `a = |SA| = 4` (A leží na hlavní ose)",
+            "`b² = a² − e² = 16 − 9 = 7`",
+            "`[[(x − 2)²||16]] + [[(y − 2)²||7]] = 1` | ·112 → `7(x − 2)² + 16(y − 2)² = 112`",
+            "`7x² + 16y² − 28x − 64y − 20 = 0`",
           ]} />
-          <div className="result">B leží ve vnitřní oblasti</div>
+          <div className="result">(x − 2)²/16 + (y − 2)²/7 = 1</div>
         </div>
+        <div className="note">Když zadání nedává směr otevření paraboly (jen V a p), existují <b>dvě</b> řešení (<M>±2p</M>). Napiš obě.</div>
       </Coll>
 
-      <Coll icon="✂️" title="6. Vzájemná poloha přímky a kuželosečky">
+      <Coll icon="✏️" title="7. Zakreslení do KSS a vyznačení význačných prvků">
+        <p>Nikdy nekresli „od oka“ rovnou křivku. Nejdřív převeď rovnici na středový/vrcholový tvar, vypiš prvky a <b>vyznač je</b>, teprve potom protáhni křivku přes vrcholy.</p>
+        <div className="grid2" style={{ alignItems: "start" }}>
+          <div>
+            <h4 style={{ margin: "8px 0 4px" }}>Elipsa</h4>
+            <ol style={{ fontSize: 15 }}>
+              <li>Střed <M>S</M>, hlavní a vedlejší osa (čárkovaně).</li>
+              <li>4 vrcholy: <M>A, B</M> ve vzdálenosti <M>a</M>, <M>C, D</M> ve vzdálenosti <M>b</M>.</li>
+              <li>Ohniska <M>F₁, F₂</M> ve vzdálenosti <M>e</M> na hlavní ose. Trik: <M>|CF₁| = a</M>, takže kružítkem z <M>C</M> o poloměru <M>a</M>.</li>
+              <li>Hladká oválná křivka přes 4 vrcholy (ve vrcholech je kolmá na osy).</li>
+            </ol>
+          </div>
+          <Graph {...conicGraphProps(analyze(9, 16, -18, 64, -71), { dir: false })} w={280} caption="(x − 1)²/16 + (y + 2)²/9 = 1" />
+        </div>
+        <div className="grid2" style={{ alignItems: "start", marginTop: 14 }}>
+          <div>
+            <h4 style={{ margin: "8px 0 4px" }}>Hyperbola</h4>
+            <ol style={{ fontSize: 15 }}>
+              <li>Střed <M>S</M>, hlavní osa, vrcholy <M>A, B</M> (±a).</li>
+              <li><b>Charakteristický obdélník</b> <M>2a × 2b</M> se středem v <M>S</M>; jeho úhlopříčky = <b>asymptoty</b>.</li>
+              <li>Ohniska: kružnice se středem <M>S</M> přes rohy obdélníku protne hlavní osu v <M>F₁, F₂</M> (poloměr <M>√(a² + b²) = e</M>).</li>
+              <li>Větve začínají ve vrcholech a přimykají se k asymptotám.</li>
+            </ol>
+          </div>
+          <Graph {...conicGraphProps(analyze(1, -4, 2, 8, -7), { dir: false, lines: [vLine(-3, { color: "#c3cbe0" }), vLine(1, { color: "#c3cbe0" }), hLine(0, { color: "#c3cbe0" }), hLine(2, { color: "#c3cbe0" })] })} w={280} caption="(x + 1)²/4 − (y − 1)² = 1 s obdélníkem 2a × 2b" />
+        </div>
+        <div className="grid2" style={{ alignItems: "start", marginTop: 14 }}>
+          <div>
+            <h4 style={{ margin: "8px 0 4px" }}>Parabola</h4>
+            <ol style={{ fontSize: 15 }}>
+              <li>Vrchol <M>V</M>, osa <M>o</M>, směr otevření.</li>
+              <li>Ohnisko <M>F</M> ve vzdálenosti <M>p/2</M> od <M>V</M> směrem dovnitř, řídicí přímka <M>d</M> ve vzdálenosti <M>p/2</M> na druhé straně.</li>
+              <li>Pomocné body: v úrovni ohniska je parabola široká <M>2p</M> → body <M>F ± p</M> kolmo na osu.</li>
+              <li>Křivka přes tyto 3 body, ve vrcholu kolmá na osu.</li>
+            </ol>
+          </div>
+          <Graph {...conicGraphProps(analyze(0, 1, -8, 4, 20), { view: [-2, 10, -8, 4] })} w={280} caption="(y + 2)² = 8(x − 2): V[2; −2], F[4; −2], d: x = 0" />
+        </div>
+        <div className="tip">Co znamená „vyznačit význačné prvky“: elipsa S, A, B, C, D, F₁, F₂ (+ osy); hyperbola S, A, B, F₁, F₂, asymptoty (+ osa); parabola V, F, d, o; kružnice S, r. Popiš je písmeny i souřadnicemi.</div>
+      </Coll>
+
+      <Coll icon="✂️" title="8. Vzájemná poloha přímky a kuželosečky a společné body">
         <p><b>Algoritmus</b> (stejný pro všechny kuželosečky):</p>
         <ol>
           <li>Z rovnice přímky vyjádři jednu proměnnou (tu, která jde snadno, ideálně s koeficientem ±1).</li>
@@ -1013,63 +1224,28 @@ function Teorie() {
           <Graph curves={[{ f: (x, y) => y * y - 2 * x + 3 }]} lines={[{ a: 1, b: -1, c: -1 }]} pts={[{ x: 2, y: 1, label: "T[2; 1]", color: RED }]} view={[-1, 7, -4, 4]} caption="PL 4c: tečna" w={240} />
           <Graph curves={[{ f: (x, y) => 4 * x * x - y * y - 4 }]} lines={[{ a: 2, b: -1, c: 4 }, { a: 2, b: -1, c: 0, dash: true, color: MUTED }, { a: 2, b: 1, c: 0, dash: true, color: MUTED }]} pts={[{ x: -1.25, y: 1.5, label: "P", color: RED }]} view={[-5, 5, -5, 5]} caption="PL 4d: ∥ s asymptotou → 1 bod, není tečna" w={240} />
         </div>
-        <div className="note">Proč „1 bod“ ještě neznamená tečnu: přímka rovnoběžná s osou paraboly (např. <M>y = −4</M> u <M>y² = x</M>, PL Parabola 14d) parabolu „propíchne“ v jednom bodě a pokračuje dovnitř. Tečna se křivky jen dotkne a zůstane celá vně.</div>
-      </Coll>
-
-      <Coll icon="📐" title="7. Rovnice tečny v bodě T[x₀; y₀] kuželosečky">
-        <p><b>Metoda „polovičních záměn“</b> (funguje pro všechny kuželosečky, i v obecném tvaru). V rovnici kuželosečky nahraď:</p>
-        <div className="tblWrap"><table className="tbl">
-          <tbody>
-            <tr><td className="mono">x²</td><td>→</td><td className="mono">x₀·x</td><td className="mono">(x − m)²</td><td>→</td><td className="mono">(x₀ − m)(x − m)</td></tr>
-            <tr><td className="mono">y²</td><td>→</td><td className="mono">y₀·y</td><td className="mono">(y − n)²</td><td>→</td><td className="mono">(y₀ − n)(y − n)</td></tr>
-            <tr><td className="mono">x</td><td>→</td><td><M>[[x + x₀||2]]</M></td><td className="mono">y</td><td>→</td><td><M>[[y + y₀||2]]</M></td></tr>
-          </tbody>
-        </table></div>
-        <p>Středové tvary tečen:</p>
-        <Eq>elipsa: [[(x₀ − m)(x − m)||a²]] + [[(y₀ − n)(y − n)||b²]] = 1</Eq>
-        <Eq>hyperbola: [[(x₀ − m)(x − m)||a²]] − [[(y₀ − n)(y − n)||b²]] = 1</Eq>
-        <Eq>parabola (y − n)² = 2p(x − m): (y₀ − n)(y − n) = p(x₀ − m) + p(x − m)</Eq>
-        <div className="entry" style={{ margin: "12px 0" }}>
-          <div className="src">Vzor — PL Elipsa 17c: <M>x² + 2y² − 4x + 4y − 12 = 0</M>, <M>T[6; −2]</M></div>
-          <Steps steps={[
-            "Ověř, že T leží na elipse: `36 + 8 − 24 − 8 − 12 = 0` ✓",
-            "Záměny: `x² → 6x`, `2y² → 2·(−2)y`, `−4x → −4·(x + 6)/2`, `4y → 4·(y − 2)/2`",
-            "`6x − 4y − 2(x + 6) + 2(y − 2) − 12 = 0`",
-            "`6x − 4y − 2x − 12 + 2y − 4 − 12 = 0` → `4x − 2y − 28 = 0`",
-          ]} />
-          <div className="result">t: 2x − y − 14 = 0</div>
-        </div>
-        <div className="note">Bod T <b>musí ležet na kuželosečce</b>, jinak vzorec nedává tečnu. Úlohy typu „T[5; ?]“ začínají dopočítáním chybějící souřadnice → obvykle vyjdou <b>dva body a dvě tečny</b>.</div>
-      </Coll>
-
-      <Coll icon="🧭" title="8. Tečna daného směru (rovnoběžná / kolmá s přímkou)">
-        <p>Když není dán bod dotyku, ale směr tečny:</p>
+        <h4 style={{ margin: "14px 0 4px" }}>Společné body</h4>
         <ol>
-          <li>Napiš obecnou tečnu s neznámou: rovnoběžná s <M>ax + by + c = 0</M> → <M>ax + by + q = 0</M>; kolmá → <M>bx − ay + q = 0</M>.</li>
-          <li>Dosaď do kuželosečky a vyřeš podmínku <b>D = 0</b> → vyjde (obvykle dvě) hodnoty <M>q</M>.</li>
+          <li>Kořeny <M>t₁, t₂</M> kvadratické rovnice dosaď zpátky do vyjádřené proměnné z přímky → druhá souřadnice.</li>
+          <li>Zapiš body jako <M>P₁[x₁; y₁]</M>, <M>P₂[x₂; y₂]</M>.</li>
+          <li><b>Zkouška:</b> dosaď každý bod do rovnice přímky i kuželosečky.</li>
         </ol>
-        <p>Pro kuželosečky se středem v počátku platí <b>podmínky dotyku</b> přímky <M>y = kx + q</M>:</p>
-        <div className="tblWrap"><table className="tbl">
-          <tbody>
-            <tr><td>elipsa <M>[[x²||a²]] + [[y²||b²]] = 1</M></td><td className="mono">a²k² + b² = q²</td></tr>
-            <tr><td>hyperbola <M>[[x²||a²]] − [[y²||b²]] = 1</M></td><td className="mono">a²k² − b² = q²</td></tr>
-            <tr><td>parabola <M>y² = 2px</M></td><td className="mono">p = 2kq</td></tr>
-            <tr><td>kružnice <M>x² + y² = r²</M></td><td className="mono">r²(1 + k²) = q²</td></tr>
-          </tbody>
-        </table></div>
-        <div className="tip">Podmínku si nemusíš pamatovat: dosazení + <M>D = 0</M> dá vždy totéž.</div>
+        <div className="tip">Výraz „tečna“ tu znamená jen výsledek polohy (D = 0, jediný společný bod). Sestavovat rovnice tečen v testu nebudeš.</div>
+        <div className="note">Proč „1 bod“ ještě neznamená tečnu: přímka rovnoběžná s osou paraboly (např. <M>y = −4</M> u <M>y² = x</M>, PL Parabola 14d) parabolu „propíchne“ v jednom bodě a pokračuje dovnitř. Tečna se křivky jen dotkne a zůstane celá vně.</div>
       </Coll>
 
       <Coll icon="⚠️" title="9. Nejčastější chyby v testu">
         <ul>
+          <li>U poměru vzdáleností zapomene <b>umocnit ε</b>: z <M>|PF| = [[1||2]]|Pd|</M> je <M>|PF|² = [[1||4]]|Pd|²</M>.</li>
+          <li>Obrátí poměr: „od přímky dvakrát dál než od bodu“ je <M>ε = 1/2</M> (elipsa), ne 2.</li>
           <li>U elipsy plete <M>e² = a² − b²</M> s hyperbolou <M>e² = a² + b²</M>.</li>
           <li>U hyperboly bere <M>a</M> jako „větší poloosu“. Správně: <M>a</M> je vždy pod <b>kladným</b> členem.</li>
           <li>U paraboly zapomene, že v rovnici je <M>2p</M>. Ohnisko je od vrcholu <M>p/2</M>, ne <M>p</M>.</li>
-          <li>Prohlásí přímku za tečnu jen proto, že má s hyperbolou/parabolou 1 společný bod (rovnoběžka s asymptotou/osou).</li>
-          <li>Po dosazení zapomene roznásobit celou závorku: <M>(2x − 3)² = 4x² − 12x + 9</M>, ne <M>4x² + 9</M>.</li>
-          <li>U vnitřku hyperboly řekne, že střed je „uvnitř“. Není, střed leží vně.</li>
-          <li>U úloh „T[?; 4]“ najde jen jeden bod. Kvadratická rovnice dá často dva body a dvě tečny.</li>
-          <li>Neudělá zkoušku: dosaď vypočtené body zpátky do <b>obou</b> rovnic, zabere to 20 sekund.</li>
+          <li>Při převodu do obecného tvaru vynásobí jen jeden zlomek, nebo zapomene vynásobit pravou stranu (<M>= 1</M> → <M>= a²b²</M>).</li>
+          <li>Při doplnění na čtverec vytkne záporné číslo a neotočí znaménko uvnitř závorky.</li>
+          <li>Na obrázku chybí ohniska nebo asymptoty, nebo jsou vrcholy na špatné ose.</li>
+          <li>Po dosazení přímky zapomene roznásobit celou závorku: <M>(2x − 3)² = 4x² − 12x + 9</M>, ne <M>4x² + 9</M>.</li>
+          <li>Najde jen <M>x</M> a zapomene dopočítat <M>y</M> společného bodu. Neudělá zkoušku do <b>obou</b> rovnic.</li>
         </ul>
       </Coll>
     </div>
@@ -1081,21 +1257,122 @@ function Teorie() {
 // ══════════════════════════════════════════════════════════════════
 const CATS = [
   { id: "all", t: "Vše" },
-  { id: "typ", t: "🔍 Typ kuželosečky" },
-  { id: "vnitrek", t: "🎯 Vnitřek / vnějšek" },
+  { id: "pomer", t: "⚖️ Poměr vzdáleností" },
+  { id: "cteni", t: "🔍 Z rovnice → prvky" },
+  { id: "sestaveni", t: "🧩 Z prvků → rovnice" },
+  { id: "prevod", t: "🔁 Převody tvarů" },
+  { id: "graf", t: "✏️ Zakreslení do KSS" },
   { id: "primka", t: "✂️ Přímka a kuželosečka" },
-  { id: "tecna", t: "📐 Tečny" },
-  { id: "elipsa", t: "⬭ Elipsa" },
-  { id: "hyperbola", t: ")( Hyperbola" },
-  { id: "parabola", t: "∪ Parabola" },
 ];
 
-const PTS4 = [{ x: 0, y: 0, label: "A" }, { x: 0, y: 3, label: "B" }, { x: -2, y: 0, label: "C" }, { x: 2, y: 1, label: "D" }];
-
 const PROBLEMS = [
-  // ───────────── TYP ─────────────
+  // ───────────── POMĚR VZDÁLENOSTÍ ─────────────
   {
-    cat: "typ", src: "PL Kuželosečka a přímka · úl. 1", diff: 2,
+    cat: "pomer", src: "Zadání testu · bod 1", diff: 2,
+    task: "Napište rovnici množiny všech bodů `P`, pro které platí daný poměr vzdáleností od bodu `F` a přímky `d`. Určete typ a prvky.",
+    formula: "`|PF| = ε·|Pd|` → umocnit → roznásobit → doplnit na čtverec. `ε < 1` elipsa, `ε = 1` parabola, `ε > 1` hyperbola.",
+    parts: [
+      { l: "a)", q: "`F[3; 0]`, `d: x = 12`, `|PF| : |Pd| = 1 : 2`", steps: [
+        "`√((x − 3)² + y²) = [[1||2]]·|x − 12|` | ²",
+        "`(x − 3)² + y² = [[1||4]](x − 12)²` | ·4",
+        "`4x² − 24x + 36 + 4y² = x² − 24x + 144` → `3x² + 4y² − 108 = 0`",
+        "`[[x²||36]] + [[y²||27]] = 1` → `a = 6`, `b = 3√3`, `e = 3`, `ε = 3/6 = 1/2` ✓",
+      ], res: "elipsa 3x² + 4y² − 108 = 0, tj. x²/36 + y²/27 = 1", K: [3, 4, 0, 0, -108] },
+      { l: "b)", q: "`F[0; 2]`, `d: y = −2`, bod má od F i od d stejnou vzdálenost", steps: [
+        "`ε = 1` → parabola. `√(x² + (y − 2)²) = |y + 2|` | ²",
+        "`x² + y² − 4y + 4 = y² + 4y + 4`",
+        "`x² − 8y = 0` → `x² = 8y`: `V[0; 0]`, `2p = 8`, `p = 4`, otevřená nahoru",
+      ], res: "parabola x² = 8y (x² − 8y = 0)", K: [1, 0, 0, -8, 0] },
+      { l: "c)", q: "`F[4; 0]`, `d: x = 1`, vzdálenost od F je dvojnásobkem vzdálenosti od d", steps: [
+        "`|PF| = 2·|Pd|` → `ε = 2` → hyperbola",
+        "`(x − 4)² + y² = 4(x − 1)²`",
+        "`x² − 8x + 16 + y² = 4x² − 8x + 4` → `3x² − y² − 12 = 0`",
+        "`[[x²||4]] − [[y²||12]] = 1`: `a = 2`, `b = 2√3`, `e = 4`, `ε = 4/2 = 2` ✓, řídicí přímka `x = a²/e = 1` ✓",
+      ], res: "hyperbola 3x² − y² − 12 = 0, tj. x²/4 − y²/12 = 1", K: [3, -1, 0, 0, -12] },
+      { l: "d)", q: "`F[2; −1]`, `d: x = −4`, `|PF| = |Pd|`", steps: [
+        "`(x − 2)² + (y + 1)² = (x + 4)²`",
+        "`x² − 4x + 4 + (y + 1)² = x² + 8x + 16` → `(y + 1)² = 12x + 12`",
+        "`(y + 1)² = 12(x + 1)`: `V[−1; −1]` (leží v půlce mezi F a d ✓), `p = 6`, otevřená doprava",
+        "Obecný tvar: `y² − 12x + 2y − 11 = 0`",
+      ], res: "parabola (y + 1)² = 12(x + 1)", K: [0, 1, -12, 2, -11] },
+      { l: "e)", q: "`F[1; 4]`, `d: y = 1`, `|PF| : |Pd| = 2 : 1`", steps: [
+        "`(x − 1)² + (y − 4)² = 4(y − 1)²`",
+        "`(x − 1)² + y² − 8y + 16 = 4y² − 8y + 4` → `(x − 1)² − 3y² + 12 = 0`",
+        "`3y² − (x − 1)² = 12` → `[[y²||4]] − [[(x − 1)²||12]] = 1`",
+        "Hlavní osa ∥ y: `S[1; 0]`, `a = 2`, `e = 4` → ohnisko `[1; 4]` ✓, `ε = 2` ✓",
+        "Obecný tvar: `x² − 3y² − 2x + 13 = 0`",
+      ], res: "hyperbola y²/4 − (x − 1)²/12 = 1", K: [1, -3, -2, 0, 13] },
+      { l: "f)", q: "`F[1; 2]`, `d: x = −3`, vzdálenost od přímky je dvakrát větší než od bodu F", d: 3, steps: [
+        "`|Pd| = 2·|PF|` → `|PF| = [[1||2]]|Pd|` → `ε = 1/2` → elipsa",
+        "`4[(x − 1)² + (y − 2)²] = (x + 3)²`",
+        "`4x² − 8x + 4 + 4y² − 16y + 16 = x² + 6x + 9` → `3x² + 4y² − 14x − 16y + 11 = 0`",
+        "Doplním: `3(x − 7/3)² − 49/3 + 4(y − 2)² − 16 + 11 = 0` → `3(x − 7/3)² + 4(y − 2)² = 64/3`",
+        "`[[(x − 7/3)²||64/9]] + [[(y − 2)²||16/3]] = 1`: `a = 8/3`, `e² = 64/9 − 48/9 = 16/9`, `e = 4/3`, `ε = 1/2` ✓",
+      ], res: "elipsa 3x² + 4y² − 14x − 16y + 11 = 0, S[7/3; 2]", K: [3, 4, -14, -16, 11] },
+    ],
+  },
+  {
+    cat: "pomer", src: "Zadání testu · bod 1 (opačný směr)", diff: 2,
+    task: "Určete číselnou výstřednost `ε` a řídicí přímky kuželosečky. Ověřte poměr na jednom vrcholu.",
+    formula: "`ε = e/a`, řídicí přímky (osa ∥ x) `x = m ± a²/e`; parabola: `d` je `p/2` za vrcholem.",
+    parts: [
+      { l: "a)", q: "`[[x²||25]] + [[y²||9]] = 1`", steps: [
+        "`a = 5`, `b = 3`, `e = √(25 − 9) = 4`",
+        "`ε = 4/5`, řídicí přímky `x = ±25/4`",
+        "Ověření ve vrcholu `B[5; 0]`: `|BF₂| = 5 − 4 = 1`, `|Bd₂| = 25/4 − 5 = 5/4` → poměr `1 : 5/4 = 4/5` ✓",
+      ], res: "ε = 4/5, d₁,₂: x = ±25/4", K: [9, 25, 0, 0, -225] },
+      { l: "b)", q: "`[[x²||9]] − [[y²||16]] = 1`", steps: [
+        "`a = 3`, `b = 4`, `e = √(9 + 16) = 5`",
+        "`ε = 5/3`, řídicí přímky `x = ±9/5`",
+        "Ověření ve vrcholu `B[3; 0]`: `|BF₂| = 5 − 3 = 2`, `|Bd₂| = 3 − 9/5 = 6/5` → `2 : 6/5 = 5/3` ✓",
+      ], res: "ε = 5/3, d₁,₂: x = ±9/5", K: [16, -9, 0, 0, -144] },
+      { l: "c)", q: "`(y − 1)² = −8(x − 3)`", steps: [
+        "`V[3; 1]`, `2p = 8`, `p = 4`, otevřená doleva",
+        "`F[3 − 2; 1] = [1; 1]`, řídicí přímka `x = 3 + 2 = 5`, `ε = 1`",
+        "Ověření ve vrcholu: `|VF| = 2 = |Vd|` ✓",
+      ], res: "ε = 1, F[1; 1], d: x = 5", K: [0, 1, 8, -2, -23] },
+    ],
+  },
+
+  // ───────────── PŘEVODY ─────────────
+  {
+    cat: "prevod", src: "Zadání testu · bod 3", diff: 1,
+    task: "Převeďte ze středového / vrcholového tvaru na obecný tvar.",
+    formula: "Vynásob společným jmenovatelem → roznásob `(x − m)² = x² − 2mx + m²` → vše doleva.",
+    parts: [
+      { l: "a)", q: "`[[(x − 2)²||9]] + [[(y + 1)²||4]] = 1`", steps: ["·36: `4(x − 2)² + 9(y + 1)² = 36`", "`4x² − 16x + 16 + 9y² + 18y + 9 − 36 = 0`"], res: "4x² + 9y² − 16x + 18y − 11 = 0" },
+      { l: "b)", q: "`[[(y − 3)²||4]] − [[(x + 1)²||5]] = 1`", steps: ["·20: `5(y − 3)² − 4(x + 1)² = 20`", "`5y² − 30y + 45 − 4x² − 8x − 4 − 20 = 0`", "`−4x² + 5y² − 8x − 30y + 21 = 0` | ·(−1)"], res: "4x² − 5y² + 8x + 30y − 21 = 0" },
+      { l: "c)", q: "`(x + 3)² = −6(y − 2)`", steps: ["`x² + 6x + 9 = −6y + 12`", "Vše doleva: `x² + 6x + 6y + 9 − 12 = 0`"], res: "x² + 6x + 6y − 3 = 0" },
+      { l: "d)", q: "`(x − 4)² + (y + 2)² = 10`", steps: ["`x² − 8x + 16 + y² + 4y + 4 − 10 = 0`"], res: "x² + y² − 8x + 4y + 10 = 0" },
+    ],
+  },
+  {
+    cat: "prevod", src: "Zadání testu · bod 3", diff: 2,
+    task: "Převeďte z obecného tvaru na středový / vrcholový tvar a určete typ.",
+    formula: "Seskup, vytkni koeficient u druhé mocniny, doplň na čtverec, konstanty doprava, vyděl pravou stranou.",
+    parts: [
+      { l: "a)", q: "`4x² + y² + 24x − 2y + 21 = 0`", steps: ["`4(x² + 6x) + (y² − 2y) + 21 = 0`", "`4[(x + 3)² − 9] + [(y − 1)² − 1] + 21 = 0`", "`4(x + 3)² + (y − 1)² = 36 + 1 − 21 = 16`", "Vydělím 16: `[[(x + 3)²||4]] + [[(y − 1)²||16]] = 1`"], res: "elipsa, S[−3; 1], a = 4 (osa ∥ y), b = 2, e = 2√3", K: [4, 1, 24, -2, 21] },
+      { l: "b)", q: "`9x² − 4y² − 18x − 16y − 43 = 0`", steps: ["`9(x² − 2x) − 4(y² + 4y) − 43 = 0`", "`9[(x − 1)² − 1] − 4[(y + 2)² − 4] − 43 = 0`", "`9(x − 1)² − 4(y + 2)² = 9 − 16 + 43 = 36`", "Vydělím 36: `[[(x − 1)²||4]] − [[(y + 2)²||9]] = 1`"], res: "hyperbola, S[1; −2], a = 2, b = 3, e = √13", K: [9, -4, -18, -16, -43] },
+      { l: "c)", q: "`2y² − 8y + 3x + 2 = 0`", d: 3, steps: ["`2(y² − 4y) + 3x + 2 = 0` → `2[(y − 2)² − 4] + 3x + 2 = 0`", "`2(y − 2)² = −3x + 6 = −3(x − 2)`", "Vydělím 2: `(y − 2)² = −[[3||2]](x − 2)`", "`2p = 3/2` → `p = 3/4`, otevřená doleva; `F[2 − 3/8; 2] = [13/8; 2]`, `d: x = 2 + 3/8 = 19/8`"], res: "parabola, V[2; 2], p = 3/4, F[13/8; 2], d: x = 19/8", K: [0, 2, 3, -8, 2] },
+    ],
+  },
+
+  // ───────────── ZAKRESLENÍ ─────────────
+  {
+    cat: "graf", src: "Zadání testu · bod 4", diff: 2,
+    task: "Zakreslete kuželosečku do kartézské soustavy souřadnic a vyznačte všechny její význačné prvky.",
+    formula: "Středový/vrcholový tvar → vypiš prvky → vyznač body a přímky → teprve pak křivka.",
+    parts: [
+      { l: "a)", q: "`9x² + 16y² − 18x + 64y − 71 = 0`", steps: ["`9(x − 1)² + 16(y + 2)² = 144` → `[[(x − 1)²||16]] + [[(y + 2)²||9]] = 1`", "`S[1; −2]`, `a = 4` (osa ∥ x), `b = 3`, `e = √7 ≈ 2,65`", "Hlavní vrcholy `A[−3; −2]`, `B[5; −2]`; vedlejší `C[1; 1]`, `D[1; −5]`", "Ohniska `F₁,₂[1 ± √7; −2]` ≈ `[−1,65; −2]`, `[3,65; −2]`"], res: "elipsa: S, A, B, C, D, F₁, F₂ + osy y = −2, x = 1", K: [9, 16, -18, 64, -71] },
+      { l: "b)", q: "`x² − 4y² + 2x + 8y − 7 = 0`", steps: ["`(x + 1)² − 4(y − 1)² = 4` → `[[(x + 1)²||4]] − (y − 1)² = 1`", "`S[−1; 1]`, `a = 2`, `b = 1`, `e = √5 ≈ 2,24`, osa ∥ x", "Vrcholy `A[−3; 1]`, `B[1; 1]`, ohniska `F₁,₂[−1 ± √5; 1]`", "Obdélník `x ∈ [−3; 1]`, `y ∈ [0; 2]`; asymptoty `y − 1 = ±[[1||2]](x + 1)`"], res: "hyperbola: S, A, B, F₁, F₂, asymptoty, osa y = 1", K: [1, -4, 2, 8, -7] },
+      { l: "c)", q: "`y² + 4y − 8x + 20 = 0`", steps: ["`(y + 2)² = 8x − 16 = 8(x − 2)`", "`V[2; −2]`, `2p = 8`, `p = 4`, otevřená doprava, osa `y = −2`", "`F[4; −2]`, `d: x = 0` (osa y!)", "Pomocné body v úrovni ohniska: `[4; −2 ± 4]` = `[4; 2]`, `[4; −6]`"], res: "parabola: V, F, d: x = 0, osa o: y = −2", K: [0, 1, -8, 4, 20] },
+      { l: "d)", q: "`x² + y² − 6x + 2y + 6 = 0`", d: 1, steps: ["`(x − 3)² + (y + 1)² = 9 + 1 − 6 = 4`", "`S[3; −1]`, `r = 2`; body na kružnici `[1; −1]`, `[5; −1]`, `[3; 1]`, `[3; −3]`"], res: "kružnice: S[3; −1], r = 2", K: [1, 1, -6, 2, 6] },
+    ],
+  },
+
+  // ───────────── Z ROVNICE → PRVKY ─────────────
+  {
+    cat: "cteni", src: "PL Kuželosečka a přímka · úl. 1", diff: 2,
     task: "Rozhodněte a zdůvodněte, jaké kuželosečky jsou dány následujícími rovnicemi.",
     formula: "Doplnění na čtverec → středový/vrcholový tvar. Kandidáta určí znaménka koeficientů A (u x²) a C (u y²).",
     parts: [
@@ -1148,7 +1425,7 @@ const PROBLEMS = [
     ],
   },
   {
-    cat: "typ", src: "PL Kuželosečka a přímka · úl. 2", diff: 1,
+    cat: "sestaveni", src: "PL Kuželosečka a přímka · úl. 2", diff: 1,
     task: "Napište rovnici nějaké a) prázdné množiny, b) kružnice.",
     parts: [
       { l: "a)", q: "prázdná množina", steps: [
@@ -1164,7 +1441,7 @@ const PROBLEMS = [
     ],
   },
   {
-    cat: "typ", src: "MFF portál · Úlohy III", diff: 2,
+    cat: "cteni", src: "MFF portál · Úlohy III", diff: 2,
     task: "Určete typ kuželosečky a její charakteristické prvky.",
     parts: [
       { l: "1)", q: "`y² − 8y − 4x + 36 = 0`", steps: [
@@ -1186,83 +1463,6 @@ const PROBLEMS = [
         "A = C = 1 → kružnice.",
         "`(x − 2)² − 4 + (y + 1)² − 1 − 11 = 0` → `(x − 2)² + (y + 1)² = 16`",
       ], res: "kružnice, S[2; −1], r = 4" },
-    ],
-  },
-
-  // ───────────── VNITŘEK ─────────────
-  {
-    cat: "vnitrek", src: "PL Kuželosečka a přímka · úl. 3", diff: 2,
-    task: "Rozhodněte, zda body `A[0; 0]`, `B[0; 3]`, `C[−2; 0]`, `D[2; 1]` leží ve vnitřní nebo ve vnější oblasti dané kuželosečky.",
-    formula: "Vše převedu na levou stranu → `G(x, y)`. Znaménko vnitřku zjistím dosazením známého vnitřního bodu (střed elipsy/kružnice, ohnisko paraboly/hyperboly).",
-    parts: [
-      { l: "a)", q: "`(x − 3)² + y² = 4`", steps: [
-        "Kružnice S[3; 0], r = 2. `G = (x − 3)² + y² − 4`, `G(S) = −4 < 0` → vnitřek má `G < 0`.",
-        "A: `9 + 0 − 4 = 5 > 0` → vně",
-        "B: `9 + 9 − 4 = 14 > 0` → vně",
-        "C: `25 + 0 − 4 = 21 > 0` → vně",
-        "D: `1 + 1 − 4 = −2 < 0` → uvnitř",
-      ], res: "D uvnitř · A, B, C vně",
-        graph: { curves: [{ f: (x, y) => (x - 3) ** 2 + y * y - 4 }], fill: (x, y) => (x - 3) ** 2 + y * y - 4 < 0, pts: PTS4, view: [-3, 6, -3, 4] } },
-      { l: "b)", q: "`3x² + 4y² = 16`", steps: [
-        "Elipsa se středem [0; 0]. `G = 3x² + 4y² − 16`, `G(S) = −16 < 0` → vnitřek `G < 0`.",
-        "A (je to střed): `−16 < 0` → uvnitř",
-        "B: `36 − 16 = 20 > 0` → vně",
-        "C: `12 − 16 = −4 < 0` → uvnitř",
-        "D: `12 + 4 − 16 = 0` → leží na elipse!",
-      ], res: "A, C uvnitř · B vně · D na elipse",
-        graph: { curves: [{ f: (x, y) => 3 * x * x + 4 * y * y - 16 }], fill: (x, y) => 3 * x * x + 4 * y * y - 16 < 0, pts: PTS4, view: [-4, 4, -3, 4] } },
-      { l: "c)", q: "`x² − y² − 2 = 0`", steps: [
-        "Rovnoosá hyperbola `x²/2 − y²/2 = 1`, `e² = 2 + 2 = 4` → ohniska [±2; 0].",
-        "`G = x² − y² − 2`, `G(F₂) = 4 − 0 − 2 = 2 > 0` → vnitřek má `G > 0`.",
-        "A: `−2 < 0` → vně (střed hyperboly je vždy vně!)",
-        "B: `−9 − 2 = −11 < 0` → vně",
-        "C: `4 − 2 = 2 > 0` → uvnitř (C je dokonce ohnisko F₁)",
-        "D: `4 − 1 − 2 = 1 > 0` → uvnitř",
-      ], res: "C, D uvnitř · A, B vně",
-        graph: { curves: [{ f: (x, y) => x * x - y * y - 2 }], fill: (x, y) => x * x - y * y - 2 > 0, pts: PTS4, view: [-5, 5, -4, 4] } },
-      { l: "d)", q: "`x² − 4y² + 4y = 0`", d: 3, steps: [
-        "Doplním: `x² − 4(y − ½)² + 1 = 0` → `4(y − ½)² − x² = 1` → hyperbola, hlavní osa ∥ y, S[0; ½], vrcholy [0; 0] a [0; 1].",
-        "Vnitřní bod: ohnisko leží na hlavní ose za vrcholem [0; 1], vezmu třeba `[0; 5]`: `G = 0 − 100 + 20 = −80 < 0` → vnitřek má `G < 0`.",
-        "A: `0 − 0 + 0 = 0` → leží na hyperbole (je to vrchol)",
-        "B: `0 − 36 + 12 = −24 < 0` → uvnitř",
-        "C: `4 − 0 + 0 = 4 > 0` → vně",
-        "D: `4 − 4 + 4 = 4 > 0` → vně",
-      ], res: "B uvnitř · C, D vně · A na hyperbole",
-        graph: { curves: [{ f: (x, y) => x * x - 4 * y * y + 4 * y }], fill: (x, y) => x * x - 4 * y * y + 4 * y < 0, pts: PTS4, view: [-4, 4, -3, 4] } },
-      { l: "e)", q: "`y² + 2x − 8 = 0`", steps: [
-        "`y² = −2(x − 4)` → parabola V[4; 0], `p = 1`, otevřená doleva, ohnisko `F[3,5; 0]`.",
-        "`G = y² + 2x − 8`, `G(F) = 0 + 7 − 8 = −1 < 0` → vnitřek `G < 0`.",
-        "A: `−8 < 0` → uvnitř",
-        "B: `9 − 8 = 1 > 0` → vně",
-        "C: `−4 − 8 = −12 < 0` → uvnitř",
-        "D: `1 + 4 − 8 = −3 < 0` → uvnitř",
-      ], res: "A, C, D uvnitř · B vně",
-        graph: { curves: [{ f: (x, y) => y * y + 2 * x - 8 }], fill: (x, y) => y * y + 2 * x - 8 < 0, pts: PTS4, view: [-4, 5, -4, 4] } },
-      { l: "f)", q: "`(x + 2)² = 10y`", steps: [
-        "Parabola V[−2; 0], `2p = 10`, `p = 5`, otevřená nahoru, `F[−2; 2,5]`.",
-        "`G = (x + 2)² − 10y`, `G(F) = 0 − 25 < 0` → vnitřek `G < 0`.",
-        "A: `4 − 0 = 4 > 0` → vně",
-        "B: `4 − 30 = −26 < 0` → uvnitř",
-        "C: `0 − 0 = 0` → na parabole (vrchol)",
-        "D: `16 − 10 = 6 > 0` → vně",
-      ], res: "B uvnitř · A, D vně · C na parabole",
-        graph: { curves: [{ f: (x, y) => (x + 2) ** 2 - 10 * y }], fill: (x, y) => (x + 2) ** 2 - 10 * y < 0, pts: PTS4, view: [-6, 4, -2, 6] } },
-    ],
-  },
-  {
-    cat: "vnitrek", src: "MFF portál / vlastní", diff: 2,
-    task: "Určete polohu bodu vůči kuželosečce.",
-    parts: [
-      { l: "a)", q: "`M[1; 1]` a elipsa `9x² + 4y² + 18x + 24y + 9 = 0`", steps: [
-        "`9(x + 1)² − 9 + 4(y + 3)² − 36 + 9 = 0` → `9(x + 1)² + 4(y + 3)² = 36` → `[[(x + 1)²||4]] + [[(y + 3)²||9]] = 1`",
-        "Dosadím M do levé strany středového tvaru: `[[2²||4]] + [[4²||9]] = 1 + [[16||9]] = [[25||9]]`",
-        "`25/9 > 1` → vně (u elipsy je vnitřek < 1)",
-      ], res: "M leží ve vnější oblasti elipsy" },
-      { l: "b)", q: "Pro která `c` leží bod `P[c; 2]` uvnitř elipsy `[[x²||9]] + [[y²||8]] = 1`?", d: 3, steps: [
-        "Podmínka vnitřku: `[[c²||9]] + [[4||8]] < 1`",
-        "`[[c²||9]] < [[1||2]]` → `c² < [[9||2]]`",
-        "`|c| < [[3||√2]] = [[3√2||2]] ≈ 2,12`",
-      ], res: "c ∈ (−3√2/2; 3√2/2); pro c = ±3√2/2 leží P na elipse" },
     ],
   },
 
@@ -1306,25 +1506,25 @@ const PROBLEMS = [
   },
   {
     cat: "primka", src: "PL Elipsa · úl. 15", diff: 1,
-    task: "Určete vzájemnou polohu přímky `p` a elipsy `ε` (společné body neurčujte).",
+    task: "Určete vzájemnou polohu přímky `p` a elipsy `E` (společné body neurčujte).",
     parts: [
-      { l: "a)", q: "`p: y = x + 1`, `ε: 2x² + 3y² = 6`", steps: ["`2x² + 3(x + 1)² = 6`", "`2x² + 3x² + 6x + 3 − 6 = 0` → `5x² + 6x − 3 = 0`", "`D = 36 + 60 = 96 > 0`"], res: "sečna" },
-      { l: "b)", q: "`p: x + 3y + 6 = 0`, `ε: x² + 9y² = 18`", steps: ["`x = −3y − 6`", "`(3y + 6)² + 9y² = 18` → `9y² + 36y + 36 + 9y² − 18 = 0`", "`18y² + 36y + 18 = 0` → `y² + 2y + 1 = 0`, `D = 0`"], res: "tečna (T[−3; −1])" },
-      { l: "c)", q: "`p: y = x + 5`, `ε: x² + 2y² = 4`", steps: ["`x² + 2(x + 5)² = 4`", "`x² + 2x² + 20x + 50 − 4 = 0` → `3x² + 20x + 46 = 0`", "`D = 400 − 552 = −152 < 0`"], res: "vnější přímka" },
-      { l: "d)", q: "`p: x − y − 3 = 0`, `ε: 2x² + 3y² = 6`", steps: ["`y = x − 3`", "`2x² + 3(x − 3)² = 6` → `5x² − 18x + 21 = 0`", "`D = 324 − 420 = −96 < 0`"], res: "vnější přímka" },
+      { l: "a)", q: "`p: y = x + 1`, `E: 2x² + 3y² = 6`", steps: ["`2x² + 3(x + 1)² = 6`", "`2x² + 3x² + 6x + 3 − 6 = 0` → `5x² + 6x − 3 = 0`", "`D = 36 + 60 = 96 > 0`"], res: "sečna" },
+      { l: "b)", q: "`p: x + 3y + 6 = 0`, `E: x² + 9y² = 18`", steps: ["`x = −3y − 6`", "`(3y + 6)² + 9y² = 18` → `9y² + 36y + 36 + 9y² − 18 = 0`", "`18y² + 36y + 18 = 0` → `y² + 2y + 1 = 0`, `D = 0`"], res: "tečna (T[−3; −1])" },
+      { l: "c)", q: "`p: y = x + 5`, `E: x² + 2y² = 4`", steps: ["`x² + 2(x + 5)² = 4`", "`x² + 2x² + 20x + 50 − 4 = 0` → `3x² + 20x + 46 = 0`", "`D = 400 − 552 = −152 < 0`"], res: "vnější přímka" },
+      { l: "d)", q: "`p: x − y − 3 = 0`, `E: 2x² + 3y² = 6`", steps: ["`y = x − 3`", "`2x² + 3(x − 3)² = 6` → `5x² − 18x + 21 = 0`", "`D = 324 − 420 = −96 < 0`"], res: "vnější přímka" },
     ],
   },
   {
     cat: "primka", src: "PL Elipsa · úl. 16", diff: 2,
-    task: "Vypočítejte souřadnice společných bodů přímky `p` a elipsy `ε`.",
+    task: "Vypočítejte souřadnice společných bodů přímky `p` a elipsy `E`.",
     parts: [
-      { l: "a)", q: "`p: y = 2x + 1`, `ε: x² + 9y² = 9`", steps: [
+      { l: "a)", q: "`p: y = 2x + 1`, `E: x² + 9y² = 9`", steps: [
         "`x² + 9(2x + 1)² = 9`",
         "`x² + 36x² + 36x + 9 − 9 = 0` → `37x² + 36x = 0` → `x(37x + 36) = 0`",
         "`x₁ = 0 → y₁ = 1`",
         "`x₂ = −36/37 → y₂ = −72/37 + 1 = −35/37`",
       ], res: "M₁[0; 1], M₂[−36/37; −35/37]" },
-      { l: "b)", q: "`p: 2x + 3y − 7 = 0`, `ε: x² + 3y² = 7`", steps: [
+      { l: "b)", q: "`p: 2x + 3y − 7 = 0`, `E: x² + 3y² = 7`", steps: [
         "`x = (7 − 3y)/2`",
         "`(7 − 3y)²/4 + 3y² = 7` | ·4 → `49 − 42y + 9y² + 12y² − 28 = 0`",
         "`21y² − 42y + 21 = 0` → `(y − 1)² = 0` → `D = 0`",
@@ -1373,85 +1573,10 @@ const PROBLEMS = [
       { l: "e)", q: "`4x − 15y − 4 = 0`, hyperbola `[[(x − 1)²||81]] − [[y²||9]] = 1`", d: 3, steps: ["`x = (15y + 4)/4` → `x − 1 = 15y/4`", "`[[225y²/16||81]] − [[y²||9]] = 1` | ·1296 → `225y² − 144y² = 1296`", "`81y² = 1296` → `y² = 16` → `y = ±4`", "`y = 4 → x = 16`; `y = −4 → x = −14`"], res: "sečna, P₁[16; 4], P₂[−14; −4]" },
     ],
   },
-  {
-    cat: "primka", src: "PL Elipsa 18 · PL Parabola 18⁺", diff: 3,
-    task: "Vypočítejte souřadnice společných bodů dvou kuželoseček (kružnice a elipsa / parabola).",
-    formula: "Stejný princip jako u přímky: z jedné rovnice vyjádři výhodný člen (často `x²` nebo `y²`) a dosaď do druhé.",
-    parts: [
-      { l: "a)", q: "`k: x² + y² − 10x − 4 = 0`, `ε: 4x² + 9y² = 36`", steps: ["Z kružnice: `y² = 4 + 10x − x²`", "Do elipsy: `4x² + 9(4 + 10x − x²) = 36` → `−5x² + 90x = 0` → `x = 0` nebo `x = 18`", "`x = 18`: `y² = 4 + 180 − 324 < 0` → nevyhovuje", "`x = 0`: `y² = 4` → `y = ±2`"], res: "M₁[0; 2], M₂[0; −2]" },
-      { l: "b)", q: "`k: x² + y² = 9`, `ε: x² + 4y² − 32y + 60 = 0`", steps: ["Odečtu rovnice (zmizí `x²`): `3y² − 32y + 60 + 9 = 0` → `3y² − 32y + 69 = 0`", "`D = 1024 − 828 = 196` → `y = (32 ± 14)/6` → `y = 3` nebo `y = 23/3`", "`y = 23/3`: `x² = 9 − 529/9 < 0` → nevyhovuje", "`y = 3`: `x² = 0` → `x = 0`"], res: "jediný bod M[0; 3] (dotyk)" },
-      { l: "c)", q: "`p: 2x² − y − 3 = 0`, `k: x² + y² = 9`", steps: ["Z paraboly: `x² = (y + 3)/2`", "Do kružnice: `(y + 3)/2 + y² = 9` | ·2 → `2y² + y − 15 = 0`", "`D = 1 + 120 = 121` → `y = (−1 ± 11)/4` → `y₁ = 5/2`, `y₂ = −3`", "`y₁ = 5/2`: `x² = 11/4` → `x = ±√11/2`; `y₂ = −3`: `x = 0`"], res: "[0; −3], [√11/2; 5/2], [−√11/2; 5/2]",
-        graph: { curves: [{ f: (x, y) => 2 * x * x - y - 3 }, { f: (x, y) => x * x + y * y - 9, color: RED }], pts: [{ x: 0, y: -3 }, { x: Math.sqrt(11) / 2, y: 2.5 }, { x: -Math.sqrt(11) / 2, y: 2.5 }], view: [-4.5, 4.5, -4.5, 4.5] } },
-      { l: "d)", q: "`p: 10y² − x = 0`, `k: x² + y² − 2x = 0`", steps: ["`x = 10y²`", "`100y⁴ + y² − 20y² = 0` → `y²(100y² − 19) = 0`", "`y = 0 → x = 0`; `y² = 19/100 → y = ±√19/10`, `x = 19/10`"], res: "[0; 0], [19/10; √19/10], [19/10; −√19/10]" },
-    ],
-  },
-
-  // ───────────── TEČNY ─────────────
-  {
-    cat: "tecna", src: "PL Elipsa · úl. 17", diff: 2,
-    task: "Vypočítejte zbývající souřadnici bodu `T`, který leží na elipse, a určete rovnici tečny v bodě `T`.",
-    formula: "Polovičními záměnami: `x² → x₀x`, `y² → y₀y`, `x → (x + x₀)/2`, `y → (y + y₀)/2`.",
-    parts: [
-      { l: "a)", q: "`9x² + 45y² = 405`, `T[5; ?]`", steps: ["`9·25 + 45y² = 405` → `45y² = 180` → `y = ±2`", "Dva body `T₁[5; 2]`, `T₂[5; −2]`", "Tečna: `9·5·x + 45·y₀·y = 405`", "`T₁`: `45x + 90y = 405` → `x + 2y − 9 = 0`", "`T₂`: `45x − 90y = 405` → `x − 2y − 9 = 0`"], res: "t₁: x + 2y − 9 = 0, t₂: x − 2y − 9 = 0",
-        graph: { curves: [{ f: (x, y) => 9 * x * x + 45 * y * y - 405 }], lines: [{ a: 1, b: 2, c: -9 }, { a: 1, b: -2, c: -9 }], pts: [{ x: 5, y: 2, label: "T₁", color: RED }, { x: 5, y: -2, label: "T₂", color: RED }], view: [-8, 10, -6, 6] } },
-      { l: "b)", q: "`12x² + 16y² = 192`, `T[−2; ?]`", steps: ["`48 + 16y² = 192` → `y² = 9` → `y = ±3`", "Tečna: `12·x₀·x + 16·y₀·y = 192`", "`T₁[−2; 3]`: `−24x + 48y = 192` → `x − 2y + 8 = 0`", "`T₂[−2; −3]`: `−24x − 48y = 192` → `x + 2y + 8 = 0`"], res: "t₁: x − 2y + 8 = 0, t₂: x + 2y + 8 = 0" },
-      { l: "c)", q: "`x² + 2y² − 4x + 4y − 12 = 0`, `T[?; −2]`", steps: ["`x² + 8 − 4x − 8 − 12 = 0` → `x² − 4x − 12 = 0` → `x = 6` nebo `x = −2`", "Záměny: `x₀x + 2y₀y − 2(x + x₀) + 2(y + y₀) − 12 = 0`", "`T₁[6; −2]`: `6x − 4y − 2x − 12 + 2y − 4 − 12 = 0` → `4x − 2y − 28 = 0`", "`T₂[−2; −2]`: `−2x − 4y − 2x + 4 + 2y − 4 − 12 = 0` → `−4x − 2y − 12 = 0`"], res: "t₁: 2x − y − 14 = 0, t₂: 2x + y + 6 = 0" },
-      { l: "d)", q: "`x² + 3y² − 2x − 6y − 44 = 0`, `T[7; ?]`", steps: ["`49 + 3y² − 14 − 6y − 44 = 0` → `y² − 2y − 3 = 0` → `y = 3` nebo `y = −1`", "Záměny: `x₀x + 3y₀y − (x + x₀) − 3(y + y₀) − 44 = 0`", "`T₁[7; 3]`: `7x + 9y − x − 7 − 3y − 9 − 44 = 0` → `6x + 6y − 60 = 0`", "`T₂[7; −1]`: `7x − 3y − x − 7 − 3y + 3 − 44 = 0` → `6x − 6y − 48 = 0`"], res: "t₁: x + y − 10 = 0, t₂: x − y − 8 = 0" },
-    ],
-  },
-  {
-    cat: "tecna", src: "PL Hyperbola · úl. 11", diff: 2,
-    task: "Vypočítejte zbývající souřadnici bodu `T`, který leží na hyperbole `h`, a určete rovnici tečny hyperboly v bodě `T`.",
-    parts: [
-      { l: "a)", q: "`3x² − y² − 3 = 0`, `T[2; ?]`", steps: ["`12 − y² − 3 = 0` → `y = ±3`", "Tečna: `3·x₀·x − y₀·y − 3 = 0`", "`T₁[2; 3]`: `6x − 3y − 3 = 0`", "`T₂[2; −3]`: `6x + 3y − 3 = 0`"], res: "t₁: 2x − y − 1 = 0, t₂: 2x + y − 1 = 0" },
-      { l: "b)", q: "`2x² − y² − 2 = 0`, `T[?; 4]`", steps: ["`2x² − 16 − 2 = 0` → `x² = 9` → `x = ±3`", "Tečna: `2x₀x − y₀y − 2 = 0`", "`T₁[3; 4]`: `6x − 4y − 2 = 0`", "`T₂[−3; 4]`: `−6x − 4y − 2 = 0`"], res: "t₁: 3x − 2y − 1 = 0, t₂: 3x + 2y + 1 = 0" },
-      { l: "c)", q: "`8x² − y² + 16 = 0`, `T[−4; ?]`", steps: ["`128 − y² + 16 = 0` → `y² = 144` → `y = ±12`", "Tečna: `8x₀x − y₀y + 16 = 0`", "`T₁[−4; 12]`: `−32x − 12y + 16 = 0`", "`T₂[−4; −12]`: `−32x + 12y + 16 = 0`"], res: "t₁: 8x + 3y − 4 = 0, t₂: 8x − 3y − 4 = 0" },
-      { l: "d)", q: "`3x² − 4y² − 12 = 0`, `T[?; −3]`", steps: ["`3x² − 36 − 12 = 0` → `x² = 16` → `x = ±4`", "Tečna: `3x₀x − 4y₀y − 12 = 0`", "`T₁[4; −3]`: `12x + 12y − 12 = 0`", "`T₂[−4; −3]`: `−12x + 12y − 12 = 0`"], res: "t₁: x + y − 1 = 0, t₂: x − y + 1 = 0" },
-    ],
-  },
-  {
-    cat: "tecna", src: "PL Parabola · úl. 16", diff: 2,
-    task: "Vypočítejte zbývající souřadnici bodu `T`, který leží na parabole, a určete rovnici tečny paraboly v bodě `T`.",
-    parts: [
-      { l: "a)", q: "`y² − 2x − 6y + 7 = 0`, `T[?; 5]`", steps: ["`25 − 2x − 30 + 7 = 0` → `x = 1`, `T[1; 5]`", "Záměny: `y₀y − (x + x₀) − 3(y + y₀) + 7 = 0`", "`5y − x − 1 − 3y − 15 + 7 = 0` → `−x + 2y − 9 = 0`"], res: "t: x − 2y + 9 = 0" },
-      { l: "b)", q: "`x² − 2x − 4y + 9 = 0`, `T[3; ?]`", steps: ["`9 − 6 − 4y + 9 = 0` → `y = 3`, `T[3; 3]`", "Záměny: `x₀x − (x + x₀) − 2(y + y₀) + 9 = 0`", "`3x − x − 3 − 2y − 6 + 9 = 0` → `2x − 2y = 0`"], res: "t: x − y = 0" },
-    ],
-  },
-  {
-    cat: "tecna", src: "MFF portál · příklady 5.12, 5.17, 5.22", diff: 2,
-    task: "Určete rovnici tečny kuželosečky v daném bodě.",
-    parts: [
-      { l: "a)", q: "elipsa `[[(x − 2)²||10]] + [[(y − 3)²||40]] = 1`, `T[3; 9]`", steps: ["Kontrola: `1/10 + 36/40 = 1` ✓", "`[[(3 − 2)(x − 2)||10]] + [[(9 − 3)(y − 3)||40]] = 1` | ·40", "`4(x − 2) + 6(y − 3) = 40` → `4x + 6y − 66 = 0`"], res: "t: 2x + 3y − 33 = 0" },
-      { l: "b)", q: "hyperbola `4x² − 5y² − 24x − 20y − 4 = 0`, `T[8; −6]`", steps: ["Kontrola: `256 − 180 − 192 + 120 − 4 = 0` ✓", "Záměny: `4·8x − 5·(−6)y − 12(x + 8) − 10(y − 6) − 4 = 0`", "`32x + 30y − 12x − 96 − 10y + 60 − 4 = 0` → `20x + 20y − 40 = 0`"], res: "t: x + y − 2 = 0" },
-      { l: "c)", q: "parabola s řídicí přímkou `x = −1` a ohniskem `F[3; −1]`, `T[9; 7]`", d: 3, steps: ["Vzdálenost F od d: `p = 4`; vrchol leží uprostřed: `V[1; −1]`; otevřená doprava", "`(y + 1)² = 8(x − 1)`; kontrola T: `64 = 64` ✓", "Tečna: `(y₀ + 1)(y + 1) = 4(x₀ − 1) + 4(x − 1)` → `8(y + 1) = 32 + 4x − 4`", "`8y + 8 = 4x + 28` → `4x − 8y + 20 = 0`"], res: "t: x − 2y + 5 = 0" },
-    ],
-  },
-  {
-    cat: "tecna", src: "Vlastní + MFF portál (úloha k elipse)", diff: 3,
-    task: "Tečny daného směru: najděte tečny, které jsou rovnoběžné / kolmé s danou přímkou.",
-    formula: "Tečnu napiš s neznámou `q`, dosaď do kuželosečky a polož `D = 0`.",
-    parts: [
-      { l: "a)", q: "elipsa `x² + 4y² = 20`, tečny ∥ s `x + y = 0`", steps: [
-        "Hledám `t: x + y + q = 0` → `x = −y − q`",
-        "`(y + q)² + 4y² = 20` → `5y² + 2qy + q² − 20 = 0`",
-        "`D = 4q² − 20(q² − 20) = −16q² + 400 = 0` → `q² = 25` → `q = ±5`",
-        "Body dotyku: `y = −2q/10`: pro `q = 5`: `y = −1, x = −4`; pro `q = −5`: `y = 1, x = 4`",
-        "Kontrola podmínkou dotyku `a²k² + b² = q²`: `20·1 + 5 = 25` ✓",
-      ], res: "t₁: x + y + 5 = 0 (T₁[−4; −1]), t₂: x + y − 5 = 0 (T₂[4; 1])",
-        graph: { curves: [{ f: (x, y) => x * x + 4 * y * y - 20 }], lines: [{ a: 1, b: 1, c: 5 }, { a: 1, b: 1, c: -5 }, { a: 1, b: 1, c: 0, dash: true, color: MUTED }], pts: [{ x: -4, y: -1, label: "T₁", color: RED }, { x: 4, y: 1, label: "T₂", color: RED }], view: [-6.5, 6.5, -6.5, 6.5] } },
-      { l: "b)", q: "elipsa `[[(x + 1)²||32]] + [[(y − 2)²||2]] = 1`, tečny kolmé k `p: 4x − y + 5 = 0`", steps: [
-        "Kolmá přímka má normálu = směr p, tj. `(1; 4)`: `t: x + 4y + q = 0` → `x = −4y − q`",
-        "Dosadím (`x + 1 = −4y − q + 1`), ·32: `(4y + q − 1)² + 16(y − 2)² = 32`",
-        "Označím `s = q − 1`: `32y² + (8s − 64)y + s² + 32 = 0`",
-        "`D = (8s − 64)² − 128(s² + 32) = −64s² − 1024s = −64s(s + 16) = 0`",
-        "`s = 0 → q = 1`; `s = −16 → q = −15`",
-      ], res: "t₁: x + 4y + 1 = 0, t₂: x + 4y − 15 = 0" },
-    ],
-  },
 
   // ───────────── ELIPSA ─────────────
   {
-    cat: "elipsa", src: "PL Elipsa · úl. 1", diff: 1,
+    cat: "sestaveni", src: "PL Elipsa · úl. 1", diff: 1,
     task: "Napište osovou rovnici elipsy, která má hlavní osu v ose x a vedlejší osu v ose y.",
     formula: "`[[x²||a²]] + [[y²||b²]] = 1`, `e² = a² − b²`",
     parts: [
@@ -1465,7 +1590,7 @@ const PROBLEMS = [
     ],
   },
   {
-    cat: "elipsa", src: "PL Elipsa · úl. 2", diff: 1,
+    cat: "cteni", src: "PL Elipsa · úl. 2", diff: 1,
     task: "Určete souřadnice vrcholů a ohnisek elipsy.",
     parts: [
       { l: "a)", q: "`[[x²||16]] + [[y²||9]] = 1`", steps: ["`a = 4`, `b = 3`, `e = √(16 − 9) = √7`, hlavní osa = osa x"], res: "A[−4; 0], B[4; 0], C[0; 3], D[0; −3], F₁,₂[±√7; 0]" },
@@ -1474,7 +1599,7 @@ const PROBLEMS = [
     ],
   },
   {
-    cat: "elipsa", src: "PL Elipsa · úl. 4–11", diff: 2,
+    cat: "sestaveni", src: "PL Elipsa · úl. 4–11", diff: 2,
     task: "Napište obecnou rovnici elipsy z daných prvků.",
     formula: "Najdi S, a, b (e² = a² − b²) → středový tvar → vynásob společným jmenovatelem → roznásob.",
     parts: [
@@ -1492,7 +1617,7 @@ const PROBLEMS = [
 
   // ───────────── HYPERBOLA ─────────────
   {
-    cat: "hyperbola", src: "PL Hyperbola · úl. 1–2", diff: 1,
+    cat: "sestaveni", src: "PL Hyperbola · úl. 1–2", diff: 1,
     task: "Napište osovou rovnici hyperboly (hlavní osa v ose x, resp. v ose y).",
     formula: "osa x: `[[x²||a²]] − [[y²||b²]] = 1` · osa y: `[[y²||a²]] − [[x²||b²]] = 1` · `e² = a² + b²`",
     parts: [
@@ -1505,7 +1630,7 @@ const PROBLEMS = [
     ],
   },
   {
-    cat: "hyperbola", src: "PL Hyperbola · úl. 5", diff: 1,
+    cat: "cteni", src: "PL Hyperbola · úl. 5", diff: 1,
     task: "Určete vrcholy, ohniska a rovnice asymptot hyperboly.",
     parts: [
       { l: "a)", q: "`[[x²||9]] − [[y²||4]] = 1`", steps: ["`a = 3`, `b = 2`, `e = √13`, osa x", "Asymptoty `y = ±(b/a)x`"], res: "A,B[±3; 0], F₁,₂[±√13; 0], y = ±(2/3)x",
@@ -1515,7 +1640,7 @@ const PROBLEMS = [
     ],
   },
   {
-    cat: "hyperbola", src: "PL Hyperbola · úl. 6–8", diff: 2,
+    cat: "sestaveni", src: "PL Hyperbola · úl. 6–8", diff: 2,
     task: "Napište obecnou rovnici hyperboly z daných prvků.",
     parts: [
       { l: "6a)", q: "rovnoosá, střed v počátku, osa x, `a = 1,5`", steps: ["Rovnoosá → `a = b`: `x² − y² = 2,25`", "·4 → `4x² − 4y² = 9`"], res: "4x² − 4y² − 9 = 0" },
@@ -1529,7 +1654,7 @@ const PROBLEMS = [
 
   // ───────────── PARABOLA ─────────────
   {
-    cat: "parabola", src: "PL Parabola · úl. 1–2", diff: 1,
+    cat: "sestaveni", src: "PL Parabola · úl. 1–2", diff: 1,
     task: "Napište rovnici paraboly s vrcholem v počátku, je-li dáno ohnisko F, resp. řídicí přímka d.",
     formula: "Ohnisko i řídicí přímka jsou od vrcholu ve vzdálenosti `p/2`. Parabola se otevírá směrem k ohnisku (od řídicí přímky).",
     parts: [
@@ -1544,7 +1669,7 @@ const PROBLEMS = [
     ],
   },
   {
-    cat: "parabola", src: "PL Parabola · úl. 3", diff: 1,
+    cat: "cteni", src: "PL Parabola · úl. 3", diff: 1,
     task: "Určete souřadnice ohniska F a rovnici řídicí přímky d paraboly.",
     parts: [
       { l: "a)", q: "`y² = 8x`", steps: ["`2p = 8` → `p = 4`, `p/2 = 2`"], res: "F[2; 0], d: x = −2" },
@@ -1554,7 +1679,7 @@ const PROBLEMS = [
     ],
   },
   {
-    cat: "parabola", src: "PL Parabola · úl. 6–10", diff: 2,
+    cat: "sestaveni", src: "PL Parabola · úl. 6–10", diff: 2,
     task: "Napište obecnou rovnici paraboly z daných prvků.",
     parts: [
       { l: "6a)", q: "`V[2; 3]`, `p = 4`, osa ∥ x", steps: ["Dvě možnosti: `(y − 3)² = ±8(x − 2)`", "`+`: `y² − 6y + 9 − 8x + 16 = 0`", "`−`: `y² − 6y + 9 + 8x − 16 = 0`"], res: "y² − 8x − 6y + 25 = 0 nebo y² + 8x − 6y − 7 = 0" },
@@ -1567,7 +1692,7 @@ const PROBLEMS = [
     ],
   },
   {
-    cat: "parabola", src: "PL Parabola · úl. 13", diff: 2,
+    cat: "cteni", src: "PL Parabola · úl. 13", diff: 2,
     task: "Určete vrchol, ohnisko a rovnici řídicí přímky paraboly.",
     parts: [
       { l: "a)", q: "`y² − 4x + 12 = 0`", steps: ["`y² = 4(x − 3)` → `V[3; 0]`, `2p = 4`, `p/2 = 1`, doprava"], res: "V[3; 0], F[4; 0], d: x = 2" },
@@ -1590,7 +1715,7 @@ function ProblemPart({ part, formula, onlyOne }) {
           {open ? "Skrýt řešení ▴" : "Ukázat řešení ▾"}
         </button>
       </div>
-      {open && <Solution given={part.q} formula={part.formula || formula} steps={part.steps} result={part.res} graph={part.graph} />}
+      {open && <Solution given={part.q} formula={part.formula || formula} steps={part.steps} result={part.res} graph={part.graph || (part.K && conicGraphProps(analyze(...part.K)))} />}
     </div>
   );
 }
@@ -1604,7 +1729,7 @@ function Ulohy() {
       <div style={{ margin: "0 0 10px" }}>
         {CATS.map(c => <button key={c.id} className={"chip" + (cat === c.id ? " on" : "")} onClick={() => setCat(c.id)}>{c.t}</button>)}
       </div>
-      <p className="lead">{list.length} úloh · {nParts} příkladů. Nejdřív to spočítej na papír, potom si rozbal řešení. Výsledky jsou ověřené s výsledkovými listy z tvých PL.</p>
+      <p className="lead">{list.length} úloh · {nParts} příkladů. Nejdřív to spočítej na papír, potom si rozbal řešení. Úlohy z PL jsou ověřené s výsledkovými listy; nové úlohy podle zadání testu (poměr, převody, kreslení) jsou dopočítané a zkontrolované.</p>
       {list.map((p, i) => (
         <div key={p.src + i} className={"entry" + (p.diff === 3 ? " red" : "")}>
           <div className="src">{p.src}</div>
@@ -1619,14 +1744,57 @@ function Ulohy() {
 // ══════════════════════════════════════════════════════════════════
 // SPOLEČNÉ: graf kuželosečky z rozboru, řešení polohy přímky
 // ══════════════════════════════════════════════════════════════════
-function conicGraphProps(an, extra = {}) {
-  const pts = [];
-  if (an.center && ["kruznice", "elipsa", "hyperbola"].includes(an.type)) pts.push({ x: an.center[0], y: an.center[1], label: "S", r: 3 });
-  if (an.type === "parabola") pts.push({ x: an.center[0], y: an.center[1], label: "V", r: 3 });
-  if (an.ref && (an.type === "parabola" || an.type === "hyperbola")) pts.push({ x: an.ref[0], y: an.ref[1], label: "F", r: 3, color: RED });
+// význačné prvky kuželosečky jako body a přímky pro graf
+const AXIS = "#9aa6bf", DIRC = "#b7791f";
+const vLine = (k, o = {}) => ({ a: 1, b: 0, c: -k, ...o });
+const hLine = (k, o = {}) => ({ a: 0, b: 1, c: -k, ...o });
+function conicElements(an, { dir = true, axes = true } = {}) {
+  const g = an.geo, pts = [], lines = [];
   if (an.type === "bod") pts.push({ x: an.center[0], y: an.center[1], label: "bod", r: 4 });
-  return { curves: [{ f: an.f }], pts: [...pts, ...(extra.pts || [])], lines: extra.lines || [], view: extra.view || an.view, fill: extra.fill };
+  if (!g) return { pts, lines };
+  const P = (x, y, label, o = {}) => pts.push({ x, y, label, r: 3.2, ...o });
+  if (g.kind === "kruznice") {
+    P(g.cx, g.cy, "S");
+    if (axes) lines.push(hLine(g.cy, { dash: true, color: AXIS }), vLine(g.cx, { dash: true, color: AXIS }));
+  }
+  if (g.kind === "elipsa" || g.kind === "hyperbola") {
+    const { cx, cy, a, b, e, horiz } = g;
+    const at = (t, u) => horiz ? [cx + t, cy + u] : [cx + u, cy + t];   // t = podél hlavní osy
+    P(cx, cy, "S");
+    P(...at(-a, 0), "A"); P(...at(a, 0), "B");
+    if (g.kind === "elipsa") { P(...at(0, b), "C"); P(...at(0, -b), "D"); }
+    P(...at(-e, 0), "F₁", { color: RED }); P(...at(e, 0), "F₂", { color: RED });
+    if (axes) lines.push(horiz ? hLine(cy, { dash: true, color: AXIS }) : vLine(cx, { dash: true, color: AXIS }));
+    if (axes && g.kind === "elipsa") lines.push(horiz ? vLine(cx, { dash: true, color: AXIS }) : hLine(cy, { dash: true, color: AXIS }));
+    if (g.kind === "hyperbola") {
+      const k = horiz ? b / a : a / b;   // směrnice asymptot
+      lines.push({ a: k, b: -1, c: cy - k * cx, dash: true, color: MUTED }, { a: -k, b: -1, c: cy + k * cx, dash: true, color: MUTED });
+    }
+    if (dir) { const dd = a * a / e; lines.push(...[-dd, dd].map(t => horiz ? vLine(cx + t, { dash: true, color: DIRC }) : hLine(cy + t, { dash: true, color: DIRC }))); }
+  }
+  if (g.kind === "parabola") {
+    const { vx, vy, h, xSq } = g, w = 2 * Math.abs(h);   // v úrovni ohniska je parabola široká ±p
+    P(vx, vy, "V");
+    if (xSq) { P(vx, vy + h, "F", { color: RED }); pts.push({ x: vx - w, y: vy + h, r: 2.6, color: MUTED }, { x: vx + w, y: vy + h, r: 2.6, color: MUTED }); }
+    else { P(vx + h, vy, "F", { color: RED }); pts.push({ x: vx + h, y: vy - w, r: 2.6, color: MUTED }, { x: vx + h, y: vy + w, r: 2.6, color: MUTED }); }
+    if (axes) lines.push(xSq ? vLine(vx, { dash: true, color: AXIS }) : hLine(vy, { dash: true, color: AXIS }));
+    lines.push(xSq ? hLine(vy - h, { dash: true, color: DIRC }) : vLine(vx - h, { dash: true, color: DIRC }));
+  }
+  return { pts, lines };
 }
+// rozumný výřez: aby byly vidět všechny body
+function fitView(view, pts) {
+  let [x0, x1, y0, y1] = view;
+  for (const p of pts) { x0 = Math.min(x0, p.x - 1); x1 = Math.max(x1, p.x + 1); y0 = Math.min(y0, p.y - 1); y1 = Math.max(y1, p.y + 1); }
+  const half = Math.max(x1 - x0, y1 - y0) / 2, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  return [cx - half, cx + half, cy - half, cy + half];
+}
+function conicGraphProps(an, extra = {}) {
+  const el = conicElements(an, extra);
+  const pts = [...el.pts, ...(extra.pts || [])];
+  return { curves: [{ f: an.f }], pts, lines: [...el.lines, ...(extra.lines || [])], view: extra.view || fitView(an.view, pts) };
+}
+const LEGEND = "Plná modrá = kuželosečka · čárkovaně šedá = osy · tmavší čárkovaná = asymptoty · oranžová čárkovaná = řídicí přímky · červeně ohniska";
 
 function lineSolutionSteps(K, ln, res) {
   const { a, b, c } = ln;
@@ -1682,25 +1850,20 @@ const toInt = s => { const v = parseInt(s, 10); return isNaN(v) ? 0 : v; };
 
 function Lab() {
   const [co, setCo] = useState(["1", "-3", "-4", "24", "-32"]);
-  const [pt, setPt] = useState(["0", "3"]);
   const [ln, setLn] = useState(["1", "-1", "2"]);
-  const [showFill, setShowFill] = useState(true);
+  const [showDir, setShowDir] = useState(true);
   const [A, C, D, E, F] = co.map(toInt);
   const an = useMemo(() => analyze(A, C, D, E, F), [A, C, D, E, F]);
-  const P = pt.map(toInt);
   const L = { a: toInt(ln[0]), b: toInt(ln[1]), c: toInt(ln[2]) };
   const K = { A, C, D, E, F };
   const regular = ["kruznice", "elipsa", "hyperbola", "parabola"].includes(an.type);
-  const gP = an.f(P[0], P[1]);
-  const refSign = an.ref ? Math.sign(an.f(an.ref[0], an.ref[1])) : 0;
   const lineOk = L.a !== 0 || L.b !== 0;
   const lres = regular && lineOk ? lineConic(K, L) : null;
   const set = (i, v) => setCo(c => c.map((x, j) => j === i ? v : x));
-  const fill = regular && showFill && refSign ? (x, y) => Math.sign(an.f(x, y)) === refSign : undefined;
 
   return (
     <div>
-      <p className="lead">Zadej koeficienty obecné rovnice. Rozpoznávač udělá doplnění na čtverec, určí typ a parametry, nakreslí graf a otestuje bod i přímku. Hodí se na kontrolu úloh z pracovních listů.</p>
+      <p className="lead">Zadej koeficienty obecné rovnice. Rozpoznávač udělá doplnění na čtverec, určí typ a všechny význačné prvky, nakreslí graf a vyšetří polohu přímky. Hodí se na kontrolu úloh z pracovních listů.</p>
       <div className="entry">
         <h3>Rovnice kuželosečky</h3>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", margin: "8px 0" }}>
@@ -1726,11 +1889,11 @@ function Lab() {
         </div>
         <div style={{ paddingTop: 8 }}>
           <Graph {...conicGraphProps(an, {
-            pts: [{ x: P[0], y: P[1], label: "P", color: "#b7791f" }, ...(lres ? lres.pts.map(p => ({ x: p[0], y: p[1], color: RED, r: 3.5 })) : [])],
+            dir: showDir,
+            pts: lres ? lres.pts.map(p => ({ x: p[0], y: p[1], color: RED, r: 4.5 })) : [],
             lines: lineOk ? [{ ...L }] : [],
-            fill,
-          })} w={360} />
-          {regular && <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, marginTop: 6, cursor: "pointer" }}><input type="checkbox" checked={showFill} onChange={e => setShowFill(e.target.checked)} /> vybarvit vnitřní oblast</label>}
+          })} w={360} caption={LEGEND + " · plná červená = přímka p"} />
+          {(an.type === "elipsa" || an.type === "hyperbola") && <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, marginTop: 6, minHeight: 44, cursor: "pointer" }}><input type="checkbox" checked={showDir} onChange={e => setShowDir(e.target.checked)} /> ukázat řídicí přímky</label>}
         </div>
       </div>
 
@@ -1744,19 +1907,7 @@ function Lab() {
       )}
 
       {regular && (
-        <div className="grid2">
-          <div className="entry">
-            <h3>Bod P: vnitřek, nebo vnějšek?</h3>
-            <div style={{ display: "flex", alignItems: "flex-start", margin: "6px 0" }}>
-              <NumIn value={pt[0]} onChange={v => setPt([v, pt[1]])} label="x" />
-              <NumIn value={pt[1]} onChange={v => setPt([pt[0], v])} label="y" />
-            </div>
-            <Steps key={pt.join() + an.eq} steps={[
-              `Referenční vnitřní bod (${an.type === "elipsa" || an.type === "kruznice" ? "střed" : "ohnisko"}): \`G\` má znaménko \`${refSign > 0 ? "+" : "−"}\``,
-              `\`G(P) = ${fmtN(gP)}\``,
-            ]} />
-            <div className="result">{gP === 0 ? "P leží na kuželosečce" : Math.sign(gP) === refSign ? "P je ve vnitřní oblasti" : "P je ve vnější oblasti"}</div>
-          </div>
+        <div>
           <div className="entry">
             <h3>Přímka ax + by + c = 0</h3>
             <div style={{ display: "flex", alignItems: "flex-start", margin: "6px 0" }}>
@@ -1816,54 +1967,6 @@ function DrillType() {
   );
 }
 
-function DrillPoint() {
-  const [task, setTask] = useState(genPointTask);
-  const [ans, setAns] = useState(null);
-  const [s, setS] = useState({ ok: 0, n: 0 });
-  const { K, P } = task;
-  const an = useMemo(() => analyze(K.A, K.C, K.D, K.E, K.F), [K]);
-  const g = an.f(P[0], P[1]);
-  const refS = Math.sign(an.f(an.ref[0], an.ref[1]));
-  const truth = g === 0 ? "na" : Math.sign(g) === refS ? "in" : "out";
-  const labels = { in: "Uvnitř (vnitřní oblast)", na: "Na kuželosečce", out: "Vně (vnější oblast)" };
-  const choose = o => { if (ans) return; setAns(o); setS(p => ({ ok: p.ok + (o === truth ? 1 : 0), n: p.n + 1 })); };
-  const next = () => { setTask(genPointTask()); setAns(null); };
-  const refName = an.type === "elipsa" || an.type === "kruznice" ? "střed" : "ohnisko";
-  const refTxt = `[${fmtDec(an.ref[0])}; ${fmtDec(an.ref[1])}]`;
-  const view = an.view;
-  const v2 = [Math.min(view[0], P[0] - 1), Math.max(view[1], P[0] + 1), Math.min(view[2], P[1] - 1), Math.max(view[3], P[1] + 1)];
-  const half = Math.max(v2[1] - v2[0], v2[3] - v2[2]) / 2, cx = (v2[0] + v2[1]) / 2, cy = (v2[2] + v2[3]) / 2;
-  return (
-    <div className="entry">
-      <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}><span className="src">Kde leží bod P vzhledem ke kuželosečce?</span><Score s={s} /></div>
-      <Eq big>{an.eq}</Eq>
-      <div className="mono" style={{ fontSize: 17, margin: "4px 0 10px" }}>P[{fmtN(P[0])}; {fmtN(P[1])}]</div>
-      {["in", "na", "out"].map(o => {
-        let bc = "#c9d2e3", bg = "#fff";
-        if (ans) { if (o === truth) { bc = GREEN; bg = "#eaf6ef"; } else if (o === ans) { bc = RED; bg = "#fdeeee"; } }
-        return <button key={o} className="opt" style={{ borderColor: bc, background: bg }} onClick={() => choose(o)}>{labels[o]}</button>;
-      })}
-      {ans && (
-        <div style={{ marginTop: 10 }}>
-          <div style={{ fontWeight: 700, color: ans === truth ? GREEN : RED }}>{ans === truth ? "Správně!" : "Špatně"}</div>
-          <div className="grid2" style={{ alignItems: "start" }}>
-            <div className="sol">
-              <Steps steps={[
-                `Typ: ${an.name.toLowerCase()} (\`${an.std}\`)`,
-                `Vnitřní referenční bod (${refName}) ${refTxt}: \`G\` je tam ${refS > 0 ? "kladné" : "záporné"} → vnitřek má \`G ${refS > 0 ? "> 0" : "< 0"}\``,
-                `Dosadím P do levé strany rovnice: \`G(${fmtN(P[0])}; ${fmtN(P[1])}) = ${fmtN(g)}\``,
-              ]} />
-              <div className="result">{labels[truth]}</div>
-            </div>
-            <Graph {...conicGraphProps(an, { pts: [{ x: P[0], y: P[1], label: "P", color: "#b7791f", r: 5 }], fill: (x, y) => Math.sign(an.f(x, y)) === refS, view: [cx - half, cx + half, cy - half, cy + half] })} w={300} />
-          </div>
-        </div>
-      )}
-      <button className="btn solid" style={{ marginTop: 12 }} onClick={next}>Další bod →</button>
-    </div>
-  );
-}
-
 function DrillLine() {
   const [task, setTask] = useState(genLineTask);
   const [ans, setAns] = useState(null);
@@ -1897,68 +2000,131 @@ function DrillLine() {
   );
 }
 
-// PL úl. 3 jako interaktivní tabulka
-const PL3 = [
-  { q: "(x − 3)² + y² = 4", a: ["out", "out", "out", "in"] },
-  { q: "3x² + 4y² = 16", a: ["in", "out", "in", "na"] },
-  { q: "x² − y² − 2 = 0", a: ["out", "out", "in", "in"] },
-  { q: "x² − 4y² + 4y = 0", a: ["na", "in", "out", "out"] },
-  { q: "y² + 2x − 8 = 0", a: ["in", "out", "in", "in"] },
-  { q: "(x + 2)² = 10y", a: ["out", "in", "na", "out"] },
-];
-const CYCLE = { "": "in", in: "out", out: "na", na: "in" };
-const CELL = { "": "—", in: "uvnitř", out: "vně", na: "na křivce" };
-function DrillTable() {
-  const [g, setG] = useState(() => PL3.map(() => ["", "", "", ""]));
-  const [checked, setChecked] = useState(false);
-  const total = PL3.length * 4;
-  const ok = g.reduce((s, row, i) => s + row.filter((v, j) => v === PL3[i].a[j]).length, 0);
+function OptList({ opts, truth, ans, onPick, render = o => <T>{"`" + o + "`"}</T> }) {
+  return opts.map((o, i) => {
+    let bc = "#c9d2e3", bg = "#fff";
+    if (ans !== null) { if (i === truth) { bc = GREEN; bg = "#eaf6ef"; } else if (i === ans) { bc = RED; bg = "#fdeeee"; } }
+    return <button key={i} className="opt" style={{ borderColor: bc, background: bg }} onClick={() => onPick(i)}>{render(o)}</button>;
+  });
+}
+
+function DrillRatio() {
+  const [t, setT] = useState(genRatioTask);
+  const [ans, setAns] = useState(null);
+  const [s, setS] = useState({ ok: 0, n: 0 });
+  const truth = t.opts.findIndex(k => sameK(k, t.K));
+  const an = useMemo(() => analyze(t.K.A, t.K.C, t.K.D, t.K.E, t.K.F), [t]);
+  const choose = i => { if (ans !== null) return; setAns(i); setS(p => ({ ok: p.ok + (i === truth ? 1 : 0), n: p.n + 1 })); };
+  const next = () => { setT(genRatioTask()); setAns(null); };
+  const dEq = (t.vert ? "x = " : "y = ") + fmtN(t.c);
   return (
     <div className="entry">
-      <div className="src">PL Kuželosečka a přímka · úl. 3</div>
-      <p>Body <M>A[0; 0]</M>, <M>B[0; 3]</M>, <M>C[−2; 0]</M>, <M>D[2; 1]</M>. Klepnutím na buňku přepínáš <b>uvnitř → vně → na křivce</b>. Pak dej „Zkontrolovat“.</p>
-      <div className="tblWrap"><table className="tbl" style={{ minWidth: 520 }}>
-        <thead><tr><th>Kuželosečka</th>{["A", "B", "C", "D"].map(p => <th key={p} style={{ textAlign: "center" }}>{p}</th>)}</tr></thead>
-        <tbody>
-          {PL3.map((r, i) => (
-            <tr key={i}>
-              <td className="mono" style={{ whiteSpace: "nowrap" }}>{String.fromCharCode(97 + i)}) {r.q}</td>
-              {g[i].map((v, j) => {
-                const good = checked && v === r.a[j], bad = checked && v !== r.a[j];
-                return (
-                  <td key={j} style={{ padding: 3, textAlign: "center" }}>
-                    <button onClick={() => { setChecked(false); setG(G => G.map((row, ii) => ii === i ? row.map((x, jj) => jj === j ? CYCLE[x] : x) : row)); }}
-                      style={{ width: "100%", minHeight: 44, border: `1.5px solid ${good ? GREEN : bad ? RED : "#c9d2e3"}`, background: good ? "#eaf6ef" : bad ? "#fdeeee" : "#fff", cursor: "pointer", fontSize: 14, color: INK, transition: "all .4s ease" }}>
-                      {CELL[v]}{bad && <div style={{ fontSize: 12, color: RED }}>→ {CELL[r.a[j]]}</div>}
-                    </button>
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table></div>
-      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginTop: 8 }}>
-        <button className="btn solid" onClick={() => setChecked(true)}>Zkontrolovat</button>
-        <button className="btn" onClick={() => { setG(PL3.map(() => ["", "", "", ""])); setChecked(false); }}>Vymazat</button>
-        {checked && <span className="score">{ok} / {total} správně</span>}
-      </div>
-      <p className="lead" style={{ fontSize: 14.5 }}>Postup ke každé kuželosečce najdeš v sekci Úlohy → Vnitřek / vnějšek.</p>
+      <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}><span className="src">Kuželosečka z poměru vzdáleností</span><Score s={s} /></div>
+      <p style={{ fontSize: 17 }}>Najdi rovnici množiny všech bodů <M>P</M>, které mají {t.phr}, je-li <M>{`F[${fmtN(t.f1)}; ${fmtN(t.f2)}]`}</M> a <M>{"d: " + dEq}</M>.</p>
+      <OptList opts={t.opts} truth={truth} ans={ans} onPick={choose} render={k => <T>{"`" + genEq(k.A, k.C, k.D, k.E, k.F) + "`"}</T>} />
+      {ans !== null && (
+        <div style={{ marginTop: 10 }}>
+          <div style={{ fontWeight: 700, color: ans === truth ? GREEN : RED }}>{ans === truth ? "Správně!" : "Špatně"}</div>
+          <div className="grid2" style={{ alignItems: "start" }}>
+            <div className="sol">
+              <Steps steps={[...ratioSteps(t), ...an.steps.slice(1)]} />
+              <div className="result">{an.name}: {an.std}</div>
+            </div>
+            <Graph {...conicGraphProps(an, { pts: [{ x: t.f1, y: t.f2, color: RED, r: 7, hollow: true }, t.vert ? { x: t.c, y: t.f2, r: 0 } : { x: t.f1, y: t.c, r: 0 }], lines: [t.vert ? vLine(t.c, { color: DIRC }) : hLine(t.c, { color: DIRC })] })} w={300} caption="zadané ohnisko F zakroužkované, zadaná přímka d plně oranžově" />
+          </div>
+        </div>
+      )}
+      <button className="btn solid" style={{ marginTop: 12 }} onClick={next}>Další příklad →</button>
+    </div>
+  );
+}
+
+function DrillConv() {
+  const [t, setT] = useState(genConvTask);
+  const [ans, setAns] = useState(null);
+  const [s, setS] = useState({ ok: 0, n: 0 });
+  const an = useMemo(() => analyze(t.K.A, t.K.C, t.K.D, t.K.E, t.K.F), [t]);
+  const truth = t.opts.indexOf(t.right);
+  const choose = i => { if (ans !== null) return; setAns(i); setS(p => ({ ok: p.ok + (i === truth ? 1 : 0), n: p.n + 1 })); };
+  const next = () => { setT(genConvTask()); setAns(null); };
+  return (
+    <div className="entry">
+      <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}><span className="src">{t.toGen ? "Převeď na obecný tvar" : "Převeď na středový / vrcholový tvar"}</span><Score s={s} /></div>
+      <Eq big>{t.toGen ? convStd(t.t) : an.eq}</Eq>
+      <OptList opts={t.opts} truth={truth} ans={ans} onPick={choose} />
+      {ans !== null && (
+        <div style={{ marginTop: 10 }}>
+          <div style={{ fontWeight: 700, color: ans === truth ? GREEN : RED }}>{ans === truth ? "Správně!" : "Špatně"}</div>
+          <div className="grid2" style={{ alignItems: "start" }}>
+            <div className="sol"><Steps steps={t.toGen ? convSteps(t) : an.steps.slice(1)} /><div className="result">{t.right}</div></div>
+            <Graph {...conicGraphProps(an)} w={300} />
+          </div>
+        </div>
+      )}
+      <button className="btn solid" style={{ marginTop: 12 }} onClick={next}>Další příklad →</button>
+    </div>
+  );
+}
+
+const DRAW_CHECK = {
+  kruznice: ["střed S", "poloměr r (4 body na kružnici ve směru os)"],
+  elipsa: ["střed S", "hlavní osa ve správném směru", "hlavní vrcholy A, B", "vedlejší vrcholy C, D", "ohniska F₁, F₂"],
+  hyperbola: ["střed S", "hlavní osa ve správném směru", "vrcholy A, B", "asymptoty (úhlopříčky obdélníku 2a × 2b)", "ohniska F₁, F₂"],
+  parabola: ["vrchol V", "osa o a směr otevření", "ohnisko F", "řídicí přímka d", "pomocné body [F ± p] (šířka v úrovni ohniska)"],
+};
+function DrillDraw() {
+  const gen = () => { const c = genConvTask(); return c.K; };
+  const [K, setK] = useState(gen);
+  const [open, setOpen] = useState(false);
+  const [chk, setChk] = useState({});
+  const [s, setS] = useState({ ok: 0, n: 0 });
+  const an = useMemo(() => analyze(K.A, K.C, K.D, K.E, K.F), [K]);
+  const items = DRAW_CHECK[an.type] || [];
+  const next = () => {
+    if (open) setS(p => ({ ok: p.ok + items.filter(it => chk[it]).length, n: p.n + items.length }));
+    setK(gen()); setOpen(false); setChk({});
+  };
+  return (
+    <div className="entry">
+      <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}><span className="src">Zakresli do KSS a vyznač význačné prvky</span><Score s={s} /></div>
+      <Eq big>{an.eq}</Eq>
+      <p className="lead">Na čtverečkovaný papír: převeď na středový/vrcholový tvar, vyznač prvky a teprve potom nakresli křivku. Pak si to porovnej.</p>
+      {!open ? <button className="btn" onClick={() => setOpen(true)}>Ukázat správný obrázek ▾</button> : (
+        <div className="grid2" style={{ alignItems: "start" }}>
+          <div>
+            <div className="sol"><Steps steps={an.steps.slice(1)} /><div className="result">{an.std}</div></div>
+            <div className="tblWrap"><table className="tbl"><tbody>
+              {an.params.map(([k, v]) => <tr key={k}><th style={{ width: 150 }}>{k}</th><td className="mono">{v}</td></tr>)}
+            </tbody></table></div>
+          </div>
+          <div>
+            <Graph {...conicGraphProps(an)} w={320} caption={LEGEND} />
+            <div className="solLbl" style={{ paddingLeft: 0, marginTop: 10 }}>Co jsi měl na obrázku správně?</div>
+            {items.map(it => (
+              <label key={it} style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 44, cursor: "pointer", fontSize: 15 }}>
+                <input type="checkbox" checked={!!chk[it]} onChange={e => setChk(c => ({ ...c, [it]: e.target.checked }))} style={{ width: 20, height: 20 }} /> {it}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+      <button className="btn solid" style={{ marginTop: 12 }} onClick={next}>{open ? "Započítat a další →" : "Přeskočit →"}</button>
     </div>
   );
 }
 
 function Trenazer() {
-  const [mode, setMode] = useState("typ");
-  const modes = [["typ", "🔍 Typ kuželosečky"], ["bod", "🎯 Bod: vnitřek / vnějšek"], ["primka", "✂️ Přímka a kuželosečka"], ["tabulka", "📋 PL úl. 3 (tabulka)"]];
+  const [mode, setMode] = useState("pomer");
+  const modes = [["pomer", "📏 Poměr vzdáleností"], ["typ", "🔍 Typ kuželosečky"], ["prevod", "🔁 Převody tvarů"], ["graf", "✏️ Zakreslení do KSS"], ["primka", "✂️ Přímka a kuželosečka"]];
   return (
     <div>
-      <p className="lead">Náhodně generované příklady na všechny tři typy úloh z testu. Nejdřív to spočítej na papír a pak klikni na odpověď. Ukáže se postup i graf.</p>
+      <p className="lead">Náhodně generované příklady na všech pět bodů zadání testu. Nejdřív to spočítej na papír a pak klikni na odpověď. Ukáže se postup i graf.</p>
       <div style={{ marginBottom: 6 }}>{modes.map(([id, t]) => <button key={id} className={"chip" + (mode === id ? " on" : "")} onClick={() => setMode(id)}>{t}</button>)}</div>
       {mode === "typ" && <DrillType />}
-      {mode === "bod" && <DrillPoint />}
+      {mode === "pomer" && <DrillRatio />}
+      {mode === "prevod" && <DrillConv />}
+      {mode === "graf" && <DrillDraw />}
       {mode === "primka" && <DrillLine />}
-      {mode === "tabulka" && <DrillTable />}
     </div>
   );
 }
@@ -1967,36 +2133,46 @@ function Trenazer() {
 // KVÍZ
 // ══════════════════════════════════════════════════════════════════
 const QUIZ = [
+  { question: "Množina bodů P, pro které `|PF| : |Pd| = 3 : 4` (F ohnisko, d řídicí přímka), je…", type: "single", options: ["elipsa", "parabola", "hyperbola", "kružnice"], correct: [0], explanation: "`ε = 3/4 < 1` → elipsa. `ε = 1` parabola, `ε > 1` hyperbola." },
+  { question: "Bod má od přímky d dvakrát větší vzdálenost než od bodu F. Jaký je poměr ε = |PF| : |Pd|?", type: "single", options: ["1/2 → elipsa", "2 → hyperbola", "1 → parabola", "1/4 → elipsa"], correct: [0], explanation: "`|Pd| = 2|PF|` → `|PF| : |Pd| = 1 : 2`. Pozor na pořadí v definici: v čitateli je vždy vzdálenost od ohniska.", tip: "Napiš si vždy nejdřív |PF| = …·|Pd|." },
+  { question: "Kuželosečka: `|PF| = 2|Pd|`, `F[4; 0]`, `d: x = 1`. Po umocnění dostaneš:", type: "single", options: ["(x − 4)² + y² = 4(x − 1)²", "(x − 4)² + y² = 2(x − 1)²", "(x − 4)² + y² = 4(x + 1)²", "(x + 4)² + y² = 4(x − 1)²"], correct: [0], explanation: "Umocňuje se celá pravá strana, tedy i ε: `2² = 4`. Vzdálenost od `x = 1` je `|x − 1|`. Vyjde `3x² − y² − 12 = 0`, hyperbola." },
+  { question: "Množina bodů stejně vzdálených od `F[0; 2]` a od přímky `y = −2` má rovnici:", type: "single", options: ["x² = 8y", "x² = 4y", "y² = 8x", "x² = −8y"], correct: [0], explanation: "`x² + (y − 2)² = (y + 2)²` → `x² = 8y`. Parabola s vrcholem v počátku, `p = 4` (vzdálenost F od d)." },
+  { question: "Jaká je číselná výstřednost elipsy `x²/25 + y²/16 = 1`?", type: "single", options: ["3/5", "4/5", "3", "5/3"], correct: [0], explanation: "`e = √(25 − 16) = 3`, `ε = e/a = 3/5`. Číselná výstřednost elipsy je vždy mezi 0 a 1." },
+  { question: "Řídicí přímky hyperboly `x²/4 − y²/12 = 1` jsou:", type: "single", options: ["x = ±1", "x = ±4", "x = ±2", "y = ±1"], correct: [0], explanation: "`e² = 4 + 12 = 16` → `e = 4`, `x = ±a²/e = ±4/4 = ±1`. Leží mezi vrcholy (`±2`), jak to u hyperboly má být." },
   { question: "Jakou kuželosečku popisuje rovnice `4x² + 9y² − 8x + 36y + 4 = 0`?", type: "single", options: ["elipsu", "kružnici", "hyperbolu", "parabolu"], correct: [0], explanation: "`4(x − 1)² + 9(y + 2)² = 36` → `(x − 1)²/9 + (y + 2)²/4 = 1`: kladné a různé jmenovatele → elipsa se středem [1; −2]." },
   { question: "Co je množina bodů daná rovnicí `x² − y² = 0`?", type: "single", options: ["dvojice různoběžek y = ±x", "rovnoosá hyperbola", "bod [0; 0]", "prázdná množina"], correct: [0], explanation: "`(x − y)(x + y) = 0` → `y = x` nebo `y = −x`. Je to singulární kuželosečka, „zdegenerovaná hyperbola“.", tip: "A·C < 0 a pravá strana 0 → vždy dvojice různoběžek." },
   { question: "Co popisuje rovnice `x² + y² − 4x + 6y + 13 = 0`?", type: "single", options: ["bod [2; −3]", "kružnici se středem [2; −3] a r = 13", "kružnici s r = √13", "prázdnou množinu"], correct: [0], explanation: "`(x − 2)² + (y + 3)² = 4 + 9 − 13 = 0` → jediný bod [2; −3]." },
+  { question: "Středový tvar rovnice `x² + 4y² − 6x + 8y − 3 = 0` je:", type: "single", options: ["(x − 3)²/16 + (y + 1)²/4 = 1", "(x + 3)²/16 + (y − 1)²/4 = 1", "(x − 3)²/4 + (y + 1)²/16 = 1", "(x − 3)²/16 + (y + 1)² = 1"], correct: [0], explanation: "`(x − 3)² − 9 + 4[(y + 1)² − 1] − 3 = 0` → `(x − 3)² + 4(y + 1)² = 16` → vydělím 16." },
+  { question: "Obecný tvar rovnice `(x + 1)²/4 − (y − 2)²/9 = 1` je:", type: "single", options: ["9x² − 4y² + 18x + 16y − 43 = 0", "9x² − 4y² − 18x − 16y − 43 = 0", "4x² − 9y² + 8x + 36y − 68 = 0", "9x² − 4y² + 18x + 16y − 7 = 0"], correct: [0], explanation: "·36: `9(x + 1)² − 4(y − 2)² = 36` → `9x² + 18x + 9 − 4y² + 16y − 16 − 36 = 0` → `9x² − 4y² + 18x + 16y − 43 = 0`." },
   { question: "Jaký typ kuželosečky je `y² − 6x + 4y = 0`?", type: "single", options: ["parabola s osou ∥ x", "parabola s osou ∥ y", "hyperbola", "elipsa"], correct: [0], explanation: "Kvadratický je jen `y²` → parabola; osa je rovnoběžná s osou x (s tou proměnnou, která je v 1. mocnině). `(y + 2)² = 6(x + 2/3)`." },
   { question: "Který vztah platí pro hyperbolu?", type: "single", options: ["e² = a² + b²", "e² = a² − b²", "e = a + b", "a² = b² + e²"], correct: [0], explanation: "U hyperboly je excentricita největší ze tří čísel: `e² = a² + b²`. U elipsy je největší a: `e² = a² − b²`.", tip: "Hyperbola = plus (rozdíl vzdáleností, ale součet ve vzorci)." },
   { question: "Elipsa `x²/9 + y²/25 = 1` má hlavní osu…", type: "single", options: ["v ose y, a = 5", "v ose x, a = 3", "v ose x, a = 5", "v ose y, a = 3"], correct: [0], explanation: "Větší jmenovatel (25) je pod `y` → hlavní osa leží v ose y, `a = 5`, `b = 3`, `e = 4`." },
   { question: "Jaké jsou asymptoty hyperboly `x²/16 − y²/9 = 1`?", type: "single", options: ["y = ±(3/4)x", "y = ±(4/3)x", "y = ±(9/16)x", "y = ±12x"], correct: [0], explanation: "Hlavní osa v ose x → asymptoty `y = ±(b/a)x = ±(3/4)x`." },
   { question: "Parabola `x² = −12y` má ohnisko a řídicí přímku:", type: "single", options: ["F[0; −3], d: y = 3", "F[0; −6], d: y = 6", "F[−3; 0], d: x = 3", "F[0; 3], d: y = −3"], correct: [0], explanation: "`2p = 12` → `p/2 = 3`; znaménko − u osy y → otevřená dolů → ohnisko pod vrcholem." },
-  { question: "Které body leží ve VNITŘNÍ oblasti elipsy `x²/4 + y² = 1`?", type: "multi", options: ["[0; 0]", "[1; 0,5]", "[2; 0]", "[1; 1]", "[−1; −0,8]"], correct: [0, 1, 4], explanation: "Dosazuju do `x²/4 + y²`: 0 (<1), 0,5 (<1), 1 (=1, na elipse), 1,25 (>1, vně), 0,89 (<1)." },
-  { question: "Kde leží střed hyperboly vzhledem k ní?", type: "single", options: ["ve vnější oblasti", "ve vnitřní oblasti", "na hyperbole", "záleží na a, b"], correct: [0], explanation: "Vnitřní oblasti hyperboly jsou ty, které obsahují ohniska (za větvemi). Střed i asymptoty jsou vně." },
-  { question: "Bod `[3; 0]` vzhledem k hyperbole `x²/4 − y²/5 = 1` leží:", type: "single", options: ["uvnitř", "vně", "na hyperbole", "nelze rozhodnout"], correct: [0], explanation: "`9/4 − 0 = 2,25 > 1` → vnitřek. Navíc `e² = 4 + 5 = 9`, takže [3; 0] je přímo ohnisko." },
-  { question: "Po dosazení přímky do rovnice hyperboly vyšla LINEÁRNÍ rovnice s jedním řešením. Přímka je…", type: "single", options: ["rovnoběžná s asymptotou, má 1 společný bod a není tečna", "tečna", "vnější přímka", "asymptota"], correct: [0], explanation: "Kvadratické členy se odečtou právě tehdy, když má přímka směr asymptoty. Protne pak jen jednu větev v jednom bodě (PL 4d, Hyperbola 10b, f)." },
-  { question: "Po dosazení přímky do rovnice elipsy vyšla kvadratická rovnice s `D = 0`. Přímka je:", type: "single", options: ["tečna", "sečna", "vnější přímka", "nelze rozhodnout"], correct: [0], explanation: "D = 0 → jeden dvojnásobný kořen → jediný bod dotyku → tečna." },
-  { question: "Přímka `y = 3` a parabola `(y − 1)² = 4(x + 2)` mají…", type: "single", options: ["1 společný bod, přímka je rovnoběžná s osou (není tečna)", "1 společný bod, přímka je tečna", "2 společné body", "žádný společný bod"], correct: [0], explanation: "`4 = 4(x + 2)` → `x = −1`, jediný bod [−1; 3]. Osa paraboly je `y = 1` ∥ x, přímka y = 3 je s ní rovnoběžná → nejde o tečnu." },
-  { question: "Tečna elipsy `x²/8 + y²/2 = 1` v bodě `T[2; 1]` je:", type: "single", options: ["x + 2y − 4 = 0", "2x + y − 4 = 0", "x + y − 3 = 0", "x − 2y = 0"], correct: [0], explanation: "`2x/8 + 1·y/2 = 1` → `x/4 + y/2 = 1` → `x + 2y − 4 = 0`." },
-  { question: "Tečna paraboly `y² = 4x` v bodě `T[1; 2]` je:", type: "single", options: ["x − y + 1 = 0", "x + y − 3 = 0", "2x − y = 0", "x − 2y + 3 = 0"], correct: [0], explanation: "Záměny: `y₀y = 2(x + x₀)` → `2y = 2x + 2` → `x − y + 1 = 0`." },
-  { question: "Které rovnice popisují (regulární) hyperbolu?", type: "multi", options: ["x² − 4y² − 2x = 0", "3y² − x² + 6y + 3 = 0", "x² − y² + 4 = 0", "xy = 4", "2x² + y² − 1 = 0"], correct: [0, 2, 3], explanation: "1) `(x − 1)² − 4y² = 1` ✓. 2) `3(y + 1)² − x² = 0` → dvojice přímek ✗. 3) `y² − x² = 4` ✓ (osa y). 4) nepřímá úměrnost → rovnoosá hyperbola ✓. 5) elipsa ✗." },
+  { question: "Elipsa má ohniska `F₁[−1; 2]`, `F₂[5; 2]` a hlavní poloosu `a = 4`. Její rovnice je:", type: "single", options: ["(x − 2)²/16 + (y − 2)²/7 = 1", "(x − 2)²/16 + (y − 2)²/25 = 1", "(x − 2)²/7 + (y − 2)²/16 = 1", "(x + 2)²/16 + (y + 2)²/7 = 1"], correct: [0], explanation: "S = střed F₁F₂ = [2; 2], `e = 3`, `b² = 16 − 9 = 7`; ohniska mají stejné y → hlavní osa ∥ x, `a²` pod x." },
+  { question: "Parabola má vrchol `V[1; −2]` a ohnisko `F[1; 1]`. Její rovnice je:", type: "single", options: ["(x − 1)² = 12(y + 2)", "(x − 1)² = 6(y + 2)", "(y + 2)² = 12(x − 1)", "(x − 1)² = −12(y + 2)"], correct: [0], explanation: "F je 3 nad V → `p/2 = 3`, `p = 6`, `2p = 12`, otevřená nahoru." },
+  { question: "Které prvky musíš vyznačit u hyperboly v KSS?", type: "multi", options: ["střed S", "vrcholy A, B", "ohniska F₁, F₂", "asymptoty", "vedlejší vrcholy C, D na křivce"], correct: [0, 1, 2, 3], explanation: "Hyperbola nemá vedlejší vrcholy na křivce. Body `[m; n ± b]` slouží jen k sestrojení obdélníku pro asymptoty." },
+  { question: "Jak nejrychleji sestrojíš ohniska elipsy, když máš vrcholy?", type: "single", options: ["kružnicí z vedlejšího vrcholu C o poloměru a", "kružnicí ze středu o poloměru b", "průsečíkem asymptot", "kružnicí ze středu přes rohy obdélníku"], correct: [0], explanation: "Pro každý bod elipsy je `|PF₁| + |PF₂| = 2a`, pro vedlejší vrchol C jsou obě vzdálenosti stejné → `|CF₁| = a`. Poslední možnost je trik pro hyperbolu." },
+  { question: "U paraboly `y² = 8x` jsou pomocné body v úrovni ohniska:", type: "single", options: ["[2; 4] a [2; −4]", "[2; 2] a [2; −2]", "[4; 2] a [4; −2]", "[4; 8] a [4; −8]"], correct: [0], explanation: "`F[2; 0]`; dosadím `x = 2`: `y² = 16` → `y = ±4 = ±p`. V úrovni ohniska je parabola široká `2p`." },
+  { question: "Po dosazení přímky do rovnice hyperboly vyšla LINEÁRNÍ rovnice s jedním řešením. Přímka je…", type: "single", options: ["rovnoběžná s asymptotou, má 1 společný bod", "tečna", "vnější přímka", "asymptota"], correct: [0], explanation: "Kvadratické členy se odečtou právě tehdy, když má přímka směr asymptoty. Protne pak jen jednu větev v jednom bodě (PL 4d, Hyperbola 10b, f)." },
+  { question: "Přímka `y = 3` a parabola `(y − 1)² = 4(x + 2)` mají…", type: "single", options: ["1 společný bod [−1; 3], přímka je ∥ s osou", "1 společný bod, přímka je tečna", "2 společné body", "žádný společný bod"], correct: [0], explanation: "`4 = 4(x + 2)` → `x = −1`, jediný bod [−1; 3]. Osa paraboly je `y = 1` ∥ x, přímka y = 3 je s ní rovnoběžná → nejde o tečnu." },
+  { question: "Společné body přímky `y = x + 1` a hyperboly `3x² − y² − 3 = 0` jsou:", type: "single", options: ["[2; 3] a [−1; 0]", "[2; 3] a [1; 2]", "[−2; −1] a [1; 2]", "žádné"], correct: [0], explanation: "`3x² − (x + 1)² − 3 = 0` → `2x² − 2x − 4 = 0` → `x² − x − 2 = 0` → `x = 2` nebo `x = −1`; `y = x + 1` → 3 a 0." },
   { question: "Kolik společných bodů může mít přímka s elipsou?", type: "single", options: ["0, 1 nebo 2", "jen 0 nebo 2", "0, 1, 2 nebo 3", "vždy aspoň 1"], correct: [0], explanation: "Dosazením vznikne vždy kvadratická rovnice (u elipsy se kvadratické členy nemůžou odečíst) → 0, 1 nebo 2 řešení." },
-  { question: "Pro parabolu `y² = 2px` (p > 0) je vnitřní oblast dána nerovnicí:", type: "single", options: ["y² < 2px", "y² > 2px", "x < 0", "y² < −2px"], correct: [0], explanation: "Vnitřek obsahuje ohnisko `[p/2; 0]`: `0 < 2p·p/2 = p²` ✓ → `y² < 2px`." },
+  { question: "Které rovnice popisují (regulární) hyperbolu?", type: "multi", options: ["x² − 4y² − 2x = 0", "3y² − x² + 6y + 3 = 0", "x² − y² + 4 = 0", "xy = 4", "2x² + y² − 1 = 0"], correct: [0, 2, 3], explanation: "1) `(x − 1)² − 4y² = 1` ✓. 2) `3(y + 1)² − x² = 0` → dvojice přímek ✗. 3) `y² − x² = 4` ✓ (osa y). 4) nepřímá úměrnost → rovnoosá hyperbola ✓. 5) elipsa ✗." },
   { question: "Elipsa má `a = 5` a `e = 3`. Kolik je `b`?", type: "single", options: ["4", "√34", "2", "8"], correct: [0], explanation: "`b² = a² − e² = 25 − 9 = 16` → `b = 4`." },
-  { question: "Co je množina daná rovnicí `2x² + 3y² + 6 = 0`?", type: "single", options: ["prázdná množina", "elipsa", "bod", "hyperbola"], correct: [0], explanation: "Levá strana je vždy ≥ 6 > 0 → žádný bod nevyhovuje." },
-  { question: "Pro která `q` je přímka `y = x + q` tečnou kružnice `x² + y² = 8`?", type: "single", options: ["q = ±4", "q = ±2√2", "q = ±8", "q = ±2"], correct: [0], explanation: "`x² + (x + q)² = 8` → `2x² + 2qx + q² − 8 = 0`, `D = 4q² − 8(q² − 8) = 64 − 4q² = 0` → `q = ±4`. Podmínka `r²(1 + k²) = q²`: `8·2 = 16`." },
   { question: "Vrcholy hyperboly `−x²/9 + y²/16 = 1` jsou:", type: "single", options: ["[0; ±4]", "[±3; 0]", "[±4; 0]", "[0; ±3]"], correct: [0], explanation: "Kladný člen je s y → hlavní osa v ose y, `a = 4` (pod kladným členem)." },
-  { question: "V bodě `T[5; ?]` elipsy `9x² + 45y² = 405` hledáš tečnu. Kolik tečen najdeš?", type: "single", options: ["2 (body [5; 2] a [5; −2])", "1", "0, bod neleží na elipse", "nekonečně mnoho"], correct: [0], explanation: "`45y² = 180` → `y = ±2` → dva body dotyku a dvě tečny `x ± 2y − 9 = 0` (PL Elipsa 17a)." },
 ];
 
 // ══════════════════════════════════════════════════════════════════
 // KARTIČKY
 // ══════════════════════════════════════════════════════════════════
 const CARDS = [
+  { f: "Kuželosečka z poměru vzdáleností", b: "Množina bodů P, pro které `|PF| : |Pd| = ε` (F ohnisko, d řídicí přímka)." },
+  { f: "ε < 1 / ε = 1 / ε > 1", b: "elipsa / parabola / hyperbola" },
+  { f: "Postup u poměru vzdáleností", b: "P[x; y] → `|PF| = ε·|Pd|` → umocnit (ε²!) → roznásobit → obecná rovnice → doplnit na čtverec" },
+  { f: "Vzdálenost bodu P[x; y] od přímky ax + by + c = 0", b: "`|ax + by + c| / √(a² + b²)`; pro `x = c` jen `|x − c|`" },
+  { f: "Číselná výstřednost elipsy a hyperboly", b: "`ε = e/a` (elipsa < 1, hyperbola > 1)" },
+  { f: "Řídicí přímky elipsy/hyperboly (osa ∥ x)", b: "`x = m ± a²/e`" },
   { f: "Ohnisková definice elipsy", b: "Množina bodů, které mají od dvou ohnisek součet vzdáleností 2a." },
   { f: "Ohnisková definice hyperboly", b: "Množina bodů, které mají od dvou ohnisek absolutní hodnotu rozdílu vzdáleností 2a." },
   { f: "Definice paraboly", b: "Množina bodů, které mají stejnou vzdálenost od ohniska F a od řídicí přímky d. p = |Fd|." },
@@ -2005,20 +2181,16 @@ const CARDS = [
   { f: "Asymptoty hyperboly `x²/a² − y²/b² = 1`", b: "`y = ±(b/a)·x`" },
   { f: "Asymptoty hyperboly `y²/a² − x²/b² = 1`", b: "`y = ±(a/b)·x`" },
   { f: "Ohnisko a řídicí přímka `y² = 2px`", b: "`F[p/2; 0]`, `d: x = −p/2`" },
+  { f: "Středový → obecný tvar", b: "vynásobit společným jmenovatelem, roznásobit závorky, vše doleva" },
+  { f: "Obecný → středový tvar", b: "seskupit, vytknout koeficient u x² / y², doplnit na čtverec, konstanty doprava, vydělit" },
   { f: "Rozpoznání: A·C > 0", b: "elipsa (A = C → kružnice), nebo bod / ∅ podle pravé strany" },
   { f: "Rozpoznání: A·C < 0", b: "hyperbola, při pravé straně 0 dvojice různoběžek" },
   { f: "Rozpoznání: A·C = 0", b: "parabola; chybí-li lineární člen druhé proměnné → rovnoběžky / přímka / ∅" },
-  { f: "Singulární kuželosečky", b: "bod, přímka, dvojice přímek (různoběžné / rovnoběžné). Vznikají řezem roviny vrcholem kužele." },
-  { f: "Vnitřek elipsy", b: "`(x−m)²/a² + (y−n)²/b² < 1` (obsahuje střed)" },
-  { f: "Vnitřek hyperboly", b: "`(x−m)²/a² − (y−n)²/b² > 1`: oblasti s ohnisky. Střed je VNĚ!" },
-  { f: "Vnitřek paraboly", b: "oblast s ohniskem; pro `y² = 2px`: `y² < 2px`" },
-  { f: "Univerzální test vnitřku", b: "Dosaď do G(x, y) známý vnitřní bod (střed / ohnisko) a zkoumaný bod. Stejné znaménko → uvnitř, 0 → na křivce." },
-  { f: "Přímka a kuželosečka: D > 0 / D = 0 / D < 0", b: "sečna (2 body) / tečna (1 bod) / vnější přímka (0 bodů)" },
-  { f: "Po dosazení vyšla lineární rovnice", b: "1 bod: přímka ∥ s asymptotou (hyperbola) nebo s osou (parabola). NENÍ to tečna." },
-  { f: "Tečna elipsy v T[x₀; y₀]", b: "`(x₀−m)(x−m)/a² + (y₀−n)(y−n)/b² = 1`" },
-  { f: "Tečna paraboly `(y−n)² = 2p(x−m)` v T", b: "`(y₀−n)(y−n) = p(x₀−m) + p(x−m)`" },
-  { f: "Metoda polovičních záměn", b: "`x² → x₀x`, `y² → y₀y`, `x → (x+x₀)/2`, `y → (y+y₀)/2`" },
-  { f: "Podmínka dotyku y = kx + q s elipsou x²/a² + y²/b² = 1", b: "`a²k² + b² = q²`" },
+  { f: "Význačné prvky elipsy v KSS", b: "S, hlavní vrcholy A, B, vedlejší C, D, ohniska F₁, F₂, osy" },
+  { f: "Význačné prvky hyperboly v KSS", b: "S, vrcholy A, B, ohniska F₁, F₂, asymptoty (úhlopříčky obdélníku 2a × 2b), hlavní osa" },
+  { f: "Význačné prvky paraboly v KSS", b: "V, F, řídicí přímka d, osa o; pomocné body F ± p" },
+  { f: "Přímka a kuželosečka: D > 0 / D = 0 / D < 0", b: "2 společné body (sečna) / 1 bod / 0 bodů (vnější přímka)" },
+  { f: "Po dosazení vyšla lineární rovnice", b: "1 bod: přímka ∥ s asymptotou (hyperbola) nebo s osou (parabola)." },
 ];
 
 function Karticky() {
@@ -2056,13 +2228,13 @@ function Karticky() {
 // VZORCE
 // ══════════════════════════════════════════════════════════════════
 const FS = [
-  { h: "Kružnice", rows: [["středový tvar", "(x − m)² + (y − n)² = r²"], ["obecný tvar", "x² + y² + Dx + Ey + F = 0"], ["tečna v T", "(x₀ − m)(x − m) + (y₀ − n)(y − n) = r²"]] },
-  { h: "Elipsa", rows: [["osa ∥ x", "[[(x − m)²||a²]] + [[(y − n)²||b²]] = 1"], ["osa ∥ y", "[[(x − m)²||b²]] + [[(y − n)²||a²]] = 1"], ["excentricita", "e² = a² − b²   (a > b, a > e)"], ["vrcholy (osa ∥ x)", "A,B[m ± a; n], C,D[m; n ± b], F[m ± e; n]"], ["tečna v T", "[[(x₀ − m)(x − m)||a²]] + [[(y₀ − n)(y − n)||b²]] = 1"], ["podmínka dotyku y = kx + q", "a²k² + b² = q²  (S v počátku)"]] },
-  { h: "Hyperbola", rows: [["osa ∥ x", "[[(x − m)²||a²]] − [[(y − n)²||b²]] = 1"], ["osa ∥ y", "[[(y − n)²||a²]] − [[(x − m)²||b²]] = 1"], ["excentricita", "e² = a² + b²   (a je pod kladným členem)"], ["asymptoty (osa ∥ x)", "y − n = ±[[b||a]](x − m)"], ["asymptoty (osa ∥ y)", "y − n = ±[[a||b]](x − m)"], ["rovnoosá", "a = b, e² = 2a², asymptoty ⊥"], ["tečna v T", "[[(x₀ − m)(x − m)||a²]] − [[(y₀ − n)(y − n)||b²]] = 1"], ["podmínka dotyku y = kx + q", "a²k² − b² = q²"]] },
-  { h: "Parabola", rows: [["osa ∥ x", "(y − n)² = ±2p(x − m)   + doprava, − doleva"], ["osa ∥ y", "(x − m)² = ±2p(y − n)   + nahoru, − dolů"], ["ohnisko, řídicí přímka", "|VF| = |Vd| = p/2,  |Fd| = p"], ["y² = 2px", "F[p/2; 0], d: x = −p/2"], ["tečna v T", "(y₀ − n)(y − n) = p(x₀ − m) + p(x − m)"], ["podmínka dotyku (y² = 2px)", "p = 2kq"]] },
-  { h: "Rozpoznání typu z Ax² + Cy² + Dx + Ey + F = 0", rows: [["A = C ≠ 0", "kružnice / bod / ∅"], ["A·C > 0", "elipsa / bod / ∅"], ["A·C < 0", "hyperbola / dvojice různoběžek (pravá strana 0)"], ["A·C = 0", "parabola / rovnoběžky / přímka / ∅"], ["doplnění na čtverec", "x² + kx = (x + k/2)² − k²/4"]] },
-  { h: "Vnitřek a vnějšek", rows: [["elipsa / kružnice", "vnitřek: … < 1 (obsahuje střed)"], ["hyperbola", "vnitřek: … > 1 (obsahuje ohniska, střed je vně)"], ["parabola y² = 2px", "vnitřek: y² < 2px (obsahuje ohnisko)"], ["univerzálně", "znaménko G(P) = znaménko G(střed/ohnisko) → uvnitř"]] },
-  { h: "Přímka a kuželosečka", rows: [["postup", "vyjádři proměnnou z přímky → dosaď → αt² + βt + γ = 0"], ["D > 0", "sečna, 2 body"], ["D = 0", "tečna, 1 bod dotyku"], ["D < 0", "vnější přímka, 0 bodů"], ["α = 0 (lineární)", "∥ s asymptotou / osou → 1 bod, NENÍ tečna"], ["záměny pro tečnu", "x² → x₀x, y² → y₀y, x → (x + x₀)/2, y → (y + y₀)/2"]] },
+  { h: "Poměr vzdáleností od bodu a přímky", rows: [["definice", "|PF| : |Pd| = ε"], ["typ", "ε < 1 elipsa · ε = 1 parabola · ε > 1 hyperbola"], ["vzdálenost od bodu", "|PF| = √((x − f₁)² + (y − f₂)²)"], ["vzdálenost od přímky", "|Pd| = |ax + by + c| / √(a² + b²);  d: x = c → |x − c|"], ["po umocnění", "(x − f₁)² + (y − f₂)² = ε²·|Pd|²"], ["ε z rovnice", "ε = e/a  (parabola ε = 1)"], ["řídicí přímky (osa ∥ x)", "x = m ± a²/e"]] },
+  { h: "Kružnice", rows: [["středový tvar", "(x − m)² + (y − n)² = r²"], ["obecný tvar", "x² + y² + Dx + Ey + F = 0"]] },
+  { h: "Elipsa", rows: [["osa ∥ x", "[[(x − m)²||a²]] + [[(y − n)²||b²]] = 1"], ["osa ∥ y", "[[(x − m)²||b²]] + [[(y − n)²||a²]] = 1"], ["excentricita", "e² = a² − b²   (a > b, a > e)"], ["vrcholy (osa ∥ x)", "A,B[m ± a; n], C,D[m; n ± b], F[m ± e; n]"], ["ε, řídicí přímky", "ε = e/a < 1,  x = m ± a²/e"]] },
+  { h: "Hyperbola", rows: [["osa ∥ x", "[[(x − m)²||a²]] − [[(y − n)²||b²]] = 1"], ["osa ∥ y", "[[(y − n)²||a²]] − [[(x − m)²||b²]] = 1"], ["excentricita", "e² = a² + b²   (a je pod kladným členem)"], ["asymptoty (osa ∥ x)", "y − n = ±[[b||a]](x − m)"], ["asymptoty (osa ∥ y)", "y − n = ±[[a||b]](x − m)"], ["rovnoosá", "a = b, e² = 2a², asymptoty ⊥"], ["ε, řídicí přímky", "ε = e/a > 1,  x = m ± a²/e"]] },
+  { h: "Parabola", rows: [["osa ∥ x", "(y − n)² = ±2p(x − m)   + doprava, − doleva"], ["osa ∥ y", "(x − m)² = ±2p(y − n)   + nahoru, − dolů"], ["ohnisko, řídicí přímka", "|VF| = |Vd| = p/2,  |Fd| = p"], ["y² = 2px", "F[p/2; 0], d: x = −p/2"], ["šířka v úrovni F", "2p (body F ± p kolmo na osu)"]] },
+  { h: "Převody tvarů", rows: [["doplnění na čtverec", "x² + kx = (x + k/2)² − k²/4"], ["s koeficientem", "Ax² + Dx = A[(x + D/2A)² − (D/2A)²]"], ["středový → obecný", "· společný jmenovatel, roznásobit, vše doleva"], ["rozpoznání A·C", "> 0 elipsa/kružnice · < 0 hyperbola · = 0 parabola"]] },
+  { h: "Přímka a kuželosečka", rows: [["postup", "vyjádři proměnnou z přímky → dosaď → αt² + βt + γ = 0"], ["D > 0", "2 společné body (sečna)"], ["D = 0", "1 společný bod (dvojnásobný kořen)"], ["D < 0", "žádný společný bod (vnější přímka)"], ["α = 0 (lineární)", "∥ s asymptotou / osou → 1 bod"], ["společné body", "kořen dosadit zpět do přímky, zkouška do obou rovnic"]] },
 ];
 
 function Vzorce() {
@@ -2084,10 +2256,10 @@ function Vzorce() {
 // ══════════════════════════════════════════════════════════════════
 const SECTIONS = [
   { id: "prehled", i: "🗺️", t: "Přehled", k: "Kuželosečky · příprava na test", h: "Co tě čeká a jak se připravit" },
-  { id: "teorie", i: "📖", t: "Teorie", k: "Teorie", h: "Kuželosečky od definice po tečnu" },
+  { id: "teorie", i: "📖", t: "Teorie", k: "Teorie", h: "Kuželosečky od definice po společné body" },
   { id: "ulohy", i: "✍️", t: "Úlohy", k: "Pracovní listy s řešením", h: "Vyřešené úlohy krok za krokem" },
   { id: "lab", i: "🧪", t: "Rozpoznávač", k: "Laboratoř", h: "Rozpoznávač kuželoseček" },
-  { id: "trenazer", i: "🎯", t: "Trenažér", k: "Neomezené procvičování", h: "Trenažér: typ, bod, přímka" },
+  { id: "trenazer", i: "🎯", t: "Trenažér", k: "Neomezené procvičování", h: "Trenažér: poměr, převody, graf, přímka" },
   { id: "kviz", i: "❓", t: "Kvíz", k: "Ověř si to", h: "Kvíz" },
   { id: "karticky", i: "🃏", t: "Kartičky", k: "Pojmy a vzorce", h: "Kartičky" },
   { id: "vzorce", i: "📐", t: "Vzorce", k: "Tahák", h: "Vzorce a pravidla" },
@@ -2106,7 +2278,7 @@ export default function App() {
       <div className="layout">
         <nav className="side">
           <div className="brand">Kuželosečky</div>
-          <div className="brandSub">typ · vnitřek a vnějšek · přímka</div>
+          <div className="brandSub">poměr vzdáleností · rovnice · graf · přímka</div>
           {SECTIONS.map(s => (
             <button key={s.id} className={"navBtn" + (tab === s.id ? " on" : "")} onClick={() => go(s.id)}>
               <span>{s.i}</span><span>{s.t}</span>
