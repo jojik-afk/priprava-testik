@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dějepis - SSSR 1939–1964 (+ Polsko, Maďarsko, banderovci)</title>
+    <meta name="subject" content="History">
+    <meta name="topic" content="Pakt Ribbentrop–Molotov, Krvavé země, SSSR za WWII, banderovci, Stalin 1945–53, Chruščov, Maďarsko 1956, Polsko 1939–47, Katyň">
+    <meta name="template" content="practice">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+// src/dejak-sssr-1939-1964.jsx
+import React, { useState, useMemo, useCallback } from "react";
+import { jsxDEV } from "react/jsx-dev-runtime";
+var GOLD = "#c9a227";
+var studyData = {
+  topics: [
+    {
+      id: 1,
+      title: "Pakt Ribbentrop–Molotov a jeho důsledky",
+      short: "Zahraniční politika SSSR a vojenská expanze 1939–41",
+      summary: `\uD83D\uDD11 PAKT: 23. 8. 1939, podepsali ministři zahraničí Ribbentrop a Molotov
+\uD83D\uDD11 OFICIÁLNĚ: smlouva o neútočení × TAJNÝ DODATEK: rozdělení Polska a Pobaltí (sféry vlivu)
+\uD83D\uDD11 POLSKO: 1. 9. Německo, 17. 9. SSSR („ochrana Ukrajinců a Bělorusů“) → Z. Ukrajina a Z. Bělorusko připojeny
+\uD83D\uDD11 ZIMNÍ VÁLKA: XII 1939 – III 1940, Finsko ubránilo nezávislost; SSSR jen Karelská šíje + vyloučen ze SN
+\uD83D\uDD11 1940: Katyň (jaro), anexe rumunské Besarábie (červen), okupace a anexe Pobaltí (léto)
+\uD83D\uDD11 SPOLUPRÁCE: sovětské dodávky surovin Německu až do června 1941
+\uD83D\uDD11 KONEC: 22. 6. 1941 Hitler napadl SSSR (Barbarossa)`,
+      content: `
+VÝCHODISKA:
+• Po 15. 3. 1939 (okupace zbytku ČSR) se Polsko obává Německa → spojenecká dohoda s Británií a Francií
+• Hitler vypovídá smlouvu o neútočení s Polskem, žádá Gdaňsk a „koridor“, Goebbelsův tisk spouští kampaň o „utiskovaných“ Němcích v Polsku
+• V létě 1939 jedná SSSR současně se Západem (UK + Francie) i s Německem – Stalin nakonec volí Hitlera
+• Důvod: Západ nabízel jen válku, Hitler nabízel území (návrat k hranicím carského Ruska) a čas
+
+PAKT RIBBENTROP–MOLOTOV (23. 8. 1939):
+• Podepsán v Moskvě ministry zahraničí: Joachim von Ribbentrop (Německo) a Vjačeslav Molotov (SSSR)
+• Veřejná část: smlouva o neútočení na 10 let
+• Tajný dodatek: rozdělení sfér vlivu ve východní Evropě – Polsko rozděleno (linie řek Narev, Visla, San), Pobaltí a Finsko do sovětské sféry, SSSR projevil zájem o Besarábii
+• Význam: Hitler má krytá záda na východě → může 1. 9. 1939 napadnout Polsko; prakticky „spouštěč“ 2. sv. války
+• Existenci tajného dodatku SSSR popíral až do roku 1989
+
+SOVĚTSKÁ EXPANZE 1939–1941:
+• 17. 9. 1939 – vpád Rudé armády do Polska; záminka: ochrana běloruské a ukrajinské populace (polský stát prý „přestal existovat“)
+• 28. 9. 1939 – německo-sovětská smlouva o hranicích a přátelství → definitivní rozdělení Polska (předtím společná přehlídka vojsk v Brestu Litevském)
+• Západní Ukrajina a západní Bělorusko (součást Polska) násilně připojeny k SSSR
+• Pobaltí: na podzim 1939 vynucené smlouvy a sovětské vojenské základny → v červnu 1940 obsazeno → v létě 1940 anektováno jako sovětské republiky
+• Jaro 1940 – Katyňský masakr: NKVD zavraždila asi 22 000 polských důstojníků a příslušníků inteligence
+• Červen 1940 – anexe rumunské Besarábie (+ severní Bukoviny, která v tajném dodatku nebyla)
+• Červen 1941 – poslední sovětské dodávky rudy a surovin Německu
+
+ZIMNÍ VÁLKA (prosinec 1939 – březen 1940):
+• Důvod: Leningrad příliš blízko finských hranic – Stalin chtěl Karelskou šíji
+• Finsko: 346 500 vojáků, 32 tanků, 114 letadel × SSSR: 998 100 vojáků, 6 541 tanků, 3 880 letadel
+• Ztráty Finsko: 25 904 padlých × SSSR: 126 875 padlých, 188 671 zraněných, 3 543 tanků, 515 letadel
+• Výsledek: zisky SSSR minimální (Karelská šíje), Finsko si udrželo nezávislost
+• SSSR vyloučen ze Společnosti národů
+• Důsledek: Finsko se přiklonilo k Německu → tzv. Pokračovací válka (1941–44) po boku Německa
+• Hitler z neúspěchu vyvodil, že Rudá armáda je slabá (zdecimovaná čistkami)
+
+SROVNÁNÍ NĚMECKO × SSSR 1939–41:
+• Německo: 1. 9. 1939 Polsko → 3. 9. UK a Francie vyhlašují válku („podivná válka“) → IV/1940 Dánsko a Norsko (Narvik) → V/1940 Benelux a Francie → VIII–IX/1940 bitva o Anglii → IV/1941 Jugoslávie a Řecko → 22. 6. 1941 SSSR
+• SSSR: 17. 9. 1939 Polsko → XI/XII 1939 – III/1940 Finsko → jaro 1940 Katyň → VI/1940 Besarábie → léto 1940 Pobaltí → VI/1941 poslední dodávky Německu
+• Oba diktátoři si dělili Evropu jako spojenci – SSSR v letech 1939–41 nebyl neutrální, ale spoluagresor
+      `,
+      modelAnswer: `Pakt Ribbentrop–Molotov byl podepsán 23. srpna 1939 v Moskvě ministry zahraničí Německa a SSSR. Navenek šlo o smlouvu o neútočení, ale jeho tajný dodatek rozděloval východní Evropu na sféry vlivu – Polsko mělo být rozděleno a Pobaltí, Finsko a Besarábie připadly sovětské sféře. Pakt umožnil Hitlerovi zaútočit 1. září 1939 na Polsko bez hrozby války na dvou frontách; 17. září vpadla do Polska i Rudá armáda pod záminkou ochrany Ukrajinců a Bělorusů a obě mocnosti si zemi definitivně rozdělily smlouvou o hranicích a přátelství (28. 9.). SSSR pak pokračoval v expanzi: v zimní válce (prosinec 1939 – březen 1940) napadl Finsko, ale přes obrovskou převahu získal jen Karelskou šíji, utrpěl těžké ztráty a byl vyloučen ze Společnosti národů. Na jaře 1940 NKVD v Katyni a jinde zavraždila asi 22 000 polských důstojníků, v červnu 1940 SSSR zabral rumunskou Besarábii a v létě obsadil a anektoval Pobaltí. Až do června 1941 posílal Německu suroviny. Spolupráce skončila 22. června 1941 německým útokem na SSSR. Pakt tak ukazuje, že SSSR byl v letech 1939–41 spoluagresorem, nikoli neutrální obětí.`
+    },
+    {
+      id: 2,
+      title: "Jak „zmizelo“ 14 milionů lidí",
+      short: "Krvavé země 1933–45 – způsoby, důvody, počty (Snyder)",
+      summary: `\uD83D\uDD11 CO: 14 mil. civilních obětí cílené politiky 1933–45 (ne padlí vojáci!) – „krvavé země“ od Polska po Z. Rusko
+\uD83D\uDD11 HLADOMOR: Ukrajina 1932–33 → asi 3 mil. † (kolektivizace + rekvizice)
+\uD83D\uDD11 VELKÝ TEROR: 1937–38 → asi 700 000 popravených
+\uD83D\uDD11 POLÁCI: 1939–45 asi 1,8 mil.; Katyň = likvidace elit
+\uD83D\uDD11 BĚLORUSOVÉ: 300 000 † jako „odplata za partyzány“
+\uD83D\uDD11 SOV. ZAJATCI: 3 mil. vyhladověno v nacistických táborech; LENINGRAD: 1 mil. †
+\uD83D\uDD11 ŽIDÉ: 5 mil. (holokaust – plyn i zastřelení)
+\uD83D\uDD11 PODÍL: třetina obětí jde na sovětský účet, dvě třetiny na nacistický`,
+      content: `
+POJEM „KRVAVÉ ZEMĚ“ (Timothy Snyder, 2010):
+• Prostor od středního Polska přes Ukrajinu, Bělorusko a Pobaltí po západní Rusko
+• Zde nacistický a sovětský režim v letech 1933–1945 záměrně zabily kolem 14 milionů lidí
+• Nejde o padlé vojáky – oběťmi byli civilisté (ženy, děti, starci) a zajatci, tedy oběti vražedné politiky, ne bojů
+• Asi čtvrtina zahynula ještě před začátkem války (SSSR ve 30. letech); třetina připadá na sovětský účet
+
+POČTY (z prezentace):
+• 30. léta v SSSR – asi 3 mil. † = hladomor na Ukrajině aj.
+• 1937–38 – asi 700 000 † = stalinský (Velký) teror
+• 1939–45 – asi 1,8 mil. Poláků
+• 1941–45 – asi 300 000 Bělorusů (= „odplata za partyzány“)
+• asi 3 mil. sovětských vojáků vyhladovělých v nacistických zajateckých táborech
+• asi 5 mil. Židů (holokaust)
+• + asi 1 mil. obyvatel obleženého Leningradu (Snyder)
+
+ZPŮSOBY A DŮVODY – SOVĚTSKÁ STRANA:
+• Hladomor (1932–33): kolektivizace zemědělství → hlad → rekviziční kampaň zabrala i poslední obilí; vina svedena na „kulaky“ a Ukrajince. „Hlad byl důsledkem kolektivizace, ale hladomor zavinila politika.“ (Ukrajinci: holodomor)
+• Velký teror (1937–38): popravy rolníků (přeživších hladomor a gulag) a národnostních menšin – nejvíce postiženi sovětští Poláci
+• Gulag: síť pracovních táborů – „vnitřní kolonizace“ a modernizace SSSR otrockou prací
+• Okupace Polska a Pobaltí (1939–41): střílení vzdělanců (Katyň – 21 892 důstojníků), deportace statisíců na Sibiř a do Kazachstánu
+
+ZPŮSOBY A DŮVODY – NACISTICKÁ STRANA:
+• Cíl: „životní prostor“ (Lebensraum) na východě – zničit Polsko a SSSR jako státy, vyhubit elity, Slovany zotročit nebo vyhnat
+• Hladový plán: v zimě 1941/42 nechat vyhladovět asi 30 mil. lidí (jídlo pro Německo) → realizován jen částečně: sovětští zajatci (3 mil.) a Leningrad (1 mil.)
+• Generální plán Východ: deportace, vraždění, zotročení a germanizace – nikdy plně nenaplněn
+• Odvetné akce: běloruské vesnice vypalovány jako „odplata za partyzány“ (300 000 †)
+• Konečné řešení: Einsatzgruppen střílely Židy (od léta 1941), poté továrny na smrt – Treblinka, Sobibor, Belžec, Chełmno, Majdanek, Osvětim
+
+PROČ TO NEBYLO VIDĚT:
+• Západní Spojenci osvobodili jen tábory typu Dachau a Bergen-Belsen – žádný tábor smrti ani místo sovětských vražd
+• Krvavé země osvobodila (a pak ovládla) Rudá armáda → zločiny stalinismu zůstaly nezdokumentovány až do otevření archivů po roce 1991
+
+SNYDERŮV ZÁVĚR:
+• Nadsazování počtů obětí (Polsko „6 mil.“, Bělorusko „třetina obyvatel“, Srbové) vede ke „konkurenci v mučednictví“ – a ta může vést k nové válce (Jugoslávie 90. let)
+• Poláka nežida ve Varšavě 1933 čekala podobná naděje na přežití války jako německého Žida
+      `,
+      modelAnswer: `Podle Timothyho Snydera zahynulo v letech 1933–1945 v tzv. krvavých zemích (Polsko, Ukrajina, Bělorusko, Pobaltí, západní Rusko) asi 14 milionů lidí, kteří nebyli vojáky v boji, ale oběťmi cílené politiky Stalina a Hitlera. Na sovětské straně šlo nejprve o hladomor na Ukrajině 1932–33 (asi 3 miliony mrtvých) – důsledek násilné kolektivizace a rekvizic obilí – a o Velký teror 1937–38, kdy bylo popraveno asi 700 000 lidí, hlavně rolníků a příslušníků menšin. Po společné okupaci Polska oba režimy likvidovaly polské elity (Katyň), celkem zahynulo asi 1,8 milionu Poláků. Po útoku na SSSR nacisté záměrně nechali vyhladovět asi 3 miliony sovětských zajatců a milion obyvatel obleženého Leningradu (Hladový plán), v Bělorusku zabili 300 000 civilistů jako „odplatu za partyzány“ a v rámci holokaustu zastřelili nebo zplynovali asi 5 milionů Židů. Důvodem byla ideologie obou režimů – stalinská modernizace a hledání „nepřátel“ i nacistická představa životního prostoru a rasové čistoty. Asi třetina obětí jde na účet SSSR. Rozsah zločinů zůstal dlouho skrytý, protože krvavé země osvobodila a pak ovládla Rudá armáda.`
+    },
+    {
+      id: 3,
+      title: "SSSR za 2. světové války",
+      short: "Průběh, mezníky, specifika, pomoc Spojenců",
+      summary: `\uD83D\uDD11 BARBAROSSA: 22. 6. 1941, přes 3 mil. vojáků, fronta 3 200 km, 3 směry (Leningrad, Moskva, Kyjev)
+\uD83D\uDD11 PŘÍČINY ÚSPĚCHU: Stalin ignoroval zpravodajce, armáda zdecimovaná čistkami, žádné obranné plány
+\uD83D\uDD11 MOSKVA: XII 1941 – mráz + odpor RA → konec bleskové války
+\uD83D\uDD11 LENINGRAD: 900 dní blokády, přes 1 mil. civilistů zemřelo hlady
+\uD83D\uDD11 STALINGRAD: VIII 1942 – 2. 2. 1943, Paulus kapituloval → zlom války
+\uD83D\uDD11 KURSK: VII 1943 – největší tanková bitva, iniciativa definitivně u SSSR
+\uD83D\uDD11 LEND-LEASE: 11. 3. 1941; SSSR 20 % (15 000 letadel, 350 000 nákladních aut, potraviny)
+\uD83D\uDD11 SPECIFIKA: rozkaz č. 227, vlasovci, znásilňování, obrovské ztráty`,
+      content: `
+OPERACE BARBAROSSA (22. 6. 1941):
+• Plány útoku po kapitulaci Francie (červen 1940); Hitlerův pokyn 31. 7. 1940
+• Osudové zdržení v Jugoslávii a Řecku (duben 1941)
+• Plán bleskové války – největší blitzkrieg dějin: přes 3 mil. mužů, fronta široká 3 200 km
+• Útok třemi směry (skupiny armád Sever – Leningrad, Střed – Moskva, Jih – Kyjev/Ukrajina)
+• Postup až 80 km denně; první den zničeno asi 1 800 sovětských letadel (1 500 na zemi)
+• K útoku se připojily Rumunsko, Maďarsko, Slovensko, Finsko, Itálie
+
+PROČ BYL SSSR ZASKOČEN:
+• Stalin podcenil zprávy vlastních zpravodajců (varování o útoku)
+• SSSR neměl žádné plány na obranu – armáda připravená na útočnou válku
+• Velitelský sbor Rudé armády zdecimovaný čistkami (1937–38)
+• Němci naopak podcenili výzbroj, morálku RA a počasí
+
+ZVRAT U MOSKVY (prosinec 1941):
+• Mobilizace 5 mil. vojáků a vojaček RA
+• Jistota (od špiona Sorgeho), že Japonci na Dálném východě nezaútočí → přesun sibiřských divizí
+• Mráz a odpor RA → konec rychlého útoku, první porážka wehrmachtu
+
+ZTRÁTY V ROCE 1941 (Třetí říše × SSSR):
+• Mrtví: 250 000 × 802 191
+• Zranění: 500 000 × 3 000 000
+• Zajatí: – × 3 300 000
+• Letadla: 2 093 × 21 200
+• Tanky: 2 758 × 20 500
+
+BLOKÁDA LENINGRADU (8. 9. 1941 – 27. 1. 1944):
+• 900 dní obklíčení
+• Rudá armáda: 350 000 mrtvých; přes 1 milion civilistů zemřelo hladem
+• Zásobování jen přes zamrzlé Ladožské jezero („Cesta života“)
+
+STALINGRAD (srpen 1942 – 2. 2. 1943):
+• Srpen–říjen: německý útok, boj o každý dům
+• Listopad: sovětský protiútok a obklíčení – „Stalingradský kotel“
+• 300 000 mrtvých Němců a spojenců, 90 000 zajatých (vrátilo se jen 6 000)
+• Generál Paulus (během obklíčení povýšen na maršála) kapituloval
+• Zlom války na východní frontě
+
+KURSK (červenec 1943):
+• Největší tanková bitva dějin, poslední velká německá ofenziva na východě
+• Ztráty: Německo a spojenci 203 000 vojáků, 720 tanků a děl, 681 letadel × SSSR 863 303 vojáků, 6 064 tanků a děl, 1 626 letadel
+• Po Kursku má iniciativu definitivně Rudá armáda
+
+DALŠÍ MEZNÍKY (doplnění):
+• 1944 – operace Bagration (zničení skupiny armád Střed), osvobození Ukrajiny, Běloruska, vstup do Polska
+• 27. 1. 1945 – Rudá armáda osvobodila Osvětim
+• Duben–květen 1945 – dobytí Berlína; 8./9. 5. 1945 kapitulace Německa
+• Konference Velké trojky: Teherán (1943), Jalta (únor 1945), Postupim (1945)
+• Srpen 1945 – SSSR vyhlásil válku Japonsku
+
+POMOC SPOJENCŮ – ZÁKON O PŮJČCE A PRONÁJMU (LEND-LEASE):
+• USA, 11. 3. 1941; z celkového objemu UK asi 60 %, SSSR asi 20 %
+• Tehdejší hodnota 46 mld. $ (dnes asi 700 mld. $)
+• Pro SSSR: 15 000 letadel, 350 000 nákladních vozidel, 2,3 mil. tun oceli (na 70 000 tanků T-34), 229 000 tun hliníku (vál. průmysl na 2 roky), 423 000 telefonů a desetitisíce vysílaček
+• Dále materiál pro rafinerie, baterie, stany, padáky, lokomotivy
+• 3,8 mil. tun potravin – konzervované vepřové, uzeniny, máslo, čokoláda, sušená vejce
+• UK svůj dluh splatilo do roku 2006; SSSR – prominuto nebo neuhrazeno
+• Druhá fronta: vylodění v Normandii 6. 6. 1944 (Stalin ji požadoval od roku 1942)
+
+SPECIFIKA SOVĚTSKÉ VÁLKY:
+• Rozkaz č. 227 („Ani krok zpět!“, 1942): kdo se vzdá = zrádce, rodina uvězněna a zbavena podpory; dezertéři zastřeleni na místě
+• Rudá armáda 1941–45: za dezerci zastřeleno asi 160 000, uvězněno 440 000, v kárných praporech 440 000
+• Vlasovci – Ruská osvobozenecká armáda (ROA): gen. Andrej Vlasov zajat v květnu 1942, od roku 1943 formuje ROA na straně Německa; v květnu 1945 pomáhali v Pražském povstání; 1946 popraven v Moskvě
+• Znásilňování: odhad asi 860 000 znásilněných Němek, z toho Sověti nejméně 590 000 (Gebhardtová, 2014); nejméně 300 000 dětí vojáků RA
+• Protisovětští partyzáni: litevští „lesní bratři“ (1944–53, až 170 000 lidí), UPA na Ukrajině
+• Celkové ztráty SSSR: odhady 20–27 mil. mrtvých (v prezentaci rozptyl 20–50 mil.)
+• V Rusku se válka chápe jako „Velká vlastenecká válka“ 1941–45 – období spojenectví s Hitlerem 1939–41 se vynechává
+      `,
+      modelAnswer: `Válka pro SSSR začala vlastně už v září 1939 útokem na Polsko po boku Německa, ale v ruském pojetí „Velké vlastenecké války“ až 22. června 1941, kdy Německo zahájilo operaci Barbarossa – největší bleskovou válku dějin s více než 3 miliony vojáků na frontě dlouhé 3 200 km. SSSR byl zaskočen, protože Stalin ignoroval varování zpravodajců, neexistovaly obranné plány a velení armády bylo zdecimováno čistkami; v roce 1941 padly do zajetí přes 3 miliony sovětských vojáků. Německý postup zastavila v prosinci 1941 u Moskvy zima, mobilizace a přesun sibiřských divizí. Leningrad vydržel 900 dní blokády, při níž zemřelo hladem přes milion civilistů. Zlomem byl Stalingrad (srpen 1942 – únor 1943), kde kapitulovala Paulusova armáda, a bitva u Kurska v červenci 1943, po níž měla iniciativu Rudá armáda až do dobytí Berlína v květnu 1945. Velkou roli hrála pomoc Spojenců – zákon o půjčce a pronájmu z března 1941 dodal SSSR 15 000 letadel, 350 000 nákladních aut, ocel, hliník i potraviny – a v roce 1944 otevření druhé fronty v Normandii. Specifická byla brutalita režimu vůči vlastním vojákům (rozkaz č. 227, 160 000 zastřelených za dezerci, kárné prapory), existence kolaborující Vlasovovy armády i masové znásilňování na dobytých územích. SSSR nesl obrovské ztráty kolem 20–27 milionů mrtvých.`
+    },
+    {
+      id: 4,
+      title: "Causa banderovci",
+      short: "Bandera a UPA, adorace, ruská propaganda, polsko-ukrajinské vztahy",
+      summary: `\uD83D\uDD11 BANDERA: Stepan Bandera (1909–1959), předseda OUN (Banderova frakce), zavražděn agentem KGB v Mnichově
+\uD83D\uDD11 OUN-B: 30. 6. 1941 Lvov – vyhlášení samostatné Ukrajiny → gestapo Banderu zatklo, KT
+\uD83D\uDD11 UPA: 1942, vojenské křídlo OUN-B; cíl = nezávislá Ukrajina; bojovala proti Němcům, Sovětům i Polákům; velitel Šuchevyč
+\uD83D\uDD11 ZLOČINY: etnické čistky – Volyň 1943, 60–100 tis. obětí (hlavně Poláci) + podíl na holokaustu
+\uD83D\uDD11 ADORACE: západ Ukrajiny – sochy, ulice, Juščenko: „Hrdina Ukrajiny“ (2010); Vjatrovyč a Institut paměti; × východ = zločinci
+\uD83D\uDD11 VOLBY: extremisté slabí (Svoboda 2012 ~10 %, 2014 ~5 %, 2019 ~2 %)
+\uD83D\uDD11 RUSKO: Stalinova nálepka „fašisté“; Majdan 2014 „banderovci z Kyjeva“; Putin 2022 „denacifikace“
+\uD83D\uDD11 POLSKO: Volyň = genocida (Sejm 2016), spory o exhumace a o kult Bandery`,
+      content: `
+A) KDO BYL STEPAN BANDERA A O CO SE SNAŽILA UPA:
+• Stepan Andrijovyč Bandera (1909–1959) – ukrajinský nacionalista z Haliče (tehdy Polsko)
+• Předseda Organizace ukrajinských nacionalistů (OUN) – její radikální „Banderovy frakce“ (OUN-B)
+• 30. 6. 1941 OUN ve Lvově vyhlásila obnovení samostatné Ukrajiny → gestapo zatklo vůdce včetně Bandery; když akt neodvolal, skončil jako prominentní vězeň v koncentračním táboře
+• Na podzim 1944 ho nacisté propustili, z Berlína velel na dálku
+• Po válce v emigraci v Mnichově, roku 1959 ho zavraždil agent KGB (Bohdan Stašynskyj, jedovatý plyn)
+
+UKRAJINSKÁ POVSTALECKÁ ARMÁDA (UPA):
+• Vznikla 1942 jako vojenské křídlo Banderovy frakce OUN; velitel 1943–1950 Roman Šuchevyč
+• Cíl: samostatný ukrajinský stát – boj „proti všem“: 1943–44 proti německé správě, od května 1944 proti Sovětům, zároveň proti Polákům
+• Kontext: hladomor 1932–33 (3,5 mil. Ukrajinců, víc než 10 % populace) – mnoho Ukrajinců zprvu vítalo Němce jako osvoboditele
+• V týlu Rudé armády ovládli území s 10 mil. lidí a 160 000 km²
+• SSSR odpor zlomil až v 50. letech – i deportacemi statisíců lidí
+• Etnické čistky na území budoucího státu: Volyňský masakr 1943–44; podle J.-P. Himky UPA zabila 60–100 tisíc lidí, převážně Poláků; podíl části nacionalistů na holokaustu
+• Rozkaz velitele Kljačkivského (1943): „zlikvidovat mužskou populaci [polskou] mezi 16 a 60 lety“
+• Část Ukrajinců sloužila i v divizi SS Galizien (Halič)
+
+BANDEROVCI V ČESKOSLOVENSKU (Řepa):
+• 1945 – asi 500 mužů na Slovensku; chovali se většinou slušně, za jídlo platili – chtěli šířit propagandu o sovětském útlaku
+• 1946 – před volbami varovali letáky před komunisty a „sovětským rájem“ (volby na Slovensku vyhrála Demokratická strana se zhruba 60 %)
+• 1947 – asi 300 vojáků, snažili se rychle projít do Německa (k Američanům); proti nim nasazeny jednotky SNB (ovládané komunisty)
+• Většina trestné činnosti = majetková (krádeže jídla); oběti spíše výjimečně (František Mička v Návojné – nejspíš omylem zasažen čs. vojáky)
+• Komunistický obraz „vrahů z lesů“ vznikl až kolem 1946–47 na pokyn z Kremlu
+
+B) JAK, JAK MOC A PROČ JSOU BANDEROVCI ADOROVÁNI:
+• Pro část Ukrajinců symbol boje za nezávislost proti SSSR – „bez UPA, Bandery a Šuchevyče by neexistovala samostatná Ukrajina“ (Vjatrovyč, 2010)
+• Rozdělení země: západ (Halič, Lvov) – sochy, ulice, muzea Bandery × východ a Krym – považován za zločince, památníky obětí banderovců (Luhansk, Krym)
+• Prezident Juščenko: přepsal učebnice, přejmenovával ulice, 2010 udělil Banderovi titul „Hrdina Ukrajiny“ (za Janukovyče soud titul zrušil)
+• Po Majdanu: 2014 Volodymyr Vjatrovyč šéfem Ukrajinského institutu národní paměti, 2015 Porošenkovy zákony – archivy KGB pod institut, OUN a UPA uznány za „bojovníky za nezávislost“, trest za jejich znevažování
+• Vjatrovyč zamlčuje účast na čistkách Poláků a Židů (kritika historiků Himka, McBride, Burds – podezření i z falšování dokumentů)
+• Pozdrav „Sláva Ukrajini! – Herojam slava!“ pochází z OUN, dnes je běžný (od 2018 i oficiální pozdrav armády)
+• Pochody s pochodněmi 1. ledna (Banderovy narozeniny) – organizuje strana Svoboda
+• Proč: hledání národních hrdinů v boji proti Moskvě, sovětská zkušenost (hladomor, deportace), po roce 2014 a 2022 válka s Ruskem posílila protiruské symboly
+• JAK MOC: volební podpora extremistů je nízká – Svoboda 2012 asi 10 %, 2014 asi 5 %, 2019 (společná kandidátka nacionalistů) asi 2 % → nepostoupili do parlamentu; Jaroš (Pravý sektor) 2014 v prezidentských volbách pod 1 %
+
+JAK TOHO VYUŽÍVÁ RUSKÁ PROPAGANDA (konkrétní příklady):
+• Stalinův konstrukt: kdo byl proti Moskvě = „fašista“ – banderovci, polská Armia Krajowa, pobaltští lesní bratři, rumunští monarchisté (ačkoli spolu často bojovali)
+• Komunistická propaganda v ČSR od 1946–47: banderovci = fašisté, vrazi a hlupáci
+• Majdan 2013–14: ruská média (Russia Today) – „fašisté a banderovci z Kyjeva“, „kyjevská junta“
+• Krym a Donbas 2014: obyvatelé strašeni „banderovci“, kteří je přijdou vyvraždit
+• 24. 2. 2022 Putinův projev: cíl války = „denacifikace“ Ukrajiny
+• Rovnice „Ukrajinec = banderovec = fašista“ – podle Řepy nesmysl, jako by Čechy nazýval husity či legionáři
+• „Weaponizace dějin“ = proměna dějin ve zbraň pro současnou politiku
+
+C) PROČ CAUSA KOMPLIKUJE POLSKO-UKRAJINSKÉ VZTAHY:
+• Volyňský masakr 1943–44: UPA zabila desítky tisíc polských civilistů (Volyň, Východní Halič) – pro Poláky genocida
+• Polský Sejm 2016 označil Volyň za genocidu, 11. červenec = národní den památky obětí
+• Ukrajinská strana připomíná polské odvetné akce a Akci Visla (1947 – násilné vysídlení asi 140 000 Ukrajinců z jihovýchodního Polska)
+• Polsko-ukrajinská občanská válka 1945–47: asi 80 000 mrtvých Poláků × 20 000 Ukrajinců
+• Polsko vadí oslava Bandery a Šuchevyče na Ukrajině (Juščenkův titul, Porošenkovy zákony 2015)
+• 2018 – polský zákon o IPN umožňuje stíhat popírání zločinů „ukrajinských nacionalistů“
+• Spor o exhumace obětí na Ukrajině: 2017 ukrajinský zákaz (reakce na ničení památníků UPA v Polsku), obnoveno až 2025
+• Paradox: z polsko-ukrajinského sporu nejvíc těží Moskva
+      `,
+      textQuestions: [
+        { q: "1. Kdo to vlastně byli „banderovci“/UPA?", a: "Správně příslušníci Organizace ukrajinských nacionalistů (Banderova frakce, OUN-B) a její vojenské odnože – Ukrajinské povstalecké armády (UPA), založené 1942. Vojensky organizovaná síla bojující za nezávislou Ukrajinu proti Němcům, Sovětům i Polákům; v Haliči odolávala až do 50. let." },
+        { q: "2. Proč je jejich role rozporuplná či negativní a jak moc je toto vnímání objektivní?", a: "Bojovali proti zdrcující přesile za samostatnost, ale nesou škraloup etnického násilí proti Polákům (Volyň) a podílu na holokaustu; měli v řadách i zločince. Negativní obraz je zčásti objektivní, ale silně zveličený komunistickou a ruskou propagandou (rovnice Ukrajinec = banderovec = fašista je nesmysl)." },
+        { q: "3. Popište poválečné aktivity banderovců na území tehdejšího Československa.", a: "1945 asi 500 mužů na Slovensku – chovali se slušně, za jídlo platili, šířili propagandu o sovětském útlaku. 1946 před volbami varovali letáky před komunisty (vyhrála Demokratická strana). 1947 asi 300 mužů procházelo do Německa, nasazeny jednotky SNB. Většinou jen majetková trestná činnost; výjimečné oběti (František Mička v Návojné – nejspíš omylem zasažen čs. vojáky)." },
+        { q: "4. Jak a proč causu UPA zneužila tehdejší komunistická a dnešní putinovská propaganda?", a: "Komunisté od 1946–47 na pokyn Kremlu: banderovci = fašisté, vrazi, hlupáci. Rusko od Majdanu (2014) nálepkuje Ukrajince jako „banderovce a fašisty z Kyjeva“ (Russia Today), Putin 2022 ospravedlňoval invazi „denacifikací“. Cíl: delegitimizovat ukrajinský stát a ospravedlnit agresi." },
+        { q: "5. Které další protibolševické skupiny byly stalinistickou propagandou stigmatizovány jako „fašisté“?", a: "Polská Armia Krajowa (Zemská armáda, hlavní síla Varšavského povstání, bojovala proti nacistům!), pobaltští „lesní bratři“, rumunští povstalci za obnovu monarchie. Různorodé, často i protichůdné skupiny – všechny „hozeny do jednoho pytle“." },
+        { q: "6. Jakou podporu a volební úspěchy měly a mají extrémistické strany hlásící se k Banderovi?", a: "Malou: Svoboda 2012 asi 10 % (jediný úspěch), 2014 asi 5 %, 2019 společná kandidátka nacionalistů asi 2 % – mimo parlament. Pravý sektor (Jaroš) v prezidentských volbách 2014 pod 1 %. Řepa: všechny tyto strany opakovaně ve volbách propadly." },
+        { q: "7. Popište lidské ztráty Ukrajiny v 1. polovině 20. století a jejich kontext.", a: "Každý čtvrtý Ukrajinec zemřel násilně nebo hladem; v 1. pol. století údajně každý druhý muž a každá čtvrtá žena. Kontext: 1. sv. válka a občanská válka, hladomor 1932–33 (3,5 mil.), Velký teror, 2. sv. válka (fronta přes Ukrajinu dvakrát, holokaust, nucené práce), poválečné deportace." },
+        { q: "8. Jak autor chápe „weaponizaci dějin“? Další příklady.", a: "Proměna dějinných událostí ve zbraň pro současné politické zájmy – vybírání si z minulosti jen toho, co ospravedlní mocenské cíle a zločiny; vede k nekonečnému řetězci křivd a válek. Příklady: Putinova „denacifikace“, srbské mýty o Kosovu a zveličené počty obětí před válkami v Jugoslávii, komunistické využívání husitství („pokrokové tradice“) a Mnichova („zrada Západu“), sudetoněmecká otázka v propagandě." }
+      ],
+      modelAnswer: `Stepan Bandera (1909–1959) byl vůdcem radikální frakce Organizace ukrajinských nacionalistů (OUN-B), která 30. června 1941 ve Lvově vyhlásila samostatnou Ukrajinu; Němci ho za to poslali do koncentračního tábora a v roce 1959 ho v Mnichově zavraždil agent KGB. Vojenským křídlem OUN byla od roku 1942 Ukrajinská povstalecká armáda (UPA), která bojovala za nezávislou Ukrajinu proti Němcům, od roku 1944 proti Sovětům až do 50. let, ale zároveň prováděla etnické čistky – při Volyňském masakru 1943–44 zabila 60–100 tisíc lidí, převážně Poláků. Na západní Ukrajině jsou banderovci uctíváni jako bojovníci za nezávislost: mají sochy a ulice, Juščenko udělil Banderovi titul Hrdina Ukrajiny a po Majdanu Vjatrovyčův Institut národní paměti a zákony z roku 2015 jejich zločiny zamlčují. Na východě je ale Bandera vnímán jako zločinec a extremistické strany hlásící se k jeho odkazu mají jen malou podporu (Svoboda 2019 kolem 2 %). Ruská propaganda navazuje na Stalina, který nálepkou „fašista“ označoval každého odpůrce Moskvy; od Majdanu líčí ukrajinskou vládu jako „banderovce a fašisty“ a Putin v roce 2022 ospravedlnil invazi „denacifikací“ – historik Řepa to nazývá weaponizací dějin. Causa zatěžuje i polsko-ukrajinské vztahy: Polsko uznalo Volyň za genocidu (2016) a vadí mu oslava Bandery, Ukrajinci zase připomínají Akci Visla; dlouho se vedl spor o exhumace obětí.`
+    },
+    {
+      id: 5,
+      title: "TEXT: Když národy nemají šanci (Rychlík)",
+      short: "Pakt tří, Molotov v Berlíně, Barbarossa, Pobaltí a Ukrajina, Poláci, propaganda",
+      summary: `\uD83D\uDD11 PAKT TŘÍ: 27. 9. 1940, Německo + Itálie + Japonsko; přistoupily Maďarsko, Rumunsko, Slovensko (XI 1940)
+\uD83D\uDD11 SSSR: měl se stát 4. členem → Molotov v Berlíně 12.–14. 11. 1940 → nevstoupil
+\uD83D\uDD11 ROZPORY: Finsko, Balkán (Bulharsko, Jugoslávie), sev. Bukovina
+\uD83D\uDD11 HITLER: chtěl sovětskou expanzi na jih (Írán, Indie) → oslabit Británii
+\uD83D\uDD11 SPOJENCI V BARBAROSSE: Finsko a Rumunsko – zpět území ztracená 1940
+\uD83D\uDD11 POBALTÍ + UKRAJINA: Němci vítáni jako osvoboditelé → zklamání, teror, kolaborace na holokaustu
+\uD83D\uDD11 POLÁCI: Sikorski–Majskij (1941) → Katyň 1943 → SSSR přerušil styky → prosovětská vláda
+\uD83D\uDD11 PROPAGANDA: „Velká vlastenecká válka“ vytržená z celku; rozpad SSSR = „vina Západu“`,
+      content: `
+O ČEM TEXT JE:
+• Jan Rychlík, Lidové noviny 23. 9. 2023 – závěrečný díl seriálu o „bratrské“ spolupráci nacistického Německa a SSSR
+• Otázka: proč nevznikla osa Berlín–Řím–Tokio–Moskva a jaká byla skutečná role SSSR ve válce
+
+PAKT TŘÍ A SSSR:
+• 27. 9. 1940 Berlín – Německo, Itálie, Japonsko si rozdělily sféry vlivu (Evropa × východní Asie)
+• Čl. 5: pakt nemá vliv na vztahy k SSSR → otevřená otázka, zda se SSSR připojí jako 4. mocnost
+• Hitler už 31. 7. 1940 nařídil plánovat útok na SSSR, ale zatím zvažoval i jeho přizvání
+• 12.–14. 11. 1940 Molotov v Berlíně, jednal s Ribbentropem i Hitlerem; 13. 11. návrh čtyřstranné smlouvy (sféry vlivu, vzájemná pomoc, tajný dodatek)
+• Hitler tlačil SSSR na jih – do Íránu a Indie – aby oslabil Británii
+• SSSR chtěl zůstat evropskou mocností a nevzdat se Balkánu; spory o severní Bukovinu a německá vojska ve Finsku
+• 25. 11. 1940 údajný sovětský protinávrh (Bulharsko, Írán, Irák) – text se nenašel; Hitler už byl rozhodnut pro válku
+
+BARBAROSSA A REGIONY:
+• 22. 6. 1941 útok bez vypovězení války; přidaly se Maďarsko, Rumunsko, Slovensko a Finsko
+• Finsko a Rumunsko chtěly zpět území ztracená 1940 – pak pokračovaly v agresivní válce dál (východní Karélie, Sedmihradsko)
+• Západní Ukrajina, Bělorusko, Pobaltí: SSSR nebraly za svůj stát → Němci vítáni jako osvoboditelé
+• Zklamání: 30. 6. 1941 OUN vyhlásila samostatnou Ukrajinu → vůdci do KT; podobně odmítnuty Litva, Lotyšsko, Estonsko
+• Německá správa: Reichskommissariat Ostland (Riga), Reichskommissariat Ukrajina (Rivne), Východní Halič ke Generálnímu gouvernementu
+• Němci využili místní nacionalisty ke „špinavé práci“ – perzekuce Židů, kolaborantské jednotky i v SS
+• Bezvýchodná situace: spolupráce s Němci = teror a pověst kolaborantů; boj proti nim = návrat SSSR
+
+OZBROJENÉ SLOŽKY:
+• „Rudí“ (sovětští) partyzáni – obnova sovětské moci
+• Oddíly bojující za samostatnost proti Němcům i „rudým“ (UPA, lesní bratři)
+• Kolaborantské jednotky na straně Němců
+• Na Volyni a Z. Ukrajině navíc polská Armia Krajowa podřízená vládě v Londýně
+
+POLÁCI:
+• 30. 7. 1941 dohoda Sikorski–Majskij – spojenectví, otázka hranic nechána otevřená
+• Polská vláda hledala zmizelé důstojníky (velvyslanec Kot se marně ptal)
+• IV/1943 Němci odhalili hroby v Katyni → Poláci žádají Červený kříž → SSSR přerušil diplomatické styky
+• 1944 SSSR ustavil vlastní prosovětskou polskou vládu, ta přijala novou hranici (odškodnění na západě na úkor Německa)
+• Západní spojenci tuto vládu uznali a za předválečné hranice se neangažovali
+• Vinu za Katyň SSSR přiznal až 1990
+
+ZÁVĚR AUTORA:
+• Hrdinství sovětských vojáků nelze znevažovat, ale WWII je nutné vidět jako celek
+• Role SSSR byla rozporná – příchod RA 1944–45 nebyl pro všechny osvobozením
+• SSSR si ponechal zisky z let 1939–41, Pobaltí a Z. Ukrajinu musel dobýt silou (lesní bratři, UPA do 50. let)
+• Podkarpatská Rus (1944) – „ruský sen“ o hranici za Karpaty splněn; SSSR supervelmocí
+• Rozpad SSSR 1991 nebyl dílem „rusofobie“ či Západu, ale přirozený proces po diskreditaci komunismu
+      `,
+      textQuestions: [
+        { q: "1. Co byl tzv. Pakt tří, které další země se k němu připojily a jakou roli v něm hrál SSSR?", a: "Pakt podepsaný 27. 9. 1940 v Berlíně mezi Německem, Itálií a Japonskem – rozdělení sfér vlivu (Evropa × východní Asie), vznik osy Berlín–Řím–Tokio. Připojily se Maďarsko (20. 11.), Rumunsko (23. 11.) a Slovensko (24. 11. 1940). SSSR se měl stát 4. členem (Molotov v Berlíně 12.–14. 11. 1940), ale jednání skončila bez výsledku a Hitler ztratil zájem." },
+        { q: "2. Jmenujte země, o něž měly v období paktu R–M zájem obě totalitní mocnosti.", a: "Finsko (německá vojska a tajná dohoda z 12. 9. 1940), Bulharsko a Jugoslávie (Balkán), Rumunsko – severní Bukovina (nebyla v tajném protokolu), dále Polsko a Pobaltí, které si rozdělily." },
+        { q: "3. Kam by měla dle Německa směřovat expanze SSSR a proč?", a: "Na jih – do Íránu, případně Indie. Cíl: oslabit Britské impérium, jediného efektivního protivníka Německa, a odvést SSSR z Evropy a Balkánu." },
+        { q: "4. Proč se někteří němečtí spojenci v červnu 1941 připojili k útoku na SSSR?", a: "Finsko a Rumunsko chtěly získat zpět území ztracená v roce 1940 (Karelská šíje; Besarábie a sev. Bukovina). Pak pokračovaly dál – Finsko chtělo východní Karélii, Rumunsko doufalo, že mu Německo pomůže získat od Maďarska zpět severní Sedmihradsko." },
+        { q: "5. Popište vztah nacistické správy a místního obyvatelstva v Pobaltí a na Ukrajině.", a: "Obyvatelé zprvu vítali Němce jako osvoboditele od bolševiků a čekali obnovu státnosti. Němci ji odmítli (Bandera do KT), zřídili říšské komisariáty, rekvírovali potraviny, posílali lidi na nucené práce a nastolili teror. Místní nacionalisty využili ke „špinavé práci“ – vyvražďování Židů, kolaborantské jednotky (i SS). Situace bez řešení: kolaborace = teror + pověst kolaborantů, odboj = návrat SSSR." },
+        { q: "6. Které ozbrojené složky se v regionech vyskytovaly a jaké byly jejich cíle?", a: "Rudí partyzáni (obnova sovětské moci), oddíly bojující za samostatnost proti Němcům i Sovětům (UPA, lesní bratři), kolaborantské jednotky (na straně Němců), na Volyni polská Armia Krajowa (obnova Polska v předválečných hranicích, podřízena Londýnu)." },
+        { q: "7. V čem bylo specifické postavení Poláků? Jak se zachoval Hitler, Stalin a Západ?", a: "Byli spojenci Západu, ale SSSR, další spojenec, jim v roce 1939 vzal víc než polovinu území. Hitler: okupace a teror, propagandisticky zveřejnil Katyň (1943). Stalin: Katyň, po žádosti o vyšetřování přerušil styky s londýnskou vládou a ustavil vlastní prosovětskou vládu. Západ: dohodu Sikorski–Majskij nechal s otevřenými hranicemi, pak uznal prosovětskou vládu a za předválečné hranice se neangažoval." },
+        { q: "8. Popište hlavní narativy kremelské propagandy – sovětské i dnešní ruské.", a: "„Velká vlastenecká válka“ 1941–45 vytržená z celku WWII (spolupráce s Hitlerem 1939–41 se zamlčuje), SSSR jako výhradně osvoboditel, Katyň svalena na Němce (přiznáno až 1990), nostalgie po impériu a rozpad SSSR jako dílo „rusofobie“ a Západu." }
+      ],
+      modelAnswer: `Rychlík popisuje konec německo-sovětské spolupráce. 27. září 1940 vznikl Pakt tří mezi Německem, Itálií a Japonskem, k němuž se v listopadu přidaly Maďarsko, Rumunsko a Slovensko, a otevřela se otázka, zda se nepřipojí i SSSR. Při Molotovově návštěvě Berlína (12.–14. listopadu 1940) mu Hitler nabízel čtyřstrannou smlouvu, ale chtěl sovětskou expanzi odklonit na jih do Íránu a Indie, aby oslabil Británii. Sověti chtěli zůstat evropskou mocností a zájmy obou se střetávaly ve Finsku, na Balkáně (Bulharsko, Jugoslávie) a v severní Bukovině, takže Hitler zvolil válku: 22. června 1941 zaútočil s Maďarskem, Rumunskem, Slovenskem a Finskem, z nichž Finsko a Rumunsko chtěly zpět území ztracená roku 1940. Obyvatelé Pobaltí a západní Ukrajiny zprvu vítali Němce jako osvoboditele, ale Němci odmítli jejich státnost, nastolili teror a místní kolaboranty využili k vyvražďování Židů; na těchto územích proti sobě bojovali rudí partyzáni, nacionalisté (UPA), kolaboranti i polská Armia Krajowa. Specifické bylo postavení Poláků: po odhalení Katyně v roce 1943 SSSR přerušil styky s londýnskou vládou, dosadil vlastní prosovětskou vládu a Západ ji nakonec uznal. Autor uzavírá, že role SSSR ve válce byla rozporná a že kremelská propaganda dodnes pracuje s mýtem „Velké vlastenecké války“ a s tvrzením, že rozpad SSSR zavinil Západ.`
+    },
+    {
+      id: 6,
+      title: "SSSR 1945–1953: vnitřní a zahraniční politika",
+      short: "Počátek studené války, Jalta a Postupim, satelity, 1. berlínská krize",
+      summary: `\uD83D\uDD11 STUDENÁ VÁLKA: 1945–1991, SSSR + satelity × USA + NATO; mocenský, ideologický, ekonomický, propagandistický konflikt pod hrozbou jaderných zbraní
+\uD83D\uDD11 SSSR 1945: ztráty 20–50 mil., ale převaha pozemního vojska; hranice dle paktu R–M + obnova hranic carského Ruska
+\uD83D\uDD11 TAKTIKA: nárazníkové pásmo satelitů, stupňování požadavků, nejasné představy Spojenců, čekání na izolacionismus USA
+\uD83D\uDD11 JALTA (II/1945) + POSTUPIM (17. 7. – 2. 8. 1945): 4 zóny, 4D, Odra–Nisa, odsun Němců
+\uD83D\uDD11 1946 FULTON: Churchill – „železná opona od Štětína po Terst“
+\uD83D\uDD11 1947: Trumanova doktrína, Marshallův plán (SSSR zakázal), Kominforma; 1949 RVHP
+\uD83D\uDD11 BLOKÁDA BERLÍNA: 24. 6. 1948 – 12. 5. 1949, letecký most (2,5 mil. t, 70 † letců)
+\uD83D\uDD11 1949: NATO (4. 4.), SRN (7. 9.), NDR (7. 10.), sovětská atomová bomba
+\uD83D\uDD11 UVNITŘ: nová vlna represí (zajatí vojáci, Židé, úchylkáři), lesní bratři a UPA; † Stalin 5. 3. 1953`,
+      content: `
+CHARAKTERISTIKA STUDENÉ VÁLKY:
+• Dlouhodobý konflikt mezi SSSR a jeho satelity a USA, NATO a jejich spojenci, 1945–1991
+• Různé stupně vyhrocení – střídání oteplení a ochlazení
+• Konflikt mocenský, politický, diplomatický, ekonomický, ideologický a propagandistický (kultura, sport, věda)
+• Neustálá hrozba použití jaderných zbraní
+• Lokální vojenské konflikty jako ventil napětí a prostředek rozšiřování vlivu
+• Velmi malý prostor pro neutrály (Švýcarsko, Švédsko, Finsko, Hnutí nezúčastněných)
+
+KOŘENY A PŘÍČINY:
+• Rozšiřování vlivu SSSR a USA (+ Británie, Francie)
+• Logický rozkol nesourodých spojenců protihitlerovské koalice
+• Komunismus × demokracie
+• Rozdělení sfér vlivu během a po 2. sv. válce
+• Zneužití dekolonizace třetího světa a reakce na ni
+
+VÝCHOZÍ POZICE SSSR:
+• Ztráty na obyvatelstvu 20–50 mil. (odhady se liší), ale převaha v pozemním vojsku
+• Uznání západních hranic podle smlouvy Molotov–Ribbentrop z r. 1939 + obnova hranic carského Ruska
+• Snaha vytvořit nárazníkové pásmo ze satelitů
+• Stupňování požadavků a snaha získat maximum
+• Využívání nejasných představ Spojenců o uspořádání Evropy + očekávání návratu USA k izolacionismu
+• Sympatie západoevropské levice
+
+VÝCHOZÍ POZICE USA:
+• Roosevelt: ústupky Stalinovi, víra ve spravedlivý řád a důvěra v plnění Stalinových slibů, podcenění sovětské expanze, ochota akceptovat vliv SSSR ve východní Evropě; nevyslyšel prozíravého Churchilla
+• Rooseveltův zdravotní handicap, † 12. 4. 1945 → nástup Harryho Trumana = pozdní pokus o změnu přístupu
+• USA: malé válečné ztráty, převaha námořní a jaderná, dominance v Pacifiku, Latinské Americe a západní Evropě, poválečná prosperita
+
+JALTSKÁ KONFERENCE (únor 1945):
+• Předjednání Postupimi – osud Německa, rozdělení vlivu, polská otázka
+• Naznačení demarkační linie – tzv. „jaltský mýtus“ (že se zde dělila Evropa)
+• Fyzická indispozice Roosevelta a psychická Churchilla
+• USA vázány v Tichomoří – SSSR slíbil vstoupit do války proti Japonsku
+
+POSTUPIMSKÁ KONFERENCE (17. 7. – 2. 8. 1945):
+• Účastníci: Truman, Stalin a labourista Clement Attlee (nahradil Churchilla)
+• Návrat všech území obsazených Německem po roce 1937; východní hranice Německa Odra–Nisa (posunutí Polska)
+• Německo jako celek, ale Německo i Rakousko rozděleny na 4 okupační zóny (SSSR, USA, Británie, Francie)
+• 4D: demilitarizace, demokratizace, denacifikace, dekartelizace
+• Odsun Němců z Polska, Československa a Maďarska (po tzv. divokém odsunu)
+• Uznání územních zisků SSSR; výzva k bezpodmínečné kapitulaci Japonska
+
+SOVĚTIZACE EVROPY – ROZPORY MEZI VÍTĚZI:
+• Otázka reparací od Německa
+• Sovětské územní nároky na turecké úžiny; neochota SSSR odejít z Íránu
+• Posilování dosud okrajových místních komunistů a budování „lidově demokratických režimů“ na Balkáně a v Polsku
+• Oddalování slíbených demokratických voleb
+• 5. 3. 1946 Churchill ve Fultonu:
+„Od Štětína na Baltu až po Terst na Jadranu byla napříč celým kontinentem spuštěna železná opona… Téměř ve všech případech byl nastolen policejní stát a prozatím nikde, s výjimkou Československa, neexistuje skutečná demokracie.“
+
+ODPOVĚĎ ZÁPADU A SOVĚTSKÁ REAKCE:
+• Trumanova doktrína (1947) – aktivní pomoc státům ohroženým vnitřním nebo vnějším komunistickým nebezpečím; Kongres schválil pomoc Řecku (250 mil. $) a Turecku (150 mil. $)
+• Marshallův plán (1947) – hospodářská obnova Evropy „proti hladu, bídě, zoufalství a chaosu“; SSSR satelitům účast zakázal
+• Kominforma (1947) – nástroj kontroly komunistických stran
+• Únor 1948 – komunistický převrat v Československu
+• RVHP (1949) – oficiálně spolupráce a plánování, de facto mocenský nástroj Moskvy k ovládání ekonomik bloku, zákaz obchodu se Západem
+• Od 1951 „ocelová koncepce“ – kvůli Korejské válce důraz na zbraně a těžký průmysl bez ohledu na potřeby obyvatel
+
+1. BERLÍNSKÁ KRIZE (1948–1949):
+• Německo podle Postupimi rozděleno na zóny = země, kde se nejvíc střetly zájmy dvou bloků
+• Západní zóny: demokratický systém – CDU/CSU, FDP, SPD, KPD, volby, zemské vlády
+• 1. 1. 1947 Bizonie (britská + americká zóna), duben 1948 Trizonie (+ francouzská); Marshallův plán, příprava ústavy
+• Sovětská zóna: rozhodující SED, omezení demokracie, pozemková reforma (max. 100 ha), znárodnění továren
+• Červen 1948 – rozhodnutí vytvořit západoněmecký stát + měnová reforma (i v západních sektorech Berlína)
+• 24. 6. 1948 – SSSR zahájil úplnou blokádu Západního Berlína: uzavřel přístupové cesty, přerušil dodávky zboží a energie (Stalin: „třeba se nám je podaří vykopnout“)
+• Zásoby pro 2 mil. Berlíňanů max. na 5 týdnů, uhlí na 10 dní
+• 26. 6. 1948 letecký most (gen. Lucius Clay, britský ministr Bevin; řídil gen. William Tunner) – C-54 a Dakoty, přistání každé 1–3 minuty, průměrně 2 750 t denně (max. 5 600 t), 277 000 letů, celkem asi 2,5 mil. t; nové letiště Tegel
+• „Rozinkové bombardéry“ – pilot Gail Halvorsen shazoval dětem sladkosti na padáčcích
+• Rozštěpení berlínské radnice, starostou Západního Berlína Ernst Reuter
+• 12. 5. 1949 SSSR blokádu zrušil (asi 318 dní); zahynulo 70 amerických a britských letců = první oběti studené války
+
+DŮSLEDKY – ROZDĚLENÍ NĚMECKA A BLOKŮ:
+• 4. 4. 1949 NATO (Washingtonská smlouva), 12 zakládajících států – „udržet Ameriku v Evropě, Rusko mimo Evropu a Německo při zemi“; 1952 Řecko a Turecko, 1955 SRN
+• 7. 9. 1949 SRN (Bonn) – kancléř Konrad Adenauer (1949–63), prezident Theodor Heuss; prozápadní orientace, NATO, EHS, smíření s Francií
+• 7. 10. 1949 NDR (Východní Berlín) – prezident Wilhelm Pieck (SED), Ulbricht, později Honecker
+• Naplnila se Churchillova předpověď o železné oponě; Stalin spustil zbrojní program
+• Srpen 1949 první sovětská atomová bomba; 1950–53 Korejská válka
+• 1955 Varšavská smlouva (SSSR, Albánie, Bulharsko, ČSR, Maďarsko, NDR, Polsko, Rumunsko) – formálně reakce na vstup SRN do NATO
+
+VNITŘNÍ POLITIKA – POZDNÍ STALINISMUS:
+• Další vlna represí: zajatí vojáci a navrátilci (podezřelí ze zrady → gulag), Židé, „úchylkáři“
+• Partyzánské antibolševické aktivity na Ukrajině a v Pobaltí („lesní bratři“) – potlačovány do 50. let
+• DOPLNĚNÍ: gulag na vrcholu (asi 2,5 mil. vězňů), ždanovština v kultuře, antisemitská kampaň proti „kosmopolitismu“ a „lékařské spiknutí“ (1953), kult Stalinovy osobnosti vrcholí
+• 5. 3. 1953 Stalin umírá
+      `,
+      modelAnswer: `Po roce 1945 byl SSSR zdevastovaným státem s 20–50 miliony mrtvých, ale také vítěznou mocností s převahou pozemních vojsk. Stalin si ponechal hranice podle paktu Ribbentrop–Molotov, obnovoval hranice carského Ruska a ze zemí střední a východní Evropy budoval nárazníkové pásmo satelitů. Využíval přitom ústupků Roosevelta, nejasných představ Spojenců a očekávání, že se USA vrátí k izolacionismu. Jalta (únor 1945) a Postupim (léto 1945) rozdělily Německo na 4 zóny, posunuly Polsko na západ a schválily odsun Němců. Rozpory vítězů (reparace, turecké úžiny, Írán, nedodržené svobodné volby) vedly ke studené válce: Churchill ve Fultonu v roce 1946 mluvil o železné oponě, USA odpověděly Trumanovou doktrínou a Marshallovým plánem, který SSSR satelitům zakázal. Moskva založila Kominformu (1947) a RVHP (1949), v únoru 1948 převzali moc komunisté v ČSR. Vrcholem byla 1. berlínská krize: po měnové reformě v západních zónách SSSR 24. června 1948 zablokoval Západní Berlín a Západ ho téměř rok zásoboval leteckým mostem (2,5 milionu tun, 70 mrtvých letců). Výsledkem bylo rozdělení Německa na SRN a NDR a vznik NATO (1949), SSSR téhož roku získal atomovou bombu. Uvnitř země přišla další vlna represí proti navrátilým zajatcům, Židům a „úchylkářům“, boje s lesními bratry a UPA i vrcholící kult Stalina, který zemřel 5. března 1953.`
+    },
+    {
+      id: 7,
+      title: "SSSR za Chruščova – pozitiva a negativa",
+      short: "Tání, XX. sjezd, Sputnik × Maďarsko, Berlínská zeď, Karibská krize",
+      summary: `\uD83D\uDD11 1953: † Stalin → Nikita Chruščov (první tajemník), poprava Beriji (šéf NKVD)
+\uD83D\uDD11 POZITIVA: amnestie 2 mil. vězňů, RA z Rakouska (1955), smíření s Titem, odpuštění dluhů Maďarsku, Jáchymov vrácen ČSR, Sputnik 1957, Gagarin 1961
+\uD83D\uDD11 XX. SJEZD: 25. 2. 1956 tajný projev – odhalení kultu osobnosti + Leninova „závěť“ (1922)
+\uD83D\uDD11 NEGATIVA: Varšavská smlouva (1955), krvavé potlačení Maďarska (1956), jaderné hrozby v Suezské krizi (1956)
+\uD83D\uDD11 2. BERLÍNSKÁ KRIZE: 1949–61 uteklo z NDR skoro 3 mil. lidí → 13. 8. 1961 Berlínská zeď
+\uD83D\uDD11 KARIBSKÁ KRIZE: říjen 1962, sovětské rakety na Kubě → karanténa → 28. 10. dohoda (Kuba nenapadena + tajně rakety z Turecka); horká linka
+\uD83D\uDD11 KONEC: 1964 sesazen → Brežněv`,
+      content: `
+NIKITA SERGEJEVIČ CHRUŠČOV (1894–1971):
+• Za občanské války politický komisař v Rudé armádě
+• Ve 30. letech stranický tajemník v Moskvě, prováděl čistky; v době nejhorších represí první tajemník KS Ukrajiny
+• Za 2. sv. války koordinoval obranu Ukrajiny, politický komisař u Stalingradu
+• 1953 zorganizoval svržení a popravu Lavrentije Beriji (šéf NKVD), stal se prvním tajemníkem ÚV KSSS (1953–1964), omezil vliv stalinského jádra kolem Malenkova
+• Zůstal věrný komunistické ideologii – destalinizace neznamenala demokratizaci
+
+POZITIVA (z prezentace) – „TÁNÍ“:
+• Amnestie pro asi 2 mil. vězňů, propouštění z gulagu
+• Poprava L. Beriji
+• Odchod Rudé armády z Rakouska (1955) – Rakousko neutrální
+• Smíření s J. B. Titem (1955)
+• Odpuštění dluhů Maďarům
+• Navrácení Jáchymova ČSR (kontrola uranových dolů)
+• Úspěchy v kosmonautice: Sputnik (4. 10. 1957) – první umělá družice, Jurij Gagarin (12. 4. 1961) – první člověk ve vesmíru
+• Odhalení kultu osobnosti J. V. Stalina na XX. sjezdu KSSS (1956)
+• 1959 návštěva USA
+
+XX. SJEZD KSSS (únor 1956):
+• 25. 2. 1956 – tajný projev Chruščova „O kultu osobnosti a jeho důsledcích“
+• Kritika Stalinových zločinů na komunistech (čistky) a chyb ve válce – ne však kolektivizace a systému jako celku
+• Zveřejnění Leninova tajného dopisu z r. 1922 („závěť“):
+„Soudruh Stalin, stav se generálním tajemníkem, soustředil ve svých rukou nesmírnou moc, a já si nejsem jist, dokáže-li vždy dost obezřetně tuto moc uplatňovat.“
+„Stalin je příliš hrubý … navrhuji, aby soudruzi uvážili, jak Stalina z této funkce přemístit.“
+• Projev se rychle rozšířil → otřes v komunistickém hnutí, povstání v Poznani a v Maďarsku
+
+NEGATIVA (z prezentace):
+• Založení Varšavské smlouvy (1955) – vojenský blok proti NATO
+• Krvavé potlačení maďarského povstání (1956)
+• Hrozba jaderným útokem za Suezské krize (1956) – Egypt × Izrael, Británie, Francie
+• 2. berlínská krize a stavba zdi (1961)
+• Karibská krize (1962) – svět na pokraji jaderné války
+
+2. BERLÍNSKÁ KRIZE (1961):
+• 1949–1961 uprchlo z NDR na Západ skoro 3 miliony lidí (hlavně přes Západní Berlín)
+• Walter Ulbricht, červenec 1961:
+„Nikdo nemá v úmyslu postavit zeď.“ (doslova: „Naši stavbaři jsou zaměstnáni stavbou nových domů. Nikdo nechce zeď.“)
+• V noci z 12. na 13. srpna 1961 dostalo 100 000 vojáků NDR rozkaz rozmístit se na hranici se Západním Berlínem
+• Během několika hodin zablokováno 193 ulic, kolem Západního Berlína 164 km plotu z ostnatého drátu
+• Později zeď z panelů 3,6 m, před ní ostnaté dráty, zátarasy, minová pole, strážní věže a bunkry
+
+KARIBSKÁ KRIZE (říjen 1962):
+• Aktéři: John F. Kennedy (prezident USA 1961–63, zavražděn v Dallasu 22. 11. 1963), N. S. Chruščov, Fidel Castro (1959 svrhl Batistu, diktatura, příklon k SSSR)
+• Pozadí: 1961 nepovedená invaze kubánských emigrantů v Zátoce sviní (Kennedyho neúspěch); Chruščov mladého Kennedyho podcenil
+• Září 1962 sovětské lodě vezou na Kubu rakety s doletem 1 800 km (další s dvojnásobným doletem na cestě) → přímé ohrožení USA
+• 16. 10. 1962 snímky z amerického špionážního letounu U-2 potvrdily raketové základny
+• Generálové chtěli tvrdý úder, Kennedy zvolil „měkčí“ variantu – námořní blokádu („karanténu“) Kuby; nejvyšší pohotovost, aktivované hlavice
+• 24.–25. 10. se k blokádě blížila sovětská plavidla a ponorky s jaderným arzenálem, nakonec se zastavila
+• 27. 10. sestřelen U-2 nad Kubou; americký torpédoborec donutil k vynoření sovětskou ponorku s jadernými zbraněmi – její důstojníci naštěstí nezaútočili
+• 28. 10. 1962 dohoda: SSSR stáhne rakety × USA veřejně zaručí, že nenapadnou Kubu + tajně stáhnou rakety Jupiter z Turecka (Chruščov si zachoval tvář)
+• Důsledek: „horká linka“ mezi Moskvou a Washingtonem; nejnebezpečnější moment celé studené války; pak dohody o nešíření jaderných zbraní
+
+DALŠÍ NEGATIVA (doplnění):
+• Vláda jedné strany a cenzura pokračují, pronásledování církví (1958–64), Pasternak donucen odmítnout Nobelovu cenu (1958)
+• Hospodářské experimenty (panenské země, kukuřičná kampaň) → nedostatek potravin
+• Novočerkassk 1962 – armáda střílí do stávkujících dělníků
+• Sovětsko-čínská roztržka (1961)
+• Říjen 1964 – Chruščov zbaven moci, nahrazen L. I. Brežněvem
+      `,
+      textQuestions: [
+        { q: "Vyjmenuj hlavní aktéry karibské krize a jejich nejdůležitější činy.", a: "J. F. Kennedy – prezident USA, Zátoka sviní (1961), vyhlásil karanténu Kuby, dohoda 28. 10. 1962, zavražděn 1963. N. S. Chruščov – XX. sjezd, Maďarsko 1956, rozmístil rakety na Kubě a nakonec ustoupil, 1964 sesazen. Fidel Castro – 1959 svrhl Batistu, diktatura, znárodnění, příklon k SSSR, vojáci do Angoly, 2006 předal moc Raúlovi." },
+        { q: "Jaké nebezpečí hrozilo světu během karibské krize?", a: "Jaderná válka mezi supervelmocemi – rakety na Kubě mohly zasáhnout USA, hlavice byly aktivovány, sovětské ponorky nesly jaderné zbraně. Stačilo selhání nervů (sestřelený U-2, vynořená ponorka) a „červené tlačítko“ mohlo být zmáčknuto." },
+        { q: "Stručně popiš průběh událostí.", a: "Září 1962 rakety na Kubu → 16. 10. potvrzení snímky z U-2 → Kennedy místo úderu vyhlásil karanténu → 24.–25. 10. sovětské lodě a ponorky u blokády, zastavily se → 27. 10. sestřelen U-2, vynucené vynoření ponorky → 28. 10. dohoda a stažení raket." },
+        { q: "Jaké ústupky provedly USA Sovětskému svazu?", a: "Veřejná záruka, že USA nenapadnou Kubu, a tajný příslib stažení raket Jupiter ze základen v Turecku." }
+      ],
+      modelAnswer: `Po Stalinově smrti v roce 1953 se do čela SSSR dostal Nikita Chruščov, který nechal popravit šéfa NKVD Beriju. Jeho vláda (1953–1964) přinesla krátkodobé uvolnění, tzv. tání: amnestii asi 2 milionů vězňů, odchod Rudé armády z Rakouska (1955), smíření s Titem, odpuštění dluhů Maďarsku a navrácení Jáchymova Československu. Zásadní byl tajný projev na XX. sjezdu KSSS 25. února 1956, v němž odhalil kult Stalinovy osobnosti a zveřejnil Leninův dopis varující před Stalinem. SSSR slavil úspěchy v kosmonautice – Sputnik (1957) a Gagarin (1961). Chruščov však zůstal komunistou a negativa jsou vážná: v roce 1955 vznikla Varšavská smlouva, v roce 1956 Rudá armáda krvavě potlačila maďarské povstání a během Suezské krize SSSR hrozil jaderným útokem. Protože z NDR uteklo skoro 3 miliony lidí, nechal v srpnu 1961 Ulbricht se souhlasem Moskvy postavit Berlínskou zeď. V říjnu 1962 rozmístění sovětských raket na Kubě vyvolalo karibskou krizi, nejnebezpečnější okamžik studené války: Kennedy vyhlásil karanténu Kuby a krize skončila 28. října dohodou o stažení raket výměnou za záruku nenapadení Kuby a tajné stažení amerických raket z Turecka; vznikla horká linka. Doma selhaly hospodářské experimenty a v Novočerkassku armáda střílela do dělníků. V roce 1964 byl Chruščov sesazen a nahrazen Brežněvem.`
+    },
+    {
+      id: 8,
+      title: "Maďarsko (1956 + „gulášový socialismus“)",
+      short: "Rákosi, Nagy, Gerő, povstání 1956, represe, Kádár",
+      summary: `\uD83D\uDD11 1953: maďarské vedení povoláno do Moskvy → stalinista Rákosi obviněn z kultu osobnosti, premiérem liberálnější Imre Nagy
+\uD83D\uDD11 1955: Rákosi získá pozice zpět, Nagy odvolán
+\uD83D\uDD11 1956: po XX. sjezdu a Poznani Rákosi odvolán → stalinista Ernő Gerő; Petőfiho klub, studenti žádají Nagye a svobodné volby
+\uD83D\uDD11 23. 10. 1956: demonstrace solidarity s Polskem → ÁVH střílí → povstání; 24. 10. sovětské tanky
+\uD83D\uDD11 25.–28. 10.: Nagy premiérem, rozpustil ÁVH, slíbil volby; neutralita + vystoupení z Varšavské smlouvy
+\uD83D\uDD11 1. 11. Moskva rozhodla o intervenci (útok 4. 11.), boje do 10. 11.
+\uD83D\uDD11 REPRESE: 4 000 †, 229 poprav (i Nagy 1958), 22 000 vězňů, 200 000 v exilu
+\uD83D\uDD11 KÁDÁR: „gulášový socialismus“ – „Kdo není proti nám, je s námi“, amnestie 1963, 80. léta liberalizace`,
+      content: `
+MAĎARSKO PO 1945 (doplnění):
+• Spojenec Německa → sovětská okupace
+• Volby 1945 vyhrála Nezávislá strana malých rolníků (asi 57 %), komunisté asi 17 %
+• Komunisté pod Mátyásem Rákosim ovládli moc „salámovou taktikou“; 1949 lidová republika
+• Rákosiho stalinismus: kult osobnosti („nejlepší Stalinův žák“), tajná policie ÁVH, proces s Lászlóem Rajkem (popraven 1949), kolektivizace
+
+POKUS O REFORMU 1953–1956:
+• Červen 1953 – po Stalinově smrti maďarské vedení povoláno do Moskvy, stalinista Rákosi a spol. obviněni z podpory kultu osobnosti
+• Předsedou vlády doporučen liberálnější Imre Nagy – zrušil věznění „nepohodlných“ osob, zahájil skromné reformy
+• Rákosi jako první tajemník strany postupně získal ztracené pozice zpět → Nagy odvolán (1955)
+• 1956 – po Chruščovově projevu a povstání v Poznani Rákosi na doporučení Moskvy odvolán; nahradil ho další stalinista Ernő Gerő
+• Velký vliv získává Petőfiho klub – diskusní kluby komunistů i nekomunistů, pieta za oběti nezákonných procesů (pohřeb Lászlóa Rajka)
+• Vysokoškoláci zakládají nezávislou organizaci: odvolání Rákosiho, svobodné volby, povolání Nagye
+
+POVSTÁNÍ 1956:
+• 23. 10. 1956 – studenti v Budapešti svolali demonstraci solidarity s událostmi v Polsku, přidávají se dělníci a další obyvatelé (stržena Stalinova socha)
+• Gerő v rozhlase označil demonstranty za „nepřátelské živly a lůzu“
+• ÁVH začala do lidí střílet ze střech → šokovaný dav se vyzbrojuje, nepokoje se šíří po celé zemi
+• Gerő požádal o sovětskou intervenci → 24. 10. ráno přijíždějí dvě sovětské divize s tanky
+• Maďaři zakládají ozbrojené milice a bojují; někteří příslušníci tajné policie veřejně popraveni
+• 25. 10. padla vláda; nové vedení v čele s Imre Nagyem rozpustilo ÁVH, slíbilo svobodné volby a přidalo se na stranu lidu
+• 28. 10. skončily boje, sovětská vojska načas vyklidila Budapešť
+• Nagy vyhlásil neutralitu a vystoupení z Varšavské smlouvy (1. 11.)
+• 1. 11. 1956 Moskva rozhodla o intervenci → 4. 11. masivní útok, boje znovu vypukly a trvaly až do 10. 11.
+• Západ nezasáhl – souběžná Suezská krize, strach z jaderné války (doplnění)
+
+REPRESE:
+• asi 4 000 mrtvých + 229 poprav
+• Imre Nagy unesen, odsouzen a popraven (1958), rehabilitován 1989
+• 22 000 lidí ve vězení (amnestie 1963)
+• asi 200 000 lidí odešlo do exilu
+
+KÁDÁROVA ÉRA – „GULÁŠOVÝ SOCIALISMUS“:
+• János Kádár – dosazen Moskvou, vládl až do konce 80. let
+• Zrušeny všechny reformy z roku 1956, po represích postupná „konsolidace“
+• Doplnění: heslo „Kdo není proti nám, je s námi“ (1961) – režim žádal jen politickou pasivitu; amnestie 1963; Nový ekonomický mechanismus (1968) – prvky trhu, soukromé záhumenky, drobné podnikání; relativně dobré zásobování, cestování na Západ → „nejveselejší barák v táboře“
+• Odvrácená strana: vláda jedné strany, rok 1956 tabu, 1968 účast na invazi do ČSSR, blahobyt placený zahraničními úvěry (dluh)
+• 80. léta – tání a liberalizace; 1989 rehabilitace a znovupohřbení Imre Nagye
+      `,
+      modelAnswer: `Po roce 1945 ovládli Maďarsko komunisté vedení stalinistou Mátyásem Rákosim. Po Stalinově smrti si Moskva v červnu 1953 maďarské vedení předvolala, Rákosiho obvinila z kultu osobnosti a premiérem se stal liberálnější Imre Nagy, který propouštěl vězně a zahájil skromné reformy. Rákosi však získal pozice zpět a Nagy byl v roce 1955 odvolán. Po Chruščovově projevu a povstání v Poznani byl Rákosi v roce 1956 nahrazen dalším stalinistou Gerőem; sílil Petőfiho klub a studenti požadovali svobodné volby a návrat Nagye. 23. října 1956 vyšli do ulic Budapešti na podporu Poláků, Gerő je nazval lůzou, ÁVH začala střílet a demonstrace přerostla v ozbrojené povstání; 24. října přijely sovětské tanky. Nová vláda Imre Nagye rozpustila ÁVH, slíbila svobodné volby, po skončení bojů 28. října vyhlásila neutralitu a vystoupení z Varšavské smlouvy. Moskva 1. listopadu rozhodla o intervenci a boje trvaly až do 10. listopadu. Následovaly represe: asi 4 000 mrtvých, 229 poprav včetně Nagye (1958), 22 000 vězněných a 200 000 lidí v exilu. Moskvou dosazený János Kádár zrušil reformy, ale od 60. let zvolil smířlivější kurz – amnestii (1963), heslo „Kdo není proti nám, je s námi“ a ekonomické uvolnění. Tento „gulášový socialismus“ přinesl relativní blahobyt, ale stál na vládě jedné strany, tabuizaci roku 1956 a zahraničních dluzích.`
+    },
+    {
+      id: 9,
+      title: "Polsko 1939–47 + TEXT Katyň (Wajda)",
+      short: "Rozdělení, okupace, odboj, Varšava 1944, Katyň, sovětizace",
+      summary: `\uD83D\uDD11 PIŁSUDSKI: obnovitel Polska, „zázrak na Visle“ 1920, sanační režim od 1926
+\uD83D\uDD11 1939: Gdaňsk, Gliwice → 1. 9. útok, 3. 9. UK + Fr. válka, 17. 9. SSSR, Varšava kapitulovala po 25 dnech
+\uD83D\uDD11 OKUPACE: Generální gouvernement (Krakov, 12. 10. 1939); zabito asi 3 mil. Poláků + 3 mil. Židů
+\uD83D\uDD11 ODBOJ: exilová vláda v Londýně (Sikorski), armáda 250 000 mužů; doma Armia Krajowa
+\uD83D\uDD11 GHETTO: 450 000 Židů, povstání IV–V/1943; Irena Sendlerowa zachránila 2 500 dětí
+\uD83D\uDD11 VARŠAVA 1944: 1. 8. – 3. 10., 15 000 vojáků AK + 200 000 civilistů; Rudá armáda nečinně přihlížela
+\uD83D\uDD11 KATYŇ: jaro 1940, NKVD, Berijův rozkaz, 22–25 tis. mužů (15 000 důstojníků + 10 000 inteligence); SSSR přiznal 1990
+\uD83D\uDD11 1945–47: sovětizace, občanská válka (komunisté × AK × UPA), transfery, pogrom Kielce`,
+      content: `
+JÓZEF PIŁSUDSKI (1867–1935):
+• Maršál a obnovitel svobodného Polska, vůdce a vrchní velitel státu (1918–1922), autokrat (1926–1935)
+• Za WWI spolupracoval s Němci, pak jimi vězněn; původně socialista
+• 1920 zastavil pokus bolševiků „vyvézt revoluci do Evropy“ (zázrak na Visle) – polský nacionalismus × bolševismus
+• 1926 převrat → sanační režim, „diktatura v rukavičkách“
+• Orientace na Francii, strach ze SSSR + smlouva s Německem (1934)
+
+CESTA K VÁLCE 1939:
+• Po 15. 3. 1939 obavy Polska → spojenecká dohoda s UK a Francií
+• Hitler vypovídá smlouvu o neútočení; 22. 3. Německo obsazuje litevskou Klajpedu (Memel)
+• Německé provokace na hranicích, Goebbelsova kampaň o „utiskovaných soukmenovcích“, Hitler žádá Gdaňsk
+• 23. 8. 1939 pakt Molotov–Ribbentrop
+
+VÁLKA 1939:
+• 1. 9. 1939 – útok Německa (záminka: zinscenované přepadení vysílače v Gliwici), obsazen Gdaňsk
+• 3. 9. – Británie a Francie vyhlašují válku Německu (na základě smluv a pod tlakem veřejnosti) → začíná 2. sv. válka
+• Blesková válka → za 25 dní kapitulace Varšavy
+• 17. 9. – sovětská vojska překračují hranici („ochrana běloruské a ukrajinské populace“)
+• Společná německo-sovětská přehlídka v Brestu Litevském; 28. 9. smlouva o hranicích → definitivní rozdělení Polska
+
+POLÁCI ZA VÁLKY:
+• 12. 10. 1939 – Generální gouvernement (centrum Krakov), zbytek západu připojen k Říši
+• Okamžitě etnické čistky – zabito asi 3 mil. Poláků a 3 mil. Židů
+• Exilová vláda v Londýně (Władysław Sikorski; zahynul 1943 při letecké nehodě u Gibraltaru – podezření z vraždy)
+• Exilová armáda asi 250 000 mužů (Francie, Norsko, Británie, severní Afrika, Itálie – Monte Cassino)
+• Domácí odboj: Armia Krajowa (Zemská armáda), podřízená Londýnu
+• Zajatí v SSSR: Katyň; po roce 1941 odchod Andersovy armády přes Írán na Západ
+• Komunisté: Polská lidová armáda a prokomunistická Lublinská vláda (1944)
+
+VARŠAVSKÉ GHETTO:
+• Od roku 1940 sem násilně sestěhováno asi 450 000 Židů
+• Ghetto tvořilo asi 4,5 % rozlohy města, ale žilo v něm asi 37 % obyvatel Varšavy
+• Průměrný příděl asi 1 125 kalorií denně
+• Většina obyvatel odvezena do vyhlazovacího tábora Treblinka
+• Duben–květen 1943 povstání ve varšavském ghettu
+
+IRENA SENDLEROWA (1910–2008):
+• Sociální pracovnice a učitelka, vedoucí dětského oddělení Rady pro pomoc Židům (Żegota)
+• Za války zachránila asi 2 500 židovských dětí; zatčena a mučena gestapem, odsouzena k smrti, Żegota ji zachránila
+• Po 1945 jako sociální demokratka pronásledována komunisty
+• 1965 Spravedlivá mezi národy (Jad Vašem), 2003 Řád bílé orlice, 2012 Prezidentská medaile svobody (USA) – Obama tehdy omylem řekl „polské tábory smrti“
+
+VARŠAVSKÉ POVSTÁNÍ (1. 8. – 3. 10. 1944):
+• Povstání Armie Krajowe proti Němcům, cíl osvobodit Varšavu dřív než Rudá armáda
+• 15 000 zabitých vojáků AK + asi 200 000 civilistů
+• Nacistická represe + pasivita Rudé armády, která stála na druhém břehu Visly; Stalin nepovolil ani přistání spojeneckých letadel
+• Němci pak město srovnali se zemí
+
+KATYŇSKÝ MASAKR (jaro 1940):
+• Po útoku SSSR zajato mnoho vojáků a civilistů (inteligence) → tábory v Rusku, Bělorusku, na Ukrajině
+• Na doporučení NKVD („není žádoucí držet prominentní válečné zajatce nepřátelské SSSR“) a na Berijův přímý rozkaz (schváleno politbyrem 5. 3. 1940) povražděni
+• Popravy v Katyni (u Smolenska), Kalininu/Ostaškovu, Charkově/Starobělsku aj.
+• Celkem 22 000–25 000 mužů (Snyder: 21 892): asi 15 000 důstojníků (1 admirál, 2 generálové, 24 plukovníků, 79 podplukovníků, 258 majorů, 654 kapitánů, 3 420 poručíků, 200 pilotů) + asi 10 000 příslušníků inteligence (profesoři, inženýři, právníci, lékaři, novináři, spisovatelé)
+• Výstřel do týla, spoutané ruce
+
+ODHALENÍ A ZAMLČOVÁNÍ:
+• Polská exilová vláda pátrala po zmizelých důstojnících
+• Duben 1943 – Němci odhalili hroby a propagandisticky je využili; vyšetřování Mezinárodní komise / Červený kříž
+• SSSR vše popírá a viní nacisty (Burděnkova komise), zkoušel to i u Norimberského procesu
+• Spojenci důkazy záměrně zamlčeli už během války
+• SSSR vinu přiznal až v roce 1990
+• Film „Katyň“ – Andrzej Wajda, 2007 (Wajdovi zde zavraždili otce)
+• 10. 4. 2010 – letecká katastrofa u Smolenska cestou na pietní akt: 96 mrtvých včetně prezidenta Lecha Kaczyńského, jeho manželky, posledního exilového prezidenta Kaczorowského a celého velení polské armády
+
+POLSKO 1945–47 – SOVĚTIZACE A ZÁBOR ÚZEMÍ:
+• Zatčení a poprava členů londýnského exilového vedení (proces šestnácti v Moskvě 1945); zákaz návratu exilového vojska
+• Posun hranic na západ: východ ztracen ve prospěch SSSR (linie Curzonova), náhradou německá území po Odru a Nisu
+• Regionální občanská válka: 1. komunistická Lidová armáda × 2. prolondýnská Armia Krajowa × 3. ukrajinští nacionalisté (UPA – banderovci)
+• Transfery obyvatelstva (odsun Němců, výměna Poláků a Ukrajinců, Akce Visla 1947)
+• Politické a etnické čistky: asi 80 000 mrtvých Poláků × 20 000 Ukrajinců
+• Pogromy – Kielce (1946), desítky zavražděných Židů
+• Zmanipulované referendum 1946 a volby 1947 → moc komunistů
+      `,
+      textQuestions: [
+        { q: "1. Kdo byl Józef Czapski, jak se vyhnul popravě a jaká byla jeho role v odhalování Katyně?", a: "Polský malíř a spisovatel (1896–1993) narozený v Praze na Malé Straně (matka z rodu Thun-Hohensteinů), záložní důstojník v sovětském zajetí. Přežil jako jeden z hrstky asi 400 mužů, za něž se přimluvilo německé velvyslanectví. Po roce 1941 ho gen. Anders pověřil pátráním po zmizelých důstojnících – obcházel šéfy oblastí s tábory, nic nezjistil. Napsal knihu Na nelidské zemi (Paříž), po válce informoval v Americe, ale svět nechtěl slyšet." },
+        { q: "2. Jmenujte důvody, proč Západ a jeho veřejnost nechtěli věřit svědectvím o Katyni.", a: "SSSR byl spojenec a vítěz války (Rudá armáda); „přátelství“ s SSSR by Katyň narušila; Burděnkova komise vinu obrátila na Němce; silná komunistická levice (hlavně ve Francii) a levicoví nakladatelé označovali svědectví za imperialistickou propagandu; Poláci byli vnímáni jako národ, který se vždy cítí ukřivděný; objev ohlásili nacisté. Obrat přineslo až Solženicynovo Souostroví Gulag – svědectví Rusa." },
+        { q: "3. Kontext výjimečného stavu za Wojciecha Jaruzelského.", a: "13. 12. 1981 – 22. 7. 1983 vyhlásil gen. Jaruzelski válečný (výjimečný) stav k potlačení nezávislých odborů Solidarita (Lech Wałęsa): tanky v ulicích, zákaz vycházení, internace tisíců opozičníků, cenzura. Zdůvodňoval ho hrozbou sovětské intervence. Předcházelo mu: 1978 Výbor na obranu dělníků (KOR), srpen 1980 stávka v gdaňské loděnici → Solidarita (až 10 mil. členů), 18 měsíců „svobody“. Následovaly perzekuce a ilegalita, až 1989 kulatý stůl a polosvobodné volby s vítězstvím opozice. Wajda tehdy nevěřil, že se svobody dožije." },
+        { q: "4. Kdo byl generál Władysław Anders?", a: "Polský generál (1892–1970). 1939 raněn a zajat Sověty, vězněn a mučen v moskevských věznicích (Lubjanka, Butyrky). Po dohodě Sikorski–Majskij (1941) propuštěn, budoval polskou armádu v SSSR a 1942 ji vyvedl přes Írán (i s tisíci civilistů) na Střední východ. Jeho 2. polský sbor dobyl v květnu 1944 Monte Cassino. Po válce v exilu v Londýně, komunisté mu odebrali občanství; pohřben u Monte Cassina. Zajímavosti: s armádou putoval medvěd Wojtek (voják-desátník), v armádě byl i Menachem Begin, pozdější izraelský premiér." },
+        { q: "5. Co se v textu píše o osudu žen zajatých polských důstojníků?", a: "NKVD dovolila důstojníkům psát manželkám a ženy směly odpovědět – tak získala adresy. 13. dubna 1940 (popravy začaly 5. 4.) během jediné noci zatkla manželky, děti a celé rodiny a deportovala je do Kazachstánu, aby nikdo nepátral po osudu zavražděných." },
+        { q: "6. Co čekalo profesory Jagellonské univerzity? Srovnání s profesory UK.", a: "Sonderaktion Krakau (6. 11. 1939): Němci svolali profesorský sbor do auly na přednášku, zatkli ho a odvezli do koncentračního tábora (v textu Gross-Rosen, hlavně Sachsenhausen); většina starších pánů brzy zemřela, po zahraničních protestech se část vrátila. Cíl: šířit strach a zlikvidovat inteligenci – stejný plán u Hitlera i Stalina. Srovnání: 17. 11. 1939 Němci zavřeli české vysoké školy, popravili 9 studentských předáků a asi 1 200 studentů poslali do Sachsenhausenu." },
+        { q: "7. Jaké způsoby a nástroje propagandy zvolili nacisté k informování o Katyni?", a: "Duben 1943: noviny, rozhlas, filmové týdeníky; na místo vozili delegace – i polské důstojníky ze zajateckých táborů a mezinárodní komisi soudních lékařů; žádali Červený kříž. Cíl: odvrátit pozornost polské veřejnosti od likvidace židovských ghett a rozbít spojenectví Západu se SSSR." }
+      ],
+      modelAnswer: `Obnovené Polsko vedl až do roku 1935 maršál Piłsudski, který v roce 1920 zastavil bolševický pokus vyvézt revoluci do Evropy. Po 15. březnu 1939 se Polsko spojilo s Británií a Francií, ale pakt Ribbentrop–Molotov předurčil jeho osud: 1. září 1939 zaútočilo Německo (záminkou byl zinscenovaný útok na vysílač v Gliwici), 3. září vyhlásily Británie a Francie válku a 17. září vpadl SSSR; Varšava padla po 25 dnech a země byla rozdělena. Němci zřídili Generální gouvernement a vyvraždili asi 3 miliony Poláků a 3 miliony Židů – varšavské ghetto s 450 000 lidmi povstalo v roce 1943 a Irena Sendlerowa zachránila 2 500 židovských dětí. Na jaře 1940 NKVD na Berijův rozkaz zavraždila v Katyni a jinde 22–25 tisíc polských důstojníků a příslušníků inteligence; když Němci v roce 1943 hroby odhalili, SSSR vinu popřel, přerušil styky s londýnskou exilovou vládou a Západ vše zamlčel – Moskva přiznala vinu až v roce 1990. Polsko mělo exilovou vládu v Londýně (Sikorski), armádu 250 000 mužů a domácí Armii Krajowou, jejíž Varšavské povstání (srpen–říjen 1944) stálo 200 000 civilních životů, zatímco Rudá armáda nečinně přihlížela. Po roce 1945 následovala sovětizace: likvidace londýnského vedení, posun hranic na západ, občanská válka mezi komunisty, AK a UPA, transfery obyvatelstva, pogrom v Kielcích a zmanipulované volby 1947. Wajdův film Katyň (2007) ukazuje, že Hitler i Stalin sledovali stejný cíl – zničit polskou inteligenci.`
+    },
+    {
+      id: 10,
+      bonus: true,
+      title: "BONUS: Studená válka 60.–80. léta",
+      short: "Mimo seznam otázek – z prezentace „Studená válka 50.–80. léta“",
+      summary: `\uD83D\uDD11 POZOR: není mezi 9 otázkami ze zadání, ale je v prezentacích k písemce
+\uD83D\uDD11 60. LÉTA: úleva po karibské krizi, nešíření jaderných zbraní, Šestidenní válka (1967), sovětsko-čínská roztržka, revolta mládeže („osmašedesátníci“)
+\uD83D\uDD11 70. LÉTA: détente, SALT I (1972), KBSE Helsinky (1975), SALT II (1979); ropná krize 1973, terorismus (RAF, Rudé brigády, IRA, ETA)
+\uD83D\uDD11 AFGHÁNISTÁN: XII 1979 – II 1989, 620 000 sov. vojáků, 15 000 †; 1,4 mil. † civilistů, 4 mil. uprchlíků
+\uD83D\uDD11 80. LÉTA: Reagan – SSSR „říše zla“, SDI „hvězdné války“ (1983); gerontokracie Brežněv → Andropov → Černěnko → Gorbačov (perestrojka, glasnosť)
+\uD83D\uDD11 ODZBROJENÍ: Ženeva 1985, Reykjavík 1986, Washington 1987 (likvidace raket středního doletu), START I 1991
+\uD83D\uDD11 POLSKO: KOR 1978, Gdaňsk 1980 Solidarita (Wałęsa, 10 mil.), 13. 12. 1981 výjimečný stav, 1989 kulatý stůl`,
+      content: `
+60. LÉTA:
+• Úleva ze zažehnání karibské krize → dohody o nešíření jaderných zbraní
+• Dekolonizace – války v Indočíně a Africe
+• „Šestidenní válka“: Izrael × Arabové (1967)
+• Sovětsko-čínská roztržka (1961), „kulturní revoluce“ v Číně
+• Prohloubení evropské integrace (Evropské společenství), 2. vatikánský koncil
+• Revolta studentů a mládeže proti establishmentu – generace „osmašedesátníků“: ČSR a Polsko proti rigidnímu komunismu, Francie (obsazení Sorbonny, generální stávka, barikády), SRN (vyrovnávání s nacistickou minulostí), USA (proti válce ve Vietnamu, segregaci a rasismu)
+• Odkaz hippies a Nové levice: nevládní organizace (Amnesty International, Lékaři bez hranic), pacifistické a ekologické hnutí (Greenpeace), strany Zelených
+
+70. LÉTA:
+• Vystřízlivění: ropná krize (1973), nezaměstnanost a recese, nástup pravice (Thatcherová, Reagan)
+• Konec diktatur ve Španělsku, Portugalsku a Řecku
+• Politika détente (uvolňování napětí): SALT I (1972), KBSE v Helsinkách (1975), SALT II (1979)
+• Terorismus: levičácký (RAF v SRN, Rudé brigády v Itálii – vražda Alda Mora 1978), neofašistický, etnicko-separatistický (IRA, ETA), arabsko-palestinský (Carlos „Šakal“)
+
+AFGHÁNISTÁN (12/1979 – 2/1989):
+• Pokus SSSR podpořit místní frakci komunistů → kmenová, klanová, etnická partyzánská válka
+• Asi 1,4 mil. mrtvých civilistů, asi 4 mil. uprchlíků (hlavně do Pákistánu)
+• SSSR nasadil celkem 620 000 vojáků: 15 000 mrtvých, 50 000 zraněných; ztráty 118 letadel, 333 vrtulníků, 147 tanků
+• Kvůli invazi Kongres USA odmítl ratifikovat SALT II
+
+ZBROJENÍ A ODZBROJENÍ:
+• SALT (od 1969) – SALT I 1972 Moskva (limity mezikontinentálních raket a ponorek), SALT II 1979 Vídeň (neratifikováno)
+• SDI – Strategická obranná iniciativa, „hvězdné války“ (Reagan 1983): ničit rakety za letu; technicky neřešitelné a astronomicky drahé, ale politická zbraň – ukázalo hospodářskou a technologickou zaostalost SSSR
+• Ženeva 1985, Reykjavík 1986, Washington 1987 – smlouva o likvidaci raket středního a kratšího doletu (500–5 000 km, „nulová varianta“, platná od 1988)
+• START I (31. 7. 1991) – snížení z asi 11 000 na 6 000 strategických hlavic; START II (1993) nikdy nevstoupil v platnost
+
+80. LÉTA:
+• Nekompromisní politika a rétorika USA – SSSR = „říše zla“ (Reagan)
+• Ekonomické vyčerpání SSSR, válka v Afghánistánu
+• Leonid Brežněv (1964–1982), Jurij Andropov (†1984), Konstantin Černěnko (†1985) = gerontokracie
+• Michail S. Gorbačov (1985): perestrojka (přestavba) a glasnosť (otevřenost) × nacionalismus a separatismus (Pobaltí, Arménie × Ázerbájdžán)
+
+POLSKO – SOLIDARITA:
+• Zhoršující se ekonomická situace; 1978 Výbor na obranu dělníků (KOR)
+• Srpen 1980 stávka v gdaňské loděnici → odbory Solidarita (až 10 mil. členů), vyjednávání s vládou – Lech Wałęsa; požadavky: svobodné odbory, právo na stávku, svoboda slova
+• 18 měsíců euforie a „svobody“
+• 13. 12. 1981 výjimečný stav (gen. Wojciech Jaruzelski) → perzekuce, věznění, ilegalita
+• 1989 jednání u „kulatého stolu“, polosvobodné volby, vítězství opozice
+
+90. LÉTA:
+• Francis Fukuyama: „Konec dějin“ × Samuel Huntington: „Střet civilizací“
+      `,
+      modelAnswer: `Po karibské krizi přišlo v 60. letech uvolnění a dohody o nešíření jaderných zbraní, zároveň ale dekolonizační války, Šestidenní válka (1967), sovětsko-čínská roztržka a revolta mládeže na Západě i Východě. V 70. letech převládla politika détente – smlouvy SALT I (1972) a SALT II (1979) a KBSE v Helsinkách (1975) – a zároveň ropná krize a vlna terorismu. Sovětská invaze do Afghánistánu (1979–1989) stála 15 000 sovětských vojáků a asi 1,4 milionu civilistů a ukončila détente. V 80. letech Reagan označil SSSR za „říši zla“ a programem SDI („hvězdné války“) odhalil technologickou a ekonomickou zaostalost SSSR. Po gerontokracii Brežněva, Andropova a Černěnka zahájil Gorbačov perestrojku a glasnosť a odzbrojovací jednání (Washington 1987, START I 1991). V Polsku vzniklo v roce 1980 hnutí Solidarita, které Jaruzelski potlačil výjimečným stavem (1981), ale v roce 1989 jednání u kulatého stolu vedla k vítězství opozice.`
+    }
+  ],
+  timeline: [
+    { date: "23. 8. 1939", event: "Pakt Ribbentrop–Molotov (+ tajný dodatek)" },
+    { date: "1. 9. 1939", event: "Německo napadá Polsko (Gliwice, Gdaňsk)" },
+    { date: "3. 9. 1939", event: "UK a Francie vyhlašují válku Německu" },
+    { date: "17. 9. 1939", event: "SSSR napadá Polsko" },
+    { date: "28. 9. 1939", event: "Smlouva o hranicích a přátelství – rozdělení Polska" },
+    { date: "12. 10. 1939", event: "Generální gouvernement (Krakov)" },
+    { date: "XII 1939 – III 1940", event: "Zimní válka s Finskem; SSSR vyloučen ze SN" },
+    { date: "jaro 1940", event: "Katyňský masakr (popravy od 5. 4.)" },
+    { date: "VI 1940", event: "Anexe Besarábie; okupace Pobaltí" },
+    { date: "27. 9. 1940", event: "Pakt tří (Německo, Itálie, Japonsko)" },
+    { date: "12.–14. 11. 1940", event: "Molotov v Berlíně – SSSR do Paktu tří nevstoupil" },
+    { date: "11. 3. 1941", event: "Zákon o půjčce a pronájmu (Lend-Lease)" },
+    { date: "22. 6. 1941", event: "Operace Barbarossa" },
+    { date: "30. 6. 1941", event: "OUN vyhlašuje ve Lvově samostatnou Ukrajinu" },
+    { date: "30. 7. 1941", event: "Dohoda Sikorski–Majskij" },
+    { date: "8. 9. 1941", event: "Začátek blokády Leningradu (900 dní)" },
+    { date: "XII 1941", event: "Protiútok u Moskvy – konec bleskové války" },
+    { date: "1942", event: "Vznik UPA; rozkaz č. 227 „Ani krok zpět“" },
+    { date: "2. 2. 1943", event: "Kapitulace Paulusovy armády u Stalingradu" },
+    { date: "IV 1943", event: "Odhalení hrobů v Katyni; SSSR přerušuje styky s polskou vládou" },
+    { date: "IV–V 1943", event: "Povstání ve varšavském ghettu" },
+    { date: "VII 1943", event: "Bitva u Kurska; Volyňský masakr" },
+    { date: "1. 8. – 3. 10. 1944", event: "Varšavské povstání" },
+    { date: "II 1945", event: "Jaltská konference" },
+    { date: "9. 5. 1945", event: "Konec války v Evropě" },
+    { date: "17. 7. – 2. 8. 1945", event: "Postupimská konference (4 zóny, 4D, Odra–Nisa)" },
+    { date: "5. 3. 1946", event: "Churchill ve Fultonu – „železná opona“" },
+    { date: "4. 7. 1946", event: "Pogrom v Kielcích" },
+    { date: "1. 1. 1947", event: "Bizonie (britská + americká zóna)" },
+    { date: "1947", event: "Trumanova doktrína; Marshallův plán; Kominforma; Akce Visla" },
+    { date: "II 1948", event: "Komunistický převrat v ČSR" },
+    { date: "24. 6. 1948", event: "Začátek blokády Berlína; 26. 6. letecký most" },
+    { date: "VI 1948", event: "Roztržka Stalin × Tito" },
+    { date: "1949", event: "RVHP; sovětská atomová bomba" },
+    { date: "4. 4. 1949", event: "Vznik NATO" },
+    { date: "12. 5. 1949", event: "Konec blokády Berlína" },
+    { date: "7. 9. / 7. 10. 1949", event: "Vznik SRN / NDR" },
+    { date: "5. 3. 1953", event: "Smrt Stalina; Chruščov, poprava Beriji" },
+    { date: "1955", event: "Varšavská smlouva; RA odchází z Rakouska; smíření s Titem" },
+    { date: "25. 2. 1956", event: "Chruščovův tajný projev na XX. sjezdu KSSS" },
+    { date: "23. 10. 1956", event: "Začátek maďarského povstání" },
+    { date: "24. 10. 1956", event: "Sovětské tanky v Budapešti (1. intervence)" },
+    { date: "1. 11. 1956", event: "Nagy: neutralita, vystoupení z Varšavské smlouvy" },
+    { date: "4. 11. 1956", event: "Sovětská invaze do Maďarska (rozhodnuto 1. 11.), boje do 10. 11." },
+    { date: "4. 10. 1957", event: "Sputnik" },
+    { date: "1958", event: "Poprava Imre Nagye" },
+    { date: "1959", event: "KGB vraždí Banderu v Mnichově" },
+    { date: "12. 4. 1961", event: "Gagarin ve vesmíru" },
+    { date: "13. 8. 1961", event: "Berlínská zeď (2. berlínská krize)" },
+    { date: "16.–28. 10. 1962", event: "Karibská krize" },
+    { date: "1964", event: "Sesazení Chruščova → Brežněv" },
+    { date: "1968", event: "Maďarsko: Nový ekonomický mechanismus" },
+    { date: "1979–1989", event: "Sovětská válka v Afghánistánu (bonus)" },
+    { date: "13. 12. 1981", event: "Výjimečný stav v Polsku (Jaruzelski)" },
+    { date: "1990", event: "SSSR přiznává vinu za Katyň" },
+    { date: "10. 4. 2010", event: "Smolenská letecká katastrofa (96 †)" }
+  ],
+  numbers: [
+    { label: "Oběti v krvavých zemích 1933–45", value: "14 mil. (třetina na účet SSSR)" },
+    { label: "Hladomor na Ukrajině (30. léta)", value: "asi 3 mil. †" },
+    { label: "Velký teror 1937–38", value: "asi 700 000 †" },
+    { label: "Poláci 1939–45", value: "asi 1,8 mil. †" },
+    { label: "Bělorusové („odplata za partyzány“)", value: "asi 300 000 †" },
+    { label: "Sovětští zajatci vyhladovělí v nacist. táborech", value: "asi 3 mil." },
+    { label: "Židé (holokaust)", value: "asi 5 mil." },
+    { label: "Katyň (jaro 1940)", value: "22 000–25 000 (15 000 důstojníků + 10 000 inteligence)" },
+    { label: "Zimní válka – padlí", value: "Finsko 25 904 × SSSR 126 875" },
+    { label: "Barbarossa", value: "3 mil. mužů, fronta 3 200 km, až 80 km/den" },
+    { label: "SSSR 1941 – zajatí", value: "3 300 000" },
+    { label: "Leningrad", value: "900 dní, přes 1 mil. civilistů †" },
+    { label: "Stalingrad", value: "300 000 † Němců a spojenců, 90 000 zajatých, vrátilo se 6 000" },
+    { label: "Lend-Lease", value: "46 mld. $; UK 60 %, SSSR 20 %" },
+    { label: "Za dezerci zastřeleno (RA)", value: "asi 160 000" },
+    { label: "UPA – oběti (Himka)", value: "60–100 tis., převážně Poláci" },
+    { label: "Varšavské povstání", value: "15 000 AK + 200 000 civilistů" },
+    { label: "Varšavské ghetto", value: "450 000 Židů, 4,5 % plochy, 37 % obyvatel" },
+    { label: "Sendlerowa", value: "2 500 zachráněných dětí" },
+    { label: "Polsko 1945–47 čistky", value: "80 000 Poláků × 20 000 Ukrajinců" },
+    { label: "Chruščovova amnestie", value: "asi 2 mil. vězňů" },
+    { label: "Maďarsko 1956", value: "4 000 †, 229 poprav, 22 000 vězňů, 200 000 v exilu" },
+    { label: "Trumanova doktrína", value: "Řecko 250 mil. $, Turecko 150 mil. $" },
+    { label: "Blokáda Berlína", value: "asi 318 dní, 2,5 mil. t, 277 000 letů, 70 † letců" },
+    { label: "Útěky z NDR 1949–61", value: "skoro 3 mil. lidí" },
+    { label: "Berlínská zeď 1961", value: "100 000 vojáků, 193 ulic, 164 km, panely 3,6 m" },
+    { label: "Rakety na Kubě", value: "dolet 1 800 km" },
+    { label: "NATO 1949", value: "12 zakládajících států" },
+    { label: "Smolensk 2010", value: "96 mrtvých" }
+  ],
+  people: [
+    { name: "J. V. Stalin", role: "Sovětský diktátor do 1953; pakt s Hitlerem, hladomor, teror, Katyň" },
+    { name: "V. Molotov", role: "Sovětský ministr zahraničí; pakt 1939, Berlín XI/1940" },
+    { name: "J. von Ribbentrop", role: "Německý ministr zahraničí; pakt 1939" },
+    { name: "L. Berija", role: "Šéf NKVD; rozkaz ke Katyni; popraven 1953" },
+    { name: "F. Paulus", role: "Německý maršál, kapituloval u Stalingradu" },
+    { name: "A. Vlasov", role: "Sovětský generál, v zajetí založil ROA (vlasovci)" },
+    { name: "S. Bandera", role: "Vůdce OUN-B; KT za vyhlášení Ukrajiny; zavražděn KGB 1959" },
+    { name: "R. Šuchevyč", role: "Velitel UPA 1943–1950" },
+    { name: "V. Vjatrovyč", role: "Šéf Ukrajinského institutu národní paměti, očišťuje OUN/UPA" },
+    { name: "T. Řepa", role: "Čes. vojenský historik – „weaponizace dějin“" },
+    { name: "J. Rychlík", role: "Čes. historik – text Když národy nemají šanci" },
+    { name: "T. Snyder", role: "Am. historik – Krvavé země (2010)" },
+    { name: "J. Piłsudski", role: "Polský maršál, obnovitel Polska, sanační režim" },
+    { name: "W. Sikorski", role: "Premiér polské exilové vlády v Londýně, † 1943" },
+    { name: "W. Anders", role: "Generál, vyvedl polskou armádu přes Írán; Monte Cassino" },
+    { name: "J. Czapski", role: "Malíř a spisovatel z Prahy, přežil, pátral po Katyni" },
+    { name: "I. Sendlerowa", role: "Żegota, zachránila 2 500 židovských dětí" },
+    { name: "A. Wajda", role: "Polský režisér, film Katyň (2007), otec zavražděn v Katyni" },
+    { name: "W. Jaruzelski", role: "Generál, výjimečný stav 1981–83 proti Solidaritě" },
+    { name: "F. D. Roosevelt", role: "Prezident USA, ústupky Stalinovi, † 12. 4. 1945" },
+    { name: "H. Truman", role: "Prezident USA od 1945, Trumanova doktrína" },
+    { name: "W. Churchill", role: "Projev ve Fultonu 1946 – železná opona" },
+    { name: "L. Clay", role: "Americký velitel v Německu, letecký most" },
+    { name: "K. Adenauer", role: "1. kancléř SRN (1949–63), prozápadní orientace" },
+    { name: "W. Ulbricht", role: "Vůdce NDR, „nikdo nechce zeď“ (1961)" },
+    { name: "N. S. Chruščov", role: "Vůdce SSSR 1953–64, XX. sjezd, tání, Kuba" },
+    { name: "J. F. Kennedy", role: "Prezident USA 1961–63, karibská krize" },
+    { name: "F. Castro", role: "Kubánský diktátor od 1959, spojenec SSSR" },
+    { name: "M. Rákosi", role: "Maďarský stalinista, „nejlepší Stalinův žák“" },
+    { name: "E. Gerő", role: "Stalinista, nástupce Rákosiho 1956, povolal sovětské tanky" },
+    { name: "I. Nagy", role: "Reformní premiér Maďarska, 1956 neutralita, popraven 1958" },
+    { name: "J. Kádár", role: "Vůdce Maďarska 1956–88, gulášový socialismus" }
+  ],
+  flashcards: [
+    { front: "Kdy a kdo podepsal pakt Ribbentrop–Molotov?", back: "23. 8. 1939 v Moskvě, ministři zahraničí Ribbentrop (Německo) a Molotov (SSSR)." },
+    { front: "Co obsahoval tajný dodatek paktu R–M?", back: "Rozdělení sfér vlivu – Polsko rozděleno, Pobaltí a Finsko do sovětské sféry, zájem SSSR o Besarábii." },
+    { front: "Kdy vpadl SSSR do Polska a s jakou záminkou?", back: "17. 9. 1939 – „ochrana běloruské a ukrajinské populace“." },
+    { front: "Zimní válka – kdy, proč, výsledek?", back: "XII 1939 – III 1940; Leningrad blízko hranic; SSSR získal jen Karelskou šíji, obrovské ztráty, vyloučen ze SN." },
+    { front: "Co je Katyňský masakr?", back: "Jaro 1940: NKVD na Berijův rozkaz zastřelila 22–25 tis. polských důstojníků a inteligence. SSSR přiznal až 1990." },
+    { front: "Kolik obětí mají „krvavé země“ a čí je to pojem?", back: "Asi 14 mil. civilistů 1933–45; Timothy Snyder. Třetina na sovětský účet." },
+    { front: "Hladomor a Velký teror – počty?", back: "Hladomor (Ukrajina 1932–33): asi 3 mil.; Velký teror 1937–38: asi 700 000 popravených." },
+    { front: "Co byl Hladový plán?", back: "Nacistický plán nechat v zimě 1941/42 vyhladovět asi 30 mil. lidí na východě; realizován na sovětských zajatcích (3 mil.) a Leningradu (1 mil.)." },
+    { front: "Operace Barbarossa – datum a rozsah?", back: "22. 6. 1941; přes 3 mil. vojáků, fronta 3 200 km, 3 směry (Leningrad, Moskva, Kyjev)." },
+    { front: "Proč byl SSSR v roce 1941 zaskočen?", back: "Stalin ignoroval zpravodajce, žádné obranné plány, velení zdecimováno čistkami." },
+    { front: "Blokáda Leningradu?", back: "8. 9. 1941 – 27. 1. 1944, 900 dní, přes 1 mil. civilistů zemřelo hladem." },
+    { front: "Stalingrad – výsledek?", back: "VIII 1942 – 2. 2. 1943; Paulus kapituloval, 300 000 † Němců a spojenců, 90 000 zajatých (vrátilo se 6 000). Zlom války." },
+    { front: "Kursk?", back: "Červenec 1943 – největší tanková bitva; poslední německá ofenziva, iniciativa přešla na RA." },
+    { front: "Lend-Lease – co a kolik pro SSSR?", back: "USA 11. 3. 1941; SSSR 20 %: 15 000 letadel, 350 000 nákladních aut, ocel, hliník, 3,8 mil. t potravin." },
+    { front: "Rozkaz č. 227?", back: "„Ani krok zpět“ (1942): kdo se vzdá = zrádce, rodina trestána, dezertéři zastřeleni na místě." },
+    { front: "Kdo byli vlasovci?", back: "Ruská osvobozenecká armáda gen. Vlasova (zajat 1942) na straně Německa." },
+    { front: "Kdo byl Stepan Bandera?", back: "1909–1959, vůdce OUN (Banderova frakce); 1941 vyhlásil Ukrajinu → KT; zavražděn KGB v Mnichově." },
+    { front: "Co byla UPA?", back: "Ukrajinská povstalecká armáda (1942), křídlo OUN-B; boj za nezávislost proti Němcům, Sovětům i Polákům; Volyň." },
+    { front: "Volyňský masakr?", back: "1943–44, UPA vyvraždila desítky tisíc polských civilistů; Polsko 2016 = genocida." },
+    { front: "Co je „weaponizace dějin“?", back: "Zneužití historie jako zbraně pro současné politické cíle (Řepa) – např. Putinova „denacifikace“." },
+    { front: "Pakt tří?", back: "27. 9. 1940 Německo, Itálie, Japonsko; přidaly se Maďarsko, Rumunsko, Slovensko. SSSR nevstoupil." },
+    { front: "Kam chtěl Hitler směrovat sovětskou expanzi?", back: "Na jih – Írán, Indie – aby oslabil Británii." },
+    { front: "Dohoda Sikorski–Majskij?", back: "30. 7. 1941 – spojenectví polské exilové vlády a SSSR, hranice ponechány otevřené." },
+    { front: "Co je Kominforma?", back: "Informační byro komunistických stran (1947), nástroj Moskvy – náhrada Kominterny." },
+    { front: "Pozitiva Chruščova (aspoň 4)?", back: "Amnestie 2 mil., poprava Beriji, odchod z Rakouska, smíření s Titem, odpuštění dluhů Maďarsku, Jáchymov ČSR, Sputnik, Gagarin, XX. sjezd." },
+    { front: "Negativa Chruščova (aspoň 3)?", back: "Varšavská smlouva 1955, potlačení Maďarska 1956, jaderné hrozby v Suezu, Berlínská zeď, Karibská krize, Novočerkassk." },
+    { front: "XX. sjezd KSSS?", back: "Únor 1956; tajný projev 25. 2. – odhalení kultu Stalinovy osobnosti, Leninův dopis z 1922." },
+    { front: "Maďarsko 1956 – klíčová data?", back: "23. 10. demonstrace → ÁVH střílí → povstání; 24. 10. sovětské tanky; 25. 10. Nagy; 28. 10. konec bojů; neutralita + vystoupení z VS; 1. 11. Moskva rozhodla o intervenci, 4. 11. útok, boje do 10. 11." },
+    { front: "Maďarsko 1956 – represe (čísla z prezentace)?", back: "4 000 †, 229 poprav (Nagy 1958), 22 000 vězňů (amnestie 1963), 200 000 v exilu." },
+    { front: "Postupimská konference?", back: "17. 7. – 2. 8. 1945: Truman, Stalin, Attlee; 4 okupační zóny, 4D, hranice Odra–Nisa, odsun Němců." },
+    { front: "Co jsou 4D?", back: "Demilitarizace, demokratizace, denacifikace, dekartelizace Německa." },
+    { front: "Fulton 1946?", back: "Churchill: železná opona od Štětína na Baltu po Terst na Jadranu." },
+    { front: "Trumanova doktrína?", back: "1947 – pomoc státům ohroženým komunismem: Řecko 250 mil. $, Turecko 150 mil. $." },
+    { front: "1. berlínská krize?", back: "Po měnové reformě SSSR 24. 6. 1948 zablokoval Západní Berlín; letecký most (2,5 mil. t, 70 † letců); konec 12. 5. 1949 → SRN a NDR." },
+    { front: "2. berlínská krize?", back: "1949–61 uteklo z NDR skoro 3 mil. lidí → 13. 8. 1961 Berlínská zeď (164 km)." },
+    { front: "Karibská krize – jak skončila?", back: "28. 10. 1962: SSSR stáhl rakety × USA zaručily nenapadení Kuby + tajně stáhly rakety Jupiter z Turecka; horká linka." },
+    { front: "Gulášový socialismus?", back: "Kádárův kurz od 60. let: „Kdo není proti nám, je s námi“, NEM 1968, relativní blahobyt × dluhy a vláda jedné strany." },
+    { front: "Varšavské povstání?", back: "1. 8. – 3. 10. 1944, Armia Krajowa; 15 000 vojáků + 200 000 civilistů †, Rudá armáda nečinně přihlížela." },
+    { front: "Irena Sendlerowa?", back: "Żegota, zachránila asi 2 500 židovských dětí; Spravedlivá mezi národy 1965." },
+    { front: "Józef Czapski?", back: "Malíř z Prahy, přežil sovětské zajetí (přímluva německé ambasády), pátral po Katyni, kniha Na nelidské zemi." },
+    { front: "Co se stalo manželkám polských důstojníků?", back: "13. 4. 1940 NKVD v jedné noci zatkla rodiny (adresy z dopisů) a deportovala je do Kazachstánu." },
+    { front: "Smolenská katastrofa?", back: "10. 4. 2010, cestou na pietu v Katyni, 96 mrtvých včetně prezidenta L. Kaczyńského." }
+  ],
+  quizQuestions: [
+    { question: "Kdy byl podepsán pakt Ribbentrop–Molotov?", type: "single", options: ["23. 8. 1939", "1. 9. 1939", "17. 9. 1939", "28. 9. 1939"], correct: [0], explanation: "Pakt podepsali ministři zahraničí 23. 8. 1939 v Moskvě; 1. 9. následoval útok Německa, 17. 9. SSSR." },
+    { question: "Co obsahoval tajný dodatek paktu Ribbentrop–Molotov?", type: "single", options: ["Rozdělení sfér vlivu – Polsko a Pobaltí", "Společný útok na Francii", "Dodávky zbraní SSSR do Německa", "Vzájemnou vojenskou pomoc proti Británii"], correct: [0], explanation: "Veřejně šlo o neútočení, tajný dodatek dělil východní Evropu na sféry vlivu (Polsko, Pobaltí, Finsko, Besarábie)." },
+    { question: "Která území získal SSSR v letech 1939–1940? (vyber všechna správná)", type: "multi", options: ["Západní Ukrajinu a Bělorusko", "Pobaltské státy", "Besarábii", "Celé Finsko", "Slovensko"], correct: [0, 1, 2], explanation: "Finsko se ubránilo – SSSR získal jen Karelskou šíji. Slovensko bylo spojencem Německa." },
+    { question: "Jaký byl hlavní výsledek zimní války pro SSSR?", type: "single", options: ["Minimální zisk (Karelská šíje), obrovské ztráty a vyloučení ze SN", "Anexe celého Finska", "Rychlé vítězství během 2 týdnů", "Spojenectví s Finskem proti Německu"], correct: [0], explanation: "Přes trojnásobnou převahu padlo 126 875 sovětských vojáků; SSSR byl vyloučen ze Společnosti národů a Finsko se přiklonilo k Německu." },
+    { question: "Kolik lidí zemřelo podle Snydera v „krvavých zemích“ 1933–45?", type: "single", options: ["asi 14 milionů", "asi 6 milionů", "asi 27 milionů", "asi 50 milionů"], correct: [0], explanation: "14 milionů civilních obětí cílené politiky (ne padlých vojáků), třetina na sovětský účet." },
+    { question: "Které kategorie obětí patří do Snyderových 14 milionů? (vyber všechny)", type: "multi", options: ["Oběti hladomoru na Ukrajině", "Oběti Velkého teroru 1937–38", "Vyhladovělí sovětští zajatci", "Padlí vojáci Rudé armády u Stalingradu", "Židé zavraždění v holokaustu"], correct: [0, 1, 2, 4], explanation: "Snyder počítá jen oběti záměrné vražedné politiky – padlí vojáci v boji do čísla nepatří." },
+    { question: "Kolik lidí bylo popraveno při Velkém teroru 1937–38?", type: "single", options: ["asi 700 000", "asi 70 000", "asi 3 miliony", "asi 7 milionů"], correct: [0], explanation: "Asi 700 000 (Snyder: skoro sedm set tisíc), nepoměrně mnoho rolníků a sovětských Poláků." },
+    { question: "Co byl nacistický „Hladový plán“?", type: "single", options: ["Plán nechat vyhladovět asi 30 mil. lidí na okupovaném východě", "Přídělový systém v Německu", "Blokáda Británie ponorkami", "Sovětská rekvizice obilí na Ukrajině"], correct: [0], explanation: "Uskutečnil se jen částečně – na sovětských zajatcích (3 mil.) a v obleženém Leningradu (1 mil.)." },
+    { question: "Proč byl SSSR útokem 22. 6. 1941 zaskočen? (vyber všechny důvody)", type: "multi", options: ["Stalin ignoroval varování zpravodajců", "Velení RA bylo zdecimované čistkami", "SSSR neměl plány na obranu", "SSSR byl ve válce s Japonskem"], correct: [0, 1, 2], explanation: "Naopak – SSSR měl jistotu, že Japonsko na Dálném východě nezaútočí, a mohl přesunout sibiřské divize." },
+    { question: "Kolik dní trvala blokáda Leningradu?", type: "single", options: ["asi 900", "asi 200", "asi 90", "asi 1 500"], correct: [0], explanation: "8. 9. 1941 – 27. 1. 1944, 900 dní; přes milion civilistů zemřelo hladem." },
+    { question: "Kdo kapituloval u Stalingradu?", type: "single", options: ["Friedrich Paulus", "Erwin Rommel", "Andrej Vlasov", "Heinz Guderian"], correct: [0], explanation: "Paulus byl v kotli povýšen na maršála – žádný německý maršál se dosud nevzdal. Kapitulace 2. 2. 1943." },
+    { question: "Která bitva je považována za největší tankovou bitvu dějin?", type: "single", options: ["Kursk (1943)", "Stalingrad (1942–43)", "Moskva (1941)", "El Alamein (1942)"], correct: [0], explanation: "Kursk, červenec 1943 – poslední velká německá ofenziva na východě." },
+    { question: "Jaký podíl dodávek Lend-Lease připadl SSSR?", type: "single", options: ["asi 20 %", "asi 60 %", "asi 5 %", "asi 90 %"], correct: [0], explanation: "UK asi 60 %, SSSR asi 20 % (15 000 letadel, 350 000 nákladních aut…). SSSR dluh nesplatil." },
+    { question: "Co stanovil Stalinův rozkaz č. 227?", type: "single", options: ["Kdo se vzdá, je zrádce; jeho rodina bude potrestána", "Evakuaci průmyslu za Ural", "Amnestii pro vězně gulagu", "Zahájení operace Bagration"], correct: [0], explanation: "„Ani krok zpět“ – dezertéři zastřeleni na místě, rodiny zbaveny podpory; za dezerci zastřeleno asi 160 000 vojáků." },
+    { question: "Kdo byl Andrej Vlasov?", type: "single", options: ["Sovětský generál, který v zajetí vytvořil ROA na straně Německa", "Šéf NKVD", "Velitel obrany Leningradu", "Vůdce UPA"], correct: [0], explanation: "Zajat 1942, od 1943 Ruská osvobozenecká armáda (vlasovci)." },
+    { question: "Kdo byl Stepan Bandera?", type: "single", options: ["Vůdce radikální frakce OUN", "Velitel Armie Krajowe", "Šéf Ukrajinského institutu paměti", "Sovětský partyzánský velitel"], correct: [0], explanation: "1909–1959; po vyhlášení samostatné Ukrajiny (30. 6. 1941) ho Němci poslali do KT, v roce 1959 ho zavraždil agent KGB." },
+    { question: "Proti komu bojovala UPA? (vyber všechny)", type: "multi", options: ["Proti Němcům", "Proti Sovětům", "Proti Polákům (etnické čistky)", "Proti Britům"], correct: [0, 1, 2], explanation: "Boj „proti všem“: 1943–44 Němci, od 1944 Sověti (do 50. let), zároveň Volyňský masakr Poláků." },
+    { question: "Kolik obětí přičítá UPA historik John-Paul Himka?", type: "single", options: ["60–100 tisíc, převážně Poláků", "asi 1 milion Rusů", "asi 5 000", "asi 500 tisíc Židů"], correct: [0], explanation: "Himka: 60–100 tisíc lidí, převážně Poláků." },
+    { question: "Jakou volební podporu měly nacionalistické strany hlásící se k Banderovi?", type: "single", options: ["Malou – Svoboda maximálně asi 10 % (2012), v roce 2019 asi 2 %", "Vládly Ukrajině od roku 2014", "Pravidelně přes 30 %", "Nikdy nekandidovaly"], correct: [0], explanation: "Podle Řepy všechny tyto strany opakovaně ve volbách propadly – rovnice Ukrajinec = banderovec je nesmysl." },
+    { question: "Které skupiny označovala stalinská propaganda za „fašisty“? (vyber všechny)", type: "multi", options: ["Banderovci", "Polská Armia Krajowa", "Pobaltští lesní bratři", "Rumunští monarchističtí povstalci"], correct: [0, 1, 2, 3], explanation: "Kdo byl proti Moskvě, byl „fašista“ – i AK, která bojovala proti nacistům." },
+    { question: "Co je podle Řepy „weaponizace dějin“?", type: "single", options: ["Zneužití historie jako zbraně pro současnou politiku", "Studium vojenské historie", "Vývoj zbraní během WWII", "Ničení historických památek"], correct: [0], explanation: "Weapon = zbraň. Příklad: Putinova „denacifikace“ Ukrajiny (2022)." },
+    { question: "Proč causa banderovců komplikuje polsko-ukrajinské vztahy? (vyber všechny)", type: "multi", options: ["Volyňský masakr Poláků 1943–44", "Oslavy Bandery a UPA na Ukrajině", "Spory o exhumace obětí", "Spor o členství Ukrajiny v Paktu tří"], correct: [0, 1, 2], explanation: "Polsko uznalo Volyň za genocidu (2016), Ukrajinci připomínají Akci Visla; exhumace byly roky blokované." },
+    { question: "Kdy byl podepsán Pakt tří?", type: "single", options: ["27. 9. 1940", "23. 8. 1939", "22. 6. 1941", "11. 3. 1941"], correct: [0], explanation: "Německo, Itálie, Japonsko v Berlíně; v listopadu se připojily Maďarsko, Rumunsko a Slovensko." },
+    { question: "Kam chtěl Hitler podle Rychlíka nasměrovat sovětskou expanzi?", type: "single", options: ["Na jih – do Íránu a Indie", "Na Balkán", "Do Skandinávie", "Do střední Evropy"], correct: [0], explanation: "Cíl: oslabit Britské impérium. SSSR ale chtěl zůstat evropskou mocností a Balkánu se nevzdal." },
+    { question: "Proč se Finsko a Rumunsko připojily k útoku na SSSR?", type: "single", options: ["Chtěly zpět území ztracená roku 1940", "Byly k tomu donuceny okupací", "Chtěly získat Polsko", "Kvůli Paktu tří, jehož byly obě členy"], correct: [0], explanation: "Finsko (Karelská šíje) a Rumunsko (Besarábie, sev. Bukovina). Finsko navíc členem Paktu tří formálně nebylo." },
+    { question: "Co následovalo po odhalení hrobů v Katyni v dubnu 1943?", type: "single", options: ["SSSR přerušil styky s polskou exilovou vládou", "SSSR přiznal vinu", "Spojenci vyhlásili SSSR válku", "Polská vláda se přestěhovala do Moskvy"], correct: [0], explanation: "Poláci požádali o vyšetření Červený kříž; SSSR přerušil styky a v roce 1944 ustavil vlastní prosovětskou vládu. Vinu přiznal až 1990." },
+    { question: "Které kroky patří k zahraniční politice SSSR v letech 1945–53? (vyber všechny)", type: "multi", options: ["Založení Kominformy", "Vytváření nárazníkového pásma satelitů", "Tajné plánování invaze proti Jugoslávii", "Odchod Rudé armády z Rakouska"], correct: [0, 1, 2], explanation: "Odchod z Rakouska (1955) je až Chruščovova éra." },
+    { question: "Kdo byl obětí nové vlny represí po roce 1945?", type: "multi", options: ["Navrátilí zajatí vojáci", "Židé", "„Úchylkáři“", "Bývalí carští generálové v exilu v USA"], correct: [0, 1, 2], explanation: "Zajatci jako „zrádci“ do gulagu, antisemitská kampaň proti „kosmopolitismu“ a lékařské spiknutí." },
+    { question: "Co patří mezi POZITIVA Chruščovovy vlády? (vyber všechny)", type: "multi", options: ["Amnestie asi 2 mil. vězňů", "Odchod RA z Rakouska", "Odhalení kultu osobnosti", "Založení Varšavské smlouvy", "Sputnik a Gagarin"], correct: [0, 1, 2, 4], explanation: "Varšavská smlouva (1955) je v prezentaci mezi negativy." },
+    { question: "Kdy přednesl Chruščov tajný projev o kultu osobnosti?", type: "single", options: ["25. 2. 1956 na XX. sjezdu KSSS", "5. 3. 1953 po Stalinově smrti", "4. 11. 1956", "12. 4. 1961"], correct: [0], explanation: "Součástí bylo zveřejnění Leninova dopisu z roku 1922 varujícího před Stalinem." },
+    { question: "Co vyhlásil Imre Nagy 1. 11. 1956?", type: "single", options: ["Neutralitu a vystoupení z Varšavské smlouvy", "Vstup do NATO", "Kapitulaci povstalců", "Obnovu monarchie"], correct: [0], explanation: "Na to SSSR 4. 11. odpověděl invazí; Nagy byl v roce 1958 popraven." },
+    { question: "Proč Západ v Maďarsku 1956 nezasáhl?", type: "single", options: ["Souběžná Suezská krize a strach z války se SSSR", "Maďarsko bylo členem NATO", "Povstání trvalo jen jeden den", "OSN zakázala zásah"], correct: [0], explanation: "Británie a Francie byly zaměstnány v Egyptě, USA nechtěly riskovat jadernou válku." },
+    { question: "Kdo byl vystřídán na postu prvního tajemníka maďarských komunistů v létě 1956 a kým?", type: "single", options: ["Rákosi → stalinista Ernő Gerő", "Rákosi → Imre Nagy", "Nagy → János Kádár", "Gerő → Rákosi"], correct: [0], explanation: "Moskva po XX. sjezdu a Poznani odvolala Rákosiho, ale nahradila ho dalším stalinistou Gerőem, který 23. 10. nazval demonstranty lůzou a povolal sovětské tanky." },
+    { question: "Kolik obětí si podle prezentace vyžádalo maďarské povstání a represe?", type: "single", options: ["4 000 † + 229 poprav", "asi 400 †", "asi 40 000 † + 2 290 poprav", "nikdo nezemřel"], correct: [0], explanation: "Navíc 22 000 vězňů (amnestie 1963) a 200 000 lidí v exilu." },
+    { question: "Co bylo dohodnuto v Postupimi 1945? (vyber všechna správná)", type: "multi", options: ["Rozdělení Německa a Rakouska na 4 okupační zóny", "4D – demilitarizace, demokratizace, denacifikace, dekartelizace", "Hranice Odra–Nisa", "Vznik NATO"], correct: [0, 1, 2], explanation: "NATO vzniklo až 4. 4. 1949. V Postupimi se dohodl i odsun Němců a uznání územních zisků SSSR." },
+    { question: "Co bylo bezprostředním spouštěčem blokády Berlína (24. 6. 1948)?", type: "single", options: ["Měnová reforma v západních zónách a rozhodnutí vytvořit západoněmecký stát", "Vznik NATO", "Stavba Berlínské zdi", "Smrt Stalina"], correct: [0], explanation: "SSSR odpověděl uzavřením přístupových cest; Západ zásoboval město leteckým mostem až do 12. 5. 1949." },
+    { question: "Kdy byla postavena Berlínská zeď?", type: "single", options: ["V noci z 12. na 13. 8. 1961", "24. 6. 1948", "7. 10. 1949", "28. 10. 1962"], correct: [0], explanation: "2. berlínská krize – z NDR do té doby uteklo skoro 3 mil. lidí. Nezaměňuj s blokádou Berlína 1948–49!" },
+    { question: "Jaké ústupky udělaly USA SSSR na konci karibské krize? (vyber všechny)", type: "multi", options: ["Veřejná záruka, že nenapadnou Kubu", "Tajné stažení raket Jupiter z Turecka", "Stažení vojsk ze Západního Berlína", "Uznání NDR"], correct: [0, 1], explanation: "Dohoda z 28. 10. 1962; Chruščov si díky tajnému ústupku zachoval tvář. Následně zřízena horká linka." },
+    { question: "Jak Kennedy reagoval na objevení sovětských raket na Kubě?", type: "single", options: ["Vyhlásil námořní blokádu („karanténu“) Kuby", "Okamžitě nařídil letecký úder", "Vyhlásil SSSR válku", "Nereagoval"], correct: [0], explanation: "Generálové chtěli tvrdý úder, Kennedy zvolil „měkčí“ variantu – karanténu." },
+    { question: "Co bylo cílem Trumanovy doktríny (1947)?", type: "single", options: ["Pomoc státům ohroženým komunismem (Řecko, Turecko)", "Hospodářská obnova celé Evropy", "Rozdělení Německa", "Odzbrojení USA"], correct: [0], explanation: "Řecko 250 mil. $, Turecko 150 mil. $. Hospodářská obnova Evropy = Marshallův plán." },
+    { question: "Které heslo charakterizuje Kádárův „gulášový socialismus“?", type: "single", options: ["„Kdo není proti nám, je s námi“", "„Ani krok zpět“", "„Socialismus s lidskou tváří“", "„Proletáři všech zemí, spojte se“"], correct: [0], explanation: "Režim od 60. let vyžadoval jen pasivitu; NEM 1968 přinesl prvky trhu a relativní blahobyt." },
+    { question: "Kdy začalo Varšavské povstání a jak se zachovala Rudá armáda?", type: "single", options: ["1. 8. 1944 – nečinně přihlížela z druhého břehu Visly", "1. 8. 1944 – povstání pomohla vyhrát", "IV 1943 – osvobodila ghetto", "1. 9. 1939 – bránila Varšavu"], correct: [0], explanation: "Zemřelo 15 000 vojáků AK a asi 200 000 civilistů; Němci město srovnali se zemí." },
+    { question: "Kolik lidí zavraždila NKVD v Katyni a na dalších místech?", type: "single", options: ["22 000–25 000", "asi 4 000", "asi 200 000", "asi 1 milion"], correct: [0], explanation: "Asi 15 000 důstojníků a 10 000 příslušníků inteligence. Samotný Katyňský les: ostatky 4 134 lidí." },
+    { question: "Proč Západ nechtěl věřit svědectvím o Katyni? (vyber všechny)", type: "multi", options: ["SSSR byl spojenec a vítěz války", "Silná komunistická levice (hl. ve Francii)", "Burděnkova komise svalila vinu na Němce", "Hroby nikdo nikdy neexhumoval"], correct: [0, 1, 2], explanation: "Hroby exhumovala mezinárodní komise už v roce 1943 – fakta byla známa, jen nikdo nechtěl poslouchat." },
+    { question: "Kdo zachránil asi 2 500 židovských dětí z varšavského ghetta?", type: "single", options: ["Irena Sendlerowa", "Józef Czapski", "Władysław Anders", "Maria Kaczyńska"], correct: [0], explanation: "Sociální pracovnice, Żegota; 1965 Spravedlivá mezi národy." },
+    { question: "Které tři síly vedly v Polsku 1945–47 regionální občanskou válku?", type: "single", options: ["Komunistická Lidová armáda × Armia Krajowa × UPA", "Wehrmacht × Rudá armáda × AK", "Komunisté × Britové × Ukrajinci", "Lublinská vláda × Sověti × Litevci"], correct: [0], explanation: "Doprovázely ji transfery obyvatelstva, etnické čistky (80 000 Poláků × 20 000 Ukrajinců) a pogrom v Kielcích." }
+  ],
+  tips: [
+    { title: "\uD83D\uDCCB Jak psát odpověď", text: `Každá otázka v písemce = krátký souvislý text:
+1. ČAS + AKTÉŘI (kdy, kdo)
+2. PRŮBĚH (2–4 klíčové události s daty)
+3. ČÍSLA (1–2 konkrétní počty)
+4. PROČ (příčiny / motivy)
+5. DŮSLEDKY + HODNOCENÍ (rozporuplnost)
+
+Vzor najdeš u každého tématu pod tlačítkem „\uD83D\uDCDD Příklad správné odpovědi“.` },
+    { title: "\uD83E\uDDE0 Mnemotechniky", text: `PAKT 23. 8. 1939 → o týden později (1. 9.) útočí Hitler, o 3,5 týdne později (17. 9.) Stalin
+1. 9. Němci, 17. 9. Sověti → „první Hitler, sedmnáctý Stalin“
+14 MIL. = 3 (hladomor) + 0,7 (teror) + 1,8 (Poláci) + 0,3 (Bělorusové) + 3 (zajatci) + 5 (Židé)
+MAĎARSKO: 23. 10. → 1. 11. → 4. 11. („demonstrace – neutralita – tanky“)
+CHRUŠČOV: „Sputnik 57, Gagarin 61 + zeď 61, Kuba 62, konec 64“
+NĚMECKO 1949: „4. 4. NATO, 7. 9. SRN, 7. 10. NDR“ (SRN o měsíc dřív než NDR)` },
+    { title: "⚠️ Časté chyby", text: `• SSSR NEBYL v letech 1939–41 neutrální – byl spoluagresor (Polsko, Finsko, Pobaltí, Besarábie).
+• 14 mil. = civilisté a zajatci, NE padlí vojáci.
+• Varšavské povstání (1944, AK) ≠ povstání ve varšavském ghettu (1943, Židé).
+• Varšavská smlouva (1955) je NEGATIVUM Chruščova, ne Stalinovy éry.
+• Banderovci nebojovali jen proti Sovětům – i proti Němcům a hlavně proti polským civilistům.
+• Katyň: SSSR přiznal vinu až 1990, ne po válce.
+• Blokáda Berlína (1948–49, letecký most) ≠ Berlínská zeď (1961).
+• Maďarsko: prezentace uvádí 4 000 † + 229 poprav – drž se jejích čísel.` },
+    { title: "\uD83D\uDCDA Texty – co určitě umět", text: `RYCHLÍK: Pakt tří, Molotov v Berlíně, jih (Írán/Indie), Finsko + Rumunsko, Pobaltí/Ukrajina, ozbrojené složky, Poláci, propaganda – 8 otázek v tématu 5.
+ŘEPA (banderovci): kdo byla UPA, ČSR 1945–47, „fašisté“, weaponizace – v tématu 4.
+KARIBSKÁ KRIZE: 4 otázky z prezentace (aktéři, nebezpečí, průběh, ústupky USA) – v tématu 7.
+WAJDA (Katyň): Czapski, proč Západ nevěřil, Jaruzelski, Anders, ženy, profesoři, nacistická propaganda – v tématu 9.
+SNYDER: nepovinný, ale čísla 14 mil. jsou v tématu 2.` }
+  ]
+};
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1;i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function shuffleQuestions(questions) {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const shuffledOptions = shuffledIndices.map((i) => q.options[i]);
+    const newCorrect = q.correct.map((oldIdx) => shuffledIndices.indexOf(oldIdx));
+    return { ...q, options: shuffledOptions, correct: newCorrect };
+  });
+}
+function arrEqual(a, b) {
+  if (!a || !b)
+    return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.length === sb.length && sa.every((v, i) => v === sb[i]);
+}
+function QuizEngine({ questions, accentColor = GOLD }) {
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [pendingMulti, setPendingMulti] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  const shuffledQuestions = useMemo(() => shuffleQuestions(questions), [questions, shuffleKey]);
+  const q = shuffledQuestions[idx];
+  const isMulti = q.type === "multi";
+  const isRevealed = !!revealed[idx];
+  const myAnswer = answers[idx] || [];
+  const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
+  const score = shuffledQuestions.filter((q2, i) => revealed[i] && arrEqual(answers[i] || [], q2.correct)).length;
+  const pct = Math.round(score / shuffledQuestions.length * 100);
+  const goTo = useCallback((i) => {
+    setIdx(i);
+    setPendingMulti(shuffledQuestions[i].type === "multi" ? answers[i] || [] : []);
+  }, [answers, shuffledQuestions]);
+  const handleSingleSelect = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [optionIdx] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, isRevealed]);
+  const toggleMulti = useCallback((optionIdx) => {
+    if (isRevealed)
+      return;
+    setPendingMulti((prev) => prev.includes(optionIdx) ? prev.filter((i) => i !== optionIdx) : [...prev, optionIdx]);
+  }, [isRevealed]);
+  const submitMulti = useCallback(() => {
+    if (pendingMulti.length === 0)
+      return;
+    setAnswers((prev) => ({ ...prev, [idx]: [...pendingMulti] }));
+    setRevealed((prev) => ({ ...prev, [idx]: true }));
+  }, [idx, pendingMulti]);
+  const restart = useCallback(() => {
+    setIdx(0);
+    setAnswers({});
+    setRevealed({});
+    setPendingMulti([]);
+    setShowResults(false);
+    setShuffleKey((k) => k + 1);
+  }, []);
+  if (showResults) {
+    const msg = pct >= 90 ? "Výborně! Máš to perfektně zvládnuté!" : pct >= 70 ? "Dobře! Téměř máš vše zvládnuté." : pct >= 50 ? "Mohlo by to být lepší, ale jdeš správným směrem." : "Potřebuješ více přípravy. Opakuj a bude to!";
+    return /* @__PURE__ */ jsxDEV("div", {
+      style: Q.resultsWrap,
+      children: /* @__PURE__ */ jsxDEV("div", {
+        style: Q.resultsCard,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { fontSize: "4rem", marginBottom: "0.5rem" },
+            children: pct >= 80 ? "\uD83C\uDF89" : pct >= 50 ? "\uD83D\uDC4D" : "\uD83D\uDCDA"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("h2", {
+            style: { color: accentColor, margin: "0 0 0.5rem 0" },
+            children: "Výsledek kvízu"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: Q.resultsScore,
+            children: [
+              score,
+              " / ",
+              shuffledQuestions.length
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: Q.resultsPct,
+            children: [
+              pct,
+              " % správně"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: Q.resultsMsg,
+            children: msg
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: Q.btnGold,
+            onClick: restart,
+            children: "Začít znovu"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this);
+  }
+  const activeSet = isMulti ? isRevealed ? myAnswer : pendingMulti : myAnswer;
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: Q.wrap,
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: Q.dotBar,
+        children: shuffledQuestions.map((_, i) => {
+          let bg = "rgba(255,255,255,0.15)";
+          if (i === idx)
+            bg = accentColor;
+          else if (revealed[i])
+            bg = arrEqual(answers[i] || [], shuffledQuestions[i].correct) ? "#4CAF50" : "#ef5350";
+          return /* @__PURE__ */ jsxDEV("button", {
+            onClick: () => goTo(i),
+            title: `Otázka ${i + 1}`,
+            style: { ...Q.dot, background: bg }
+          }, i, false, undefined, this);
+        })
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: Q.card,
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            style: Q.qNum,
+            children: [
+              "Otázka ",
+              idx + 1,
+              " / ",
+              shuffledQuestions.length,
+              isMulti ? " · více správných odpovědí" : ""
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("h3", {
+            style: Q.qText,
+            children: q.question
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: Q.optionsList,
+            children: q.options.map((opt, i) => {
+              let border = "1px solid rgba(201,162,39,0.3)";
+              let bg = "rgba(255,255,255,0.05)";
+              if (isRevealed) {
+                if (q.correct.includes(i)) {
+                  bg = "rgba(76,175,80,0.2)";
+                  border = "1px solid #4CAF50";
+                } else if (activeSet.includes(i)) {
+                  bg = "rgba(239,83,80,0.2)";
+                  border = "1px solid #ef5350";
+                }
+              } else if (activeSet.includes(i)) {
+                bg = "rgba(201,162,39,0.15)";
+                border = `1px solid ${accentColor}`;
+              }
+              return /* @__PURE__ */ jsxDEV("button", {
+                style: { ...Q.option, background: bg, border, cursor: isRevealed ? "default" : "pointer" },
+                onClick: () => isMulti ? toggleMulti(i) : handleSingleSelect(i),
+                children: [
+                  isMulti && /* @__PURE__ */ jsxDEV("span", {
+                    style: Q.checkbox,
+                    children: activeSet.includes(i) ? "☑" : "☐"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("span", {
+                    children: opt
+                  }, undefined, false, undefined, this)
+                ]
+              }, i, true, undefined, this);
+            })
+          }, undefined, false, undefined, this),
+          isMulti && !isRevealed && /* @__PURE__ */ jsxDEV("button", {
+            style: { ...Q.btnGold, marginTop: "1rem", opacity: pendingMulti.length === 0 ? 0.4 : 1 },
+            onClick: submitMulti,
+            disabled: pendingMulti.length === 0,
+            children: "Potvrdit"
+          }, undefined, false, undefined, this),
+          isRevealed && /* @__PURE__ */ jsxDEV("div", {
+            style: { ...Q.feedback, borderColor: isCorrect ? "#4CAF50" : "#ef5350" },
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { ...Q.feedbackHeader, color: isCorrect ? "#4CAF50" : "#ef5350" },
+                children: isCorrect ? "✓ Správně!" : "✗ Špatně"
+              }, undefined, false, undefined, this),
+              !isCorrect && /* @__PURE__ */ jsxDEV("div", {
+                style: Q.feedbackCorrect,
+                children: [
+                  "Správná odpověď: ",
+                  q.correct.map((i) => q.options[i]).join(", ")
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: Q.feedbackExplanation,
+                children: q.explanation
+              }, undefined, false, undefined, this),
+              q.tip && /* @__PURE__ */ jsxDEV("div", {
+                style: Q.feedbackTip,
+                children: [
+                  "Tip: ",
+                  q.tip
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: Q.navRow,
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: { ...Q.btn, opacity: idx === 0 ? 0.4 : 1 },
+            onClick: () => goTo(idx - 1),
+            disabled: idx === 0,
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          idx < shuffledQuestions.length - 1 ? /* @__PURE__ */ jsxDEV("button", {
+            style: Q.btn,
+            onClick: () => goTo(idx + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this) : /* @__PURE__ */ jsxDEV("button", {
+            style: Q.btnGold,
+            onClick: () => setShowResults(true),
+            children: "Výsledky →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var Q = {
+  wrap: { display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "760px", margin: "0 auto" },
+  dotBar: { display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap" },
+  dot: { width: "22px", height: "22px", borderRadius: "50%", border: "none", padding: 0, cursor: "pointer", transition: "all 0.2s ease" },
+  card: { background: "rgba(0,0,0,0.3)", borderRadius: "12px", padding: "2rem", border: "1px solid rgba(201,162,39,0.2)" },
+  qNum: { color: "#888", fontSize: "0.9rem", marginBottom: "0.5rem", fontStyle: "italic" },
+  qText: { color: "#fff", fontSize: "1.3rem", marginTop: 0, marginBottom: "1.5rem", lineHeight: 1.4, fontWeight: 600 },
+  optionsList: { display: "flex", flexDirection: "column", gap: "0.75rem" },
+  option: { padding: "1rem 1.25rem", borderRadius: "8px", color: "#e8e8e8", textAlign: "left", fontFamily: "inherit", fontSize: "1.05rem", transition: "all 0.2s ease", lineHeight: 1.4, display: "flex", alignItems: "center", gap: "0.75rem", minHeight: "44px" },
+  checkbox: { fontSize: "1.2rem", minWidth: "20px", color: GOLD },
+  btn: { padding: "0.75rem 1.5rem", background: "rgba(255,255,255,0.1)", border: "none", borderRadius: "4px", color: "#e8e8e8", cursor: "pointer", fontFamily: "inherit", fontSize: "1rem", transition: "all 0.2s ease", minHeight: "44px" },
+  btnGold: { padding: "0.75rem 2rem", background: GOLD, color: "#1a1a2e", border: "none", borderRadius: "6px", cursor: "pointer", fontFamily: "inherit", fontSize: "1rem", fontWeight: 700, minHeight: "44px" },
+  feedback: { marginTop: "1.5rem", padding: "1rem", background: "rgba(201,162,39,0.1)", borderRadius: "8px", border: "1px solid" },
+  feedbackHeader: { fontWeight: 700, fontSize: "1.1rem", marginBottom: "0.5rem" },
+  feedbackCorrect: { color: "#a5d6a7", marginBottom: "0.5rem" },
+  feedbackExplanation: { color: "#ddd", lineHeight: 1.6 },
+  feedbackTip: { color: "#e8c547", marginTop: "0.5rem", fontStyle: "italic" },
+  navRow: { display: "flex", justifyContent: "space-between", gap: "0.5rem" },
+  resultsWrap: { display: "flex", justifyContent: "center", padding: "2rem 0" },
+  resultsCard: { textAlign: "center", background: "rgba(0,0,0,0.3)", borderRadius: "12px", padding: "2.5rem", border: "1px solid rgba(201,162,39,0.2)" },
+  resultsScore: { fontSize: "2.5rem", fontWeight: 800, color: "#fff", margin: "1rem 0 0.25rem" },
+  resultsPct: { color: "#aaa", marginBottom: "1rem" },
+  resultsMsg: { color: "#ddd", marginBottom: "1.5rem", lineHeight: 1.6 }
+};
+function Flashcards({ cards }) {
+  const [i, setI] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const go = (n) => {
+    setFlipped(false);
+    setI((n + cards.length) % cards.length);
+  };
+  const c = cards[i];
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { maxWidth: "700px", margin: "0 auto" },
+    children: [
+      /* @__PURE__ */ jsxDEV("p", {
+        style: { textAlign: "center", color: "#888", fontStyle: "italic", marginTop: 0 },
+        children: [
+          "Klikni na kartičku pro otočení · ",
+          i + 1,
+          " / ",
+          cards.length
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "fc-scene",
+        onClick: () => setFlipped((f) => !f),
+        children: /* @__PURE__ */ jsxDEV("div", {
+          className: "fc-card" + (flipped ? " fc-flipped" : ""),
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "fc-face",
+              children: [
+                /* @__PURE__ */ jsxDEV("span", {
+                  style: { color: GOLD, fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.05em" },
+                  children: "❓ OTÁZKA"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "1.4rem", color: "#fff", lineHeight: 1.4, marginTop: "1rem" },
+                  children: c.front
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("div", {
+              className: "fc-face fc-back",
+              children: [
+                /* @__PURE__ */ jsxDEV("span", {
+                  style: { color: GOLD, fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.05em" },
+                  children: "\uD83D\uDD11 ODPOVĚĎ"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("div", {
+                  style: { fontSize: "1.15rem", color: "#e8e8e8", lineHeight: 1.6, marginTop: "1rem" },
+                  children: c.back
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", justifyContent: "space-between", marginTop: "1rem", gap: "0.5rem" },
+        children: [
+          /* @__PURE__ */ jsxDEV("button", {
+            style: Q.btn,
+            onClick: () => go(i - 1),
+            children: "← Předchozí"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: Q.btnGold,
+            onClick: () => setFlipped((f) => !f),
+            children: "Otočit"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("button", {
+            style: Q.btn,
+            onClick: () => go(i + 1),
+            children: "Další →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { display: "flex", flexWrap: "wrap", gap: "6px", justifyContent: "center", marginTop: "1.25rem" },
+        children: cards.map((_, n) => /* @__PURE__ */ jsxDEV("button", {
+          onClick: () => go(n),
+          title: `Kartička ${n + 1}`,
+          style: { width: "14px", height: "14px", borderRadius: "50%", border: "none", padding: 0, cursor: "pointer", background: n === i ? GOLD : "rgba(255,255,255,0.18)", transition: "all 0.2s ease" }
+        }, n, false, undefined, this))
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function Reveal({ label, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return /* @__PURE__ */ jsxDEV("div", {
+    style: { border: "1px solid rgba(201,162,39,0.3)", borderRadius: "8px", marginBottom: "0.75rem", background: open ? "rgba(201,162,39,0.08)" : "rgba(255,255,255,0.03)", transition: "all 0.2s ease" },
+    children: [
+      /* @__PURE__ */ jsxDEV("button", {
+        onClick: () => setOpen((o) => !o),
+        style: { width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#e8e8e8", padding: "0.85rem 1rem", cursor: "pointer", fontFamily: "inherit", fontSize: "1.05rem", display: "flex", justifyContent: "space-between", gap: "1rem", alignItems: "center", minHeight: "44px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            children: label
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("span", {
+            style: { color: GOLD, flexShrink: 0 },
+            children: open ? "▲ Skrýt" : "▼ Ukázat"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      open && /* @__PURE__ */ jsxDEV("div", {
+        style: { padding: "0 1rem 1rem", color: "#ddd", lineHeight: 1.7 },
+        children
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function App() {
+  const [activeTab, setActiveTab] = useState("study");
+  const [selectedTopic, setSelectedTopic] = useState(null);
+  const handleTopicSelect = (topic) => {
+    setSelectedTopic(topic);
+    window.scrollTo(0, 0);
+  };
+  const handleBack = () => setSelectedTopic(null);
+  const renderContent = (content) => {
+    return content.split(`
+`).map((line, i) => {
+      const t = line.trim();
+      if (!t)
+        return null;
+      const bare = t.replace(/\([^)]*\)/g, "");
+      if (t.endsWith(":") && t.length > 3 && !t.startsWith("•") && !/[a-záčďéěíňóřšťúůýžłńśźżäöü]/.test(bare)) {
+        return /* @__PURE__ */ jsxDEV("h3", {
+          style: { color: GOLD, fontSize: "1.15rem", marginTop: "1.5rem", marginBottom: "0.75rem", fontWeight: "700", borderBottom: "1px solid rgba(201,162,39,0.3)", paddingBottom: "0.5rem" },
+          children: t
+        }, i, false, undefined, this);
+      }
+      if (t.startsWith("•")) {
+        return /* @__PURE__ */ jsxDEV("div", {
+          style: { paddingLeft: "1.5rem", marginBottom: "0.5rem", position: "relative", lineHeight: 1.7 },
+          children: [
+            /* @__PURE__ */ jsxDEV("span", {
+              style: { position: "absolute", left: "0.5rem", color: GOLD },
+              children: "•"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsxDEV("span", {
+              style: { color: "#ddd" },
+              children: t.substring(1).trim()
+            }, undefined, false, undefined, this)
+          ]
+        }, i, true, undefined, this);
+      }
+      if (t.startsWith('"') || t.startsWith("„")) {
+        return /* @__PURE__ */ jsxDEV("blockquote", {
+          style: { borderLeft: `3px solid ${GOLD}`, paddingLeft: "1rem", margin: "0 0 0.75rem 0.5rem", fontStyle: "italic", color: "#bbb", lineHeight: 1.6 },
+          children: t
+        }, i, false, undefined, this);
+      }
+      return /* @__PURE__ */ jsxDEV("p", {
+        style: { marginBottom: "0.75rem", color: "#ddd", lineHeight: 1.7 },
+        children: t
+      }, i, false, undefined, this);
+    });
+  };
+  const tabs = [
+    { id: "study", label: "\uD83D\uDCD6 Studium" },
+    { id: "review", label: "⚡ Rychlé opakování" },
+    { id: "data", label: "\uD83D\uDDD3️ Data a čísla" },
+    { id: "cards", label: "\uD83C\uDCCF Kartičky" },
+    { id: "quiz", label: "✍️ Kvíz" },
+    { id: "tips", label: "\uD83D\uDCA1 Tipy" }
+  ];
+  const numCircle = (n, size = 32) => /* @__PURE__ */ jsxDEV("span", {
+    style: { background: GOLD, color: "#1a1a2e", width: size + "px", height: size + "px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "0.9rem", flexShrink: 0 },
+    children: n
+  }, undefined, false, undefined, this);
+  const sectionTitle = (icon, title, sub) => /* @__PURE__ */ jsxDEV("div", {
+    style: { textAlign: "center", marginBottom: "2rem" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        style: { fontSize: "3rem", marginBottom: "0.5rem" },
+        children: icon
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("h2", {
+        style: { color: GOLD, margin: "0 0 0.5rem 0" },
+        children: title
+      }, undefined, false, undefined, this),
+      sub && /* @__PURE__ */ jsxDEV("p", {
+        style: { color: "#888", margin: 0, fontStyle: "italic" },
+        children: sub
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+  return /* @__PURE__ */ jsxDEV("div", {
+    className: "kr-root",
+    style: { minHeight: "100vh", background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)", backgroundAttachment: "fixed", fontFamily: "'Crimson Text', Georgia, serif", color: "#e8e8e8", fontSize: "17px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("link", {
+        href: "https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap",
+        rel: "stylesheet"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("style", {
+        children: `
+        .kr-root p { margin: 0 0 0.75rem; }
+        .kr-root h1, .kr-root h2, .kr-root h3 { font-family: inherit; font-weight: 700; }
+        .kr-root h2 { font-size: 1.6rem; line-height: 1.3; }
+        .kr-root h3 { font-size: 1.2rem; line-height: 1.35; }
+        .kr-root button { font-family: inherit; }
+        .kr-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .kr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(350px, 100%), 1fr)); gap: 1rem; }
+        .kr-data { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 1.5rem; align-items: start; }
+        .kr-main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .kr-header { padding: 1.5rem 2rem; }
+        .kr-panel { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 2rem; border: 1px solid rgba(201,162,39,0.2); }
+        .fc-scene { perspective: 1200px; cursor: pointer; }
+        .fc-card { position: relative; min-height: 280px; transition: transform 0.4s ease; transform-style: preserve-3d; }
+        .fc-flipped { transform: rotateY(180deg); }
+        .fc-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: rgba(0,0,0,0.3); border: 2px solid ${GOLD}; border-radius: 12px; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .fc-back { transform: rotateY(180deg); background: linear-gradient(135deg, rgba(201,162,39,0.18) 0%, rgba(22,33,62,0.95) 100%); }
+        @media (max-width: 640px) {
+          .kr-main { padding: 1rem; }
+          .kr-header { padding: 1rem; }
+          .kr-header h1 { font-size: 1.4rem !important; }
+          .kr-nav { flex-wrap: nowrap; overflow-x: auto; width: 100%; padding-bottom: 4px; }
+          .kr-nav button { flex-shrink: 0; padding: 0.6rem 1rem !important; }
+          .kr-panel { padding: 1.25rem; }
+          .fc-face { padding: 1.25rem; }
+          .fc-card { min-height: 320px; }
+        }
+      `
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("header", {
+        className: "kr-header",
+        style: { background: "rgba(0,0,0,0.3)", borderBottom: `2px solid ${GOLD}`, position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" },
+        children: /* @__PURE__ */ jsxDEV("div", {
+          style: { maxWidth: "1200px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" },
+          children: [
+            /* @__PURE__ */ jsxDEV("div", {
+              style: { minWidth: 0 },
+              children: [
+                /* @__PURE__ */ jsxDEV("h1", {
+                  style: { fontSize: "2rem", fontWeight: "700", color: GOLD, margin: 0, letterSpacing: "0.05em", textTransform: "uppercase" },
+                  children: "☭ SSSR 1939–1964"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("p", {
+                  style: { fontSize: "0.9rem", color: "#888", margin: "0.25rem 0 0 0", fontStyle: "italic" },
+                  children: "Pakt R–M · Krvavé země · Velká vlastenecká válka · Banderovci · Počátek studené války · Chruščov · Maďarsko 1956 · Polsko a Katyň"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV("nav", {
+              className: "kr-nav",
+              children: tabs.map((tab) => /* @__PURE__ */ jsxDEV("button", {
+                onClick: () => {
+                  setActiveTab(tab.id);
+                  setSelectedTopic(null);
+                },
+                style: { padding: "0.75rem 1.25rem", background: activeTab === tab.id ? GOLD : "rgba(255,255,255,0.1)", color: activeTab === tab.id ? "#1a1a2e" : "#e8e8e8", border: "none", borderRadius: "4px", cursor: "pointer", fontSize: "1rem", fontWeight: activeTab === tab.id ? "700" : "400", transition: "all 0.2s ease", minHeight: "44px" },
+                children: tab.label
+              }, tab.id, false, undefined, this))
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("main", {
+        className: "kr-main",
+        children: [
+          activeTab === "study" && !selectedTopic && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { background: "rgba(201,162,39,0.1)", border: `1px solid ${GOLD}`, borderRadius: "8px", padding: "1.5rem", marginBottom: "2rem" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("h2", {
+                    style: { color: GOLD, margin: "0 0 0.5rem 0", fontSize: "1.3rem" },
+                    children: "\uD83C\uDFAF Jak se učit na písemku"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("p", {
+                    style: { margin: 0, lineHeight: 1.6 },
+                    children: [
+                      "Písemka má ",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "9 okruhů"
+                      }, undefined, false, undefined, this),
+                      " – karty 1–9 odpovídají otázkám ze zadání, karta 10 je ",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "bonus"
+                      }, undefined, false, undefined, this),
+                      " z prezentace o studené válce 60.–80. let (v otázkách není). Uvnitř najdeš rychlé shrnutí, podrobný výklad a skrytou ",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        children: "vzorovou odpověď"
+                      }, undefined, false, undefined, this),
+                      ". U témat 4, 5, 7 a 9 jsou navíc ",
+                      /* @__PURE__ */ jsxDEV("strong", {
+                        style: { color: "#4CAF50" },
+                        children: "OTÁZKY K TEXTŮM"
+                      }, undefined, false, undefined, this),
+                      " (Řepa, Rychlík, karibská krize, Wajda) s odpověďmi na rozkliknutí."
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("h2", {
+                style: { color: GOLD, borderBottom: "1px solid rgba(201,162,39,0.3)", paddingBottom: "0.5rem", marginBottom: "1.5rem" },
+                children: "\uD83D\uDCDA Okruhy k písemce"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "kr-grid",
+                children: studyData.topics.map((topic) => /* @__PURE__ */ jsxDEV("button", {
+                  onClick: () => handleTopicSelect(topic),
+                  style: { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: "8px", padding: "1.25rem", textAlign: "left", cursor: "pointer", transition: "all 0.2s ease", color: "#e8e8e8" },
+                  onMouseOver: (e) => {
+                    e.currentTarget.style.background = "rgba(201,162,39,0.15)";
+                    e.currentTarget.style.borderColor = GOLD;
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  },
+                  onMouseOut: (e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                    e.currentTarget.style.borderColor = "rgba(201,162,39,0.3)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  },
+                  children: /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "flex", alignItems: "flex-start", gap: "1rem" },
+                    children: [
+                      numCircle(topic.id),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        children: [
+                          /* @__PURE__ */ jsxDEV("h3", {
+                            style: { margin: "0 0 0.25rem 0", fontSize: "1.15rem", color: "#fff", lineHeight: 1.3 },
+                            children: topic.title
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("div", {
+                            style: { fontSize: "0.95rem", color: "#aaa", fontStyle: "italic", marginBottom: "0.4rem", lineHeight: 1.4 },
+                            children: topic.short
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("span", {
+                            style: { fontSize: "0.85rem", color: GOLD, opacity: 0.85 },
+                            children: [
+                              "Klikni pro detail →",
+                              topic.textQuestions ? " · \uD83D\uDCC4 otázky k textu" : ""
+                            ]
+                          }, undefined, true, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                }, topic.id, false, undefined, this))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "study" && selectedTopic && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("button", {
+                onClick: handleBack,
+                style: { background: "rgba(201,162,39,0.2)", border: `1px solid ${GOLD}`, color: GOLD, padding: "0.5rem 1rem", borderRadius: "4px", cursor: "pointer", fontSize: "1rem", marginBottom: "1.5rem", minHeight: "44px" },
+                children: "← Zpět na přehled"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "kr-panel",
+                children: [
+                  /* @__PURE__ */ jsxDEV("h2", {
+                    style: { color: GOLD, fontSize: "1.75rem", marginTop: 0, marginBottom: "1.5rem", paddingBottom: "1rem", borderBottom: "2px solid rgba(201,162,39,0.3)", display: "flex", gap: "0.75rem", alignItems: "center" },
+                    children: [
+                      numCircle(selectedTopic.id),
+                      /* @__PURE__ */ jsxDEV("span", {
+                        children: selectedTopic.title
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { background: "linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(201,162,39,0.05) 100%)", border: `2px solid ${GOLD}`, borderRadius: "12px", padding: "1.5rem 1.25rem 1.25rem", marginBottom: "2rem", position: "relative" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { position: "absolute", top: "-12px", left: "20px", background: "#16213e", padding: "0 10px", color: GOLD, fontWeight: "bold", fontSize: "0.85rem" },
+                        children: "⚡ RYCHLÉ SHRNUTÍ"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        style: { fontFamily: "monospace", fontSize: "0.95rem", lineHeight: "1.8", color: "#e8e8e8", whiteSpace: "pre-wrap", overflowWrap: "anywhere" },
+                        children: selectedTopic.summary
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { fontSize: "1.05rem" },
+                    children: renderContent(selectedTopic.content)
+                  }, undefined, false, undefined, this),
+                  selectedTopic.textQuestions && /* @__PURE__ */ jsxDEV("div", {
+                    style: { marginTop: "2rem" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("h3", {
+                        style: { color: "#4CAF50", fontSize: "1.2rem", borderBottom: "1px solid rgba(76,175,80,0.4)", paddingBottom: "0.5rem" },
+                        children: "\uD83D\uDCC4 OTÁZKY K TEXTU – zkus si odpovědět, pak rozklikni"
+                      }, undefined, false, undefined, this),
+                      selectedTopic.textQuestions.map((tq, k) => /* @__PURE__ */ jsxDEV(Reveal, {
+                        label: tq.q,
+                        children: tq.a
+                      }, selectedTopic.id + "-" + k, false, undefined, this))
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { marginTop: "2rem" },
+                    children: /* @__PURE__ */ jsxDEV(Reveal, {
+                      label: "\uD83D\uDCDD Příklad správné odpovědi (souvislý text do písemky)",
+                      children: /* @__PURE__ */ jsxDEV("p", {
+                        style: { fontStyle: "italic", color: "#ddd", margin: 0 },
+                        children: selectedTopic.modelAnswer
+                      }, undefined, false, undefined, this)
+                    }, "model-" + selectedTopic.id, false, undefined, this)
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "review" && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              sectionTitle("⚡", "Rychlé opakování před testem", "Klíčové body všech okruhů na jednom místě"),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "1rem" },
+                children: studyData.topics.map((topic) => /* @__PURE__ */ jsxDEV("div", {
+                  style: { background: "rgba(0,0,0,0.3)", borderRadius: "12px", border: "1px solid rgba(201,162,39,0.3)", overflow: "hidden" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { background: "linear-gradient(135deg, rgba(201,162,39,0.2) 0%, rgba(201,162,39,0.05) 100%)", padding: "0.75rem 1.25rem", borderBottom: "1px solid rgba(201,162,39,0.2)", display: "flex", alignItems: "center", gap: "0.75rem" },
+                      children: [
+                        numCircle(topic.id, 28),
+                        /* @__PURE__ */ jsxDEV("span", {
+                          style: { color: GOLD, fontWeight: "600", fontSize: "1.05rem" },
+                          children: topic.title
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("div", {
+                      style: { padding: "1rem 1.25rem", fontFamily: "monospace", fontSize: "0.9rem", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#ccc", overflowWrap: "anywhere" },
+                      children: topic.summary
+                    }, undefined, false, undefined, this)
+                  ]
+                }, topic.id, true, undefined, this))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "data" && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              sectionTitle("\uD83D\uDDD3️", "Data, čísla a osobnosti", "Tahák – co se musíš naučit nazpaměť"),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "kr-data",
+                children: [
+                  /* @__PURE__ */ jsxDEV("div", {
+                    className: "kr-panel",
+                    children: [
+                      /* @__PURE__ */ jsxDEV("h3", {
+                        style: { color: GOLD, marginTop: 0 },
+                        children: "\uD83D\uDCC5 Časová osa"
+                      }, undefined, false, undefined, this),
+                      studyData.timeline.map((t, i) => /* @__PURE__ */ jsxDEV("div", {
+                        style: { display: "flex", gap: "0.75rem", padding: "0.45rem 0", borderBottom: "1px solid rgba(201,162,39,0.12)", fontFamily: "monospace", fontSize: "0.92rem", lineHeight: 1.5 },
+                        children: [
+                          /* @__PURE__ */ jsxDEV("span", {
+                            style: { color: GOLD, minWidth: "7.5rem", flexShrink: 0, fontWeight: 700 },
+                            children: t.date
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsxDEV("span", {
+                            style: { color: "#ddd" },
+                            children: t.event
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, i, true, undefined, this))
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsxDEV("div", {
+                    style: { display: "flex", flexDirection: "column", gap: "1.5rem" },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", {
+                        className: "kr-panel",
+                        children: [
+                          /* @__PURE__ */ jsxDEV("h3", {
+                            style: { color: GOLD, marginTop: 0 },
+                            children: "\uD83D\uDD22 Klíčová čísla"
+                          }, undefined, false, undefined, this),
+                          studyData.numbers.map((n, i) => /* @__PURE__ */ jsxDEV("div", {
+                            style: { padding: "0.45rem 0", borderBottom: "1px solid rgba(201,162,39,0.12)", fontFamily: "monospace", fontSize: "0.92rem", lineHeight: 1.5 },
+                            children: [
+                              /* @__PURE__ */ jsxDEV("div", {
+                                style: { color: "#aaa" },
+                                children: n.label
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("div", {
+                                style: { color: "#fff", fontWeight: 700 },
+                                children: n.value
+                              }, undefined, false, undefined, this)
+                            ]
+                          }, i, true, undefined, this))
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsxDEV("div", {
+                        className: "kr-panel",
+                        children: [
+                          /* @__PURE__ */ jsxDEV("h3", {
+                            style: { color: GOLD, marginTop: 0 },
+                            children: "\uD83D\uDC64 Osobnosti"
+                          }, undefined, false, undefined, this),
+                          studyData.people.map((p, i) => /* @__PURE__ */ jsxDEV("div", {
+                            style: { padding: "0.45rem 0", borderBottom: "1px solid rgba(201,162,39,0.12)", fontSize: "0.98rem", lineHeight: 1.5 },
+                            children: [
+                              /* @__PURE__ */ jsxDEV("strong", {
+                                style: { color: "#e8c547" },
+                                children: p.name
+                              }, undefined, false, undefined, this),
+                              /* @__PURE__ */ jsxDEV("span", {
+                                style: { color: "#ccc" },
+                                children: [
+                                  " – ",
+                                  p.role
+                                ]
+                              }, undefined, true, undefined, this)
+                            ]
+                          }, i, true, undefined, this))
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "cards" && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              sectionTitle("\uD83C\uDCCF", "Kartičky", `${studyData.flashcards.length} kartiček napříč všemi okruhy`),
+              /* @__PURE__ */ jsxDEV(Flashcards, {
+                cards: studyData.flashcards
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "quiz" && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              sectionTitle("✍️", "Kvíz – SSSR 1939–1964", `${studyData.quizQuestions.length} otázek, pořadí odpovědí se míchá`),
+              /* @__PURE__ */ jsxDEV(QuizEngine, {
+                questions: studyData.quizQuestions,
+                accentColor: GOLD
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "tips" && /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              sectionTitle("\uD83D\uDCA1", "Tipy pro přípravu"),
+              /* @__PURE__ */ jsxDEV("div", {
+                style: { display: "flex", flexDirection: "column", gap: "1.5rem", maxWidth: "800px", margin: "0 auto" },
+                children: studyData.tips.map((tip, i) => /* @__PURE__ */ jsxDEV("div", {
+                  className: "kr-panel",
+                  style: { padding: "1.5rem" },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("h3", {
+                      style: { color: GOLD, margin: "0 0 1rem 0", fontSize: "1.2rem" },
+                      children: tip.title
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV("pre", {
+                      style: { fontFamily: "monospace", fontSize: "0.9rem", lineHeight: "1.7", color: "#ccc", whiteSpace: "pre-wrap", margin: 0 },
+                      children: tip.text
+                    }, undefined, false, undefined, this)
+                  ]
+                }, i, true, undefined, this))
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+export {
+  App as default
+};
+
+
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(createElement(App));
+    </script>
+</body>
+</html>
