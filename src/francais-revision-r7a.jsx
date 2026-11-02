@@ -947,6 +947,20 @@ const QUIZ = [
     explanation:"sous = pod · sur = na · devant = před · derrière = za · entre = mezi · à côté de = vedle · en face de = naproti." },
   { question:"La lampe est à droite ___ canapé.", type:"single", options:["du","de le","de","des"], correct:[0],
     explanation:"Rappel: de + le = du, de + les = des → à droite du canapé, à côté des fenêtres." },
+  { question:"Kamarádovi radíš: „Navštiv Louvre!“", type:"single", options:["Visite le Louvre !","Visites le Louvre !","Tu visites le Louvre !","Visiter le Louvre !"], correct:[0],
+    explanation:"Imperativ tu u sloves na -er ztrácí -s: tu visites → Visite !" },
+  { question:"Které tvary jsou správný imperativ? (vyber všechny)", type:"multi",
+    options:["Prenez le métro !","Va à la plage !","N'oublie pas ton passeport !","Sois prudent !","Vas à la plage !"], correct:[0,1,2,3],
+    explanation:"Prenez ✓, Va ✓ (aller: tu vas → Va !), N'oublie pas ✓, Sois ✓ (être). „Vas“ jen ve spojení Vas-y !" },
+  { question:"Jak řekneš „Včera bylo 30 stupňů.“?", type:"single",
+    options:["Hier, il faisait 30 degrés.","Hier, il était 30 degrés.","Hier, il a 30 degrés.","Hier, c'est 30 degrés."], correct:[0],
+    explanation:"Teplota se vyjadřuje slovesem faire: il fait 30 degrés → v minulosti il faisait 30 degrés." },
+  { question:"Hier, il ___ . (pršelo)", type:"single", options:["pleuvait","pleut","a plu beaucoup de","pleuvoir"], correct:[0],
+    explanation:"pleuvoir → il pleut → imparfait il pleuvait (popis počasí v minulosti)." },
+  { question:"Nous ___ le bateau. (prendre, passé composé)", type:"single", options:["avons pris","sommes pris","avons prendu","avons prit"], correct:[0],
+    explanation:"prendre → pris, s avoir: nous avons pris." },
+  { question:"Mes amies ___ à Nice. (arriver, passé composé)", type:"single", options:["sont arrivées","ont arrivé","sont arrivés","sont arrivé"], correct:[0],
+    explanation:"arriver → être; mes amies = ženy, množné číslo → arrivé + es." },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1059,7 +1073,9 @@ function WritingTask({ t }) {
     if (r.words) return { ...r, ok: words >= r.words, extra: words + " slov" };
     if (r.sentences) return { ...r, ok: sentences >= r.sentences[0] && sentences <= r.sentences[1], extra: sentences + " vět" };
     let count;
-    if (r.yCount) {
+    if (r.raw) {
+      count = (text.toLowerCase().replace(/[’]/g, "'").match(new RegExp(r.re, "gm")) || []).length;
+    } else if (r.yCount) {
       count = (n.match(/\sy\s/g) || []).length - (n.match(/\sil y a(vait)?\s/g) || []).length - (n.match(/\sn y a(vait)? pas\s/g) || []).length;
     } else {
       const re = new RegExp(r.word ? "\\s(" + r.re + ")(?=\\s)" : "(" + r.re + ")", "g");
@@ -1142,6 +1158,31 @@ function PlanTab({ go }) {
         <span className="chip">Test: <b>pátek 23. 10.</b></span>
       </div>
       <div className="prog"><i style={{ width: (count / total) * 100 + "%" }} /></div>
+      <div className="card red" style={{ marginBottom:"18px" }}>
+        <h3>🗣️ Jak test vypadal — podle spolužačky, která ho už psala</h3>
+        <div className="grid2">
+          <div>
+            <b>Strana 1 — doplňování</b>
+            <ul>
+              <li>slovíčka do vět, úplně jako v procvičování (promenade, camping, bronzer…)</li>
+              <li>de / d' / du / des u zemí + napsat národnost</li>
+              <li>passé composé — doplnit tvar různých sloves</li>
+            </ul>
+          </div>
+          <div>
+            <b>Strana 2 — psaní</b>
+            <ul>
+              <li>věty, ve kterých stačí použít dané pravidlo</li>
+              <li>popis obrázku (asi 5 vět)</li>
+              <li>text o prázdninách / cestování: minulý čas, <b>imperativ</b>, <b>počasí a teplota</b></li>
+            </ul>
+          </div>
+        </div>
+        <div className="go" style={{ display:"flex", gap:"8px", flexWrap:"wrap" }}>
+          <button className="btn red" onClick={() => go("sim")}>🧪 Spustit simulaci testu →</button>
+          <button className="mini" onClick={() => go("gram")}>📐 Imperativ + počasí →</button>
+        </div>
+      </div>
       <div className="plan">
         {PLAN.map((p, pi) => (
           <div key={pi} className={"card" + (pi % 2 ? " red" : "")}>
@@ -1625,6 +1666,60 @@ function GramTab() {
         </BlueBox>
         <p>Při popisu obrazu: <i>Devant la maison, il y a une rivière. Derrière les arbres, on voit la montagne. À gauche du chemin, il y a des fleurs.</i></p>
       </Acc>
+      <Acc title="Bonus · Impératif (rady na cestu)" badge="v testu!">
+        <div className="rule">Podle spolužačky byl v psaní o cestování potřeba <b>imperativ</b>. Tvoří se z přítomného času (tu / nous / vous) <b>bez zájmena</b>.</div>
+        <div className="tblwrap">
+          <table className="tbl">
+            <thead><tr><th>Présent</th><th>Impératif</th><th>Česky</th></tr></thead>
+            <tbody>
+              <tr><td>tu prends · nous prenons · vous prenez</td><td><b>Prends ! Prenons ! Prenez !</b></td><td>vezmi · vezměme · vezměte</td></tr>
+              <tr><td>tu visites (‑er)</td><td><b>Visite !</b> <span className="red-e">(bez -s)</span> · Visitons ! · Visitez !</td><td>navštiv…</td></tr>
+              <tr><td>tu vas (aller)</td><td><b>Va !</b> · Allons ! · Allez ! · <b>Vas-y !</b></td><td>jdi / jeď (tam)</td></tr>
+              <tr><td>tu fais · vous faites</td><td><b>Fais ! Faites !</b></td><td>dělej · dělejte</td></tr>
+              <tr><td>être</td><td><b>Sois ! Soyons ! Soyez !</b></td><td>buď…</td></tr>
+              <tr><td>avoir</td><td><b>Aie ! Ayons ! Ayez !</b></td><td>měj…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="ex">
+          <div>Zápor: <u>N'oublie pas</u> ton passeport ! · <u>Ne fumez pas</u> ici !</div>
+          <div>Zvratná: <u>Baigne-toi</u> ! <u>Promenez-vous</u> ! · zápor: <u>Ne te baigne pas</u> !</div>
+          <div>Na cestu: <u>Visitez</u> le Louvre ! <u>Goûtez</u> la cuisine locale ! <u>Prenez</u> le métro ! <u>Allez-y</u> en juin !</div>
+        </div>
+        {[
+          { diff:"e", task:"(vous / visiter) ___ le musée d'Orsay !", blanks:[["Visitez"]], rule:"vous visitez → Visitez !", why:"" },
+          { diff:"e", task:"(tu / prendre) ___ ton maillot de bain !", blanks:[["Prends"]], rule:"tu prends → Prends !", why:"" },
+          { diff:"m", task:"(tu / goûter) ___ la cuisine locale !", blanks:[["Goûte"]], rule:"-er sloveso: tu goûtes → Goûte ! (bez -s)", why:"" },
+          { diff:"m", task:"(tu / aller) ___ à la plage !", blanks:[["Va"]], rule:"aller: tu vas → Va ! (s jen ve Vas-y)", why:"" },
+          { diff:"m", task:"(tu / ne pas oublier) ___ ton passeport !", blanks:[["N'oublie pas"]], rule:"Ne / N' + imperativ + pas.", why:"N'oublie pas (oublier = -er → bez -s)." },
+          { diff:"h", task:"(vous / être) ___ prudents à la montagne !", blanks:[["Soyez"]], rule:"être → sois, soyons, soyez.", why:"" },
+          { diff:"h", task:"(nous / faire) ___ une randonnée demain !", blanks:[["Faisons"]], rule:"nous faisons → Faisons !", why:"" },
+        ].map((it, i) => <GapItem key={"imp" + i} it={it} n={i + 1} />)}
+      </Acc>
+      <Acc title="Bonus · Počasí a teplota" badge="v testu!">
+        <div className="tblwrap">
+          <table className="tbl">
+            <thead><tr><th>Dnes (présent)</th><th>Včera / o prázdninách (imparfait)</th></tr></thead>
+            <tbody>
+              <tr><td>Il fait beau / mauvais / chaud / froid / doux.</td><td>Il <b>faisait</b> beau / mauvais / chaud / froid / doux.</td></tr>
+              <tr><td>Il fait <b>25 degrés</b> (25 °C).</td><td>Il <b>faisait</b> 25 degrés.</td></tr>
+              <tr><td>Il fait <b>moins cinq</b> (−5 °C).</td><td>Il <b>faisait</b> moins cinq.</td></tr>
+              <tr><td>La température est de 30 degrés.</td><td>La température <b>était</b> de 30 degrés.</td></tr>
+              <tr><td>Il pleut. · Il neige.</td><td>Il <b>pleuvait</b>. · Il <b>neigeait</b>.</td></tr>
+              <tr><td>Il y a du soleil / du vent / des nuages / de l'orage.</td><td>Il y <b>avait</b> du soleil / du vent / des nuages / de l'orage.</td></tr>
+              <tr><td>Le ciel est bleu / gris.</td><td>Le ciel <b>était</b> bleu / gris.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="note">Teplota se říká přes <b>faire</b>: <i>Il fait 30 degrés</i> (ne „il est 30 degrés“). Popis počasí v minulosti = vždy <b>imparfait</b>.</div>
+        {[
+          { diff:"e", task:"Aujourd'hui, il fait 20 degrés. → Hier, ___ 15 degrés.", blanks:[["il faisait"]], rule:"il fait → il faisait.", why:"" },
+          { diff:"e", task:"Il pleut. → Hier, ___ .", blanks:[["il pleuvait"]], rule:"pleuvoir → il pleuvait.", why:"" },
+          { diff:"m", task:"Il neige à la montagne. → En janvier, ___ à la montagne.", blanks:[["il neigeait"]], rule:"neiger → il neigeait.", why:"" },
+          { diff:"m", task:"Il y a du vent. → À la plage, ___ du vent.", blanks:[["il y avait"]], rule:"il y a → il y avait.", why:"" },
+          { diff:"h", task:"(−3 °C, slovy) En hiver, il faisait ___ degrés.", blanks:[["moins trois"]], rule:"záporná teplota = moins + číslo.", why:"" },
+        ].map((it, i) => <GapItem key={"met" + i} it={it} n={i + 1} />)}
+      </Acc>
     </div>
   );
 }
@@ -1930,6 +2025,27 @@ function CheatTab() {
         lede="Celý test na jedné stránce. Projdi ho dnes večer a v pátek ráno." />
       <div className="cheat">
         <div>
+          <h4>⚡ Imperativ (v testu!)</h4>
+          <div className="mono">Prends ! Prenons ! Prenez !</div>
+          <div className="mono">-er: Visite ! Goûte ! (bez -s) · Va ! Vas-y !</div>
+          <div className="mono">être: Sois ! Soyez ! · avoir: Aie ! Ayez !</div>
+          <div className="mono">N'oublie pas… ! · Ne fumez pas !</div>
+        </div>
+        <div>
+          <h4>☀️ Počasí a teplota (v testu!)</h4>
+          <div className="mono">il fait 25 degrés → il faisait 25 degrés</div>
+          <div className="mono">−5 °C = il fait moins cinq</div>
+          <div className="mono">il pleut → il pleuvait · il neige → il neigeait</div>
+          <div className="mono">il y a du vent → il y avait du vent</div>
+        </div>
+        <div>
+          <h4>Passé composé — příčestí</h4>
+          <div className="mono">prendre pris · mettre mis · faire fait</div>
+          <div className="mono">voir vu · boire bu · avoir eu · être été</div>
+          <div className="mono">pouvoir pu · attendre attendu · venir venu</div>
+          <div className="mono">choisir choisi · naître né · mourir mort</div>
+        </div>
+        <div>
           <h4>🌍 Země — kde / kam</h4>
           <div className="mono">à + město · à Paris</div>
           <div className="mono">en + f. / samohl. · en France, en Italie</div>
@@ -2008,11 +2124,333 @@ function CheatTab() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   ★) SIMULACE TESTU — podle spolužačky, která test už psala
+   Strana 1: slovíčka do vět · de/d'/du/des + národnost · passé composé
+   Strana 2: věty podle pravidla · popis obrázku · text o cestování
+   ═══════════════════════════════════════════════════════════════════ */
+
+const SIM_VOCAB = [
+  { s:"En été, j'aime ___ au soleil sur la plage.", a:["bronzer"] },
+  { s:"On dort sous une tente au ___ .", a:["camping"] },
+  { s:"Le dimanche, nous faisons une ___ dans la forêt.", a:["promenade"] },
+  { s:"Je me ___ au bord du lac avec mon chien.", a:["promène","promene"] },
+  { s:"L'eau est chaude, on peut ___ dans la mer.", a:["se baigner"] },
+  { s:"En montagne, on fait de la ___ .", a:["randonnée"] },
+  { s:"Mon frère aime faire du ___ sur les grandes vagues.", a:["surf"] },
+  { s:"Il fait beau, on va ___ près de la rivière avec des sandwichs.", a:["pique-niquer"] },
+  { s:"Sous la mer, on voit des poissons quand on fait de la ___ .", a:["plongée"] },
+  { s:"Sur le lac, nous faisons du ___ .", a:["bateau"] },
+  { s:"Nous avons réservé une chambre ___ pour deux personnes.", a:["double"] },
+  { s:"Le petit déjeuner est ___ dans le prix.", a:["compris"] },
+  { s:"Une ___ d'hôtes, c'est une chambre chez des personnes.", a:["chambre"] },
+  { s:"Une ___ , c'est une maison avec des animaux à la campagne.", a:["ferme"] },
+  { s:"La Corse est une ___ dans la mer Méditerranée.", a:["île"] },
+  { s:"Pour aller à New York, je prends l'___ .", a:["avion"] },
+  { s:"Les ___ mangent de l'herbe dans le champ.", a:["vaches"] },
+  { s:"Il y a des ___ dans l'arbre ; ils chantent.", a:["oiseaux"] },
+  { s:"On marche sur le ___ entre les champs.", a:["chemin"] },
+  { s:"En vacances, j'aime ___ la cuisine locale.", a:["goûter"] },
+  { s:"Je prends des ___ avec mon téléphone.", a:["photos"] },
+  { s:"La ___ d'un appartement coûte 500 euros par semaine.", a:["location"] },
+  { s:"L'___ est le 13 mai et le départ le 16 mai.", a:["arrivée"] },
+  { s:"Les chiens sont ___ dans cet hôtel ?", a:["acceptés"] },
+  { s:"Il y a des ___ rouges et jaunes dans le jardin.", a:["fleurs"] },
+  { s:"Les enfants se baignent dans la ___ derrière la maison.", a:["rivière"] },
+];
+
+const SIM_PC = [
+  { s:"Hier, nous ___ (prendre) le bateau.", a:["avons pris"] },
+  { s:"Léa ___ (aller) au musée d'Orsay.", a:["est allée"] },
+  { s:"Samedi, ___ (je / faire) une randonnée.", a:["j'ai fait"] },
+  { s:"Mes parents ___ (partir) en Espagne.", a:["sont partis"] },
+  { s:"Tu ___ (voir) la tour Eiffel ?", a:["as vu"] },
+  { s:"Mes amies ___ (arriver) à Nice samedi.", a:["sont arrivées"] },
+  { s:"Nous ___ (boire) un café sur la place.", a:["avons bu"] },
+  { s:"Victor Hugo ___ (naître) à Besançon.", a:["est né"] },
+  { s:"___ (je / mettre) mon maillot de bain.", a:["j'ai mis"] },
+  { s:"Paul ___ (tomber) du vélo.", a:["est tombé"] },
+  { s:"Vous ___ (choisir) un hôtel ?", a:["avez choisi"] },
+  { s:"On ___ (manger) des crêpes à Paris.", a:["a mangé"] },
+  { s:"Anna ___ (rester) trois jours à Rome.", a:["est restée"] },
+  { s:"Les enfants ___ (attendre) le bus.", a:["ont attendu"] },
+  { s:"Marie, tu ___ (venir) en train ?", a:["es venue"] },
+  { s:"Nous ___ (monter) à la tour. (nous = Tom et Lucas)", a:["sommes montés"] },
+  { s:"Il ___ (avoir) froid à la montagne.", a:["a eu"] },
+  { s:"Ce voyage ___ (être) super !", a:["a été"] },
+  { s:"Mon grand-père ___ (mourir) en 2010.", a:["est mort"] },
+  { s:"Elles ___ (rentrer) de vacances hier.", a:["sont rentrées"] },
+  { s:"___ (je / acheter) des souvenirs.", a:["j'ai acheté"] },
+  { s:"Nous ___ (visiter) le château d'If.", a:["avons visité"] },
+  { s:"Hugo ___ (sortir) avec ses amis.", a:["est sorti"] },
+  { s:"Ils ___ (comprendre) le guide.", a:["ont compris"] },
+  { s:"Tu ___ (pouvoir) te baigner ?", a:["as pu"] },
+  { s:"Elle ___ (descendre) à la plage.", a:["est descendue"] },
+  { s:"___ (je / payer) par carte.", a:["j'ai payé"] },
+  { s:"Les touristes ___ (venir) en bus.", a:["sont venus"] },
+];
+
+const SIM_NAMES = { m:["Paul","Karim","Lucas","Hugo","Tom","Marco"], f:["Léa","Anna","Sarah","Emma","Inès","Yuki"] };
+
+/** Náhodná věta „X vient ___ (země). Il/Elle est ___.“ z tabulky PAYS. */
+function makePaysItem(){
+  const p = PAYS[Math.floor(Math.random() * PAYS.length)];
+  const fem = Math.random() < 0.5;
+  const name = SIM_NAMES[fem ? "f" : "m"][Math.floor(Math.random() * 6)];
+  const bareP = p.pays.replace(/^(le |la |les |l')/, "");
+  const where = Math.random() < 0.3;
+  const prep = where ? p.en.split(" ")[0] : (p.de.startsWith("d'") ? "d'" : p.de.split(" ")[0]);
+  const verb = where ? "habite" : ["vient","arrive","revient"][Math.floor(Math.random() * 3)];
+  const nat = p.natAlts ? p.natAlts[fem ? "f" : "m"] : [fem ? p.f : p.m];
+  return { s: name + " " + verb + " ___ " + bareP + ". " + (fem ? "Elle" : "Il") + " est ___ .", blanks:[[prep], nat],
+    why: p.pays + " → " + (where ? p.en : p.de) + " · " + p.m + " / " + p.f };
+}
+
+const RULE_SENT = [
+  { task:"Napiš, jaké bylo včera počasí a kolik bylo stupňů.", blanks:[{ re:/(faisait|etait|avait).*(\d+|moins [a-z]+) ?(degres?|°)/, show:"Hier, il faisait très chaud : il faisait 30 degrés." }], rule:"Imparfait + teplota: il faisait + číslo + degrés.", why:"Kontrola hledá il faisait / c'était / il y avait a číslo se slovem degrés (nebo °)." },
+  { task:"Poraď turistovi (vykání), co má v Paříži navštívit — imperativ.", blanks:[{ re:/^(n'|ne )?[a-z-]+ez\b/, show:"Visitez le musée du Louvre !" }], rule:"Imperativ vous = tvar „vous“ bez zájmena: vous visitez → Visitez !", why:"Věta musí začínat slovesem na -ez (Visitez, Prenez, Allez, Goûtez…)." },
+  { task:"Řekni kamarádovi, co NEMÁ zapomenout na prázdniny — imperativ v záporu (tykání).", blanks:[{ re:/^(n'|ne )[a-z-]+ pas/, show:"N'oublie pas ton passeport !" }], rule:"Zápor: Ne / N' + imperativ + pas. U -er sloves tu bez -s: N'oublie pas !", why:"" },
+  { task:"Poraď kamarádovi (tykání), co má ochutnat nebo navštívit — imperativ.", blanks:[{ re:/^(visite|va|vas-y|prends|viens|fais|goute|mange|regarde|achete|reserve|pars|reste|sois|bois|mets|decouvre|profite|essaie|nage|baigne-toi|promene-toi)\b/, show:"Goûte la cuisine locale ! / Visite le château !" }], rule:"Imperativ tu: tu prends → Prends ! · -er slovesa bez -s: tu visites → Visite ! · tu vas → Va !", why:"Pozor: „Visites !“ s -s je chyba." },
+  { task:"Napiš, kam jsi loni jel(a) — passé composé s être + země.", blanks:[{ re:/(suis|sommes|est|sont) (alle|parti|venu|arrive|reste|rentre|retourne)e?s? (en|au|aux|a) /, show:"L'année dernière, je suis allé(e) en Italie." }], rule:"aller / partir → être + shoda · en + ž. rod, au + m. rod, aux + pl.", why:"" },
+  { task:"Napiš, co jsi tam dělal(a) — passé composé s avoir.", blanks:[{ re:/(j'ai|nous avons|on a|il a|elle a) [a-z]+(e|i|is|it|u|t)\b/, show:"J'ai visité Rome et j'ai goûté la cuisine locale." }], rule:"avoir + příčestí (bez shody).", why:"" },
+  { task:"Napiš, odkud je tvůj kamarád / kamarádka a jaká je jeho/její národnost.", blanks:[{ re:new RegExp("(vient|viennent|arrive|revient) (de|d'|du|des) ?[a-z-]+.*\\b(" + NAT_RE + ")\\b"), show:"Mon amie Léa vient de Belgique, elle est belge." }], rule:"venir de / d' / du / des + národnost (shoda s osobou).", why:"" },
+  { task:"Popiš, co je na obrázku u domu — předložka místa + il y a / on voit.", blanks:[{ re:/(a gauche|a droite|devant|derriere|entre|sur|sous|a cote|en face).*(il y a|on voit)|(il y a|on voit).*(a gauche|a droite|devant|derriere|entre|sous|a cote|en face)/, show:"Devant la maison, il y a une rivière." }], rule:"devant, derrière, à gauche (de), à droite (de), entre, sur, sous, à côté (de).", why:"" },
+  { task:"Napiš, co budeš dělat zítra — futur proche.", blanks:[{ re:/(je vais|on va|nous allons|tu vas|il va|elle va) [a-z-]+(er|ir|re)\b/, show:"Demain, je vais faire une randonnée." }], rule:"aller (présent) + infinitiv.", why:"" },
+  { task:"Napiš větu s „pendant“, „longtemps“ nebo „toujours“.", blanks:[{ re:/pendant|longtemps|toujours/, show:"J'ai habité à Prague pendant cinq ans." }], rule:"pendant + nom · verbe + longtemps · présent + toujours.", why:"" },
+  { task:"Napiš větu se zájmenem COD me / te / nous / vous.", blanks:[{ re:/(je|tu|il|elle|on|nous|vous|ils|elles|professeur|prof) (ne )?(me |m'|te |t'|nous |vous )[a-z]/, show:"Le professeur nous aide. / Je t'écoute." }], rule:"COD stojí před slovesem; me / te → m' / t' před samohláskou.", why:"" },
+  { task:"Popiš minulé počasí jinak než slovem „faisait“ — il y avait / il pleuvait / il neigeait.", blanks:[{ re:/il y avait|il pleuvait|il neigeait/, show:"Il y avait des nuages et il pleuvait." }], rule:"il y a → il y avait · il pleut → il pleuvait · il neige → il neigeait.", why:"" },
+];
+
+/* Dva obrázky k popisu — vlastní ilustrace ve stylu krajinomaleb ze str. 136/139. */
+function SceneCampagne() {
+  return (
+    <svg viewBox="0 0 400 240" role="img" aria-label="Venkovská krajina" style={{ width:"100%", display:"block", border:"6px double #a67c2e", background:"#cfe8f7" }}>
+      <circle cx="342" cy="40" r="22" fill="#f7c948" />
+      <path d="M250 38 q8 -8 16 0 q8 -8 16 0" stroke="#333" strokeWidth="2" fill="none" />
+      <path d="M290 60 q6 -6 12 0 q6 -6 12 0" stroke="#333" strokeWidth="2" fill="none" />
+      <polygon points="30,140 125,48 220,140" fill="#5b7fb8" />
+      <polygon points="160,140 265,62 370,140" fill="#3f63a0" />
+      <rect x="0" y="132" width="400" height="108" fill="#9cc96b" />
+      <polygon points="235,140 400,136 400,178 255,182" fill="#e9d36b" />
+      <line x1="245" y1="152" x2="400" y2="148" stroke="#c9b24c" strokeWidth="2" />
+      <line x1="250" y1="166" x2="400" y2="162" stroke="#c9b24c" strokeWidth="2" />
+      <rect x="38" y="125" width="8" height="40" fill="#7a5230" />
+      <circle cx="42" cy="115" r="24" fill="#3f7d4e" />
+      <rect x="80" y="132" width="7" height="34" fill="#7a5230" />
+      <circle cx="83" cy="122" r="19" fill="#2f6b3e" />
+      <rect x="140" y="110" width="72" height="46" fill="#ffffff" stroke="#555" />
+      <polygon points="132,112 176,82 220,112" fill="#c8102e" />
+      <rect x="168" y="128" width="16" height="28" fill="#7a5230" />
+      <rect x="148" y="120" width="13" height="12" fill="#9ccbe8" stroke="#555" />
+      <rect x="192" y="120" width="13" height="12" fill="#9ccbe8" stroke="#555" />
+      <polygon points="170,156 184,156 214,198 188,198" fill="#d9c49a" />
+      <circle cx="120" cy="168" r="4" fill="#c8102e" /><circle cx="128" cy="174" r="4" fill="#e85d9a" />
+      <circle cx="112" cy="176" r="4" fill="#c8102e" /><circle cx="135" cy="165" r="4" fill="#f7c948" />
+      <ellipse cx="322" cy="190" rx="22" ry="12" fill="#fff" stroke="#333" />
+      <circle cx="314" cy="186" r="4" fill="#222" /><circle cx="330" cy="192" r="5" fill="#222" />
+      <ellipse cx="348" cy="182" rx="8" ry="6" fill="#fff" stroke="#333" />
+      <line x1="308" y1="200" x2="308" y2="212" stroke="#333" strokeWidth="3" />
+      <line x1="336" y1="200" x2="336" y2="212" stroke="#333" strokeWidth="3" />
+      <path d="M0 200 Q100 186 200 200 T400 196 L400 240 L0 240 Z" fill="#4a90c8" />
+      <ellipse cx="92" cy="214" rx="12" ry="6" fill="#8a6a3a" />
+      <circle cx="102" cy="206" r="5" fill="#2f6b3e" />
+      <polygon points="106,206 113,207 106,209" fill="#f08c00" />
+    </svg>
+  );
+}
+
+function SceneMer() {
+  return (
+    <svg viewBox="0 0 400 240" role="img" aria-label="Pláž a moře" style={{ width:"100%", display:"block", border:"6px double #a67c2e", background:"#bfe3f7" }}>
+      <circle cx="60" cy="42" r="22" fill="#f7c948" />
+      <ellipse cx="250" cy="40" rx="34" ry="12" fill="#fff" /><ellipse cx="275" cy="32" rx="22" ry="10" fill="#fff" />
+      <path d="M150 60 q7 -7 14 0 q7 -7 14 0" stroke="#333" strokeWidth="2" fill="none" />
+      <rect x="0" y="110" width="400" height="80" fill="#3a8fc4" />
+      <polygon points="300,112 330,92 365,112" fill="#4f8a3c" />
+      <polygon points="180,150 250,150 240,162 190,162" fill="#7a5230" />
+      <line x1="215" y1="150" x2="215" y2="110" stroke="#555" strokeWidth="2" />
+      <polygon points="217,112 217,148 246,148" fill="#ffffff" stroke="#999" />
+      <path d="M0 178 Q120 168 230 182 T400 176 L400 240 L0 240 Z" fill="#f1dca7" />
+      <path d="M58 225 Q62 180 78 150" stroke="#7a5230" strokeWidth="7" fill="none" />
+      <path d="M78 150 q-30 -6 -44 10 M78 150 q-20 -22 -40 -20 M78 150 q12 -24 34 -24 M78 150 q28 -4 40 12" stroke="#2f6b3e" strokeWidth="6" fill="none" strokeLinecap="round" />
+      <line x1="300" y1="228" x2="300" y2="182" stroke="#555" strokeWidth="3" />
+      <path d="M262 186 Q300 150 338 186 Z" fill="#c8102e" />
+      <path d="M287 186 Q300 160 313 186 Z" fill="#ffffff" />
+      <rect x="250" y="212" width="40" height="14" fill="#1b3a8f" transform="rotate(-6 270 219)" />
+      <ellipse cx="140" cy="214" rx="16" ry="8" fill="#b07a3e" />
+      <circle cx="158" cy="207" r="6" fill="#b07a3e" />
+      <path d="M124 212 q-8 -6 -10 -12" stroke="#b07a3e" strokeWidth="3" fill="none" />
+    </svg>
+  );
+}
+
+const SCENES = {
+  campagne: { label:"🌾 Venkov", comp:SceneCampagne, model:[
+    "Sur cette image, on voit un paysage de campagne.",
+    "Au milieu, il y a une maison blanche avec un toit rouge.",
+    "Derrière la maison, il y a deux montagnes bleues et à droite, on voit un champ jaune.",
+    "À gauche de la maison, il y a deux arbres verts et devant la maison, il y a des fleurs.",
+    "Dans le champ, il y a une vache noire et blanche. Sur la rivière, il y a un canard.",
+    "Le soleil brille et il y a des oiseaux dans le ciel. C'est très joli !",
+  ]},
+  mer: { label:"🏖️ Pláž", comp:SceneMer, model:[
+    "Sur cette image, on voit la plage et la mer.",
+    "Il fait beau : il y a du soleil et deux nuages blancs dans le ciel.",
+    "Sur la mer, il y a un bateau avec une voile blanche. Derrière le bateau, on voit une petite île.",
+    "À gauche, il y a un palmier. À droite, sur la plage, il y a un parasol rouge et blanc et une serviette bleue.",
+    "Entre le palmier et le parasol, il y a un chien.",
+    "C'est un endroit parfait pour se baigner et bronzer !",
+  ]},
+};
+
+const SCENE_NEED = [
+  { lab:"aspoň 5 vět", sentences:[5, 99] },
+  { lab:"il y a … (aspoň 2×)", re:"il y a", min:2 },
+  { lab:"on voit …", re:"on voit", min:1 },
+  { lab:"předložky místa (à gauche, à droite, devant, derrière, entre, sur, sous, à côté de)", re:"a gauche|a droite|devant|derriere|entre|sur|sous|a cote|en face|au milieu", word:true, min:2 },
+  { lab:"barvy (shoda: une maison blanche, des arbres verts…)", re:"vert|verte|verts|vertes|bleu|bleue|bleus|bleues|rouge|rouges|jaune|jaunes|blanc|blanche|blancs|blanches|noir|noire|noirs|noires|gris|grise|orange|rose|marron", word:true, min:2 },
+  { lab:"slovíčka z přírody / dovolené — aspoň 5", re:"champ|chemin|foret|lac|plage|riviere|arbre|arbres|fleur|fleurs|herbe|plante|canard|chat|cheval|chien|lapin|oiseau|oiseaux|poisson|poule|vache|montagne|montagnes|mer|ciel|nuage|nuages|maison|soleil|bateau|ile|palmier|parasol|village|campagne", word:true, min:5 },
+];
+
+const TRAVEL_TASK = {
+  title:"Text o cestování / prázdninách",
+  brief:"Napiš kamarádovi o své cestě (60–100 slov): kam jsi jel(a), co jsi dělal(a) — minulý čas; jaké bylo počasí a kolik bylo stupňů; a poraď mu v imperativu, co má navštívit / vzít s sebou.",
+  need:[
+    { lab:"passé composé s être (je suis allé(e), nous sommes partis…)", re:PC_ETRE_RE, word:true, min:1 },
+    { lab:"passé composé s avoir (j'ai visité, nous avons pris…)", re:"(j ai|tu as|il a|elle a|on a|nous avons|vous avez|ils ont|elles ont) [a-z]+(e|i|is|it|u|t)", min:2 },
+    { lab:"počasí v minulosti (il faisait, il y avait, il pleuvait, c'était)", re:"il faisait|il y avait|il pleuvait|il neigeait|c etait", min:1 },
+    { lab:"teplota (25 degrés / 25 °C / moins cinq)", raw:true, re:"(\\d+|moins [a-z]+) ?(°|degr)", min:1 },
+    { lab:"imperativ — aspoň 2 rady (Visite… / Prends… / N'oublie pas… / Allez…)", raw:true, re:"(^|[.!?,\\n]\\s*|\\set\\s)(n'|ne )?(visite|visitez|visitons|va|vas-y|allez|allez-y|allons|prends|prenez|prenons|viens|venez|fais|faites|goûte|goûtez|goute|goutez|mange|mangez|regarde|regardez|oublie|oubliez|achète|achetez|réserve|réservez|pars|partez|reste|restez|sois|soyez|bois|buvez|mets|mettez|découvre|découvrez|profite|profitez|essaie|essayez|nage|nagez)\\b", min:2 },
+    { lab:"země s předložkou (en Italie, au Japon…)", re:"(en|au|aux|a) (" + PAYS_RE + ")", min:1 },
+    { lab:"aspoň 60 slov", words:60 },
+  ],
+  model:[
+    "Salut Léa !",
+    "L'été dernier, je suis allé en Croatie avec ma famille. Nous sommes partis en voiture et nous avons dormi dans un camping près de la mer.",
+    "Il faisait très chaud : il faisait 32 degrés ! Tous les jours, je me suis baigné et j'ai bronzé sur la plage. Un jour, il y avait de l'orage et il pleuvait, alors nous avons visité un musée à Split. C'était très intéressant.",
+    "Si tu vas en Croatie, visite Dubrovnik et goûte la cuisine locale ! Prends de la crème solaire et n'oublie pas ton maillot de bain !",
+    "Vas-y en juin : il fait 25 degrés et il y a moins de touristes.",
+    "Bisous, Jonas",
+  ],
+};
+
+/** Jeden řádek simulace: věta s mezerami, hodnotí se až tlačítkem pro celou stranu. */
+function SimRow({ n, item, vals, onChange, shown }) {
+  const parts = item.s.split("___");
+  const res = shown ? item.blanks.map((b, i) => checkBlank(vals[i] || "", b)) : null;
+  return (
+    <div className="gap" style={{ marginBottom:"8px" }}>
+      <div className="gap-line">
+        <span className="n" style={{ fontFamily:"'Playfair Display',serif", color:"var(--rouge)", fontWeight:700 }}>{n}. </span>
+        {parts.map((p, i) => (
+          <span key={i}>{p}{i < parts.length - 1 && (
+            <input className={"blank" + (res ? (res[i] === "bad" ? " bad" : " ok") : "")} value={vals[i] || ""}
+              onChange={e => onChange(i, e.target.value)} autoCapitalize="off" autoCorrect="off" spellCheck={false} aria-label={"Mezera " + (i + 1)} />
+          )}</span>
+        ))}
+      </div>
+      {res && res.some(r => r !== "ok") && (
+        <div className="verdict-line" style={{ color: res.some(r => r === "bad") ? "var(--bad)" : "var(--warn)" }}>
+          {res.some(r => r === "bad") ? "✗ " : "≈ diakritika: "}{item.blanks.map(shownAnswer).join("  ·  ")}{item.why ? " — " + item.why : ""}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SimTab() {
+  const [seed, setSeed] = useState(0);
+  const [vals, setVals] = useState({});
+  const [shown, setShown] = useState(false);
+  const [bank, setBank] = useState(true);
+  const [scene, setScene] = useState("campagne");
+
+  const sheet = useMemo(() => {
+    const voc = shuffleArray(SIM_VOCAB).slice(0, 8).map(v => ({ s:v.s, blanks:[v.a] }));
+    const used = new Set(voc.map(v => v.blanks[0][0]));
+    const distract = shuffleArray(SIM_VOCAB.filter(v => !used.has(v.a[0]))).slice(0, 3).map(v => v.a[0]);
+    const words = shuffleArray([...voc.map(v => v.blanks[0][0]), ...distract]);
+    const pays = Array.from({ length:7 }, makePaysItem);
+    const pc = shuffleArray(SIM_PC).slice(0, 8).map(v => ({ s:v.s, blanks:[v.a] }));
+    const rules = shuffleArray(RULE_SENT).slice(0, 5);
+    return { voc, words, pays, pc, rules };
+  }, [seed]);
+
+  const exercises = [
+    { key:"voc", title:"1. Doplň slovíčka", items:sheet.voc },
+    { key:"pays", title:"2. de / d' / du / des (en / au / aux) + národnost", items:sheet.pays },
+    { key:"pc", title:"3. Passé composé — doplň tvar slovesa", items:sheet.pc },
+  ];
+  const setVal = (k, i, v) => { setVals(o => ({ ...o, [k]: { ...(o[k] || {}), [i]: v } })); };
+  const score = () => {
+    let ok = 0, all = 0;
+    exercises.forEach(ex => ex.items.forEach((it, ii) => it.blanks.forEach((b, bi) => {
+      all++; if (checkBlank(((vals[ex.key + ii] || {})[bi]) || "", b) !== "bad") ok++;
+    })));
+    return [ok, all];
+  };
+  const [ok, all] = shown ? score() : [0, 0];
+  const fresh = () => { setSeed(s => s + 1); setVals({}); setShown(false); window.scrollTo({ top:0, behavior:"smooth" }); };
+
+  return (
+    <div>
+      <SectionHead no="★" title="Simulace testu"
+        lede="Postaveno podle spolužačky, která test už psala. Strana 1 = doplňování (slovíčka, země + národnosti, passé composé), strana 2 = psaní vět podle pravidel, popis obrázku (~5 vět) a text o cestování (minulý čas, imperativ, počasí a teplota). Každá varianta je jiná." />
+      <div className="modes">
+        <button className="mode on" onClick={fresh}>🔀 Nová varianta testu</button>
+      </div>
+
+      <div className="card">
+        <h3>📄 Strana 1</h3>
+        {exercises.map(ex => (
+          <div key={ex.key}>
+            <h4 style={{ margin:"18px 0 8px", color:"var(--bleu)" }}>{ex.title}</h4>
+            {ex.key === "voc" && (
+              <div style={{ marginBottom:"10px" }}>
+                <button className="mini" onClick={() => setBank(b => !b)}>{bank ? "Skrýt nabídku slov" : "Ukázat nabídku slov"}</button>
+                {bank && <div className="scorebar" style={{ marginTop:"8px" }}>{sheet.words.map(w => <span key={w} className="chip"><b>{w}</b></span>)}</div>}
+              </div>
+            )}
+            {ex.key === "pc" && <p className="lede">Pozor, kdy je avoir a kdy être, a na shodu se être (+e, +s).</p>}
+            {ex.items.map((it, ii) => (
+              <SimRow key={seed + "-" + ex.key + ii} n={ii + 1} item={it} vals={vals[ex.key + ii] || {}} shown={shown}
+                onChange={(bi, v) => setVal(ex.key + ii, bi, v)} />
+            ))}
+          </div>
+        ))}
+        <div style={{ display:"flex", gap:"10px", flexWrap:"wrap", marginTop:"14px", alignItems:"center" }}>
+          <button className="btn red" onClick={() => setShown(true)}>Vyhodnotit stranu 1</button>
+          {shown && <span className="chip" style={{ border:"1px solid var(--line)", padding:"8px 14px", background:"#fff" }}>Výsledek: <b style={{ color:"var(--bleu)" }}>{ok} / {all}</b> ({Math.round(ok / all * 100)} %)</span>}
+        </div>
+        {shown && <div className="prog" style={{ marginTop:"12px" }}><i style={{ width: (ok / all) * 100 + "%" }} /></div>}
+      </div>
+
+      <div className="card red">
+        <h3>📄 Strana 2</h3>
+        <h4 style={{ margin:"14px 0 8px", color:"var(--bleu)" }}>4. Napiš větu podle pravidla</h4>
+        <p className="lede">Každá věta má ověřit jedno pravidlo. Kontrola hlídá, jestli jsi ho použil; vzorová věta je pod „Ukázat řešení“.</p>
+        {sheet.rules.map((r, i) => <GapItem key={seed + "-r" + i} it={{ ...r, wide:true }} n={i + 1} showDiff={false} />)}
+
+        <h4 style={{ margin:"22px 0 8px", color:"var(--bleu)" }}>5. Popiš obrázek (asi 5 vět)</h4>
+        <div className="modes">
+          {Object.entries(SCENES).map(([k, s]) => <button key={k} className={"mode" + (scene === k ? " on" : "")} onClick={() => setScene(k)}>{s.label}</button>)}
+        </div>
+        <div style={{ maxWidth:"560px", marginBottom:"8px" }}>{(() => { const C = SCENES[scene].comp; return <C />; })()}</div>
+        <WritingTask key={scene} t={{ title:"Popis obrázku", brief:"Sur cette image, il y a… / on voit… · kde (devant, derrière, à gauche…) · barvy · názor.", need:SCENE_NEED, model:SCENES[scene].model }} />
+
+        <h4 style={{ margin:"22px 0 8px", color:"var(--bleu)" }}>6. Napiš text o cestování</h4>
+        <WritingTask t={TRAVEL_TASK} />
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    APP
    ═══════════════════════════════════════════════════════════════════ */
 
 const TABS = [
   { id:"plan", rn:"I", label:"🎯 Co bude v testu", comp:PlanTab },
+  { id:"sim", rn:"★", label:"🧪 Simulace testu", comp:SimTab },
   { id:"pays", rn:"II", label:"🌍 Země a národnosti", comp:PaysTab },
   { id:"vocab", rn:"III", label:"📚 Slovíčka", comp:VocabTab },
   { id:"gram", rn:"IV", label:"📐 Gramatika", comp:GramTab },

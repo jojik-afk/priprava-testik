@@ -1108,6 +1108,48 @@ var QUIZ = [
     options: ["du", "de le", "de", "des"],
     correct: [0],
     explanation: "Rappel: de + le = du, de + les = des → à droite du canapé, à côté des fenêtres."
+  },
+  {
+    question: "Kamarádovi radíš: „Navštiv Louvre!“",
+    type: "single",
+    options: ["Visite le Louvre !", "Visites le Louvre !", "Tu visites le Louvre !", "Visiter le Louvre !"],
+    correct: [0],
+    explanation: "Imperativ tu u sloves na -er ztrácí -s: tu visites → Visite !"
+  },
+  {
+    question: "Které tvary jsou správný imperativ? (vyber všechny)",
+    type: "multi",
+    options: ["Prenez le métro !", "Va à la plage !", "N'oublie pas ton passeport !", "Sois prudent !", "Vas à la plage !"],
+    correct: [0, 1, 2, 3],
+    explanation: "Prenez ✓, Va ✓ (aller: tu vas → Va !), N'oublie pas ✓, Sois ✓ (être). „Vas“ jen ve spojení Vas-y !"
+  },
+  {
+    question: "Jak řekneš „Včera bylo 30 stupňů.“?",
+    type: "single",
+    options: ["Hier, il faisait 30 degrés.", "Hier, il était 30 degrés.", "Hier, il a 30 degrés.", "Hier, c'est 30 degrés."],
+    correct: [0],
+    explanation: "Teplota se vyjadřuje slovesem faire: il fait 30 degrés → v minulosti il faisait 30 degrés."
+  },
+  {
+    question: "Hier, il ___ . (pršelo)",
+    type: "single",
+    options: ["pleuvait", "pleut", "a plu beaucoup de", "pleuvoir"],
+    correct: [0],
+    explanation: "pleuvoir → il pleut → imparfait il pleuvait (popis počasí v minulosti)."
+  },
+  {
+    question: "Nous ___ le bateau. (prendre, passé composé)",
+    type: "single",
+    options: ["avons pris", "sommes pris", "avons prendu", "avons prit"],
+    correct: [0],
+    explanation: "prendre → pris, s avoir: nous avons pris."
+  },
+  {
+    question: "Mes amies ___ à Nice. (arriver, passé composé)",
+    type: "single",
+    options: ["sont arrivées", "ont arrivé", "sont arrivés", "sont arrivé"],
+    correct: [0],
+    explanation: "arriver → être; mes amies = ženy, množné číslo → arrivé + es."
   }
 ];
 function Acc({ title, badge, children, defaultOpen = false }) {
@@ -1337,7 +1379,9 @@ function WritingTask({ t }) {
     if (r.sentences)
       return { ...r, ok: sentences >= r.sentences[0] && sentences <= r.sentences[1], extra: sentences + " vět" };
     let count;
-    if (r.yCount) {
+    if (r.raw) {
+      count = (text.toLowerCase().replace(/[’]/g, "'").match(new RegExp(r.re, "gm")) || []).length;
+    } else if (r.yCount) {
       count = (n.match(/\sy\s/g) || []).length - (n.match(/\sil y a(vait)?\s/g) || []).length - (n.match(/\sn y a(vait)? pas\s/g) || []).length;
     } else {
       const re = new RegExp(r.word ? "\\s(" + r.re + ")(?=\\s)" : "(" + r.re + ")", "g");
@@ -1541,6 +1585,85 @@ function PlanTab({ go }) {
           style: { width: count / total * 100 + "%" }
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "card red",
+        style: { marginBottom: "18px" },
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            children: "\uD83D\uDDE3️ Jak test vypadal — podle spolužačky, která ho už psala"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "grid2",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "Strana 1 — doplňování"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("ul", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "slovíčka do vět, úplně jako v procvičování (promenade, camping, bronzer…)"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "de / d' / du / des u zemí + napsat národnost"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "passé composé — doplnit tvar různých sloves"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  /* @__PURE__ */ jsxDEV("b", {
+                    children: "Strana 2 — psaní"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsxDEV("ul", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "věty, ve kterých stačí použít dané pravidlo"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: "popis obrázku (asi 5 vět)"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("li", {
+                        children: [
+                          "text o prázdninách / cestování: minulý čas, ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "imperativ"
+                          }, undefined, false, undefined, this),
+                          ", ",
+                          /* @__PURE__ */ jsxDEV("b", {
+                            children: "počasí a teplota"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "go",
+            style: { display: "flex", gap: "8px", flexWrap: "wrap" },
+            children: [
+              /* @__PURE__ */ jsxDEV("button", {
+                className: "btn red",
+                onClick: () => go("sim"),
+                children: "\uD83E\uDDEA Spustit simulaci testu →"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("button", {
+                className: "mini",
+                onClick: () => go("gram"),
+                children: "\uD83D\uDCD0 Imperativ + počasí →"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
       /* @__PURE__ */ jsxDEV("div", {
         className: "plan",
         children: PLAN.map((p, pi) => /* @__PURE__ */ jsxDEV("div", {
@@ -3741,6 +3864,411 @@ function GramTab() {
             ]
           }, undefined, true, undefined, this)
         ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Acc, {
+        title: "Bonus · Impératif (rady na cestu)",
+        badge: "v testu!",
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "rule",
+            children: [
+              "Podle spolužačky byl v psaní o cestování potřeba ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "imperativ"
+              }, undefined, false, undefined, this),
+              ". Tvoří se z přítomného času (tu / nous / vous) ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "bez zájmena"
+              }, undefined, false, undefined, this),
+              "."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "tblwrap",
+            children: /* @__PURE__ */ jsxDEV("table", {
+              className: "tbl",
+              children: [
+                /* @__PURE__ */ jsxDEV("thead", {
+                  children: /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("th", {
+                        children: "Présent"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        children: "Impératif"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        children: "Česky"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("tbody", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "tu prends · nous prenons · vous prenez"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: /* @__PURE__ */ jsxDEV("b", {
+                            children: "Prends ! Prenons ! Prenez !"
+                          }, undefined, false, undefined, this)
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "vezmi · vezměme · vezměte"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "tu visites (‑er)"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "Visite !"
+                            }, undefined, false, undefined, this),
+                            " ",
+                            /* @__PURE__ */ jsxDEV("span", {
+                              className: "red-e",
+                              children: "(bez -s)"
+                            }, undefined, false, undefined, this),
+                            " · Visitons ! · Visitez !"
+                          ]
+                        }, undefined, true, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "navštiv…"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "tu vas (aller)"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "Va !"
+                            }, undefined, false, undefined, this),
+                            " · Allons ! · Allez ! · ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "Vas-y !"
+                            }, undefined, false, undefined, this)
+                          ]
+                        }, undefined, true, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "jdi / jeď (tam)"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "tu fais · vous faites"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: /* @__PURE__ */ jsxDEV("b", {
+                            children: "Fais ! Faites !"
+                          }, undefined, false, undefined, this)
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "dělej · dělejte"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "être"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: /* @__PURE__ */ jsxDEV("b", {
+                            children: "Sois ! Soyons ! Soyez !"
+                          }, undefined, false, undefined, this)
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "buď…"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "avoir"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: /* @__PURE__ */ jsxDEV("b", {
+                            children: "Aie ! Ayons ! Ayez !"
+                          }, undefined, false, undefined, this)
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "měj…"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "ex",
+            children: [
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  "Zápor: ",
+                  /* @__PURE__ */ jsxDEV("u", {
+                    children: "N'oublie pas"
+                  }, undefined, false, undefined, this),
+                  " ton passeport ! · ",
+                  /* @__PURE__ */ jsxDEV("u", {
+                    children: "Ne fumez pas"
+                  }, undefined, false, undefined, this),
+                  " ici !"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  "Zvratná: ",
+                  /* @__PURE__ */ jsxDEV("u", {
+                    children: "Baigne-toi"
+                  }, undefined, false, undefined, this),
+                  " ! ",
+                  /* @__PURE__ */ jsxDEV("u", {
+                    children: "Promenez-vous"
+                  }, undefined, false, undefined, this),
+                  " ! · zápor: ",
+                  /* @__PURE__ */ jsxDEV("u", {
+                    children: "Ne te baigne pas"
+                  }, undefined, false, undefined, this),
+                  " !"
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                children: [
+                  "Na cestu: ",
+                  /* @__PURE__ */ jsxDEV("u", {
+                    children: "Visitez"
+                  }, undefined, false, undefined, this),
+                  " le Louvre ! ",
+                  /* @__PURE__ */ jsxDEV("u", {
+                    children: "Goûtez"
+                  }, undefined, false, undefined, this),
+                  " la cuisine locale ! ",
+                  /* @__PURE__ */ jsxDEV("u", {
+                    children: "Prenez"
+                  }, undefined, false, undefined, this),
+                  " le métro ! ",
+                  /* @__PURE__ */ jsxDEV("u", {
+                    children: "Allez-y"
+                  }, undefined, false, undefined, this),
+                  " en juin !"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          [
+            { diff: "e", task: "(vous / visiter) ___ le musée d'Orsay !", blanks: [["Visitez"]], rule: "vous visitez → Visitez !", why: "" },
+            { diff: "e", task: "(tu / prendre) ___ ton maillot de bain !", blanks: [["Prends"]], rule: "tu prends → Prends !", why: "" },
+            { diff: "m", task: "(tu / goûter) ___ la cuisine locale !", blanks: [["Goûte"]], rule: "-er sloveso: tu goûtes → Goûte ! (bez -s)", why: "" },
+            { diff: "m", task: "(tu / aller) ___ à la plage !", blanks: [["Va"]], rule: "aller: tu vas → Va ! (s jen ve Vas-y)", why: "" },
+            { diff: "m", task: "(tu / ne pas oublier) ___ ton passeport !", blanks: [["N'oublie pas"]], rule: "Ne / N' + imperativ + pas.", why: "N'oublie pas (oublier = -er → bez -s)." },
+            { diff: "h", task: "(vous / être) ___ prudents à la montagne !", blanks: [["Soyez"]], rule: "être → sois, soyons, soyez.", why: "" },
+            { diff: "h", task: "(nous / faire) ___ une randonnée demain !", blanks: [["Faisons"]], rule: "nous faisons → Faisons !", why: "" }
+          ].map((it, i) => /* @__PURE__ */ jsxDEV(GapItem, {
+            it,
+            n: i + 1
+          }, "imp" + i, false, undefined, this))
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV(Acc, {
+        title: "Bonus · Počasí a teplota",
+        badge: "v testu!",
+        children: [
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "tblwrap",
+            children: /* @__PURE__ */ jsxDEV("table", {
+              className: "tbl",
+              children: [
+                /* @__PURE__ */ jsxDEV("thead", {
+                  children: /* @__PURE__ */ jsxDEV("tr", {
+                    children: [
+                      /* @__PURE__ */ jsxDEV("th", {
+                        children: "Dnes (présent)"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV("th", {
+                        children: "Včera / o prázdninách (imparfait)"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsxDEV("tbody", {
+                  children: [
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "Il fait beau / mauvais / chaud / froid / doux."
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            "Il ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "faisait"
+                            }, undefined, false, undefined, this),
+                            " beau / mauvais / chaud / froid / doux."
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            "Il fait ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "25 degrés"
+                            }, undefined, false, undefined, this),
+                            " (25 °C)."
+                          ]
+                        }, undefined, true, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            "Il ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "faisait"
+                            }, undefined, false, undefined, this),
+                            " 25 degrés."
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            "Il fait ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "moins cinq"
+                            }, undefined, false, undefined, this),
+                            " (−5 °C)."
+                          ]
+                        }, undefined, true, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            "Il ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "faisait"
+                            }, undefined, false, undefined, this),
+                            " moins cinq."
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "La température est de 30 degrés."
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            "La température ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "était"
+                            }, undefined, false, undefined, this),
+                            " de 30 degrés."
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "Il pleut. · Il neige."
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            "Il ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "pleuvait"
+                            }, undefined, false, undefined, this),
+                            ". · Il ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "neigeait"
+                            }, undefined, false, undefined, this),
+                            "."
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "Il y a du soleil / du vent / des nuages / de l'orage."
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            "Il y ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "avait"
+                            }, undefined, false, undefined, this),
+                            " du soleil / du vent / des nuages / de l'orage."
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsxDEV("tr", {
+                      children: [
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: "Le ciel est bleu / gris."
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsxDEV("td", {
+                          children: [
+                            "Le ciel ",
+                            /* @__PURE__ */ jsxDEV("b", {
+                              children: "était"
+                            }, undefined, false, undefined, this),
+                            " bleu / gris."
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "note",
+            children: [
+              "Teplota se říká přes ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "faire"
+              }, undefined, false, undefined, this),
+              ": ",
+              /* @__PURE__ */ jsxDEV("i", {
+                children: "Il fait 30 degrés"
+              }, undefined, false, undefined, this),
+              " (ne „il est 30 degrés“). Popis počasí v minulosti = vždy ",
+              /* @__PURE__ */ jsxDEV("b", {
+                children: "imparfait"
+              }, undefined, false, undefined, this),
+              "."
+            ]
+          }, undefined, true, undefined, this),
+          [
+            { diff: "e", task: "Aujourd'hui, il fait 20 degrés. → Hier, ___ 15 degrés.", blanks: [["il faisait"]], rule: "il fait → il faisait.", why: "" },
+            { diff: "e", task: "Il pleut. → Hier, ___ .", blanks: [["il pleuvait"]], rule: "pleuvoir → il pleuvait.", why: "" },
+            { diff: "m", task: "Il neige à la montagne. → En janvier, ___ à la montagne.", blanks: [["il neigeait"]], rule: "neiger → il neigeait.", why: "" },
+            { diff: "m", task: "Il y a du vent. → À la plage, ___ du vent.", blanks: [["il y avait"]], rule: "il y a → il y avait.", why: "" },
+            { diff: "h", task: "(−3 °C, slovy) En hiver, il faisait ___ degrés.", blanks: [["moins trois"]], rule: "záporná teplota = moins + číslo.", why: "" }
+          ].map((it, i) => /* @__PURE__ */ jsxDEV(GapItem, {
+            it,
+            n: i + 1
+          }, "met" + i, false, undefined, this))
+        ]
       }, undefined, true, undefined, this)
     ]
   }, undefined, true, undefined, this);
@@ -4582,6 +5110,75 @@ function CheatTab() {
           /* @__PURE__ */ jsxDEV("div", {
             children: [
               /* @__PURE__ */ jsxDEV("h4", {
+                children: "⚡ Imperativ (v testu!)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "Prends ! Prenons ! Prenez !"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "-er: Visite ! Goûte ! (bez -s) · Va ! Vas-y !"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "être: Sois ! Soyez ! · avoir: Aie ! Ayez !"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "N'oublie pas… ! · Ne fumez pas !"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
+                children: "☀️ Počasí a teplota (v testu!)"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "il fait 25 degrés → il faisait 25 degrés"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "−5 °C = il fait moins cinq"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "il pleut → il pleuvait · il neige → il neigeait"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "il y a du vent → il y avait du vent"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
+                children: "Passé composé — příčestí"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "prendre pris · mettre mis · faire fait"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "voir vu · boire bu · avoir eu · être été"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "pouvoir pu · attendre attendu · venir venu"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsxDEV("div", {
+                className: "mono",
+                children: "choisir choisi · naître né · mourir mort"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
                 children: "\uD83C\uDF0D Země — kde / kam"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsxDEV("div", {
@@ -4839,8 +5436,721 @@ function CheatTab() {
     ]
   }, undefined, true, undefined, this);
 }
+var SIM_VOCAB = [
+  { s: "En été, j'aime ___ au soleil sur la plage.", a: ["bronzer"] },
+  { s: "On dort sous une tente au ___ .", a: ["camping"] },
+  { s: "Le dimanche, nous faisons une ___ dans la forêt.", a: ["promenade"] },
+  { s: "Je me ___ au bord du lac avec mon chien.", a: ["promène", "promene"] },
+  { s: "L'eau est chaude, on peut ___ dans la mer.", a: ["se baigner"] },
+  { s: "En montagne, on fait de la ___ .", a: ["randonnée"] },
+  { s: "Mon frère aime faire du ___ sur les grandes vagues.", a: ["surf"] },
+  { s: "Il fait beau, on va ___ près de la rivière avec des sandwichs.", a: ["pique-niquer"] },
+  { s: "Sous la mer, on voit des poissons quand on fait de la ___ .", a: ["plongée"] },
+  { s: "Sur le lac, nous faisons du ___ .", a: ["bateau"] },
+  { s: "Nous avons réservé une chambre ___ pour deux personnes.", a: ["double"] },
+  { s: "Le petit déjeuner est ___ dans le prix.", a: ["compris"] },
+  { s: "Une ___ d'hôtes, c'est une chambre chez des personnes.", a: ["chambre"] },
+  { s: "Une ___ , c'est une maison avec des animaux à la campagne.", a: ["ferme"] },
+  { s: "La Corse est une ___ dans la mer Méditerranée.", a: ["île"] },
+  { s: "Pour aller à New York, je prends l'___ .", a: ["avion"] },
+  { s: "Les ___ mangent de l'herbe dans le champ.", a: ["vaches"] },
+  { s: "Il y a des ___ dans l'arbre ; ils chantent.", a: ["oiseaux"] },
+  { s: "On marche sur le ___ entre les champs.", a: ["chemin"] },
+  { s: "En vacances, j'aime ___ la cuisine locale.", a: ["goûter"] },
+  { s: "Je prends des ___ avec mon téléphone.", a: ["photos"] },
+  { s: "La ___ d'un appartement coûte 500 euros par semaine.", a: ["location"] },
+  { s: "L'___ est le 13 mai et le départ le 16 mai.", a: ["arrivée"] },
+  { s: "Les chiens sont ___ dans cet hôtel ?", a: ["acceptés"] },
+  { s: "Il y a des ___ rouges et jaunes dans le jardin.", a: ["fleurs"] },
+  { s: "Les enfants se baignent dans la ___ derrière la maison.", a: ["rivière"] }
+];
+var SIM_PC = [
+  { s: "Hier, nous ___ (prendre) le bateau.", a: ["avons pris"] },
+  { s: "Léa ___ (aller) au musée d'Orsay.", a: ["est allée"] },
+  { s: "Samedi, ___ (je / faire) une randonnée.", a: ["j'ai fait"] },
+  { s: "Mes parents ___ (partir) en Espagne.", a: ["sont partis"] },
+  { s: "Tu ___ (voir) la tour Eiffel ?", a: ["as vu"] },
+  { s: "Mes amies ___ (arriver) à Nice samedi.", a: ["sont arrivées"] },
+  { s: "Nous ___ (boire) un café sur la place.", a: ["avons bu"] },
+  { s: "Victor Hugo ___ (naître) à Besançon.", a: ["est né"] },
+  { s: "___ (je / mettre) mon maillot de bain.", a: ["j'ai mis"] },
+  { s: "Paul ___ (tomber) du vélo.", a: ["est tombé"] },
+  { s: "Vous ___ (choisir) un hôtel ?", a: ["avez choisi"] },
+  { s: "On ___ (manger) des crêpes à Paris.", a: ["a mangé"] },
+  { s: "Anna ___ (rester) trois jours à Rome.", a: ["est restée"] },
+  { s: "Les enfants ___ (attendre) le bus.", a: ["ont attendu"] },
+  { s: "Marie, tu ___ (venir) en train ?", a: ["es venue"] },
+  { s: "Nous ___ (monter) à la tour. (nous = Tom et Lucas)", a: ["sommes montés"] },
+  { s: "Il ___ (avoir) froid à la montagne.", a: ["a eu"] },
+  { s: "Ce voyage ___ (être) super !", a: ["a été"] },
+  { s: "Mon grand-père ___ (mourir) en 2010.", a: ["est mort"] },
+  { s: "Elles ___ (rentrer) de vacances hier.", a: ["sont rentrées"] },
+  { s: "___ (je / acheter) des souvenirs.", a: ["j'ai acheté"] },
+  { s: "Nous ___ (visiter) le château d'If.", a: ["avons visité"] },
+  { s: "Hugo ___ (sortir) avec ses amis.", a: ["est sorti"] },
+  { s: "Ils ___ (comprendre) le guide.", a: ["ont compris"] },
+  { s: "Tu ___ (pouvoir) te baigner ?", a: ["as pu"] },
+  { s: "Elle ___ (descendre) à la plage.", a: ["est descendue"] },
+  { s: "___ (je / payer) par carte.", a: ["j'ai payé"] },
+  { s: "Les touristes ___ (venir) en bus.", a: ["sont venus"] }
+];
+var SIM_NAMES = { m: ["Paul", "Karim", "Lucas", "Hugo", "Tom", "Marco"], f: ["Léa", "Anna", "Sarah", "Emma", "Inès", "Yuki"] };
+function makePaysItem() {
+  const p = PAYS[Math.floor(Math.random() * PAYS.length)];
+  const fem = Math.random() < 0.5;
+  const name = SIM_NAMES[fem ? "f" : "m"][Math.floor(Math.random() * 6)];
+  const bareP = p.pays.replace(/^(le |la |les |l')/, "");
+  const where = Math.random() < 0.3;
+  const prep = where ? p.en.split(" ")[0] : p.de.startsWith("d'") ? "d'" : p.de.split(" ")[0];
+  const verb = where ? "habite" : ["vient", "arrive", "revient"][Math.floor(Math.random() * 3)];
+  const nat = p.natAlts ? p.natAlts[fem ? "f" : "m"] : [fem ? p.f : p.m];
+  return {
+    s: name + " " + verb + " ___ " + bareP + ". " + (fem ? "Elle" : "Il") + " est ___ .",
+    blanks: [[prep], nat],
+    why: p.pays + " → " + (where ? p.en : p.de) + " · " + p.m + " / " + p.f
+  };
+}
+var RULE_SENT = [
+  { task: "Napiš, jaké bylo včera počasí a kolik bylo stupňů.", blanks: [{ re: /(faisait|etait|avait).*(\d+|moins [a-z]+) ?(degres?|°)/, show: "Hier, il faisait très chaud : il faisait 30 degrés." }], rule: "Imparfait + teplota: il faisait + číslo + degrés.", why: "Kontrola hledá il faisait / c'était / il y avait a číslo se slovem degrés (nebo °)." },
+  { task: "Poraď turistovi (vykání), co má v Paříži navštívit — imperativ.", blanks: [{ re: /^(n'|ne )?[a-z-]+ez\b/, show: "Visitez le musée du Louvre !" }], rule: "Imperativ vous = tvar „vous“ bez zájmena: vous visitez → Visitez !", why: "Věta musí začínat slovesem na -ez (Visitez, Prenez, Allez, Goûtez…)." },
+  { task: "Řekni kamarádovi, co NEMÁ zapomenout na prázdniny — imperativ v záporu (tykání).", blanks: [{ re: /^(n'|ne )[a-z-]+ pas/, show: "N'oublie pas ton passeport !" }], rule: "Zápor: Ne / N' + imperativ + pas. U -er sloves tu bez -s: N'oublie pas !", why: "" },
+  { task: "Poraď kamarádovi (tykání), co má ochutnat nebo navštívit — imperativ.", blanks: [{ re: /^(visite|va|vas-y|prends|viens|fais|goute|mange|regarde|achete|reserve|pars|reste|sois|bois|mets|decouvre|profite|essaie|nage|baigne-toi|promene-toi)\b/, show: "Goûte la cuisine locale ! / Visite le château !" }], rule: "Imperativ tu: tu prends → Prends ! · -er slovesa bez -s: tu visites → Visite ! · tu vas → Va !", why: "Pozor: „Visites !“ s -s je chyba." },
+  { task: "Napiš, kam jsi loni jel(a) — passé composé s être + země.", blanks: [{ re: /(suis|sommes|est|sont) (alle|parti|venu|arrive|reste|rentre|retourne)e?s? (en|au|aux|a) /, show: "L'année dernière, je suis allé(e) en Italie." }], rule: "aller / partir → être + shoda · en + ž. rod, au + m. rod, aux + pl.", why: "" },
+  { task: "Napiš, co jsi tam dělal(a) — passé composé s avoir.", blanks: [{ re: /(j'ai|nous avons|on a|il a|elle a) [a-z]+(e|i|is|it|u|t)\b/, show: "J'ai visité Rome et j'ai goûté la cuisine locale." }], rule: "avoir + příčestí (bez shody).", why: "" },
+  { task: "Napiš, odkud je tvůj kamarád / kamarádka a jaká je jeho/její národnost.", blanks: [{ re: new RegExp("(vient|viennent|arrive|revient) (de|d'|du|des) ?[a-z-]+.*\\b(" + NAT_RE + ")\\b"), show: "Mon amie Léa vient de Belgique, elle est belge." }], rule: "venir de / d' / du / des + národnost (shoda s osobou).", why: "" },
+  { task: "Popiš, co je na obrázku u domu — předložka místa + il y a / on voit.", blanks: [{ re: /(a gauche|a droite|devant|derriere|entre|sur|sous|a cote|en face).*(il y a|on voit)|(il y a|on voit).*(a gauche|a droite|devant|derriere|entre|sous|a cote|en face)/, show: "Devant la maison, il y a une rivière." }], rule: "devant, derrière, à gauche (de), à droite (de), entre, sur, sous, à côté (de).", why: "" },
+  { task: "Napiš, co budeš dělat zítra — futur proche.", blanks: [{ re: /(je vais|on va|nous allons|tu vas|il va|elle va) [a-z-]+(er|ir|re)\b/, show: "Demain, je vais faire une randonnée." }], rule: "aller (présent) + infinitiv.", why: "" },
+  { task: "Napiš větu s „pendant“, „longtemps“ nebo „toujours“.", blanks: [{ re: /pendant|longtemps|toujours/, show: "J'ai habité à Prague pendant cinq ans." }], rule: "pendant + nom · verbe + longtemps · présent + toujours.", why: "" },
+  { task: "Napiš větu se zájmenem COD me / te / nous / vous.", blanks: [{ re: /(je|tu|il|elle|on|nous|vous|ils|elles|professeur|prof) (ne )?(me |m'|te |t'|nous |vous )[a-z]/, show: "Le professeur nous aide. / Je t'écoute." }], rule: "COD stojí před slovesem; me / te → m' / t' před samohláskou.", why: "" },
+  { task: "Popiš minulé počasí jinak než slovem „faisait“ — il y avait / il pleuvait / il neigeait.", blanks: [{ re: /il y avait|il pleuvait|il neigeait/, show: "Il y avait des nuages et il pleuvait." }], rule: "il y a → il y avait · il pleut → il pleuvait · il neige → il neigeait.", why: "" }
+];
+function SceneCampagne() {
+  return /* @__PURE__ */ jsxDEV("svg", {
+    viewBox: "0 0 400 240",
+    role: "img",
+    "aria-label": "Venkovská krajina",
+    style: { width: "100%", display: "block", border: "6px double #a67c2e", background: "#cfe8f7" },
+    children: [
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "342",
+        cy: "40",
+        r: "22",
+        fill: "#f7c948"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M250 38 q8 -8 16 0 q8 -8 16 0",
+        stroke: "#333",
+        strokeWidth: "2",
+        fill: "none"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M290 60 q6 -6 12 0 q6 -6 12 0",
+        stroke: "#333",
+        strokeWidth: "2",
+        fill: "none"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("polygon", {
+        points: "30,140 125,48 220,140",
+        fill: "#5b7fb8"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("polygon", {
+        points: "160,140 265,62 370,140",
+        fill: "#3f63a0"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("rect", {
+        x: "0",
+        y: "132",
+        width: "400",
+        height: "108",
+        fill: "#9cc96b"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("polygon", {
+        points: "235,140 400,136 400,178 255,182",
+        fill: "#e9d36b"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("line", {
+        x1: "245",
+        y1: "152",
+        x2: "400",
+        y2: "148",
+        stroke: "#c9b24c",
+        strokeWidth: "2"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("line", {
+        x1: "250",
+        y1: "166",
+        x2: "400",
+        y2: "162",
+        stroke: "#c9b24c",
+        strokeWidth: "2"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("rect", {
+        x: "38",
+        y: "125",
+        width: "8",
+        height: "40",
+        fill: "#7a5230"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "42",
+        cy: "115",
+        r: "24",
+        fill: "#3f7d4e"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("rect", {
+        x: "80",
+        y: "132",
+        width: "7",
+        height: "34",
+        fill: "#7a5230"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "83",
+        cy: "122",
+        r: "19",
+        fill: "#2f6b3e"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("rect", {
+        x: "140",
+        y: "110",
+        width: "72",
+        height: "46",
+        fill: "#ffffff",
+        stroke: "#555"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("polygon", {
+        points: "132,112 176,82 220,112",
+        fill: "#c8102e"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("rect", {
+        x: "168",
+        y: "128",
+        width: "16",
+        height: "28",
+        fill: "#7a5230"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("rect", {
+        x: "148",
+        y: "120",
+        width: "13",
+        height: "12",
+        fill: "#9ccbe8",
+        stroke: "#555"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("rect", {
+        x: "192",
+        y: "120",
+        width: "13",
+        height: "12",
+        fill: "#9ccbe8",
+        stroke: "#555"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("polygon", {
+        points: "170,156 184,156 214,198 188,198",
+        fill: "#d9c49a"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "120",
+        cy: "168",
+        r: "4",
+        fill: "#c8102e"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "128",
+        cy: "174",
+        r: "4",
+        fill: "#e85d9a"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "112",
+        cy: "176",
+        r: "4",
+        fill: "#c8102e"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "135",
+        cy: "165",
+        r: "4",
+        fill: "#f7c948"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("ellipse", {
+        cx: "322",
+        cy: "190",
+        rx: "22",
+        ry: "12",
+        fill: "#fff",
+        stroke: "#333"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "314",
+        cy: "186",
+        r: "4",
+        fill: "#222"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "330",
+        cy: "192",
+        r: "5",
+        fill: "#222"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("ellipse", {
+        cx: "348",
+        cy: "182",
+        rx: "8",
+        ry: "6",
+        fill: "#fff",
+        stroke: "#333"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("line", {
+        x1: "308",
+        y1: "200",
+        x2: "308",
+        y2: "212",
+        stroke: "#333",
+        strokeWidth: "3"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("line", {
+        x1: "336",
+        y1: "200",
+        x2: "336",
+        y2: "212",
+        stroke: "#333",
+        strokeWidth: "3"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M0 200 Q100 186 200 200 T400 196 L400 240 L0 240 Z",
+        fill: "#4a90c8"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("ellipse", {
+        cx: "92",
+        cy: "214",
+        rx: "12",
+        ry: "6",
+        fill: "#8a6a3a"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "102",
+        cy: "206",
+        r: "5",
+        fill: "#2f6b3e"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("polygon", {
+        points: "106,206 113,207 106,209",
+        fill: "#f08c00"
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function SceneMer() {
+  return /* @__PURE__ */ jsxDEV("svg", {
+    viewBox: "0 0 400 240",
+    role: "img",
+    "aria-label": "Pláž a moře",
+    style: { width: "100%", display: "block", border: "6px double #a67c2e", background: "#bfe3f7" },
+    children: [
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "60",
+        cy: "42",
+        r: "22",
+        fill: "#f7c948"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("ellipse", {
+        cx: "250",
+        cy: "40",
+        rx: "34",
+        ry: "12",
+        fill: "#fff"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("ellipse", {
+        cx: "275",
+        cy: "32",
+        rx: "22",
+        ry: "10",
+        fill: "#fff"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M150 60 q7 -7 14 0 q7 -7 14 0",
+        stroke: "#333",
+        strokeWidth: "2",
+        fill: "none"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("rect", {
+        x: "0",
+        y: "110",
+        width: "400",
+        height: "80",
+        fill: "#3a8fc4"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("polygon", {
+        points: "300,112 330,92 365,112",
+        fill: "#4f8a3c"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("polygon", {
+        points: "180,150 250,150 240,162 190,162",
+        fill: "#7a5230"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("line", {
+        x1: "215",
+        y1: "150",
+        x2: "215",
+        y2: "110",
+        stroke: "#555",
+        strokeWidth: "2"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("polygon", {
+        points: "217,112 217,148 246,148",
+        fill: "#ffffff",
+        stroke: "#999"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M0 178 Q120 168 230 182 T400 176 L400 240 L0 240 Z",
+        fill: "#f1dca7"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M58 225 Q62 180 78 150",
+        stroke: "#7a5230",
+        strokeWidth: "7",
+        fill: "none"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M78 150 q-30 -6 -44 10 M78 150 q-20 -22 -40 -20 M78 150 q12 -24 34 -24 M78 150 q28 -4 40 12",
+        stroke: "#2f6b3e",
+        strokeWidth: "6",
+        fill: "none",
+        strokeLinecap: "round"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("line", {
+        x1: "300",
+        y1: "228",
+        x2: "300",
+        y2: "182",
+        stroke: "#555",
+        strokeWidth: "3"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M262 186 Q300 150 338 186 Z",
+        fill: "#c8102e"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M287 186 Q300 160 313 186 Z",
+        fill: "#ffffff"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("rect", {
+        x: "250",
+        y: "212",
+        width: "40",
+        height: "14",
+        fill: "#1b3a8f",
+        transform: "rotate(-6 270 219)"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("ellipse", {
+        cx: "140",
+        cy: "214",
+        rx: "16",
+        ry: "8",
+        fill: "#b07a3e"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("circle", {
+        cx: "158",
+        cy: "207",
+        r: "6",
+        fill: "#b07a3e"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("path", {
+        d: "M124 212 q-8 -6 -10 -12",
+        stroke: "#b07a3e",
+        strokeWidth: "3",
+        fill: "none"
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+var SCENES = {
+  campagne: { label: "\uD83C\uDF3E Venkov", comp: SceneCampagne, model: [
+    "Sur cette image, on voit un paysage de campagne.",
+    "Au milieu, il y a une maison blanche avec un toit rouge.",
+    "Derrière la maison, il y a deux montagnes bleues et à droite, on voit un champ jaune.",
+    "À gauche de la maison, il y a deux arbres verts et devant la maison, il y a des fleurs.",
+    "Dans le champ, il y a une vache noire et blanche. Sur la rivière, il y a un canard.",
+    "Le soleil brille et il y a des oiseaux dans le ciel. C'est très joli !"
+  ] },
+  mer: { label: "\uD83C\uDFD6️ Pláž", comp: SceneMer, model: [
+    "Sur cette image, on voit la plage et la mer.",
+    "Il fait beau : il y a du soleil et deux nuages blancs dans le ciel.",
+    "Sur la mer, il y a un bateau avec une voile blanche. Derrière le bateau, on voit une petite île.",
+    "À gauche, il y a un palmier. À droite, sur la plage, il y a un parasol rouge et blanc et une serviette bleue.",
+    "Entre le palmier et le parasol, il y a un chien.",
+    "C'est un endroit parfait pour se baigner et bronzer !"
+  ] }
+};
+var SCENE_NEED = [
+  { lab: "aspoň 5 vět", sentences: [5, 99] },
+  { lab: "il y a … (aspoň 2×)", re: "il y a", min: 2 },
+  { lab: "on voit …", re: "on voit", min: 1 },
+  { lab: "předložky místa (à gauche, à droite, devant, derrière, entre, sur, sous, à côté de)", re: "a gauche|a droite|devant|derriere|entre|sur|sous|a cote|en face|au milieu", word: true, min: 2 },
+  { lab: "barvy (shoda: une maison blanche, des arbres verts…)", re: "vert|verte|verts|vertes|bleu|bleue|bleus|bleues|rouge|rouges|jaune|jaunes|blanc|blanche|blancs|blanches|noir|noire|noirs|noires|gris|grise|orange|rose|marron", word: true, min: 2 },
+  { lab: "slovíčka z přírody / dovolené — aspoň 5", re: "champ|chemin|foret|lac|plage|riviere|arbre|arbres|fleur|fleurs|herbe|plante|canard|chat|cheval|chien|lapin|oiseau|oiseaux|poisson|poule|vache|montagne|montagnes|mer|ciel|nuage|nuages|maison|soleil|bateau|ile|palmier|parasol|village|campagne", word: true, min: 5 }
+];
+var TRAVEL_TASK = {
+  title: "Text o cestování / prázdninách",
+  brief: "Napiš kamarádovi o své cestě (60–100 slov): kam jsi jel(a), co jsi dělal(a) — minulý čas; jaké bylo počasí a kolik bylo stupňů; a poraď mu v imperativu, co má navštívit / vzít s sebou.",
+  need: [
+    { lab: "passé composé s être (je suis allé(e), nous sommes partis…)", re: PC_ETRE_RE, word: true, min: 1 },
+    { lab: "passé composé s avoir (j'ai visité, nous avons pris…)", re: "(j ai|tu as|il a|elle a|on a|nous avons|vous avez|ils ont|elles ont) [a-z]+(e|i|is|it|u|t)", min: 2 },
+    { lab: "počasí v minulosti (il faisait, il y avait, il pleuvait, c'était)", re: "il faisait|il y avait|il pleuvait|il neigeait|c etait", min: 1 },
+    { lab: "teplota (25 degrés / 25 °C / moins cinq)", raw: true, re: "(\\d+|moins [a-z]+) ?(°|degr)", min: 1 },
+    { lab: "imperativ — aspoň 2 rady (Visite… / Prends… / N'oublie pas… / Allez…)", raw: true, re: "(^|[.!?,\\n]\\s*|\\set\\s)(n'|ne )?(visite|visitez|visitons|va|vas-y|allez|allez-y|allons|prends|prenez|prenons|viens|venez|fais|faites|goûte|goûtez|goute|goutez|mange|mangez|regarde|regardez|oublie|oubliez|achète|achetez|réserve|réservez|pars|partez|reste|restez|sois|soyez|bois|buvez|mets|mettez|découvre|découvrez|profite|profitez|essaie|essayez|nage|nagez)\\b", min: 2 },
+    { lab: "země s předložkou (en Italie, au Japon…)", re: "(en|au|aux|a) (" + PAYS_RE + ")", min: 1 },
+    { lab: "aspoň 60 slov", words: 60 }
+  ],
+  model: [
+    "Salut Léa !",
+    "L'été dernier, je suis allé en Croatie avec ma famille. Nous sommes partis en voiture et nous avons dormi dans un camping près de la mer.",
+    "Il faisait très chaud : il faisait 32 degrés ! Tous les jours, je me suis baigné et j'ai bronzé sur la plage. Un jour, il y avait de l'orage et il pleuvait, alors nous avons visité un musée à Split. C'était très intéressant.",
+    "Si tu vas en Croatie, visite Dubrovnik et goûte la cuisine locale ! Prends de la crème solaire et n'oublie pas ton maillot de bain !",
+    "Vas-y en juin : il fait 25 degrés et il y a moins de touristes.",
+    "Bisous, Jonas"
+  ]
+};
+function SimRow({ n, item, vals, onChange, shown }) {
+  const parts = item.s.split("___");
+  const res = shown ? item.blanks.map((b, i) => checkBlank(vals[i] || "", b)) : null;
+  return /* @__PURE__ */ jsxDEV("div", {
+    className: "gap",
+    style: { marginBottom: "8px" },
+    children: [
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "gap-line",
+        children: [
+          /* @__PURE__ */ jsxDEV("span", {
+            className: "n",
+            style: { fontFamily: "'Playfair Display',serif", color: "var(--rouge)", fontWeight: 700 },
+            children: [
+              n,
+              ". "
+            ]
+          }, undefined, true, undefined, this),
+          parts.map((p, i) => /* @__PURE__ */ jsxDEV("span", {
+            children: [
+              p,
+              i < parts.length - 1 && /* @__PURE__ */ jsxDEV("input", {
+                className: "blank" + (res ? res[i] === "bad" ? " bad" : " ok" : ""),
+                value: vals[i] || "",
+                onChange: (e) => onChange(i, e.target.value),
+                autoCapitalize: "off",
+                autoCorrect: "off",
+                spellCheck: false,
+                "aria-label": "Mezera " + (i + 1)
+              }, undefined, false, undefined, this)
+            ]
+          }, i, true, undefined, this))
+        ]
+      }, undefined, true, undefined, this),
+      res && res.some((r) => r !== "ok") && /* @__PURE__ */ jsxDEV("div", {
+        className: "verdict-line",
+        style: { color: res.some((r) => r === "bad") ? "var(--bad)" : "var(--warn)" },
+        children: [
+          res.some((r) => r === "bad") ? "✗ " : "≈ diakritika: ",
+          item.blanks.map(shownAnswer).join("  ·  "),
+          item.why ? " — " + item.why : ""
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
+function SimTab() {
+  const [seed, setSeed] = useState(0);
+  const [vals, setVals] = useState({});
+  const [shown, setShown] = useState(false);
+  const [bank, setBank] = useState(true);
+  const [scene, setScene] = useState("campagne");
+  const sheet = useMemo(() => {
+    const voc = shuffleArray(SIM_VOCAB).slice(0, 8).map((v) => ({ s: v.s, blanks: [v.a] }));
+    const used = new Set(voc.map((v) => v.blanks[0][0]));
+    const distract = shuffleArray(SIM_VOCAB.filter((v) => !used.has(v.a[0]))).slice(0, 3).map((v) => v.a[0]);
+    const words = shuffleArray([...voc.map((v) => v.blanks[0][0]), ...distract]);
+    const pays = Array.from({ length: 7 }, makePaysItem);
+    const pc = shuffleArray(SIM_PC).slice(0, 8).map((v) => ({ s: v.s, blanks: [v.a] }));
+    const rules = shuffleArray(RULE_SENT).slice(0, 5);
+    return { voc, words, pays, pc, rules };
+  }, [seed]);
+  const exercises = [
+    { key: "voc", title: "1. Doplň slovíčka", items: sheet.voc },
+    { key: "pays", title: "2. de / d' / du / des (en / au / aux) + národnost", items: sheet.pays },
+    { key: "pc", title: "3. Passé composé — doplň tvar slovesa", items: sheet.pc }
+  ];
+  const setVal = (k, i, v) => {
+    setVals((o) => ({ ...o, [k]: { ...o[k] || {}, [i]: v } }));
+  };
+  const score = () => {
+    let ok2 = 0, all2 = 0;
+    exercises.forEach((ex) => ex.items.forEach((it, ii) => it.blanks.forEach((b, bi) => {
+      all2++;
+      if (checkBlank((vals[ex.key + ii] || {})[bi] || "", b) !== "bad")
+        ok2++;
+    })));
+    return [ok2, all2];
+  };
+  const [ok, all] = shown ? score() : [0, 0];
+  const fresh = () => {
+    setSeed((s) => s + 1);
+    setVals({});
+    setShown(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  return /* @__PURE__ */ jsxDEV("div", {
+    children: [
+      /* @__PURE__ */ jsxDEV(SectionHead, {
+        no: "★",
+        title: "Simulace testu",
+        lede: "Postaveno podle spolužačky, která test už psala. Strana 1 = doplňování (slovíčka, země + národnosti, passé composé), strana 2 = psaní vět podle pravidel, popis obrázku (~5 vět) a text o cestování (minulý čas, imperativ, počasí a teplota). Každá varianta je jiná."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "modes",
+        children: /* @__PURE__ */ jsxDEV("button", {
+          className: "mode on",
+          onClick: fresh,
+          children: "\uD83D\uDD00 Nová varianta testu"
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "card",
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            children: "\uD83D\uDCC4 Strana 1"
+          }, undefined, false, undefined, this),
+          exercises.map((ex) => /* @__PURE__ */ jsxDEV("div", {
+            children: [
+              /* @__PURE__ */ jsxDEV("h4", {
+                style: { margin: "18px 0 8px", color: "var(--bleu)" },
+                children: ex.title
+              }, undefined, false, undefined, this),
+              ex.key === "voc" && /* @__PURE__ */ jsxDEV("div", {
+                style: { marginBottom: "10px" },
+                children: [
+                  /* @__PURE__ */ jsxDEV("button", {
+                    className: "mini",
+                    onClick: () => setBank((b) => !b),
+                    children: bank ? "Skrýt nabídku slov" : "Ukázat nabídku slov"
+                  }, undefined, false, undefined, this),
+                  bank && /* @__PURE__ */ jsxDEV("div", {
+                    className: "scorebar",
+                    style: { marginTop: "8px" },
+                    children: sheet.words.map((w) => /* @__PURE__ */ jsxDEV("span", {
+                      className: "chip",
+                      children: /* @__PURE__ */ jsxDEV("b", {
+                        children: w
+                      }, undefined, false, undefined, this)
+                    }, w, false, undefined, this))
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              ex.key === "pc" && /* @__PURE__ */ jsxDEV("p", {
+                className: "lede",
+                children: "Pozor, kdy je avoir a kdy être, a na shodu se être (+e, +s)."
+              }, undefined, false, undefined, this),
+              ex.items.map((it, ii) => /* @__PURE__ */ jsxDEV(SimRow, {
+                n: ii + 1,
+                item: it,
+                vals: vals[ex.key + ii] || {},
+                shown,
+                onChange: (bi, v) => setVal(ex.key + ii, bi, v)
+              }, seed + "-" + ex.key + ii, false, undefined, this))
+            ]
+          }, ex.key, true, undefined, this)),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "14px", alignItems: "center" },
+            children: [
+              /* @__PURE__ */ jsxDEV("button", {
+                className: "btn red",
+                onClick: () => setShown(true),
+                children: "Vyhodnotit stranu 1"
+              }, undefined, false, undefined, this),
+              shown && /* @__PURE__ */ jsxDEV("span", {
+                className: "chip",
+                style: { border: "1px solid var(--line)", padding: "8px 14px", background: "#fff" },
+                children: [
+                  "Výsledek: ",
+                  /* @__PURE__ */ jsxDEV("b", {
+                    style: { color: "var(--bleu)" },
+                    children: [
+                      ok,
+                      " / ",
+                      all
+                    ]
+                  }, undefined, true, undefined, this),
+                  " (",
+                  Math.round(ok / all * 100),
+                  " %)"
+                ]
+              }, undefined, true, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          shown && /* @__PURE__ */ jsxDEV("div", {
+            className: "prog",
+            style: { marginTop: "12px" },
+            children: /* @__PURE__ */ jsxDEV("i", {
+              style: { width: ok / all * 100 + "%" }
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsxDEV("div", {
+        className: "card red",
+        children: [
+          /* @__PURE__ */ jsxDEV("h3", {
+            children: "\uD83D\uDCC4 Strana 2"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("h4", {
+            style: { margin: "14px 0 8px", color: "var(--bleu)" },
+            children: "4. Napiš větu podle pravidla"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("p", {
+            className: "lede",
+            children: "Každá věta má ověřit jedno pravidlo. Kontrola hlídá, jestli jsi ho použil; vzorová věta je pod „Ukázat řešení“."
+          }, undefined, false, undefined, this),
+          sheet.rules.map((r, i) => /* @__PURE__ */ jsxDEV(GapItem, {
+            it: { ...r, wide: true },
+            n: i + 1,
+            showDiff: false
+          }, seed + "-r" + i, false, undefined, this)),
+          /* @__PURE__ */ jsxDEV("h4", {
+            style: { margin: "22px 0 8px", color: "var(--bleu)" },
+            children: "5. Popiš obrázek (asi 5 vět)"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            className: "modes",
+            children: Object.entries(SCENES).map(([k, s]) => /* @__PURE__ */ jsxDEV("button", {
+              className: "mode" + (scene === k ? " on" : ""),
+              onClick: () => setScene(k),
+              children: s.label
+            }, k, false, undefined, this))
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("div", {
+            style: { maxWidth: "560px", marginBottom: "8px" },
+            children: (() => {
+              const C = SCENES[scene].comp;
+              return /* @__PURE__ */ jsxDEV(C, {}, undefined, false, undefined, this);
+            })()
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(WritingTask, {
+            t: { title: "Popis obrázku", brief: "Sur cette image, il y a… / on voit… · kde (devant, derrière, à gauche…) · barvy · názor.", need: SCENE_NEED, model: SCENES[scene].model }
+          }, scene, false, undefined, this),
+          /* @__PURE__ */ jsxDEV("h4", {
+            style: { margin: "22px 0 8px", color: "var(--bleu)" },
+            children: "6. Napiš text o cestování"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsxDEV(WritingTask, {
+            t: TRAVEL_TASK
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
 var TABS = [
   { id: "plan", rn: "I", label: "\uD83C\uDFAF Co bude v testu", comp: PlanTab },
+  { id: "sim", rn: "★", label: "\uD83E\uDDEA Simulace testu", comp: SimTab },
   { id: "pays", rn: "II", label: "\uD83C\uDF0D Země a národnosti", comp: PaysTab },
   { id: "vocab", rn: "III", label: "\uD83D\uDCDA Slovíčka", comp: VocabTab },
   { id: "gram", rn: "IV", label: "\uD83D\uDCD0 Gramatika", comp: GramTab },
