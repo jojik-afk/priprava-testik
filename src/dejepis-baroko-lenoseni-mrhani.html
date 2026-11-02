@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="subject" content="History">
+    <meta name="topic" content="Baroko, katolická vs. protestantská Evropa, Hersche, Weber">
+    <meta name="template" content="practice">
+    <meta name="collection" content="Texty pro Peška">
+    <title>Baroko: lenošení a mrhání (Třeštík) – text s odpověďmi</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            line-height: 1.8;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .text-column {
+            padding-right: 20px;
+            border-right: 2px solid #e0e0e0;
+        }
+        .answers-column {
+            padding-left: 20px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            grid-column: 1 / -1;
+        }
+        h2 {
+            color: #e74c3c;
+            font-size: 1.2em;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        /* === HIGHLIGHT STYLES === */
+        .highlight-1 { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-2 { background-color: #d1ecf1; border-left: 4px solid #17a2b8; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-3 { background-color: #d4edda; border-left: 4px solid #28a745; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-4 { background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-5 { background-color: #e2e3e5; border-left: 4px solid #6c757d; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-6 { background-color: #d6d8f5; border-left: 4px solid #6610f2; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-7 { background-color: #d1f2eb; border-left: 4px solid #20c997; padding: 8px 10px; margin: 5px 0; display: block; }
+        .highlight-8 { background-color: #fde2e4; border-left: 4px solid #fd7e14; padding: 8px 10px; margin: 5px 0; display: block; }
+
+        /* === INLINE SPAN HIGHLIGHTS === */
+        span.highlight-1 { background-color: #fff3cd; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-2 { background-color: #d1ecf1; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-3 { background-color: #d4edda; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-4 { background-color: #f8d7da; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-5 { background-color: #e2e3e5; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-6 { background-color: #d6d8f5; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-7 { background-color: #d1f2eb; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+        span.highlight-8 { background-color: #fde2e4; padding: 2px 4px; border-radius: 3px; border-left: none; margin: 0; display: inline; }
+
+        /* === ANSWER BOXES === */
+        .answer-box {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .answer-box h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+        .answer-box p, .answer-box ul {
+            margin: 8px 0;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        .answer-box ul {
+            padding-left: 20px;
+        }
+        .answer-box .note {
+            font-style: italic;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        /* === LEGEND === */
+        .legend {
+            grid-column: 1 / -1;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+        .legend h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            border-radius: 3px;
+            border-left: 4px solid transparent;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .text-column {
+                border-right: none;
+                padding-right: 0;
+            }
+            .answers-column {
+                padding-left: 0;
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Baroko: lenošení a mrhání</h1>
+        <p style="grid-column: 1 / -1; font-style: italic; color: #666;">Dušan Třeštík: Zápisník; LN 2007</p>
+
+        <!-- LEGEND -->
+        <div class="legend">
+            <h3>Legenda barev pro jednotlivé otázky:</h3>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #fff3cd; border-left-color: #ffc107;"></span>
+                Otázka 1: Proč názor o zaostalosti katolíků
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #d1ecf1; border-left-color: #17a2b8;"></span>
+                Otázka 2: Příkrý protiklad
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #d4edda; border-left-color: #28a745;"></span>
+                Otázka 3: Kam ukládali přebytky
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #f8d7da; border-left-color: #dc3545;"></span>
+                Otázka 4: Protestanté a umění
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #e2e3e5; border-left-color: #6c757d;"></span>
+                Otázka 5: Lze vše měřit penězi?
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #d6d8f5; border-left-color: #6610f2;"></span>
+                Otázka 6: Investice do čeho?
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #d1f2eb; border-left-color: #20c997;"></span>
+                Otázka 7: Kam to vyústilo
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #fde2e4; border-left-color: #fd7e14;"></span>
+                Otázka 8: Barokní vs. současný volný čas
+            </div>
+        </div>
+
+        <!-- TEXT COLUMN -->
+        <div class="text-column">
+            <p><span class="highlight-1">V tom obrazu, který si o svých dějinách vytvořilo v 19. století měšťanstvo a který dodnes představuje „klasický" pohled na dějiny Evropy, nemělo baroko v žádném případě místo v hlavním proudu pokroku, toho pokroku, který dával dějinám smysl.</span> <span class="highlight-2">Požitkářská a rozmařilá kultura zaostalé katolické části kontinentu stála v příkrém protikladu ke ctnostně pracovitému protestantskému světu, nositeli skutečného pokroku.</span> Byla tak vlastně odbočkou dějin, dírou v nich - tak jako jí bylo v české variantě tohoto evropského, protestantsky určeného příběhu příslovečné „temno!. <span class="highlight-4">Nezůstalo to samozřejmě bez kritiky, obrana se ale obyčejně soustřeďovala na vyzdvihování estetických hodnot baroka, a ne na hlavní výtku hospodářské a společenské zaostalosti barokní kulturou silně podporované, ne-li vytvářené.</span> Zabývá se jí vlastně poprvé důkladně a v mnohém objevně Peter Hersche (Müsse und Verschwendung. Europäische Gesellschaft und Kultur im Barockzeitalter, 2 svazky, 2006). V období, které vymezuje zhruba lety 1560-1780, byla společnost katolické části Evropy především agrární, šlechtická a selská. <span class="highlight-1">Jejími hlavními rysy byla ostentativní rozmařilost „volného času“ a bezmezné plýtvání v oblasti ekonomiky. Pro šlechtu to byly stavovsky dané ideály, pro sedláky hodnoty tkvící v agrárním rytmu jejich života. Ve větší části katolické Evropy chybělo spořivé a pracovité měšťanstvo, dokonce i v Itálii, která přece vytvořila v renesanci typickou kulturu podnikavých měšťanů.</span> Výjimkou byla pouze Francie, kde přinejmenším v Paříži a okolí vzniklo měšťanstvo velmi podobné „protestantskému“. Hlavním faktorem celé této společnosti byla samozřejmě církev, která měla kromě tvrdě uplatňované „správy duší“ v rukou nejenom vzdělání a charitu, ale i značnou hospodářskou moc.</p>
+
+            <p>Byla to ale moc dosti podivná. <span class="highlight-7">Katolický „hospodářský styl“ byl přímým protikladem toho protestantského, jemuž Max Weber připisoval rozhodující podíl na vzniku kapitalismu.</span> <span class="highlight-3">Protestantská Evropa své přebytky investovala do manufaktur, obchodu a cest. Katolická Evropa je ale ukládala zcela neproduktivně do klášterů, kostelů, nesčetných bratrstev, zádušních mší, do církevních staveb a také do „efemérního baroka“: svátečních dekorací z papírové masy, kartonu a sádry. Byly to obrovské - promarněné a rozházené sumy.</span> <span class="highlight-1">Navíc v tom nebyl žádný přirozený nebo vnucený pořádek, žádná sociální disciplína zaručovaná u protestantů většinou státem.</span> U katolíků byla vojska dlouho spíše hračkou než nástrojem moci a i zpovědnice, vynález Karla Boromejského, která měla sloužit ukáznění věřících, se nejčastěji míjela účinkem, lidé tento příkaz bezstarostně obcházeli.</p>
+
+            <p>Mělo by to tedy potvrzovat „klasickou“ tezi: katolická Evropa byla zaostalá a mohla si za to sama. <span class="highlight-5">Hersche si je ale dobře vědom, že takovéto teleologické, na cíl zaměřené posuzování je do značné míry ahistorické, a snaží se proto posoudit barokní kulturu z ní samotné, a ne na základě „pokrokem“ určeného výsledku.</span> <span class="highlight-6">Jistě, lidé, šlechta i sedláci strkali velkou část svých peněžních zisků do církve a proplýtvali spoustu pracovního času na poutích, svátcích a slavnostech, z jejich hlediska to ale byla „investice“, jenomže ne do krátkodobé hospodářské budoucnosti, nýbrž do věčnosti, do spasení. Spasení bylo - jak správně zdůrazňuje Hersche - přímo posedlostí barokní Evropy, asi naposledy v dějinách evropského křesťanství.</span> <span class="highlight-5">Katolická církev totiž pod tlakem osvícenců přistoupila nakonec na jejich hru a proti výtce „neužitečnosti“ se začala bránit poukazováním na svou společenskou prospěšnost, na „dobro“, které spravuje, a ne na to, o co v křesťanství opravdu jde, na spasení.</span> <span class="highlight-6">V baroku vesele proplýtvávané peníze a prolenošený čas tak byly - to je hlavní Herscheho teze -ve skutečnosti stejnou „investicí“ jako škudlivé investice protestantů, jenomže do něčeho jiného. Byl to „kapitál v nebesích“.</span> <span class="highlight-7">Barokní životní styl volného času a mrhání, typicky ztělesněný například v poutích, byl podle autora vlastně také „moderní“, jenomže nevyústil do technického a hospodářského pokroku 19. století, nýbrž do současné kultury volného času.</span></p>
+
+            <p><span class="highlight-8">To je ovšem už soud, který je metahistorický a dá se proti němu také mnoho namítnout. Barokní kultuře volného času šlo o něco životně důležitého, současné kultuře ale nejde evidentně o nic, pouze o zabití času (a profit průmyslu na ní parazitujícího). Je to kultura nadbytku výrobků a přebytečnosti lidí. Byla by ale takto bohatá bez těch Weberových škudlivých a přectnostných oblíbenců? Rozhodně jí nemůžeme připsat vznik kapitalismu. Barokní kultura tak jistě nebyla předchůdcem té dnešní a v žádném případě také ne jejím předobrazem.</span> Byla ale proto „odbočkou“ nebo i „dírou“ v dějinách? Víme už, že protestantsko-osvícenský „pokrok“ nebyl vrcholem dějin, cílem, k němuž směřovaly, a sotva si také můžeme představovat, že by nutně spěly k dnešní mizérii. Je možná chybou vůbec takto zacílené uvažovat, dějiny přece nemusejí nutně někam jít. Potíž je ale v tom, že je musíme vyprávět jako příběh a ten přece musí mít začátek i konec, musí „někam“ dojít. Ten, na kterém se asi v blízké době jakž takž shodneme, bude zřejmě kroužit okolo otázky, zda měli osvícenci pravdu, nebo ne, když nasměrovali evropský příběh na cestu pokroku (bez uvozovek, řekněme: „pohybu hlavního proudu“). Pak také budeme „vědět“, zda bylo naše Temno dírou v dějinách, nebo ne. Nerozhodne to ale obrana jezuitů, bádání o barokní Čechii nebo dokonce objevování barokních rádobyfilosofů, ne český, nýbrž nějaký nový evropský dějinný příběh, ne historie, ale metahistorie - dějiny za dějinami. Nebude to „filosofický“, ale žitý příběh o tom, kým jsme se tady v Evropě tváří v tvář naléhavým výzvám nejistého, někam se řítícího světa rozhodli být. Zatím to nevíme, k osvícenskému, ale ani k baroknímu příběhu se není možno vrátit, recept není v návratech, v hledání „věčných“ hodnot a s nimi svázaných příběhů, je v suverénní, ale o to těžší volbě cílů (užitků, o něž nám opravdu jde), které se tak stanou hodnotami. Dějiny si budeme vyprávět o nich. Jinak to neumíme.</p>
+
+            <h2>OTÁZKY</h2>
+            <ol>
+                <li>Z jakého důvodu vznikl názor, že katolické oblasti Evropy (resp. i zámoří, čili katolické oblasti Světa obecně) byly zaostalejší, zahálčivější než ty protestantské.</li>
+                <li>K čemu že katolické části kontinentu stály v příkrém protikladu?</li>
+                <li>Kam, do čeho ukládali své jmění a přebytky katolíci a nekatolíci (protestanté)?</li>
+                <li>Znamená to tedy, že protestanté nepodporovali a nevytvářeli žádné umění, například výtvarné? Zjistěte se v dalších dostupných zdrojích.</li>
+                <li>Zamyslete se, zda lze vše měřit jen penězi, tedy zda lze vše nahlížet jen ekonomického hlediska, z hlediska produktivity práce a zisku. Anebo i jinak? Napoví nám text?</li>
+                <li>Pokud si řekneme, že katolická šlechta i sedláci strkali velkou část svých peněžních zisků do církve a z ekonomického hlediska tak proplýtvali spoustu pracovního času na poutích, svátcích a slavnostech, tak o jakou investici šlo z jejich hlediska? Byla to tedy investice v co, do čeho?</li>
+                <li>Z textu vyplývá, že:<br>
+                    „Škudlivé investice protestantů“, násobení zisku, podnikání vyústily do/v ….<br>
+                    Kdežto „v baroku vesele proplýtvávané peníze a prolenošený čas“ v poutích, barokních spektáklech, náročné výbavě kostelů katolické části obyvatel vyústili do/v …</li>
+                <li>Jaký je rozdíl mezi barokní kulturou volného času tehdejších katolíků a současnou kulturou, volným časem?</li>
+            </ol>
+        </div>
+
+        <!-- ANSWERS COLUMN -->
+        <div class="answers-column">
+            <div class="answer-box">
+                <h3>📜 Otázka 1: Proč vznikl názor, že katolické oblasti byly zaostalejší?</h3>
+                <p><strong>Odpověď:</strong> Je to pohled <strong>měšťanstva 19. století</strong>, které si dějiny vyprávělo jako příběh <strong>pokroku</strong> (protestantsky určený).</p>
+                <ul>
+                    <li><strong>Měřítko pokroku:</strong> baroko do „hlavního proudu“ nezapadalo → „odbočka“, „díra“ v dějinách (u nás „temno“)</li>
+                    <li><strong>Rysy katolické společnosti:</strong> okázalá rozmařilost volného času, plýtvání v ekonomice</li>
+                    <li><strong>Chybělo</strong> spořivé a pracovité měšťanstvo (i v Itálii; výjimkou Francie)</li>
+                    <li><strong>Žádná sociální disciplína</strong>, kterou u protestantů zajišťoval stát</li>
+                </ul>
+            </div>
+
+            <div class="answer-box">
+                <h3>⚖️ Otázka 2: K čemu stály katolické části v příkrém protikladu?</h3>
+                <p><strong>Odpověď:</strong> Ke <strong>ctnostně pracovitému protestantskému světu</strong>, který byl považován za nositele skutečného pokroku.</p>
+                <ul>
+                    <li>Katolíci = „požitkářská a rozmařilá“ kultura</li>
+                    <li>Protestanté = pracovitost, spořivost, pokrok</li>
+                </ul>
+            </div>
+
+            <div class="answer-box">
+                <h3>💰 Otázka 3: Kam ukládali přebytky katolíci a protestanté?</h3>
+                <ul>
+                    <li><strong>Protestanté:</strong> produktivně – do <strong>manufaktur, obchodu a cest</strong></li>
+                    <li><strong>Katolíci:</strong> „neproduktivně“ – do <strong>klášterů, kostelů, bratrstev, zádušních mší, církevních staveb</strong> a do <strong>„efemérního baroka“</strong> (sváteční dekorace z papírové masy, kartonu, sádry)</li>
+                    <li>Šlo o obrovské, „promarněné“ sumy</li>
+                </ul>
+            </div>
+
+            <div class="answer-box">
+                <h3>🎨 Otázka 4: Protestanté nevytvářeli žádné umění?</h3>
+                <p><strong>Odpověď:</strong> <strong>Ne, vytvářeli</strong> – text jen říká, že obhájci baroka zdůrazňovali jeho estetické hodnoty. Z dalších zdrojů:</p>
+                <ul>
+                    <li><strong>Malířství:</strong> zlatý věk nizozemského malířství – <strong>Rembrandt, Vermeer, Frans Hals</strong>; dříve <strong>Cranach</strong> (Lutherův přítel), Dürer</li>
+                    <li><strong>Jiný mecenáš:</strong> místo církve a šlechty <strong>měšťané</strong> → portréty, krajiny, zátiší, žánrové scény z běžného života</li>
+                    <li><strong>Kostely</strong> střídmé (kalvinisté odmítali obrazy – obrazoborectví), ale rozvinula se <strong>hudba</strong>: J. S. Bach, Händel, Purcell, chorály</li>
+                    <li><strong>Architektura:</strong> např. katedrála sv. Pavla v Londýně (Ch. Wren)</li>
+                </ul>
+                <p class="note">Rozdíl tedy není v tom, zda umění vznikalo, ale kdo ho platil a k čemu sloužilo.</p>
+            </div>
+
+            <div class="answer-box">
+                <h3>🤔 Otázka 5: Lze vše měřit jen penězi?</h3>
+                <p><strong>Odpověď:</strong> Ne – text naznačuje, že čistě ekonomický pohled je <strong>jednostranný</strong>:</p>
+                <ul>
+                    <li><strong>Hersche:</strong> posuzovat baroko podle „pokrokem“ určeného výsledku je <strong>ahistorické (teleologické)</strong> → je třeba ho hodnotit z něj samotného</li>
+                    <li>Pro barokní lidi měla smysl hodnota <strong>duchovní – spasení</strong>, ne zisk</li>
+                    <li>Kritika církve: pod tlakem osvícenců začala obhajovat svou „užitečnost“ a zapomněla, o co v křesťanství jde</li>
+                    <li>Závěr textu: hodnoty vznikají z <strong>cílů, o které nám opravdu jde</strong></li>
+                </ul>
+            </div>
+
+            <div class="answer-box">
+                <h3>🙏 Otázka 6: Do čeho investovali katolíci?</h3>
+                <p><strong>Odpověď:</strong> Investovali <strong>do věčnosti – do spasení duše</strong>, ne do krátkodobé hospodářské budoucnosti.</p>
+                <ul>
+                    <li>Spasení bylo <strong>posedlostí</strong> barokní Evropy (asi naposledy v dějinách)</li>
+                    <li>Hlavní Herscheho teze: stejná „investice“ jako u protestantů, jen do něčeho jiného → <strong>„kapitál v nebesích“</strong></li>
+                </ul>
+            </div>
+
+            <div class="answer-box">
+                <h3>➡️ Otázka 7: Kam co vyústilo?</h3>
+                <ul>
+                    <li><strong>Protestantské škudlivé investice</strong> → <strong>kapitalismus</strong> (Max Weber), technický a hospodářský <strong>pokrok 19. století</strong></li>
+                    <li><strong>Barokní mrhání a lenošení</strong> → podle Hersche <strong>současná kultura volného času</strong> (baroko bylo tedy také svým způsobem „moderní“)</li>
+                </ul>
+            </div>
+
+            <div class="answer-box">
+                <h3>🎭 Otázka 8: Barokní vs. současná kultura volného času</h3>
+                <ul>
+                    <li><strong>Baroko:</strong> volný čas měl <strong>smysl</strong> – šlo o něco životně důležitého (spasení)</li>
+                    <li><strong>Dnes:</strong> nejde o nic, jen o <strong>zabití času</strong> a zisk zábavního průmyslu; kultura nadbytku výrobků a „přebytečnosti lidí“</li>
+                    <li>Dnešní bohatství je ale výsledkem protestantské pracovitosti, ne baroka</li>
+                    <li><strong>Třeštík:</strong> baroko proto <strong>není předchůdcem ani předobrazem</strong> dnešní kultury (polemika s Herschem)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
