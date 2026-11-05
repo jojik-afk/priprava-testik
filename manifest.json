@@ -1,5 +1,14 @@
 [
   {
+    "title": "Angloamerika + Latinská Amerika + trumpismus — písemka SRG",
+    "subject": "Geography",
+    "topic": "Regionální geografie: Angloamerický a Latinskoamerický makroregion, trumpismus",
+    "template": "mixed",
+    "collection": "",
+    "date": "2026-11-05",
+    "file": "artifacts/zemepis-angloamerika-latinska-amerika.html"
+  },
+  {
     "title": "Baroko: lenošení a mrhání (Třeštík) – text s odpověďmi",
     "subject": "History",
     "topic": "Baroko, katolická vs. protestantská Evropa, Hersche, Weber",
@@ -234,42 +243,6 @@
     "file": "artifacts/goniometrie-kompletni-priprava.html"
   },
   {
-    "title": "Anglické členy — příprava na test",
-    "subject": "Languages",
-    "topic": "Anglické členy (Articles)",
-    "template": "study-app",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/anglictina-cleny-articles.html"
-  },
-  {
-    "title": "Biologie - Mlži a hlavonožci",
-    "subject": "Biology",
-    "topic": "Biology",
-    "template": "quiz",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/biologie-mlzi-hlavonozci.html"
-  },
-  {
-    "title": "Biologie - Plži",
-    "subject": "Biology",
-    "topic": "Biology",
-    "template": "quiz",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/biologie-plzi.html"
-  },
-  {
-    "title": "Acidobazické reakce – Příprava na test",
-    "subject": "Chemistry",
-    "topic": "Acidobazické reakce",
-    "template": "mixed",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/chemie-acidobazicke-reakce.html"
-  },
-  {
     "title": "Amminkomplexy přechodných kovů — laboratorní praktikum",
     "subject": "Chemistry",
     "topic": "Koordinační sloučeniny, syntéza komplexů Cu a Ni",
@@ -277,24 +250,6 @@
     "collection": "",
     "date": "2026-04-15",
     "file": "artifacts/chemie-amminkomplexy-praktikum.html"
-  },
-  {
-    "title": "Chemie - Ideální plyn",
-    "subject": "Chemistry",
-    "topic": "Chemistry",
-    "template": "practice",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/chemie-idealni-plyn.html"
-  },
-  {
-    "title": "Chemie - Reakční kinetika",
-    "subject": "Chemistry",
-    "topic": "Chemistry",
-    "template": "practice",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/chemie-kinetika.html"
   },
   {
     "title": "Odměrná analýza — kyselina citronová v 7-Up",
@@ -306,40 +261,40 @@
     "file": "artifacts/chemie-odmerna-analyza-kyselina-citronova.html"
   },
   {
-    "title": "Chemie - Chemické rovnováhy",
-    "subject": "Chemistry",
-    "topic": "Chemistry",
-    "template": "practice",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/chemie-rovnovahy.html"
-  },
-  {
-    "title": "Termochemie - Interaktivní Průvodce",
-    "subject": "Chemistry",
-    "topic": "Chemistry",
-    "template": "practice",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/chemie-termochemie.html"
-  },
-  {
-    "title": "Dějepis - Evropa 1918–1939",
+    "title": "Státní svátky a významné dny ČR",
     "subject": "History",
-    "topic": "Meziválečné období, fašismus, nacismus",
-    "template": "practice",
+    "topic": "Státní svátky a významné dny ČR",
+    "template": "mixed",
     "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/dejak-1918-39.html"
+    "date": "2026-04-14",
+    "file": "artifacts/statni-svatky-cr.html"
   },
   {
-    "title": "Dějepis - První světová válka",
-    "subject": "History",
-    "topic": "WWI",
-    "template": "practice",
+    "title": "Kapaliny — kompletní příprava na test",
+    "subject": "Physics",
+    "topic": "Hydrostatika · Hydrodynamika · Povrchová vrstva · Kapilarita · Roztažnost",
+    "template": "study-app",
     "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/dejak-wwi.html"
+    "date": "2026-04-08",
+    "file": "artifacts/fyzika-kapaliny-komplexni.html"
+  },
+  {
+    "title": "Světová populace — příprava na písemku",
+    "subject": "Geography",
+    "topic": "Obyvatelstvo světa: rozložení, demografická revoluce, struktura",
+    "template": "study",
+    "collection": "",
+    "date": "2026-04-07",
+    "file": "artifacts/zemepis-populace-pisemka.html"
+  },
+  {
+    "title": "Světový realismus — příprava na test",
+    "subject": "Literature",
+    "topic": "Světový realismus, naturalismus, autoři",
+    "template": "study",
+    "collection": "",
+    "date": "2026-03-25",
+    "file": "artifacts/svetovy-realismus.html"
   },
   {
     "title": "Dekolonizace s odpověďmi",
@@ -347,7 +302,7 @@
     "topic": "",
     "template": "practice",
     "collection": "Texty pro Peška",
-    "date": "2026-04-15",
+    "date": "2026-03-23",
     "file": "artifacts/dejepis-dekolonizace.html"
   },
   {
@@ -356,7 +311,7 @@
     "topic": "",
     "template": "practice",
     "collection": "Texty pro Peška",
-    "date": "2026-04-15",
+    "date": "2026-03-23",
     "file": "artifacts/dejepis-horkastudenav-valka.html"
   },
   {
@@ -365,17 +320,8 @@
     "topic": "SSSR, Pakt tří, Druhá světová válka, Molotov-Ribbentrop",
     "template": "practice",
     "collection": "Texty pro Peška",
-    "date": "2026-04-15",
+    "date": "2026-03-23",
     "file": "artifacts/dejepis-kdyz-narody-nemaji-sanci.html"
-  },
-  {
-    "title": "Korporativismus – Studijní materiál pro tisk",
-    "subject": "History",
-    "topic": "Korporativismus",
-    "template": "practice",
-    "collection": "Texty pro Peška",
-    "date": "2026-04-15",
-    "file": "artifacts/dejepis-korporativismus.html"
   },
   {
     "title": "Slepě kráčíme do Velké války - Zvýrazněné odpovědi",
@@ -383,8 +329,35 @@
     "topic": "",
     "template": "practice",
     "collection": "Texty pro Peška",
-    "date": "2026-04-15",
+    "date": "2026-03-23",
     "file": "artifacts/dejepis-slepekracime-velka-valka.html"
+  },
+  {
+    "title": "Bernoulliho rovnice — Hydrodynamika",
+    "subject": "Physics",
+    "topic": "Bernoulliho rovnice, Rovnice kontinuity, Hydrodynamika",
+    "template": "study",
+    "collection": "",
+    "date": "2026-03-23",
+    "file": "artifacts/fyzika-bernoulliho-rovnice.html"
+  },
+  {
+    "title": "Anglické členy — příprava na test",
+    "subject": "Languages",
+    "topic": "Anglické členy (Articles)",
+    "template": "study-app",
+    "collection": "",
+    "date": "2026-03-10",
+    "file": "artifacts/anglictina-cleny-articles.html"
+  },
+  {
+    "title": "Goniometrické funkce — příprava na test",
+    "subject": "Math",
+    "topic": "Goniometrie: orientovaný úhel, oblouková míra, jednotková kružnice",
+    "template": "study",
+    "collection": "",
+    "date": "2026-03-08",
+    "file": "artifacts/goniometrie-pripravanat-test.html"
   },
   {
     "title": "Dron A2 — Příprava na zkoušku",
@@ -392,8 +365,134 @@
     "topic": "Meteorologie · Zmírnění rizik · Letové charakteristiky",
     "template": "quiz",
     "collection": "",
-    "date": "2026-04-15",
+    "date": "2026-02-18",
     "file": "artifacts/dron-a2-zkouska.html"
+  },
+  {
+    "title": "Acidobazické reakce – Příprava na test",
+    "subject": "Chemistry",
+    "topic": "Acidobazické reakce",
+    "template": "mixed",
+    "collection": "",
+    "date": "2026-02-15",
+    "file": "artifacts/chemie-acidobazicke-reakce.html"
+  },
+  {
+    "title": "Dějepis - Evropa 1918–1939",
+    "subject": "History",
+    "topic": "Meziválečné období, fašismus, nacismus",
+    "template": "practice",
+    "collection": "",
+    "date": "2026-02-12",
+    "file": "artifacts/dejak-1918-39.html"
+  },
+  {
+    "title": "Hydrostatika — Pascalův zákon, hydraulická zařízení, Archimédův zákon",
+    "subject": "Physics",
+    "topic": "Hydrostatika, Pascalův zákon",
+    "template": "practice",
+    "collection": "",
+    "date": "2026-02-12",
+    "file": "artifacts/fyzika-hydrostatika-pascal.html"
+  },
+  {
+    "title": "Planimetrické důkazy — Kompletní příprava",
+    "subject": "Math",
+    "topic": "Planimetrické důkazy",
+    "template": "study-app",
+    "collection": "",
+    "date": "2026-02-12",
+    "file": "artifacts/matematika-planimetricke-dukazy.html"
+  },
+  {
+    "title": "Geokurz: Seminární práce – Kvalita života v Domažlicích",
+    "subject": "Geography",
+    "topic": "Kvalita života, regionální geografie, Domažlice",
+    "template": "practice",
+    "collection": "",
+    "date": "2026-02-06",
+    "file": "artifacts/geokurz-seminarni-prace-kvalita-zivota-domazlice.html"
+  },
+  {
+    "title": "Konstrukční úlohy",
+    "subject": "Math",
+    "topic": "Konstrukční úlohy - trojúhelníky a čtyřúhelníky",
+    "template": "practice",
+    "collection": "",
+    "date": "2026-02-05",
+    "file": "artifacts/konstrukcni-ulohy.html"
+  },
+  {
+    "title": "Biologie - Mlži a hlavonožci",
+    "subject": "Biology",
+    "topic": "Biology",
+    "template": "quiz",
+    "collection": "",
+    "date": "2026-02-04",
+    "file": "artifacts/biologie-mlzi-hlavonozci.html"
+  },
+  {
+    "title": "Biologie - Plži",
+    "subject": "Biology",
+    "topic": "Biology",
+    "template": "quiz",
+    "collection": "",
+    "date": "2026-02-04",
+    "file": "artifacts/biologie-plzi.html"
+  },
+  {
+    "title": "Chemie - Ideální plyn",
+    "subject": "Chemistry",
+    "topic": "Chemistry",
+    "template": "practice",
+    "collection": "",
+    "date": "2026-02-04",
+    "file": "artifacts/chemie-idealni-plyn.html"
+  },
+  {
+    "title": "Chemie - Reakční kinetika",
+    "subject": "Chemistry",
+    "topic": "Chemistry",
+    "template": "practice",
+    "collection": "",
+    "date": "2026-02-04",
+    "file": "artifacts/chemie-kinetika.html"
+  },
+  {
+    "title": "Chemie - Chemické rovnováhy",
+    "subject": "Chemistry",
+    "topic": "Chemistry",
+    "template": "practice",
+    "collection": "",
+    "date": "2026-02-04",
+    "file": "artifacts/chemie-rovnovahy.html"
+  },
+  {
+    "title": "Termochemie - Interaktivní Průvodce",
+    "subject": "Chemistry",
+    "topic": "Chemistry",
+    "template": "practice",
+    "collection": "",
+    "date": "2026-02-04",
+    "file": "artifacts/chemie-termochemie.html"
+  },
+  {
+    "title": "Dějepis - První světová válka",
+    "subject": "History",
+    "topic": "WWI",
+    "template": "practice",
+    "collection": "",
+    "date": "2026-02-04",
+    "file": "artifacts/dejak-wwi.html"
+  },
+  {
+    "title": "Korporativismus – Studijní materiál pro tisk",
+    "subject": "History",
+    "topic": "Korporativismus",
+    "template": "practice",
+    "collection": "Texty pro Peška",
+    "date": "2026-02-04",
+    "file": "artifacts/dejepis-korporativismus.html"
   },
   {
     "title": "Le corps et la santé - Francouzská slovíčka",
@@ -401,7 +500,7 @@
     "topic": "French",
     "template": "practice",
     "collection": "",
-    "date": "2026-04-15",
+    "date": "2026-02-04",
     "file": "artifacts/francais-corps-sante.html"
   },
   {
@@ -410,71 +509,8 @@
     "topic": "French",
     "template": "practice",
     "collection": "",
-    "date": "2026-04-15",
+    "date": "2026-02-04",
     "file": "artifacts/francais-verbs.html"
-  },
-  {
-    "title": "Bernoulliho rovnice — Hydrodynamika",
-    "subject": "Physics",
-    "topic": "Bernoulliho rovnice, Rovnice kontinuity, Hydrodynamika",
-    "template": "study",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/fyzika-bernoulliho-rovnice.html"
-  },
-  {
-    "title": "Hydrostatika — Pascalův zákon, hydraulická zařízení, Archimédův zákon",
-    "subject": "Physics",
-    "topic": "Hydrostatika, Pascalův zákon",
-    "template": "practice",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/fyzika-hydrostatika-pascal.html"
-  },
-  {
-    "title": "Kapaliny — kompletní příprava na test",
-    "subject": "Physics",
-    "topic": "Hydrostatika · Hydrodynamika · Povrchová vrstva · Kapilarita · Roztažnost",
-    "template": "study-app",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/fyzika-kapaliny-komplexni.html"
-  },
-  {
-    "title": "Geokurz: Seminární práce – Kvalita života v Domažlicích",
-    "subject": "Geography",
-    "topic": "Kvalita života, regionální geografie, Domažlice",
-    "template": "practice",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/geokurz-seminarni-prace-kvalita-zivota-domazlice.html"
-  },
-  {
-    "title": "Goniometrické funkce — příprava na test",
-    "subject": "Math",
-    "topic": "Goniometrie: orientovaný úhel, oblouková míra, jednotková kružnice",
-    "template": "study",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/goniometrie-pripravanat-test.html"
-  },
-  {
-    "title": "Konstrukční úlohy",
-    "subject": "Math",
-    "topic": "Konstrukční úlohy - trojúhelníky a čtyřúhelníky",
-    "template": "practice",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/konstrukcni-ulohy.html"
-  },
-  {
-    "title": "Planimetrické důkazy — Kompletní příprava",
-    "subject": "Math",
-    "topic": "Planimetrické důkazy",
-    "template": "study-app",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/matematika-planimetricke-dukazy.html"
   },
   {
     "title": "⚡ MATH MASTER - Pololetní Písemka Trainer",
@@ -482,35 +518,8 @@
     "topic": "Pololetní test",
     "template": "practice",
     "collection": "",
-    "date": "2026-04-15",
+    "date": "2026-02-04",
     "file": "artifacts/matematika-pololetka.html"
-  },
-  {
-    "title": "Státní svátky a významné dny ČR",
-    "subject": "History",
-    "topic": "Státní svátky a významné dny ČR",
-    "template": "mixed",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/statni-svatky-cr.html"
-  },
-  {
-    "title": "Stavová rovnice - Kompletní průvodce",
-    "subject": "Physics",
-    "topic": "Thermodynamics",
-    "template": "practice",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/stavova_rovnice_kompletni.html"
-  },
-  {
-    "title": "Světový realismus — příprava na test",
-    "subject": "Literature",
-    "topic": "Světový realismus, naturalismus, autoři",
-    "template": "study",
-    "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/svetovy-realismus.html"
   },
   {
     "title": "Příprava na test - Hydrosféra",
@@ -518,7 +527,7 @@
     "topic": "Hydrosféra",
     "template": "practice",
     "collection": "",
-    "date": "2026-04-15",
+    "date": "2026-02-04",
     "file": "artifacts/zemepis-hydrosfera.html"
   },
   {
@@ -527,16 +536,16 @@
     "topic": "Meteorologie",
     "template": "practice",
     "collection": "",
-    "date": "2026-04-15",
+    "date": "2026-02-04",
     "file": "artifacts/zemepis-meteorologie.html"
   },
   {
-    "title": "Světová populace — příprava na písemku",
-    "subject": "Geography",
-    "topic": "Obyvatelstvo světa: rozložení, demografická revoluce, struktura",
-    "template": "study",
+    "title": "Stavová rovnice - Kompletní průvodce",
+    "subject": "Physics",
+    "topic": "Thermodynamics",
+    "template": "practice",
     "collection": "",
-    "date": "2026-04-15",
-    "file": "artifacts/zemepis-populace-pisemka.html"
+    "date": "2026-02-01",
+    "file": "artifacts/stavova_rovnice_kompletni.html"
   }
 ]
