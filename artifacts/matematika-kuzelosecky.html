@@ -537,7 +537,7 @@ function QuizEngine({ questions, accentColor = PEN }) {
   const isRevealed = !!revealed[idx];
   const myAnswer = answers[idx] || [];
   const isCorrect = isRevealed && arrEqual(myAnswer, q.correct);
-  const score = shuffledQuestions.filter((q, i) => revealed[i] && arrEqual(answers[i] || [], q.correct)).length;
+  const score = shuffledQuestions.filter((q2, i) => revealed[i] && arrEqual(answers[i] || [], q2.correct)).length;
   const pct = Math.round(score / shuffledQuestions.length * 100);
   const goTo = useCallback((i) => {
     setIdx(i);
@@ -844,20 +844,20 @@ function analyze(A, C, D, E, F) {
   }
   if (A !== 0 && C !== 0) {
     steps.push(`Rychlý test: u x² je \`${A}\`, u y² je \`${C}\` → součin \`${A * C > 0 ? "> 0" : "< 0"}\` → ${A * C > 0 ? A === C ? "kružnice" : "elipsa" : "hyperbola"} (pokud nevyjde singulární případ).`);
-    const m = Q(-D, 2 * A), n = Q(-E, 2 * C);
+    const m2 = Q(-D, 2 * A), n = Q(-E, 2 * C);
     const R = qadd(qadd(Q(-F), Q(D * D, 4 * A)), Q(E * E, 4 * C));
     if (D !== 0 || E !== 0) {
       const parts = [];
       if (D !== 0)
-        parts.push(`\`${fmtPoly([[A, "x²"], [D, "x"]])} = ${coefStr(Q(A))}[${sqTerm("x", m)} − ${fmtQ(qmul(m, m))}]\``);
+        parts.push(`\`${fmtPoly([[A, "x²"], [D, "x"]])} = ${coefStr(Q(A))}[${sqTerm("x", m2)} − ${fmtQ(qmul(m2, m2))}]\``);
       if (E !== 0)
         parts.push(`\`${fmtPoly([[C, "y²"], [E, "y"]])} = ${coefStr(Q(C))}[${sqTerm("y", n)} − ${fmtQ(qmul(n, n))}]\``);
       steps.push("Doplnění na čtverec: " + parts.join(", "));
     }
-    const left = `${coefStr(Q(A))}${sqTerm("x", m)} ${C > 0 ? "+" : MINUS} ${coefStr(Q(Math.abs(C)))}${sqTerm("y", n)}`;
+    const left = `${coefStr(Q(A))}${sqTerm("x", m2)} ${C > 0 ? "+" : MINUS} ${coefStr(Q(Math.abs(C)))}${sqTerm("y", n)}`;
     steps.push(`Konstanty převedu doprava: \`${left} = ${fmtQ(R)}\``);
-    center = [qv(m), qv(n)];
-    const S = coordStr(m, n);
+    center = [qv(m2), qv(n)];
+    const S = coordStr(m2, n);
     if (R.n === 0) {
       if (A * C > 0) {
         type = "bod";
@@ -868,14 +868,14 @@ function analyze(A, C, D, E, F) {
         type = "ruznobezky";
         const k2 = Q(-A, C);
         const k = sqrtStr(k2);
-        std = `${bareTerm("y", n)} = ±${k}·${linTerm("x", m)}`;
+        std = `${bareTerm("y", n)} = ±${k}·${linTerm("x", m2)}`;
         steps.push(`Pravá strana je 0 a znaménka se liší → rozklad (a² − b² = (a − b)(a + b)): \`${std}\` → dvě různoběžky (singulární kuželosečka, „zdegenerovaná hyperbola“).`);
         params.push(["Průsečík přímek", S], ["Přímky", std]);
       }
       return { type, name: TYPE_NAMES[type], steps, params, std, f, view: mkView(center[0], center[1], 6), center, ref, eq };
     }
     const al2 = qdiv(R, Q(A)), be2 = qdiv(R, Q(C));
-    steps.push(`Vydělím pravou stranou \`${fmtQ(R)}\`: \`${sqTerm("x", m)}/${den(al2)} + ${sqTerm("y", n)}/${den(be2)} = 1\``);
+    steps.push(`Vydělím pravou stranou \`${fmtQ(R)}\`: \`${sqTerm("x", m2)}/${den(al2)} + ${sqTerm("y", n)}/${den(be2)} = 1\``);
     if (al2.n < 0 && be2.n < 0) {
       type = "prazdna";
       steps.push("Oba jmenovatele záporné → levá strana ≥ 0 nikdy nedá zápornou pravou stranu. Žádný bod nevyhovuje.");
@@ -886,7 +886,7 @@ function analyze(A, C, D, E, F) {
     if (al2.n > 0 && be2.n > 0) {
       if (A === C) {
         type = "kruznice";
-        std = `${sqTerm("x", m)} + ${sqTerm("y", n)} = ${fmtQ(al2)}`;
+        std = `${sqTerm("x", m2)} + ${sqTerm("y", n)} = ${fmtQ(al2)}`;
         steps.push(`Stejné koeficienty u x² a y² → kružnice: \`${std}\`.`);
         params.push(["Střed", "S" + S], ["Poloměr", "r = " + sqrtStr(al2)]);
         ref = center;
@@ -894,39 +894,39 @@ function analyze(A, C, D, E, F) {
         view = mkView(center[0], center[1], Math.sqrt(qv(al2)) * 1.5 + 1);
       } else {
         type = "elipsa";
-        const horiz = qv(al2) > qv(be2);
-        const a2 = horiz ? al2 : be2, b2 = horiz ? be2 : al2, e2 = qsub(a2, b2);
-        std = `${sqTerm("x", m)}/${den(al2)} + ${sqTerm("y", n)}/${den(be2)} = 1`;
-        steps.push(`Oba jmenovatele kladné a různé → elipsa. Větší jmenovatel je pod ${horiz ? "x" : "y"} → hlavní osa ∥ s osou ${horiz ? "x" : "y"}: \`a² = ${fmtQ(a2)}, b² = ${fmtQ(b2)}\`.`);
-        steps.push(`Excentricita: \`e² = a² − b² = ${fmtQ(e2)}\` → \`e = ${sqrtStr(e2)}\`.`);
-        const [ma, pa] = pmStr(horiz ? m : n, a2), [mb, pb] = pmStr(horiz ? n : m, b2), [me, pe] = pmStr(horiz ? m : n, e2);
-        params.push(["Střed", "S" + S], ["Poloosy", `a = ${sqrtStr(a2)}, b = ${sqrtStr(b2)}, e = ${sqrtStr(e2)}`]);
-        if (horiz) {
-          params.push(["Hlavní vrcholy", `A[${ma}; ${fmtQ(n)}], B[${pa}; ${fmtQ(n)}]`], ["Vedlejší vrcholy", `C[${fmtQ(m)}; ${pb}], D[${fmtQ(m)}; ${mb}]`], ["Ohniska", `F₁[${me}; ${fmtQ(n)}], F₂[${pe}; ${fmtQ(n)}]`]);
+        const horiz2 = qv(al2) > qv(be2);
+        const a22 = horiz2 ? al2 : be2, b22 = horiz2 ? be2 : al2, e22 = qsub(a22, b22);
+        std = `${sqTerm("x", m2)}/${den(al2)} + ${sqTerm("y", n)}/${den(be2)} = 1`;
+        steps.push(`Oba jmenovatele kladné a různé → elipsa. Větší jmenovatel je pod ${horiz2 ? "x" : "y"} → hlavní osa ∥ s osou ${horiz2 ? "x" : "y"}: \`a² = ${fmtQ(a22)}, b² = ${fmtQ(b22)}\`.`);
+        steps.push(`Excentricita: \`e² = a² − b² = ${fmtQ(e22)}\` → \`e = ${sqrtStr(e22)}\`.`);
+        const [ma2, pa2] = pmStr(horiz2 ? m2 : n, a22), [mb, pb] = pmStr(horiz2 ? n : m2, b22), [me2, pe2] = pmStr(horiz2 ? m2 : n, e22);
+        params.push(["Střed", "S" + S], ["Poloosy", `a = ${sqrtStr(a22)}, b = ${sqrtStr(b22)}, e = ${sqrtStr(e22)}`]);
+        if (horiz2) {
+          params.push(["Hlavní vrcholy", `A[${ma2}; ${fmtQ(n)}], B[${pa2}; ${fmtQ(n)}]`], ["Vedlejší vrcholy", `C[${fmtQ(m2)}; ${pb}], D[${fmtQ(m2)}; ${mb}]`], ["Ohniska", `F₁[${me2}; ${fmtQ(n)}], F₂[${pe2}; ${fmtQ(n)}]`]);
         } else {
-          params.push(["Hlavní vrcholy", `A[${fmtQ(m)}; ${ma}], B[${fmtQ(m)}; ${pa}]`], ["Vedlejší vrcholy", `C[${mb}; ${fmtQ(n)}], D[${pb}; ${fmtQ(n)}]`], ["Ohniska", `F₁[${fmtQ(m)}; ${me}], F₂[${fmtQ(m)}; ${pe}]`]);
+          params.push(["Hlavní vrcholy", `A[${fmtQ(m2)}; ${ma2}], B[${fmtQ(m2)}; ${pa2}]`], ["Vedlejší vrcholy", `C[${mb}; ${fmtQ(n)}], D[${pb}; ${fmtQ(n)}]`], ["Ohniska", `F₁[${fmtQ(m2)}; ${me2}], F₂[${fmtQ(m2)}; ${pe2}]`]);
         }
-        params.push(["Hlavní osa", horiz ? `y = ${fmtQ(n)}` : `x = ${fmtQ(m)}`], ["Číselná výstřednost", `ε = e/a = ${epsStr(a2, e2)}  (< 1)`], ["Řídicí přímky", horiz ? dirStr("x", m, a2, e2) : dirStr("y", n, a2, e2)]);
+        params.push(["Hlavní osa", horiz2 ? `y = ${fmtQ(n)}` : `x = ${fmtQ(m2)}`], ["Číselná výstřednost", `ε = e/a = ${epsStr(a22, e22)}  (< 1)`], ["Řídicí přímky", horiz2 ? dirStr("x", m2, a22, e22) : dirStr("y", n, a22, e22)]);
         ref = center;
-        geo = { kind: "elipsa", cx: center[0], cy: center[1], a: Math.sqrt(qv(a2)), b: Math.sqrt(qv(b2)), e: Math.sqrt(qv(e2)), horiz };
-        view = mkView(center[0], center[1], Math.sqrt(qv(a2)) * 1.4 + 1);
+        geo = { kind: "elipsa", cx: center[0], cy: center[1], a: Math.sqrt(qv(a22)), b: Math.sqrt(qv(b22)), e: Math.sqrt(qv(e22)), horiz: horiz2 };
+        view = mkView(center[0], center[1], Math.sqrt(qv(a22)) * 1.4 + 1);
       }
       return { type, name: TYPE_NAMES[type], steps, params, std, f, view, center, ref, eq, geo };
     }
     type = "hyperbola";
     const horiz = al2.n > 0;
     const a2 = horiz ? al2 : be2, b2 = horiz ? Q(-be2.n, be2.d) : Q(-al2.n, al2.d), e2 = qadd(a2, b2);
-    std = horiz ? `${sqTerm("x", m)}/${den(a2)} − ${sqTerm("y", n)}/${den(b2)} = 1` : `${sqTerm("y", n)}/${den(a2)} − ${sqTerm("x", m)}/${den(b2)} = 1`;
+    std = horiz ? `${sqTerm("x", m2)}/${den(a2)} − ${sqTerm("y", n)}/${den(b2)} = 1` : `${sqTerm("y", n)}/${den(a2)} − ${sqTerm("x", m2)}/${den(b2)} = 1`;
     steps.push(`Jmenovatele mají opačná znaménka → hyperbola. Kladný člen je s ${horiz ? "x" : "y"} → hlavní osa ∥ s osou ${horiz ? "x" : "y"}: \`${std}\`.`);
     steps.push(`Excentricita: \`e² = a² + b² = ${fmtQ(e2)}\` → \`e = ${sqrtStr(e2)}\`.`);
-    const [ma, pa] = pmStr(horiz ? m : n, a2), [me, pe] = pmStr(horiz ? m : n, e2);
+    const [ma, pa] = pmStr(horiz ? m2 : n, a2), [me, pe] = pmStr(horiz ? m2 : n, e2);
     const slope2 = horiz ? qdiv(b2, a2) : qdiv(a2, b2);
     params.push(["Střed", "S" + S], ["Poloosy", `a = ${sqrtStr(a2)}, b = ${sqrtStr(b2)}, e = ${sqrtStr(e2)}`]);
     if (horiz)
       params.push(["Vrcholy", `A[${ma}; ${fmtQ(n)}], B[${pa}; ${fmtQ(n)}]`], ["Ohniska", `F₁[${me}; ${fmtQ(n)}], F₂[${pe}; ${fmtQ(n)}]`]);
     else
-      params.push(["Vrcholy", `A[${fmtQ(m)}; ${ma}], B[${fmtQ(m)}; ${pa}]`], ["Ohniska", `F₁[${fmtQ(m)}; ${me}], F₂[${fmtQ(m)}; ${pe}]`]);
-    params.push(["Asymptoty", `${bareTerm("y", n)} = ±${sqrtStr(slope2)}·${linTerm("x", m)}`], ["Hlavní osa", horiz ? `y = ${fmtQ(n)}` : `x = ${fmtQ(m)}`], ["Číselná výstřednost", `ε = e/a = ${epsStr(a2, e2)}  (> 1)`], ["Řídicí přímky", horiz ? dirStr("x", m, a2, e2) : dirStr("y", n, a2, e2)]);
+      params.push(["Vrcholy", `A[${fmtQ(m2)}; ${ma}], B[${fmtQ(m2)}; ${pa}]`], ["Ohniska", `F₁[${fmtQ(m2)}; ${me}], F₂[${fmtQ(m2)}; ${pe}]`]);
+    params.push(["Asymptoty", `${bareTerm("y", n)} = ±${sqrtStr(slope2)}·${linTerm("x", m2)}`], ["Hlavní osa", horiz ? `y = ${fmtQ(n)}` : `x = ${fmtQ(m2)}`], ["Číselná výstřednost", `ε = e/a = ${epsStr(a2, e2)}  (> 1)`], ["Řídicí přímky", horiz ? dirStr("x", m2, a2, e2) : dirStr("y", n, a2, e2)]);
     geo = { kind: "hyperbola", cx: center[0], cy: center[1], a: Math.sqrt(qv(a2)), b: Math.sqrt(qv(b2)), e: Math.sqrt(qv(e2)), horiz };
     const ev = Math.sqrt(qv(e2));
     ref = horiz ? [center[0] + ev, center[1]] : [center[0], center[1] + ev];
@@ -1103,20 +1103,20 @@ function genConicThrough(kind) {
     const m = ri(-3, 3), n = ri(-3, 3);
     if (kind === "elipsa" || kind === "kruznice") {
       const A = ri(1, 4), C = kind === "kruznice" ? A : ri(1, 4);
-      const T = [m + ri(-3, 3), n + ri(-3, 3)];
-      if (T[0] === m && T[1] === n)
+      const T2 = [m + ri(-3, 3), n + ri(-3, 3)];
+      if (T2[0] === m && T2[1] === n)
         continue;
-      const R = A * (T[0] - m) ** 2 + C * (T[1] - n) ** 2;
-      return { K: fromCentered(A, C, m, n, R), T, kind: A === C ? "kruznice" : "elipsa" };
+      const R = A * (T2[0] - m) ** 2 + C * (T2[1] - n) ** 2;
+      return { K: fromCentered(A, C, m, n, R), T: T2, kind: A === C ? "kruznice" : "elipsa" };
     }
     if (kind === "hyperbola") {
       const k = ri(1, 3), l = ri(1, 3), sg = pick([1, -1]);
       const A = sg * k * k, C = -sg * l * l;
-      const T = [m + ri(-4, 4), n + ri(-4, 4)];
-      const R = A * (T[0] - m) ** 2 + C * (T[1] - n) ** 2;
+      const T2 = [m + ri(-4, 4), n + ri(-4, 4)];
+      const R = A * (T2[0] - m) ** 2 + C * (T2[1] - n) ** 2;
       if (R === 0)
         continue;
-      return { K: fromCentered(A, C, m, n, R), T, kind, k, l, m, n };
+      return { K: fromCentered(A, C, m, n, R), T: T2, kind, k, l, m, n };
     }
     const t = ri(-3, 3);
     const divs = [];
@@ -1194,16 +1194,16 @@ function ratioK(f1, f2, c, vert, en, ed) {
 var RATIOS = [[1, 2], [1, 2], [1, 1], [1, 1], [2, 1], [2, 1], [1, 3], [3, 1], [2, 3], [3, 2]];
 function genRatioTask() {
   for (;; ) {
-    const [num, den] = pick(RATIOS), vert = Math.random() < 0.5;
+    const [num, den2] = pick(RATIOS), vert = Math.random() < 0.5;
     const f1 = ri(-4, 4), f2 = ri(-4, 4), c = ri(-6, 6);
     if ((vert ? f1 : f2) === c)
       continue;
-    const K = normK(ratioK(f1, f2, c, vert, num * num, den * den));
+    const K = normK(ratioK(f1, f2, c, vert, num * num, den2 * den2));
     const wrong = [
-      ratioK(f1, f2, c, vert, num, den),
-      ratioK(f1, f2, c, vert, den * den, num * num),
-      ratioK(f1, f2, -c, vert, num * num, den * den),
-      ratioK(-f1, -f2, c, vert, num * num, den * den)
+      ratioK(f1, f2, c, vert, num, den2),
+      ratioK(f1, f2, c, vert, den2 * den2, num * num),
+      ratioK(f1, f2, -c, vert, num * num, den2 * den2),
+      ratioK(-f1, -f2, c, vert, num * num, den2 * den2)
     ].map(normK).filter((k) => (k.A || k.C) && !sameK(k, K));
     const opts = [K];
     for (const k of shuffleArray(wrong))
@@ -1211,21 +1211,21 @@ function genRatioTask() {
         opts.push(k);
     if (opts.length < 4)
       continue;
-    const phr = num === den ? "stejnou vzdálenost od bodu F a od přímky d" : num < den && num === 1 ? `vzdálenost od přímky d ${den === 2 ? "dvojnásobnou" : "trojnásobnou"} než od bodu F` : den === 1 ? `vzdálenost od bodu F ${num === 2 ? "dvojnásobnou" : "trojnásobnou"} než od přímky d` : `poměr vzdáleností |PF| : |Pd| = ${num} : ${den}`;
-    return { f1, f2, c, vert, num, den, K, opts: shuffleArray(opts), phr };
+    const phr = num === den2 ? "stejnou vzdálenost od bodu F a od přímky d" : num < den2 && num === 1 ? `vzdálenost od přímky d ${den2 === 2 ? "dvojnásobnou" : "trojnásobnou"} než od bodu F` : den2 === 1 ? `vzdálenost od bodu F ${num === 2 ? "dvojnásobnou" : "trojnásobnou"} než od přímky d` : `poměr vzdáleností |PF| : |Pd| = ${num} : ${den2}`;
+    return { f1, f2, c, vert, num, den: den2, K, opts: shuffleArray(opts), phr };
   }
 }
 function ratioSteps(t) {
-  const { f1, f2, c, vert, num, den, K } = t;
-  const v = vert ? "x" : "y", eps = Q(num, den), e2 = qmul(eps, eps);
-  const raw = ratioK(f1, f2, c, vert, num * num, den * den);
-  const kind = num < den ? "ε < 1 → elipsa" : num === den ? "ε = 1 → parabola" : "ε > 1 → hyperbola";
+  const { f1, f2, c, vert, num, den: den2, K } = t;
+  const v = vert ? "x" : "y", eps = Q(num, den2), e2 = qmul(eps, eps);
+  const raw = ratioK(f1, f2, c, vert, num * num, den2 * den2);
+  const kind = num < den2 ? "ε < 1 → elipsa" : num === den2 ? "ε = 1 → parabola" : "ε > 1 → hyperbola";
   const st = [
     `Obecný bod \`P[x; y]\`. \`|PF| = √(${sqTerm("x", Q(f1))} + ${sqTerm("y", Q(f2))})\`, \`|Pd| = |${bareTerm(v, Q(c))}|\``,
-    `Podmínka \`|PF| = ${fmtQ(eps)}·|Pd|\`, obě strany umocním na druhou: \`${sqTerm("x", Q(f1))} + ${sqTerm("y", Q(f2))} = ${num === den ? "" : fmtQ(e2) + "·"}${sqTerm(v, Q(c))}\``
+    `Podmínka \`|PF| = ${fmtQ(eps)}·|Pd|\`, obě strany umocním na druhou: \`${sqTerm("x", Q(f1))} + ${sqTerm("y", Q(f2))} = ${num === den2 ? "" : fmtQ(e2) + "·"}${sqTerm(v, Q(c))}\``
   ];
-  if (den !== 1)
-    st.push(`Zbavím se zlomku (·${den * den}): \`${den * den}[${sqTerm("x", Q(f1))} + ${sqTerm("y", Q(f2))}] = ${num * num === 1 ? "" : num * num}${sqTerm(v, Q(c))}\``);
+  if (den2 !== 1)
+    st.push(`Zbavím se zlomku (·${den2 * den2}): \`${den2 * den2}[${sqTerm("x", Q(f1))} + ${sqTerm("y", Q(f2))}] = ${num * num === 1 ? "" : num * num}${sqTerm(v, Q(c))}\``);
   st.push(`Roznásobím a převedu vše doleva: \`${genEq(raw.A, raw.C, raw.D, raw.E, raw.F)}\`${sameK(raw, K) ? "" : ` → po vykrácení \`${genEq(K.A, K.C, K.D, K.E, K.F)}\``}`);
   st.push(`Poměr \`ε = |PF| : |Pd| = ${fmtQ(eps)}\` je číselná výstřednost: ${kind}.`);
   return st;
