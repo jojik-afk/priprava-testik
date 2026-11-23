@@ -516,6 +516,8 @@ const CHECKS = [
   "Z grafu i z předpisu určím D(f), H(f), sudost/lichost, monotonii, omezenost, extrémy, prostost.",
   "Nakreslím graf y = xⁿ pro n kladné i záporné, sudé i liché, a vím, kudy prochází ([1; 1], [−1; ±1]).",
   "Umím posunout, překlopit a natáhnout graf: f(x − m) + n, a·f(x), −f(x), |f(x)|, f(|x|).",
+  "Ze slovního popisu („přetočená kolem osy x, 2× rozplácnutější, 3 doleva…“) napíšu předpis.",
+  "Do každého grafu vyznačím jedničkové body [m ± 1; n ± a] i se souřadnicemi.",
   "Vím, proč |x⁻⁴| = x⁻⁴ a že |x⁻³| je sudá funkce.",
   "Převedu (ax + b)/(cx + d) na tvar k/(x − m) + n a určím asymptoty a střed S[m; n].",
   "Spočítám průsečíky s osami (s kalkulačkou na 2 desetinná místa).",
@@ -545,7 +547,7 @@ function Prehled({ go }) {
       <div className="hero">
         <div>
           <p style={{ fontSize: 17, marginTop: 0 }}>Písemka z matematiky v <b>pondělí 23. listopadu 2026</b>. <b>Kalkulačka je povolená</b> — počítej průsečíky na 2 desetinná místa.</p>
-          <p className="lead">Tahle aplikace pokrývá všechna čtyři témata, má vyřešené všechny zadané úlohy z Petákové (str. 57/1, 2, 3 bez g₄, 4 bez h₄, 8 a str. 58/9) a k tomu neomezený trenažér.</p>
+          <p className="lead">Tahle aplikace pokrývá všechna čtyři témata, má vyřešené oba pracovní listy z hodin (transformace mocninných funkcí, lineární lomená funkce), všechny zadané úlohy z Petákové (str. 57/1, 2, 3 bez g₄, 4 bez h₄, 8 a str. 58/9) a k tomu neomezený trenažér.</p>
         </div>
         <div style={{ textAlign: "center" }}>
           <div className="stamp"><span style={{ fontSize: 13, letterSpacing: ".1em" }}>PÍSEMKA</span><b>{when}</b><span style={{ fontSize: 13 }}>po 23. 11. 2026</span></div>
@@ -560,6 +562,7 @@ function Prehled({ go }) {
       <div className="entry red">
         <h3>Plán na víkend</h3>
         <ol>
+          <li><b>Nejdřív:</b> <a href="#" onClick={e => { e.preventDefault(); go("listy"); }}>Pracovní listy</a> — jsou nejblíž písemce. Hlídej <b>jedničkové body</b> a slovník „přetočená / roztaženější / rozplácnutější“.</li>
           <li><b>Sobota:</b> <a href="#" onClick={e => { e.preventDefault(); go("teorie"); }}>Teorie</a> → pohraj si v <a href="#" onClick={e => { e.preventDefault(); go("lab"); }}>Laboratoři</a> s posuny grafů → Petáková 57/1–4 (nejdřív sám, pak rozbal řešení).</li>
           <li><b>Neděle:</b> Petáková 57/8 a 58/9 → <a href="#" onClick={e => { e.preventDefault(); go("dalsi"); }}>Další příklady</a> (početní nerovnice!) → <a href="#" onClick={e => { e.preventDefault(); go("trenazer"); }}>Trenažér</a>, dokud nemáš 10 v řadě.</li>
           <li><b>Pondělí ráno:</b> <a href="#" onClick={e => { e.preventDefault(); go("kviz"); }}>Kvíz</a>, <a href="#" onClick={e => { e.preventDefault(); go("karticky"); }}>Kartičky</a> a <a href="#" onClick={e => { e.preventDefault(); go("vzorce"); }}>Vzorce</a>.</li>
@@ -712,6 +715,22 @@ function Teorie() {
             <tr><td className="mono">y = f(|x|)</td><td>část pro <b>x ≥ 0</b> necháme, levou zahodíme a nahradíme zrcadlením pravé podle osy y ⇒ sudá funkce</td></tr>
           </tbody>
         </table></div>
+        <h4 style={{ fontSize: 16, margin: "14px 0 6px" }}>Slovník z pracovních listů</h4>
+        <div className="tblWrap"><table className="tbl">
+          <thead><tr><th>Slovy</th><th>Předpis</th><th>Příklad z y = x⁵</th></tr></thead>
+          <tbody>
+            <tr><td>„přetočená / otočená kolem osy x“</td><td className="mono">−f(x)</td><td className="mono">y = −x⁵</td></tr>
+            <tr><td>„k-krát roztaženější“</td><td className="mono">k · f(x)</td><td className="mono">y = 3x⁵</td></tr>
+            <tr><td>„k-krát rozplácnutější“</td><td className="mono">(1/k) · f(x)</td><td className="mono">y = ½x⁵</td></tr>
+            <tr><td>„posunutá o m doprava / doleva“</td><td className="mono">f(x − m) / f(x + m)</td><td className="mono">o 3 doleva: y = (x + 3)⁵</td></tr>
+            <tr><td>„posunutá o n nahoru / dolů“</td><td className="mono">f(x) + n / f(x) − n</td><td className="mono">o 2 dolů: y = x⁵ − 2</td></tr>
+          </tbody>
+        </table></div>
+        <div className="note"><b>Jedničkové body — učitel je chce v každém grafu, i se souřadnicemi.</b> Jsou to body, jejichž x je o 1 vedle středu / vrcholu. U `y = a(x − m)ⁿ + n₀` dosadíš `x = m ± 1` ⇒ `(±1)ⁿ = ±1` ⇒ `y = n₀ ± a` (u sudého n vyjde u obou `n₀ + a`). U lineární lomené `y = [[k||x − m]] + n` to jsou `[m + 1; n + k]` a `[m − 1; n − k]`.</div>
+        <div className="grid2">
+          <FnGraph view={[-3.5, 1.5, -2, 4]} w={300} fns={[{ f: pw(4), color: MUTED, dash: true }, { f: x => 2 * Math.pow(x + 1, 4) - 1 }]} pts={[{ x: -1, y: -1, color: RED, label: "[−1;−1]" }, { x: 0, y: 1, color: GREEN, label: "[0;1]" }, { x: -2, y: 1, color: GREEN, label: "[−2;1]" }]} caption="y = 2(x + 1)⁴ − 1: vrchol [−1; −1], jedničkové body y = −1 + 2 = 1" />
+          <FnGraph view={[-2.5, 3.5, -4, 6]} w={300} fns={[{ f: pw(5), color: MUTED, dash: true }, { f: x => -3 * Math.pow(x - 0.75, 5) + 1 }]} pts={[{ x: 0.75, y: 1, color: RED, label: "[¾;1]" }, { x: 1.75, y: -2, color: GREEN, label: "[7/4;−2]" }, { x: -0.25, y: 4, color: GREEN, label: "[−1/4;4]" }]} caption="y = −3(x − ¾)⁵ + 1: střed [¾; 1], jedničkové body y = 1 ∓ 3" />
+        </div>
         <Eq>{"y = a · (x − m)ⁿ + n₀   …  vrchol / střed se posune z [0; 0] do [m; n₀]"}</Eq>
         <StageViewer />
         <div className="note"><b>Absolutní hodnota u sudé mocniny nic nedělá:</b> `x⁻⁴ &gt; 0` vždy, takže `|x⁻⁴| = x⁻⁴` a `|x⁻⁴ + 2| = x⁻⁴ + 2` (proto v 57/4 vyjde `h₅ = h₆`). U liché mocniny `|x⁻³|` naopak překlopí levou větev nahoru a vznikne sudá funkce.</div>
@@ -785,6 +804,7 @@ const INF = Infinity;
 
 function llfPart({ l, q, d, conv, k, kS, m, mS, n, nS, px, py, view, pts = [] }) {
   const dec = k > 0;
+  const j1 = `[${fmt(m + 1)}; ${fmt(n + k)}]`, j2 = `[${fmt(m - 1)}; ${fmt(n - k)}]`;
   return {
     l, q, d,
     given: "Lineární lomená funkce — převedeme na tvar `y = [[k||x − m]] + n`.",
@@ -797,9 +817,10 @@ function llfPart({ l, q, d, conv, k, kS, m, mS, n, nS, px, py, view, pts = [] })
       dec ? `\`k > 0\` ⇒ větve v I. a III. kvadrantu vůči asymptotám, funkce klesá na \`(−∞; ${mS})\` i na \`(${mS}; ∞)\`.` : `\`k < 0\` ⇒ větve ve II. a IV. kvadrantu, funkce roste na obou intervalech.`,
       "Průsečík s osou x: " + px,
       "Průsečík s osou y: " + py,
+      `Jedničkové body (x o 1 vedle středu ⇒ y = n ± k): \`${j1}\`, \`${j2}\`.`,
     ],
     result: `S[${mS}; ${nS}], D = R ∖ {${mS}}, H = R ∖ {${nS}}`,
-    graph: { view, asymV: [m], asymH: [n], fns: [{ f: x => k / (x - m) + n }], pts: [{ x: m, y: n, color: RED, label: "S" }, ...pts] },
+    graph: { view, asymV: [m], asymH: [n], fns: [{ f: x => k / (x - m) + n }], pts: [{ x: m, y: n, color: RED, label: "S" }, ...pts, { x: m + 1, y: n + k, color: GREEN, label: j1 }, { x: m - 1, y: n - k, color: GREEN, label: j2 }] },
   };
 }
 
@@ -1061,6 +1082,123 @@ const PETAKOVA = [
   },
 ];
 
+// ══════════════════════════════════════════════════════════════════
+// PRACOVNÍ LISTY Z HODIN
+// ══════════════════════════════════════════════════════════════════
+const JP = (x, y, label) => ({ x, y, label, color: GREEN });
+const PL = [
+  {
+    src: "PL: Transformace mocninných funkcí · úloha 1",
+    title: "Popis → předpis, základ y = x⁵",
+    text: "Napište předpisy a nakreslete graf funkce, která je oproti funkci `y = x⁵` … Do každého grafu vyznač jedničkové body a napiš k nim souřadnice (zeleně).",
+    parts: [
+      {
+        l: "a", d: 1, q: "přetočená kolem osy x",
+        formula: "Přetočení kolem osy x ⇒ `−f(x)` (každé y vynásobíme −1).",
+        steps: ["`y = −x⁵`.", "Jedničkové body: `[1; 1] → [1; −1]`, `[−1; −1] → [−1; 1]`; počátek `[0; 0]` zůstává.", "Funkce je teď klesající, pořád lichá; `D = H = R`."],
+        result: "y = −x⁵",
+        graph: { view: [-2.5, 2.5, -3, 3], fns: [{ f: pw(5), color: MUTED, dash: true }, { f: x => -Math.pow(x, 5) }], pts: [JP(1, -1, "[1;−1]"), JP(-1, 1, "[−1;1]"), { x: 0, y: 0 }], caption: "čárkovaně y = x⁵" },
+      },
+      {
+        l: "b", d: 1, q: "dvakrát „rozplácnutější“",
+        formula: "Rozplácnutí (stlačení k ose x) ⇒ `a · f(x)` s `0 < a < 1`.",
+        steps: ["Dvakrát rozplácnutější = všechna y poloviční ⇒ `a = [[1||2]]`.", "`y = [[1||2]]x⁵`.", "Jedničkové body: `[1; ½]`, `[−1; −½]`, počátek `[0; 0]`.", "Pro srovnání: „dvakrát roztaženější“ by bylo `y = 2x⁵`."],
+        result: "y = ½·x⁵",
+        graph: { view: [-2.5, 2.5, -3, 3], fns: [{ f: pw(5), color: MUTED, dash: true }, { f: x => 0.5 * Math.pow(x, 5) }], pts: [JP(1, 0.5, "[1;½]"), JP(-1, -0.5, "[−1;−½]"), { x: 0, y: 0 }], caption: "čárkovaně y = x⁵" },
+      },
+      {
+        l: "c", d: 2, q: "posunutá o 3 doleva a o 2 dolů",
+        formula: "Posun o m doprava a o n nahoru ⇒ `f(x − m) + n`. Doleva o 3 ⇒ `m = −3`.",
+        steps: ["Doleva o 3: za `x` dosadíme `x + 3` (v závorce opačné znaménko!).", "Dolů o 2: `− 2` za mocninou.", "`y = (x + 3)⁵ − 2`, střed souměrnosti `[−3; −2]`.", "Jedničkové body: `[−3 + 1; −2 + 1] = [−2; −1]` a `[−3 − 1; −2 − 1] = [−4; −3]`."],
+        result: "y = (x + 3)⁵ − 2",
+        graph: { view: [-6, 2, -5, 3], fns: [{ f: pw(5), color: MUTED, dash: true }, { f: x => Math.pow(x + 3, 5) - 2 }], pts: [{ x: -3, y: -2, color: RED, label: "[−3;−2]" }, JP(-2, -1, "[−2;−1]"), JP(-4, -3, "[−4;−3]")], caption: "čárkovaně y = x⁵" },
+      },
+      {
+        l: "d", d: 3, q: "otočená kolem osy x, třikrát „roztaženější“, posunutá o 1 nahoru a o ¾ doprava",
+        formula: "`y = a(x − m)⁵ + n` s `a = −3`, `m = [[3||4]]`, `n = 1`.",
+        steps: ["Otočení kolem osy x a trojnásobné roztažení ⇒ `a = −3`.", "Doprava o ¾ ⇒ `(x − [[3||4]])`; nahoru o 1 ⇒ `+ 1`.", "`y = −3(x − [[3||4]])⁵ + 1`, střed `[¾; 1]`.", "Jedničkové body: `x = ¾ + 1 = [[7||4]]` ⇒ `y = −3·1 + 1 = −2` → `[7/4; −2]`.", "`x = ¾ − 1 = −[[1||4]]` ⇒ `y = −3·(−1) + 1 = 4` → `[−1/4; 4]`."],
+        result: "y = −3(x − ¾)⁵ + 1",
+        graph: { view: [-2.5, 3.5, -4, 6], fns: [{ f: pw(5), color: MUTED, dash: true }, { f: x => -3 * Math.pow(x - 0.75, 5) + 1 }], pts: [{ x: 0.75, y: 1, color: RED, label: "[¾;1]" }, JP(1.75, -2, "[7/4;−2]"), JP(-0.25, 4, "[−1/4;4]")], caption: "čárkovaně y = x⁵" },
+      },
+    ],
+  },
+  {
+    src: "PL: Transformace mocninných funkcí · úloha 3",
+    title: "Popis → předpis, základ y = x⁻²",
+    text: "Napište předpis a nakreslete graf funkce, která je oproti funkci `y = x⁻²` přetočená kolem osy x, dvakrát „rozplácnutější“ a posunutá o 3 doleva a o 2 dolů.",
+    parts: [
+      {
+        l: "3", d: 3, q: "`y = x⁻²` → přetočit, 2× rozplácnout, 3 doleva, 2 dolů",
+        formula: "`y = a(x − m)⁻² + n` s `a = −[[1||2]]`, `m = −3`, `n = −2`.",
+        steps: ["Přetočení kolem osy x a dvojnásobné rozplácnutí ⇒ `a = −[[1||2]]`.", "Doleva o 3 ⇒ `(x + 3)`, dolů o 2 ⇒ `− 2`.", "`y = −[[1||2]](x + 3)⁻² − 2 = −[[1||2(x + 3)²]] − 2`.", "Asymptoty `x = −3`, `y = −2`; `D = R ∖ {−3}`, `H = (−∞; −2)`.", "Jedničkové body: `x = −2` i `x = −4` ⇒ `y = −½ − 2 = −[[5||2]]` → `[−2; −5/2]`, `[−4; −5/2]`.", "Průsečík s osou y: `y(0) = −[[1||18]] − 2 = −[[37||18]] ≈ −2,06`; s osou x žádný."],
+        result: "y = −½(x + 3)⁻² − 2",
+        graph: { view: [-8, 2, -7, 1], asymV: [-3], asymH: [-2], fns: [{ f: x => -0.5 * Math.pow(x + 3, -2) - 2 }], pts: [JP(-2, -2.5, "[−2;−5/2]"), JP(-4, -2.5, "[−4;−5/2]")] },
+      },
+    ],
+  },
+  {
+    src: "PL: Transformace mocninných funkcí · úloha 2 + bonus",
+    title: "Nakreslete do KSS grafy zadaných funkcí",
+    text: "Postupuj zevnitř ven a vyznač jedničkové body (zeleně), průsečíky a asymptoty.",
+    parts: [
+      {
+        l: "a", d: 2, q: "`y = |x³ − 1|`",
+        formula: "`x³` → posun o 1 dolů → `| |` (část pod osou x nahoru).",
+        steps: ["`x³ − 1`: jedničkové body `[0; −1]`, `[1; 0]`, `[−1; −2]`.", "Pod osou x je celá část pro `x < 1` → překlopíme ji: `[0; −1] → [0; 1]`, `[−1; −2] → [−1; 2]`.", "`D = R`, `H = ⟨0; ∞)`; klesající na `(−∞; 1⟩`, rostoucí na `⟨1; ∞)`; minimum 0 v `x = 1`.", "Průsečíky: `[1; 0]` a `[0; 1]`."],
+        result: "D = R, H = ⟨0; ∞), Pₓ[1; 0], Pᵧ[0; 1]",
+        graph: { view: [-2.5, 2.5, -2.5, 4], fns: [{ f: x => Math.pow(x, 3) - 1, color: MUTED, dash: true }, { f: x => Math.abs(Math.pow(x, 3) - 1) }], pts: [JP(1, 0, "[1;0]"), JP(0, 1, "[0;1]"), JP(-1, 2, "[−1;2]")], caption: "čárkovaně x³ − 1" },
+      },
+      {
+        l: "b", d: 2, q: "`y = 2(x + 1)⁴ − 1`",
+        formula: "`x⁴` → 1 doleva → roztáhnout 2× → 1 dolů. Vrchol `[−1; −1]`.",
+        steps: ["Vrchol `[−1; −1]` je minimum.", "Jedničkové body: `x = 0` a `x = −2` ⇒ `y = 2·1 − 1 = 1` → `[0; 1]`, `[−2; 1]`.", "`D = R`, `H = ⟨−1; ∞)`; klesající na `(−∞; −1⟩`, rostoucí na `⟨−1; ∞)`; osa souměrnosti `x = −1`.", "Osa x: `(x + 1)⁴ = [[1||2]] ⇒ x + 1 = ±⁴√0,5 ≈ ±0,84 ⇒ x ≈ −0,16` nebo `x ≈ −1,84`.", "Osa y: `[0; 1]` (zároveň jedničkový bod)."],
+        result: "H = ⟨−1; ∞), Pₓ[−0,16; 0], [−1,84; 0], Pᵧ[0; 1]",
+        graph: { view: [-3.5, 1.5, -2, 4], fns: [{ f: x => 2 * Math.pow(x + 1, 4) - 1 }], pts: [{ x: -1, y: -1, color: RED, label: "[−1;−1]" }, JP(0, 1, "[0;1]"), JP(-2, 1, "[−2;1]")] },
+      },
+      {
+        l: "c", d: 3, q: "`y = |[[1||(x − 1)³]] + 1|`",
+        formula: "`x⁻³` → 1 doprava → 1 nahoru → `| |`.",
+        steps: ["`(x − 1)⁻³ + 1`: asymptoty `x = 1`, `y = 1`; jedničkové body `[2; 2]` a `[0; 0]`.", "Pod osou x je kus levé větve pro `x ∈ (0; 1)` → překlopíme nahoru.", "`D = R ∖ {1}`, `H = ⟨0; ∞)`.", "Průsečík s osou x i y je tentýž bod `[0; 0]` (zároveň jedničkový bod)."],
+        result: "D = R ∖ {1}, H = ⟨0; ∞), P[0; 0]",
+        graph: { view: [-3, 5, -2, 5], asymV: [1], asymH: [1], fns: [{ f: x => Math.pow(x - 1, -3) + 1, color: MUTED, dash: true }, { f: x => Math.abs(Math.pow(x - 1, -3) + 1) }], pts: [JP(2, 2, "[2;2]"), JP(0, 0, "[0;0]")], caption: "čárkovaně (x − 1)⁻³ + 1" },
+      },
+      {
+        l: "bonus", d: 3, q: "`y = [[1||x² − 1]]`",
+        formula: "Není to mocninná funkce — rozbor přes jmenovatel `t = x² − 1`.",
+        steps: ["`D: x² ≠ 1 ⇒ D = R ∖ {−1; 1}`; svislé asymptoty `x = −1`, `x = 1`, vodorovná `y = 0`.", "Sudá funkce (`(−x)² = x²`) ⇒ souměrná podle osy y.", "`|x| > 1`: `t > 0` ⇒ `y > 0`, s rostoucím `|x|` klesá k 0.", "`|x| < 1`: `t ∈ ⟨−1; 0)` ⇒ `y ≤ −1`; nejvýš je bod `[0; −1]`.", "`H = (−∞; −1⟩ ∪ (0; ∞)`; průsečík s osou y `[0; −1]`, s osou x žádný.", "Rostoucí na `(−∞; −1)` a `(−1; 0⟩`, klesající na `⟨0; 1)` a `(1; ∞)`."],
+        result: "D = R∖{±1}, H = (−∞; −1⟩ ∪ (0; ∞), Pᵧ[0; −1]",
+        graph: { view: [-4, 4, -4, 4], asymV: [-1, 1], asymH: [0], fns: [{ f: x => 1 / (x * x - 1) }], pts: [{ x: 0, y: -1, label: "[0;−1]" }] },
+      },
+    ],
+  },
+  {
+    src: "PL: Lineární lomená funkce · úloha 10",
+    title: "Průsečíky, asymptoty a graf lineární lomené funkce",
+    red: true,
+    text: "Vypočítejte souřadnice průsečíků grafů se souřadnicovými osami x a y. Upravte předpisy na tvar, z něhož určíte rovnice asymptot. Narýsujte asymptoty a načrtněte grafy. Zeleně jsou jedničkové body `[m ± 1; n ± k]`.",
+    parts: [
+      llfPart({ l: "a", d: 1, q: "`f: y = [[x||x − 1]]`", conv: ["`x = (x − 1) + 1`", "`y = [[(x − 1) + 1||x − 1]] = 1 + [[1||x − 1]]`"], k: 1, kS: "1", m: 1, mS: "1", n: 1, nS: "1", px: "čitatel `x = 0` → `[0; 0]`.", py: "`y(0) = 0` → `[0; 0]`.", view: [-5, 7, -5, 7] }),
+      llfPart({ l: "b", d: 2, q: "`f: y = [[x + 4||x − 2]]`", conv: ["`x + 4 = (x − 2) + 6`", "`y = 1 + [[6||x − 2]]`"], k: 6, kS: "6", m: 2, mS: "2", n: 1, nS: "1", px: "`x + 4 = 0 ⇒ x = −4` → `[−4; 0]`.", py: "`y(0) = [[4||−2]] = −2` → `[0; −2]`.", view: [-8, 12, -8, 10], pts: [{ x: -4, y: 0 }, { x: 0, y: -2 }] }),
+      llfPart({ l: "c", d: 3, q: "`f: y = [[5 − 2x||1 − x]]`", conv: ["Jmenovatel `1 − x` má záporné x — vynásobíme čitatel i jmenovatel `−1`: `y = [[2x − 5||x − 1]]`.", "`2x − 5 = 2(x − 1) − 3`", "`y = 2 + [[−3||x − 1]] = 2 − [[3||x − 1]]`"], k: -3, kS: "−3", m: 1, mS: "1", n: 2, nS: "2", px: "`5 − 2x = 0 ⇒ x = [[5||2]]` → `[5/2; 0]`.", py: "`y(0) = [[5||1]] = 5` → `[0; 5]`.", view: [-5, 7, -4, 8], pts: [{ x: 2.5, y: 0 }, { x: 0, y: 5 }] }),
+      llfPart({ l: "d", d: 2, q: "`f: y = [[5 − x||x − 3]]`", conv: ["`5 − x = −(x − 3) + 2`", "`y = −1 + [[2||x − 3]]`"], k: 2, kS: "2", m: 3, mS: "3", n: -1, nS: "−1", px: "`5 − x = 0 ⇒ x = 5` → `[5; 0]`.", py: "`y(0) = [[5||−3]] = −[[5||3]]` → `[0; −5/3]`.", view: [-4, 10, -7, 5], pts: [{ x: 5, y: 0 }, { x: 0, y: -5 / 3 }] }),
+    ],
+  },
+];
+
+function PracListy() {
+  const [f, setF] = useState(0);
+  const list = f === 0 ? PL : [PL[f - 1]];
+  return (
+    <div>
+      <p className="lead">Úlohy z pracovních listů z hodin — nejblíž tomu, jak bude vypadat písemka. Učitel chce v grafech vyznačené <b>jedničkové body</b> se souřadnicemi; v řešeních jsou zeleně.</p>
+      <div style={{ margin: "8px 0 4px" }}>
+        {["Vše", "Transf. 1", "Transf. 3", "Transf. 2", "LLF 10"].map((t, i) => <button key={t} className={"chip" + (f === i ? " on" : "")} onClick={() => setF(i)}>{t}</button>)}
+      </div>
+      {list.map(p => <Problem key={p.src} p={p} />)}
+    </div>
+  );
+}
+
 function Ulohy() {
   const [f, setF] = useState(0);
   const list = f === 0 ? PETAKOVA : [PETAKOVA[f - 1]];
@@ -1176,6 +1314,7 @@ function powerProps(a, e, m, n) {
   rows.push(["průsečík s osou x", px.length ? px.map(x => `[${fmt2(x)}; 0]`).join(", ") : "neexistuje"]);
   const y0ok = !(neg && m === 0);
   rows.push(["průsečík s osou y", y0ok ? `[0; ${fmt2(a * Math.pow(-m, e) + n)}]` : "neexistuje"]);
+  rows.push(["jedničkové body", `[${fmt(m + 1)}; ${fmt(n + a)}], [${fmt(m - 1)}; ${fmt(n + a * Math.pow(-1, e))}]`]);
   return rows;
 }
 
@@ -1214,18 +1353,20 @@ function Lab() {
           <div className="src">Exponent e</div>
           <div>{[-4, -3, -2, -1, 1, 2, 3, 4, 5].map(v => <button key={v} className={"chip" + (v === e ? " on" : "")} onClick={() => setE(v)}>{"x" + sup(v)}</button>)}</div>
           <div style={{ marginTop: 10 }}>
-            <RangeRow label="a (natažení)" value={aa} set={v => setA(v === 0 ? 0.5 : v)} min={-3} max={3} step={0.5} />
+            <RangeRow label="a (roztažení)" value={aa} set={v => setA(v === 0 ? 0.5 : v)} min={-3} max={3} step={0.5} />
             <RangeRow label="m (doprava)" value={m} set={setM} min={-4} max={4} step={0.5} />
             <RangeRow label="n (nahoru)" value={n} set={setN} min={-4} max={4} step={0.5} />
           </div>
           <label className="check"><input type="checkbox" checked={absOut} onChange={() => setAbsOut(v => !v)} /><span>`|f(x)|` — překlopit části pod osou x</span></label>
           <label className="check"><input type="checkbox" checked={absIn} onChange={() => setAbsIn(v => !v)} /><span>`f(|x|)` — zrcadlit pravou polovinu podle osy y</span></label>
+          <div className="tip" style={{ fontSize: 14.5 }}>`|a| &gt; 1` „roztaženější“, `|a| &lt; 1` „rozplácnutější“, `a &lt; 0` „přetočená kolem osy x“.</div>
           <button className="btn" style={{ marginTop: 10 }} onClick={() => { setA(1); setM(0); setN(0); setAbsIn(false); setAbsOut(false); }}>↺ Vynulovat</button>
           {e === -1 && !fancy && <div className="tip">`e = −1` je <b>lineární lomená funkce</b> `y = [[a||x − m]] + n` — tady `k = a`, střed `S[m; n]`.</div>}
         </div>
         <div>
           <Eq>{powerFormula(aa, e, m, n, absOut, absIn)}</Eq>
-          <FnGraph view={view} w={340} asymV={asymV} asymH={asymH} fns={[{ f: pw(e), color: MUTED, dash: true }, { f }]} pts={!neg && !fancy ? [{ x: m, y: n, color: RED }] : neg && !fancy ? [{ x: m, y: n, color: RED, hollow: true }] : []} />
+          <FnGraph view={view} w={340} asymV={asymV} asymH={asymH} fns={[{ f: pw(e), color: MUTED, dash: true }, { f }]} pts={fancy ? [] : [{ x: m, y: n, color: RED, hollow: neg }, { x: m + 1, y: n + aa, color: GREEN, label: `[${fmt(m + 1)};${fmt(n + aa)}]` }, { x: m - 1, y: n + aa * Math.pow(-1, e), color: GREEN, label: `[${fmt(m - 1)};${fmt(n + aa * Math.pow(-1, e))}]` }]} />
+          {!fancy && <div className="graphCap">zeleně jedničkové body, červeně {neg ? "střed (průsečík asymptot)" : e % 2 === 0 ? "vrchol" : "střed souměrnosti"}</div>}
         </div>
       </div>
       <div className="entry" style={{ marginTop: 18 }}>
@@ -1473,9 +1614,86 @@ function DrillGraph() {
   );
 }
 
+const coefStr = a => {
+  const v = Math.abs(a);
+  const s = v === 1 ? "" : v === 0.5 ? "½" : Math.abs(v - 1 / 3) < 1e-9 ? "⅓" : String(v);
+  return (a < 0 ? "−" : "") + s;
+};
+const descFormula = (a, e, m, n) => `y = ${coefStr(a)}${m === 0 ? "x" : `(${xm(m)})`}${sup(e)}${plusN(n)}`;
+const FACT = [
+  { f: 1, t: null }, { f: 2, t: "dvakrát „roztaženější“" }, { f: 3, t: "třikrát „roztaženější“" },
+  { f: 0.5, t: "dvakrát „rozplácnutější“" }, { f: 1 / 3, t: "třikrát „rozplácnutější“" },
+];
+function genDesc() {
+  for (;;) {
+    const e = pick([2, 3, 4, 5, -1, -2, -3]);
+    const flip = Math.random() < 0.5;
+    const F = pick(FACT);
+    const m = randInt(-3, 3), n = randInt(-3, 3);
+    const count = (flip ? 1 : 0) + (F.t ? 1 : 0) + (m ? 1 : 0) + (n ? 1 : 0);
+    if (count < 2) continue;
+    const a = (flip ? -1 : 1) * F.f;
+    const parts = [];
+    if (flip) parts.push("přetočená kolem osy x");
+    if (F.t) parts.push(F.t);
+    const sh = [];
+    if (m) sh.push(`o ${Math.abs(m)} ${m > 0 ? "doprava" : "doleva"}`);
+    if (n) sh.push(`o ${Math.abs(n)} ${n > 0 ? "nahoru" : "dolů"}`);
+    if (sh.length) parts.push("posunutá " + sh.join(" a "));
+    const correct = descFormula(a, e, m, n);
+    const pool = [descFormula(a, e, -m, n), descFormula(a, e, m, -n), descFormula(-a, e, m, n), descFormula(a, e, -m, -n)];
+    if (F.f !== 1) pool.push(descFormula((flip ? -1 : 1) / F.f, e, m, n));
+    if (m !== n) pool.push(descFormula(a, e, n, m));
+    const opts = [];
+    for (const s of shuffleArray(pool)) if (s !== correct && !opts.includes(s) && opts.length < 3) opts.push(s);
+    if (opts.length < 3) continue;
+    return { e, a, m, n, flip, F, desc: parts.join(", "), correct, options: shuffleArray([correct, ...opts]) };
+  }
+}
+
+function DrillDesc() {
+  const [t, setT] = useState(() => genDesc());
+  const [ans, setAns] = useState(null);
+  const [s, setS] = useState({ ok: 0, all: 0, streak: 0 });
+  const choose = o => { if (ans) return; setAns(o); setS(p => bump(p, o === t.correct)); };
+  const next = () => { setT(genDesc()); setAns(null); };
+  const { e, a, m, n } = t;
+  const y1 = n + a, y2 = n + a * Math.pow(-1, e);
+  const lab = (x, y) => `[${fmt(x)}; ${fmt(y)}]`;
+  const steps = [
+    `Přetočení kolem osy x ⇒ znaménko \`a\`: ${t.flip ? "`a < 0`" : "nepřetočená ⇒ `a > 0`"}.`,
+    t.F.t ? `${t.F.t.charAt(0).toUpperCase() + t.F.t.slice(1)} ⇒ \`|a| = ${coefStr(t.F.f)}\` (roztaženější = víc než 1, rozplácnutější = zlomek).` : "Bez roztažení ⇒ `|a| = 1`.",
+    m ? `${m > 0 ? "Doprava" : "Doleva"} o ${Math.abs(m)} ⇒ v závorce \`${xm(m)}\` (opačné znaménko než u „doleva“).` : "Bez vodorovného posunu ⇒ v závorce jen `x`.",
+    n ? `${n > 0 ? "Nahoru" : "Dolů"} o ${Math.abs(n)} ⇒ \`${plusN(n).trim()}\` za mocninou.` : "Bez svislého posunu.",
+    `Jedničkové body: \`${lab(m + 1, y1)}\`, \`${lab(m - 1, y2)}\`.`,
+  ];
+  const span = 5;
+  return (
+    <div className="entry">
+      <div className="src">Napiš předpis podle popisu · <Score s={s} /></div>
+      <p style={{ fontSize: 18, margin: "10px 0" }}><T>{`Funkce je oproti \`y = x${sup(e)}\` ${t.desc}.`}</T></p>
+      {t.options.map(o => {
+        let bc = "#c9d2e3", bg = "#fff";
+        if (ans) { if (o === t.correct) { bc = GREEN; bg = "#eaf6ef"; } else if (o === ans) { bc = RED; bg = "#fdeeee"; } }
+        return <button key={o} className="opt mono" style={{ borderColor: bc, background: bg }} onClick={() => choose(o)}>{o}</button>;
+      })}
+      {ans && (
+        <div className="grid2" style={{ marginTop: 10 }}>
+          <div><Steps steps={steps} /><div className="result">{t.correct}</div></div>
+          <FnGraph view={[m - span, m + span, n - span, n + span]} w={300} asymV={e < 0 ? [m] : []} asymH={e < 0 ? [n] : []}
+            fns={[{ f: pw(e), color: MUTED, dash: true }, { f: x => a * Math.pow(x - m, e) + n }]}
+            pts={[{ x: m + 1, y: y1, color: GREEN, label: lab(m + 1, y1).replace(/ /g, "") }, { x: m - 1, y: y2, color: GREEN, label: lab(m - 1, y2).replace(/ /g, "") }]}
+            caption={`čárkovaně y = x${sup(e)}, zeleně jedničkové body`} />
+        </div>
+      )}
+      {ans && <button className="btn solid" style={{ marginTop: 12 }} onClick={next}>Další popis →</button>}
+    </div>
+  );
+}
+
 function Trenazer() {
   const [m, setM] = useState(0);
-  const modes = ["⚖️ Nerovnice xⁿ ⋚ c", "➗ Asymptoty a střed", "📉 Předpis z grafu"];
+  const modes = ["⚖️ Nerovnice xⁿ ⋚ c", "➗ Asymptoty a střed", "📉 Předpis z grafu", "🔤 Popis → předpis"];
   return (
     <div>
       <p className="lead">Neomezené generované příklady. Cíl: série 10 správně za sebou v každém režimu.</p>
@@ -1483,6 +1701,7 @@ function Trenazer() {
       {m === 0 && <DrillIneq />}
       {m === 1 && <DrillLLF />}
       {m === 2 && <DrillGraph />}
+      {m === 3 && <DrillDesc />}
     </div>
   );
 }
@@ -1510,6 +1729,9 @@ const QUIZ = [
   { question: "Které nerovnice mají řešení `(−∞; 0)`?", type: "multi", options: ["`x⁻³ ≤ −x⁷`", "`x⁻¹ < 0`", "`x³ > 0`", "`x⁻² < 0`"], correct: [0, 1], explanation: "`x⁻³ ≤ −x⁷` platí právě pro záporná x (Petáková 57/8e). `x⁻¹ < 0 ⇔ x < 0`. `x³ > 0 ⇔ x > 0`; `x⁻² < 0` nemá řešení." },
   { question: "Lineární lomená funkce `y = [[k||x − m]] + n` s `k < 0` je:", type: "single", options: ["rostoucí na `(−∞; m)` i na `(m; ∞)`", "klesající na `(−∞; m)` i na `(m; ∞)`", "rostoucí na celém D", "sudá"], correct: [0], explanation: "Záporné k = větve ve II. a IV. kvadrantu vůči asymptotám ⇒ na každém intervalu roste." },
   { question: "Průsečíky grafu `y = [[x||x − 2]]` s osami jsou:", type: "single", options: ["jen `[0; 0]`", "`[2; 0]` a `[0; 1]`", "`[0; 0]` a `[2; 1]`", "žádné"], correct: [0], explanation: "Čitatel `x = 0` ⇒ `[0; 0]`, a `y(0) = 0` ⇒ tentýž bod." },
+  { question: "Funkce je oproti `y = x⁵` dvakrát „rozplácnutější“ a posunutá o 3 doleva. Její předpis je:", type: "single", options: ["`y = ½(x + 3)⁵`", "`y = 2(x + 3)⁵`", "`y = ½(x − 3)⁵`", "`y = (½x + 3)⁵`"], correct: [0], explanation: "Rozplácnutější = y-ové hodnoty menší ⇒ `a = ½`. Doleva o 3 ⇒ `x + 3`.", tip: "Roztaženější = a > 1, rozplácnutější = 0 < a < 1." },
+  { question: "Jedničkové body grafu `y = −3(x − ¾)⁵ + 1` jsou:", type: "single", options: ["`[7/4; −2]` a `[−1/4; 4]`", "`[7/4; 4]` a `[−1/4; −2]`", "`[1; −2]` a `[−1; 4]`", "`[7/4; −3]` a `[−1/4; 3]`"], correct: [0], explanation: "`x = ¾ ± 1`; `y = 1 + (−3)·(±1)` ⇒ pro `x = 7/4` je `y = −2`, pro `x = −1/4` je `y = 4`." },
+  { question: "Graf `y = [[5 − 2x||1 − x]]` má asymptoty:", type: "single", options: ["`x = 1`, `y = 2`", "`x = 1`, `y = −2`", "`x = −1`, `y = 2`", "`x = 1`, `y = 5`"], correct: [0], explanation: "`[[5 − 2x||1 − x]] = [[2x − 5||x − 1]] = 2 − [[3||x − 1]]` ⇒ `x = 1`, `y = 2`." },
   { question: "Která funkce má maximum?", type: "single", options: ["`y = −(x − 1)⁴ + 2`", "`y = (x − 1)⁻² − 3`", "`y = x⁵ − 2`", "`y = −x⁻⁴ + 2`"], correct: [0], explanation: "`−(x − 1)⁴ ≤ 0` ⇒ `y ≤ 2`, rovnost v `x = 1`. `−x⁻⁴ + 2 < 2`, hodnoty 2 nedosáhne ⇒ maximum nemá." },
 ];
 
@@ -1535,6 +1757,8 @@ const CARDS = [
   { f: "Grafické řešení nerovnice", b: "Nakresli obě strany, najdi průsečíky a body mimo D, vyber x, kde je levá strana nad/pod pravou." },
   { f: "Metoda nulových bodů", b: "Vše na jednu stranu → rozložit → nulové body čitatele i jmenovatele → tabulka znamének. Jmenovatel nikdy nepatří." },
   { f: "Čím smím násobit nerovnici?", b: "Jen výrazem se známým znaménkem: `x², x⁴, x⁶ > 0` (pro `x ≠ 0`). Nikdy `x` ani `x − 2` bez rozboru." },
+  { f: "Jedničkové body", b: "Body s `x = m ± 1` (o 1 vedle středu/vrcholu). U `y = a(x − m)ⁿ + n`: `[m + 1; n + a]`, `[m − 1; n ± a]` (+ pro sudé n). U `[[k||x − m]] + n`: `[m ± 1; n ± k]`." },
+  { f: "„Rozplácnutější“ vs. „roztaženější“", b: "k-krát roztaženější: `y = k · f(x)`. k-krát rozplácnutější: `y = [[1||k]] · f(x)`. Přetočená kolem osy x: `−f(x)`." },
   { f: "`|x⁻⁴|` vs. `|x⁻³|`", b: "`|x⁻⁴| = x⁻⁴` (nic se nemění). `|x⁻³|` překlopí levou větev nahoru ⇒ sudá funkce." },
 ];
 
@@ -1575,7 +1799,7 @@ function Karticky() {
 const FS = [
   { h: "Vlastnosti funkcí", rows: [["sudá", "D souměrný, f(−x) = f(x) — osa y"], ["lichá", "D souměrný, f(−x) = −f(x) — počátek"], ["rostoucí na M", "x₁ < x₂ ⇒ f(x₁) < f(x₂)"], ["klesající na M", "x₁ < x₂ ⇒ f(x₁) > f(x₂)"], ["prostá", "x₁ ≠ x₂ ⇒ f(x₁) ≠ f(x₂)"], ["omezená zdola/shora", "f(x) ≥ d / f(x) ≤ h pro všechna x ∈ D"], ["maximum v x₀", "f(x) ≤ f(x₀) pro všechna x ∈ D"]] },
   { h: "Mocninné funkce y = xⁿ", rows: [["n sudé > 0", "D = R, H = ⟨0; ∞), sudá, min v 0"], ["n liché > 0", "D = H = R, lichá, rostoucí"], ["n sudé < 0", "D = R∖{0}, H = (0; ∞), sudá, asympt. x = 0, y = 0"], ["n liché < 0", "D = H = R∖{0}, lichá, klesá na (−∞;0) i (0;∞)"], ["společné body", "[1; 1] vždy; [−1; 1] sudé, [−1; −1] liché; [0; 0] jen n > 0"], ["x⁻ⁿ", "x⁻ⁿ = [[1||xⁿ]]"]] },
-  { h: "Transformace", rows: [["f(x) + n", "posun o n nahoru"], ["f(x − m)", "posun o m doprava  (x + 2 ⇒ doleva o 2)"], ["a · f(x)", "natažení / stlačení ve směru y"], ["−f(x)", "překlopení podle osy x"], ["f(−x)", "překlopení podle osy y"], ["|f(x)|", "části pod osou x nahoru"], ["f(|x|)", "pravá půlka + zrcadlo podle y"]] },
+  { h: "Transformace", rows: [["f(x) + n", "posun o n nahoru"], ["f(x − m)", "posun o m doprava  (x + 2 ⇒ doleva o 2)"], ["a · f(x)", "natažení / stlačení ve směru y"], ["−f(x)", "překlopení podle osy x"], ["f(−x)", "překlopení podle osy y"], ["|f(x)|", "části pod osou x nahoru"], ["f(|x|)", "pravá půlka + zrcadlo podle y"], ["přetočená kolem osy x", "−f(x)"], ["k× roztaženější / rozplácnutější", "k · f(x)  /  (1/k) · f(x)"], ["jedničkové body", "[m ± 1; n + a·(±1)ⁿ];  LLF: [m ± 1; n ± k]"]] },
   { h: "Lineární lomená funkce", rows: [["obecný tvar", "y = [[ax + b||cx + d]],  c ≠ 0, ad − bc ≠ 0"], ["středový tvar", "y = [[k||x − m]] + n"], ["rychle", "m = −d/c,  n = a/c,  k = (bc − ad)/c²"], ["D, H", "D = R∖{m},  H = R∖{n}"], ["asymptoty, střed", "x = m,  y = n,  S[m; n]"], ["k > 0 / k < 0", "klesá / roste na (−∞; m) i (m; ∞)"], ["průsečíky", "Pₓ: ax + b = 0;  Pᵧ: [0; b/d]"]] },
   { h: "Nerovnice", rows: [["n liché", "xⁿ < c ⇔ x < ⁿ√c"], ["n sudé, c > 0", "xⁿ ≤ c ⇔ |x| ≤ ⁿ√c;   xⁿ ≥ c ⇔ |x| ≥ ⁿ√c"], ["záporný exponent", "x ≠ 0; násob xᵏ s k sudým (> 0) nebo rozděl x < 0 / x > 0"], ["podíl", "L − P ⋚ 0 → společný jmenovatel → tabulka znamének"], ["krajní body", "≤, ≥ ⇒ kořeny čitatele patří; jmenovatel nikdy"], ["kalkulačka", "ⁿ√c = c^(1/n), 2 desetinná místa"]] },
   { h: "Zápis intervalů", rows: [["uzavřený", "⟨a; b⟩  … a ≤ x ≤ b"], ["otevřený", "(a; b)  … a < x < b"], ["nekonečno", "vždy otevřeně: (−∞; a⟩, (b; ∞)"], ["bez bodu", "R ∖ {0} = (−∞; 0) ∪ (0; ∞)"]] },
@@ -1601,6 +1825,7 @@ function Vzorce() {
 const SECTIONS = [
   { id: "prehled", i: "🗺️", t: "Přehled", k: "Písemka po 23. 11. 2026", h: "Mocninné a lineární lomené funkce" },
   { id: "teorie", i: "📖", t: "Teorie", k: "Teorie", h: "Vlastnosti, mocniny, transformace, lomené funkce, nerovnice" },
+  { id: "listy", i: "📝", t: "Prac. listy", k: "Pracovní listy z hodin", h: "Transformace mocninných funkcí a lineární lomená funkce" },
   { id: "ulohy", i: "📘", t: "Petáková", k: "Zadané úlohy s řešením", h: "Petáková 57/1, 2, 3, 4, 8 a 58/9" },
   { id: "dalsi", i: "✏️", t: "Další příklady", k: "Procvičení navíc", h: "Početní nerovnice a vlastnosti funkcí" },
   { id: "lab", i: "🧪", t: "Laboratoř", k: "Interaktivní graf", h: "Laboratoř transformací" },
@@ -1640,6 +1865,7 @@ export default function App() {
         </header>
         {tab === "prehled" && <Prehled go={go} />}
         {tab === "teorie" && <Teorie />}
+        {tab === "listy" && <PracListy />}
         {tab === "ulohy" && <Ulohy />}
         {tab === "dalsi" && <Dalsi />}
         {tab === "lab" && <Lab />}
